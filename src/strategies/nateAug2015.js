@@ -83,7 +83,7 @@ NateAug2015.prototype.backtest = function(investment, profitability) {
 
         // Determine if RSI just crossed above the oversold line.
         if (previousDataPoint && previousDataPoint.ask <= 23 && dataPoint.ask > 23) {
-            rsiCrossedBelowOverbought = true;
+            rsiCrossedAboveOversold = true;
         }
 
         // Determine whether to buy (CALL).

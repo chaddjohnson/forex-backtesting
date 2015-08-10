@@ -17,9 +17,11 @@ Sma.prototype.tick = function() {
     var dataSegment = this.getDataSegment();
 
     // Calculate SMA.
-    return _(dataSegment).reduce(function(memo, dataPoint) {
+    var sma = _(dataSegment).reduce(function(memo, dataPoint) {
         return memo + dataPoint.ask;
     }, 0) / dataSegment.length;
+
+    return sma;
 };
 
 module.exports = Sma;

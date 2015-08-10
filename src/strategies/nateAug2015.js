@@ -1,5 +1,7 @@
 var studies = require('../studies');
 var Base = require('./base');
+var Call = require('../positions/call');
+var Put = require('../positions/put');
 
 // Define studies to use.
 var studyDefinitions = [
@@ -48,8 +50,9 @@ function NateAug2015(data) {
 // Create a copy of the Base "class" prototype for use in this "class."
 NateAug2015.prototype = Object.create(Base.prototype);
 
-NateAug2015.prototype.backtest = function(data) {
+NateAug2015.prototype.backtest = function(investment, profitability) {
     var self = this;
+    var data = self.getData();
     var earnings = 0.0;
     var previousDataPoint;
 
@@ -83,10 +86,16 @@ NateAug2015.prototype.backtest = function(data) {
             rsiCrossedBelowOverbought = true;
         }
 
-        // Determine whether to buy.
-        if ((downtrending && rsiCrossedBelowOverbought) || (uptrending && rsiCrossedAboveOversold)) {
+        // Determine whether to buy (CALL).
+        if (uptrending && rsiCrossedAboveOversold) {
             // Create a new position.
-            self.addPosition(new Position(dataPoint.symbol, dataPoint.timestamp, dataPoint.ask));
+            self.addPosition(new Call(dataPoint.symbol, dataPoint.timestamp, dataPoint.ask, investment, profitability));
+        }
+
+        // Determine whether to buy (PUT).
+        if (downtrending && rsiCrossedBelowOverbought) {
+            // Create a new position.
+            self.addPosition(new Put(dataPoint.symbol, dataPoint.timestamp, dataPoint.ask, investment, profitability));
         }
 
         // Track the current data point as the previous data point for the next tick.

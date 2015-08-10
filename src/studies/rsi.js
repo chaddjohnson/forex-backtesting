@@ -17,7 +17,8 @@ Rsi.prototype.tick = function() {
     var dataSegment = this.getDataSegment();
     var averageGain = 0.0;
     var averageLoss = 0.0;
-    var RS = 0.0;
+    var rs = 0.0;
+    var rsi = 0.0
 
     if (dataSegment.length < this.getInput('length')) {
         return null;
@@ -39,10 +40,12 @@ Rsi.prototype.tick = function() {
         }, 0) / dataSegment.length;
     }
 
-    RS = averageGain / averageLoss;
+    rs = averageGain / averageLoss;
 
     // Calculate RSI.
-    return 100 - (100 / (1 + RS));
+    rsi = 100 - (100 / (1 + RS));
+
+    return rsi;
 };
 
 module.exports = Rsi;

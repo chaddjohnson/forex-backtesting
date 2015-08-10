@@ -41,12 +41,15 @@ Base.prototype.tick = function() {
     this.closeExpiredPositions(lastDataPoint);
 };
 
-Base.prototype.backtest = function() {
+Base.prototype.backtest = function(investment, profitability) {
     throw 'backtest() not implemented.';
 };
 
 Base.prototype.addPosition = function(position) {
     this.positions.push(position);
+
+    // Deduct the investment amount from the profit/loss for this strategy.
+    this.profitLoss -= position.getInvestment();
 };
 
 Base.prototype.closeExpiredPositions = function(dataPoint) {
@@ -57,8 +60,8 @@ Base.prototype.closeExpiredPositions = function(dataPoint) {
             // Close the position since it is open and has expired.
             position.close(dataPoint);
 
-            // Update profit/loss for this strategy.
-            this.profitLoss += position.getProfitLoss();
+            // Add the profit/loss for this position to the profit/loss for this strategy.
+            self.profitLoss += position.getProfitLoss();
         }
     });
 };

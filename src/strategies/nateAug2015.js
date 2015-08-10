@@ -104,6 +104,9 @@ NateAug2015.prototype.backtest = function(investment, profitability) {
 
     // Show the results.
     console.log('EARNINGS: $' + earnings);
+
+    // Write the resulting data to a file.
+    // ...
 };
 
 module.exports = NateAug2015;

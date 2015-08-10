@@ -11,7 +11,7 @@ function Base(symbol, timestamp, price, investment, profitability) {
     this.isOpen = true;
 
     // Calculate the expiration time.
-    this.expirationTimestamp = this.calculateExpirationTimestamp(this.timestamp);
+    this.expirationTimestamp = this.getExpirationTimestamp(this.timestamp);
 
     console.log('New position created:');
     console.log('    Symbol:\t' + symbol);
@@ -35,7 +35,7 @@ Base.prototype.getProfitability = function() {
     return this.profitability;
 };
 
-Base.prototype.calculateExpirationTimestamp = function(timestamp) {
+Base.prototype.getExpirationTimestamp = function(timestamp) {
     // If the position was opened before the 30 second mark, then it expires at 00 of the next minute.
     // ...
 
@@ -48,15 +48,14 @@ Base.prototype.isOpen = function() {
     return this.isOpen;
 };
 
-Base.prototype.isExpired = function(dataPoint) {
-    var isExpired = false;
-
-    // Determine if this position has expired.
-    // if (current timestamp > = this.expirationTimestamp) {
-        isExpired = true;
-
+Base.prototype.hasExpired = function(dataPoint) {
+    // The option has expired if the current data point's timestamp is after the expiration timestamp.
+    if (dataPoint.timestamp >= this.expirationTimestamp) {
         console.log('Position ' + this.symbol + ' is expired');
-    //}
+        return true;
+    }
+
+    return false;
 };
 
 Base.prototype.close = function(dataPoint) {

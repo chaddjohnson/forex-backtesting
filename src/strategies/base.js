@@ -56,7 +56,7 @@ Base.prototype.closeExpiredPositions = function(dataPoint) {
     var self = this;
 
     self.positions.forEach(function(position) {
-        if (position.isOpen() && position.isExpired(dataPoint)) {
+        if (position.isOpen() && position.hasExpired(dataPoint)) {
             // Close the position since it is open and has expired.
             position.close(dataPoint);
 

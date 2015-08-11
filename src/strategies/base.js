@@ -40,11 +40,19 @@ Base.prototype.tick = function(dataPoint) {
 
     // Iterate over each study...
     self.getStudies().forEach(function(study) {
+        var studyTickValue = 0.0;
+
         // Update the data for the strategy.
         study.setData(self.cumulativeData);
 
+        studyTickValue = study.tick();
+
+        if (studyTickValue) {
+            studyTickValue = studyTickValue.toFixed(4);
+        }
+
         // Augment the last data point with the data the study generates.
-        dataPoint[study.getName()] = study.tick();
+        dataPoint[study.getName()] = studyTickValue;
     });
 
     if (previousDataPoint) {

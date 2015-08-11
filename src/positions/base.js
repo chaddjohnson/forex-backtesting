@@ -11,13 +11,13 @@ function Base(symbol, timestamp, price, investment, profitability, expirationMin
     // Calculate the expiration time.
     this.expirationTimestamp = this.timestamp + (expirationMinutes * 1000 * 60);
 
-    //console.log('New position created:');
-    //console.log('    Investment:\t$' + this.investment);
-    //console.log('    Timestamp:\t' + new Date(this.timestamp));
-    //console.log('    Symbol:\t' + symbol);
-    //console.log('    Time:\t' + new Date(timestamp));
-    //console.log('    Price:\t$' + price);
-    //console.log('    Expires:\t' + new Date(this.expirationTimestamp));
+    console.log('New position created:');
+    console.log('    Investment:\t$' + this.investment);
+    console.log('    Timestamp:\t' + new Date(this.timestamp));
+    console.log('    Symbol:\t' + symbol);
+    console.log('    Time:\t' + new Date(timestamp));
+    console.log('    Price:\t$' + price);
+    console.log('    Expires:\t' + new Date(this.expirationTimestamp));
 }
 
 Base.prototype.getTimestamp = function() {
@@ -63,7 +63,7 @@ Base.prototype.close = function(price, timestamp) {
     this.closePrice = price;
     this.closeTimestamp = timestamp;
 
-    //console.log('\n    Position ' + this.symbol + ' closed for $' + this.getProfitLoss() + ' profit/loss at ' + new Date(timestamp) + '\n');
+    console.log('\n    Position ' + this.symbol + ' closed for $' + this.getProfitLoss() + ' profit/loss at ' + new Date(timestamp) + '\n');
 };
 
 Base.prototype.getProfitLoss = function() {

@@ -38,8 +38,8 @@ module.exports.parse = function(symbol, filePath) {
                     formattedData.push({
                         symbol: symbol,
                         timestamp: new Date(transactionData[0].replace(/(\d{2})\.(\d{2})\.(\d{4}) (.*)/, '$2-$1-$3 $4')).getTime(),
-                        price: parseFloat(transactionData[4]),
-                        volume: volume
+                        volume: volume,
+                        price: parseFloat(transactionData[4])
                     });
                 }
 

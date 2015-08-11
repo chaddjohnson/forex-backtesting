@@ -80,7 +80,7 @@ Base.prototype.saveOutput = function() {
     stream = fs.createWriteStream(self.dataOutputFilePath, {flags: 'w'});
 
     // Write headers for base data.
-    stream.write('symbol,timestamp,price,volume');
+    stream.write('symbol,timestamp,volume,price');
 
     // Add study names to headers.
     self.getStudies().forEach(function(study) {
@@ -91,7 +91,7 @@ Base.prototype.saveOutput = function() {
     // Write data.
     self.cumulativeData.forEach(function(dataPoint) {
         // Write base data.
-        stream.write(dataPoint.symbol + ',' + dataPoint.timestamp + ',' + dataPoint.price + ',' + dataPoint.volume);
+        stream.write(dataPoint.symbol + ',' + dataPoint.timestamp + ',' + dataPoint.volume + ',' + dataPoint.price);
 
         // Write data for studies.
         self.getStudies().forEach(function(study) {

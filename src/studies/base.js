@@ -27,7 +27,7 @@ Base.prototype.getDataSegment = function(length) {
     // length of the array (whichever is smallest so as to not surpass the data array length).
     var dataSegmentLength = Math.min(length, data.length);
 
-    return data.slice(data.length - dataSegmentLength, dataSegmentLength);
+    return data.slice(data.length - dataSegmentLength, (data.length - dataSegmentLength) + dataSegmentLength);
 };
 
 Base.prototype.getPrevious = function() {

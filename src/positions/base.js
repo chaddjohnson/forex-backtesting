@@ -65,7 +65,8 @@ Base.prototype.close = function(price, timestamp) {
     console.log('    Time:\t\t' + new Date(this.timestamp));
     console.log('    Price:\t\t$' + this.price);
     console.log('    Expire time:\t' + new Date(this.expirationTimestamp));
-    console.log('    Close time:\t\t' + new Date(timestamp));
+    console.log('    Close time:\t\t' + new Date(this.closeTimestamp));
+    console.log('    Close price:\t$' + this.closePrice);
     console.log('    Profit/loss:\t$' + this.getProfitLoss());
     console.log('');
 };

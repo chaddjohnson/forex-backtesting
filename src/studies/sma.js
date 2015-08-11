@@ -15,18 +15,15 @@ Sma.prototype = Object.create(Base.prototype);
 
 Sma.prototype.tick = function() {
     var dataSegment = this.getDataSegment(this.getInput('length'));
-    var sma = 0.0;
 
     if (dataSegment.length < this.getInput('length')) {
         return '';
     }
 
     // Calculate SMA.
-    sma = _(dataSegment).reduce(function(memo, dataPoint) {
+    return _(dataSegment).reduce(function(memo, dataPoint) {
         return memo + dataPoint.price;
     }, 0) / dataSegment.length;
-
-    return sma;
 };
 
 module.exports = Sma;

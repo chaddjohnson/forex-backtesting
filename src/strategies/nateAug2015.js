@@ -89,10 +89,10 @@ NateAug2015.prototype.backtest = function(investment, profitability) {
         uptrending = data.ema200 < data.ema100 && data.ema100 < data.ema50 && data.ema50 < data.sma13;
 
         // Determine if RSI just crossed below the overbought line.
-        rsiOverbought = dataPoint.price >= 77;
+        rsiOverbought = dataPoint.rsi7 >= 77;
 
         // Determine if RSI just crossed above the oversold line.
-        rsiOversold = dataPoint.price <= 23;
+        rsiOversold = dataPoint.rsi7 <= 23;
 
         // Determine if the volume is high enough.
         volumeIsHighEnough = dataPoint.volume > 50;

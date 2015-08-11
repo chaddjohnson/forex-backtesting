@@ -5,6 +5,8 @@ function Base() {
     this.positions = [];
     this.profitLoss = 0.0;
     this.cumulativeData = [];
+    this.winCount = 0;
+    this.loseCount = 0;
 }
 
 Base.prototype.prepareStudies = function(studyDefinitions) {
@@ -23,6 +25,10 @@ Base.prototype.getStudies = function() {
 
 Base.prototype.getProfitLoss = function() {
     return this.profitLoss;
+};
+
+Base.prototype.getWinRate = function() {
+    return this.winCount / (this.winCount + this.loseCount);
 };
 
 Base.prototype.tick = function(dataPoint) {
@@ -59,12 +65,22 @@ Base.prototype.closeExpiredPositions = function(dataPoint) {
     var self = this;
 
     self.positions.forEach(function(position) {
+        var profitLoss = 0.0;
+
         if (position.getIsOpen() && position.getHasExpired(dataPoint.timestamp)) {
             // Close the position since it is open and has expired.
             position.close(dataPoint);
 
             // Add the profit/loss for this position to the profit/loss for this strategy.
-            self.profitLoss += position.getProfitLoss();
+            profitLoss = position.getProfitLoss();
+            self.profitLoss += profitLoss;
+
+            if (profitLoss > 0) {
+                self.winCount++;
+            }
+            if (profitLoss === 0) {
+                self.loseCount++;
+            }
         }
     });
 };

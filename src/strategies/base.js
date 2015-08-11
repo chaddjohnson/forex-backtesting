@@ -33,6 +33,7 @@ Base.prototype.getWinRate = function() {
 
 Base.prototype.tick = function(dataPoint) {
     var self = this;
+    var previousDataPoint = self.cumulativeData[self.cumulativeData.length - 1];
 
     // Add the data point to the cumulative data.
     self.cumulativeData.push(dataPoint);
@@ -46,8 +47,10 @@ Base.prototype.tick = function(dataPoint) {
         dataPoint[study.getName()] = study.tick();
     });
 
-    // Simulate expiry of and profit/loss related to positions held.
-    self.closeExpiredPositions(dataPoint);
+    if (previousDataPoint) {
+        // Simulate expiry of and profit/loss related to positions held.
+        self.closeExpiredPositions(previousDataPoint.price, dataPoint.timestamp);
+    }
 };
 
 Base.prototype.backtest = function(data, investment, profitability) {
@@ -61,15 +64,15 @@ Base.prototype.addPosition = function(position) {
     this.profitLoss -= position.getInvestment();
 };
 
-Base.prototype.closeExpiredPositions = function(dataPoint) {
+Base.prototype.closeExpiredPositions = function(price, timestamp) {
     var self = this;
 
     self.positions.forEach(function(position) {
         var profitLoss = 0.0;
 
-        if (position.getIsOpen() && position.getHasExpired(dataPoint.timestamp)) {
+        if (position.getIsOpen() && position.getHasExpired(timestamp)) {
             // Close the position since it is open and has expired.
-            position.close(dataPoint);
+            position.close(price, timestamp);
 
             // Add the profit/loss for this position to the profit/loss for this strategy.
             profitLoss = position.getProfitLoss();

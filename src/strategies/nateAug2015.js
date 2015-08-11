@@ -72,7 +72,7 @@ NateAug2015.prototype.backtest = function(data, investment, profitability) {
         if (callNextTick) {
             // Create a new position.
             self.addPosition(new Call(dataPoint.symbol, dataPoint.timestamp, dataPoint.price, investment, profitability, 5));
-            callNextTick = true;
+            callNextTick = false;
         }
 
         if (putNextTick) {

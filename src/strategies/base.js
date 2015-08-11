@@ -66,4 +66,38 @@ Base.prototype.closeExpiredPositions = function(dataPoint) {
     });
 };
 
+Base.prototype.setDataOutputFilePath = function(path) {
+    this.dataOutputFilePath = path;
+};
+
+Base.prototype.saveOutput = function() {
+    if (!this.dataOutputFilePath) {
+        return;
+    }
+
+    // Save the data to a file.
+    stream = fs.createWriteStream(this.dataOutputFilePath, {flags: 'w'});
+
+    // Write headers for base data.
+    stream.write('symbol,timestamp,price,volume');
+
+    // Add study names to headers.
+    this.getStudies().forEach(function(study) {
+        stream.write(',' + study.getName());
+    });
+    stream.write('\n');
+
+    // Write data.
+    this.getData().forEach(function(dataPoint) {
+        // Write base data.
+        stream.write(dataPoint.symbol + ',' + dataPoint.timestamp + ',' + dataPoint.price + ',' + dataPoint.volume);
+
+        // Write data for studies.
+        this.getStudies().forEach(function(study) {
+            stream.write(',' + dataPoint[study.getName()]);
+        });
+        stream.write('\n');
+    });
+};
+
 module.exports = Base;

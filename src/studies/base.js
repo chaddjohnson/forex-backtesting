@@ -20,12 +20,12 @@ Base.prototype.getInput = function(key) {
     return this.input[key];
 };
 
-Base.prototype.getDataSegment = function() {
+Base.prototype.getDataSegment = function(length) {
     var data = this.getData();
 
     // Get only last n data points, where n is either the length provided as input or the
     // length of the array (whichever is smallest so as to not surpass the data array length).
-    var dataSegmentLength = Math.min(this.getInput('length'), data.length);
+    var dataSegmentLength = Math.min(length, data.length);
 
     return data.slice(0, dataSegmentLength);
 };

@@ -1,3 +1,4 @@
+var fs = require('fs');
 var studies = require('../studies');
 var Base = require('./base');
 var Call = require('../positions/call');
@@ -119,6 +120,9 @@ NateAug2015.prototype.backtest = function(investment, profitability) {
 
     // Show the results.
     console.log('EARNINGS: $' + earnings);
+
+    // Save the output to a file.
+    this.saveOutput();
 };
 
 module.exports = NateAug2015;

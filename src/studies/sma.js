@@ -14,7 +14,7 @@ function Sma(name, data, inputs) {
 Sma.prototype = Object.create(Base.prototype);
 
 Sma.prototype.tick = function() {
-    var dataSegment = this.getDataSegment();
+    var dataSegment = this.getDataSegment(this.getInput('length'));
 
     // Calculate SMA.
     var sma = _(dataSegment).reduce(function(memo, dataPoint) {

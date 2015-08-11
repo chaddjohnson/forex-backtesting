@@ -2,70 +2,10 @@ var gulp = require('gulp');
 var gutil = require('gulp-util');
 var argv = require('yargs').argv;
 
-gulp.task('generate-csv', function(done) {
-    function showUsageInfo() {
-        console.log('Example usage:\n');
-        console.log('    gulp generate-csv --symbol EURUSD --parser dukascopy --data ./data/EURUSD_Candlestick_1_m_BID_04.08.2014-08.08.2015.csv --out ./data/parsed/EURUSD_Candlestick_1_m_BID_04.08.2014-08.08.2015.csv\n');
-        console.log('Note that only minute-by-minute tick data may be used.\n');
-    }
-
-    var fs = require('fs');
-    var stream;
-
-    var dataParsers = require('./src/dataParsers');
-    var dataParser;
-
-    // Find the data file based on the command line argument.
-    if (!argv.data) {
-        gutil.log(gutil.colors.red('No data file provided'));
-        showUsageInfo();
-        process.exit(1);
-    }
-
-    // Find the symbol based on the command line argument.
-    if (!argv.symbol) {
-        gutil.log(gutil.colors.red('No symbol provided'));
-        showUsageInfo();
-        process.exit(1);
-    }
-
-    // Find the raw data parser based on command line argument.
-    dataParser = dataParsers[argv.parser]
-    if (!dataParser) {
-        gutil.log(gutil.colors.red('Invalid data parser'));
-        showUsageInfo();
-        process.exit(1);
-    }
-
-    // Find the output file path base on command line argument.
-    if (!argv.out) {
-        gutil.log(gutil.colors.red('No output file path provide'));
-        showUsageInfo();
-    }
-
-    try {
-        // Parse the raw data file.
-        dataParser.parse(argv.symbol, argv.data).then(function(parsedData) {
-            stream = fs.createWriteStream(argv.out, {flags: 'w'});
-            stream.write('SYMBOL,TIMESTAMP,PRICE,VOLUME\n');
-
-            parsedData.forEach(function(dataPoint) {
-                stream.write(dataPoint.symbol + ',' + dataPoint.timestamp + ',' + dataPoint.price + ',' + dataPoint.volume + '\n');
-            });
-
-            done();
-        });
-    }
-    catch (error) {
-        console.error(error.message || error);
-        process.exit(1);
-    }
-});
-
 gulp.task('backtest', function(done) {
     function showUsageInfo() {
         console.log('Example usage:\n');
-        console.log('    gulp backtest --symbol EURUSD --parser dukascopy --data ./data/EURUSD_Candlestick_1_m_BID_04.08.2014-08.08.2015.csv --strategy NateAug2015 --investment 1000 --profitability 0.7\n');
+        console.log('    gulp backtest --symbol EURUSD --parser dukascopy --data ./data/EURUSD_Candlestick_1_m_BID_04.08.2014-08.08.2015.csv --strategy NateAug2015 --investment 1000 --profitability 0.7 --out ./data/processed/EURUSD_Candlestick_1_m_BID_04.08.2014-08.08.2015.csv\n');
         console.log('Note that only minute-by-minute tick data may be used.\n');
     }
 
@@ -126,6 +66,10 @@ gulp.task('backtest', function(done) {
         dataParser.parse(argv.symbol, argv.data).then(function(parsedData) {
             // Prepare the strategy.
             strategy = new strategyFn(parsedData);
+
+            if (argv.out) {
+                strategy.setDataOutputFilePath(argv.out);
+            }
 
             // Backtest the strategy against the parsed data.
             strategy.backtest(investment, profitability);

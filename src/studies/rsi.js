@@ -52,7 +52,7 @@ Rsi.prototype.tick = function() {
     var rsi = 0.0
 
     if (dataSegment.length < this.getInput('length')) {
-        return null;
+        return '';
     }
 
     // Calculate the current gain and the current loss.
@@ -61,7 +61,7 @@ Rsi.prototype.tick = function() {
 
     if (!this.previousAverageGain || !this.previousAverageLoss) {
         if (dataSegment.length < this.getInput('length') + 1) {
-            return null;
+            return '';
         }
 
         averageGain = this.previousAverageGain = this.calculateInitialAverageGain(previousDataPoint, dataSegment);

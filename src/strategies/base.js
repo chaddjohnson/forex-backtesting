@@ -1,3 +1,5 @@
+var fs = require('fs');
+
 function Base() {
     this.studies = [];
     this.positions = [];

@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var gutil = require('gulp-util');
 var argv = require('yargs').argv;
+var path = require('path');
 
 gulp.task('backtest', function(done) {
     function showUsageInfo() {
@@ -68,7 +69,7 @@ gulp.task('backtest', function(done) {
             strategy = new strategyFn();
 
             if (argv.out) {
-                strategy.setDataOutputFilePath(argv.out);
+                strategy.setDataOutputFilePath(path.join(__dirname, argv.out));
             }
 
             // Backtest the strategy against the parsed data.

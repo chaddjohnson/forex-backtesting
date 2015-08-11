@@ -1,4 +1,3 @@
-var fs = require('fs');
 var studies = require('../studies');
 var Base = require('./base');
 var Call = require('../positions/call');

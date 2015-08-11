@@ -18,7 +18,7 @@ Sma.prototype.tick = function() {
     var sma = 0.0;
 
     if (dataSegment.length < this.getInput('length')) {
-        return null;
+        return '';
     }
 
     // Calculate SMA.

@@ -9,12 +9,12 @@ function Call(symbol, timestamp, price, investment, profitability, expirationMin
 Call.prototype = Object.create(Base.prototype);
 
 Call.prototype.getProfitLoss = function() {
-    if (this.isOpen()) {
+    if (this.getIsOpen()) {
         return 0.0;
     }
 
     // Disregard transaction (set it to 0 profit/loss) if we don't have a good data point close to the expiry time available.
-    if (this.closeTimestamp() > this.expirationTimestamp()) {
+    if (this.getCloseTimestamp() > this.getExpirationTimestamp()) {
         return this.getInvestment();
     }
 

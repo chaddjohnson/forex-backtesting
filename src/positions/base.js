@@ -1,6 +1,4 @@
 function Base(symbol, timestamp, price, investment, profitability, expirationMinutes) {
-    this.constructor = Base;
-
     this.symbol = symbol;
     this.timestamp = timestamp;
     this.price = price;
@@ -16,9 +14,9 @@ function Base(symbol, timestamp, price, investment, profitability, expirationMin
     console.log('New position created:');
     console.log('    Timestamp:\t' + new Date(this.timestamp));
     console.log('    Symbol:\t' + symbol);
-    console.log('    Time:\t' + timestamp);
+    console.log('    Time:\t' + new Date(timestamp));
     console.log('    Price:\t$' + price);
-    console.log('    Expires: \t' + new Date(this.expirationTimestamp));
+    console.log('    Expires:\t' + new Date(this.expirationTimestamp));
 }
 
 Base.prototype.getTimestamp = function() {
@@ -45,14 +43,18 @@ Base.prototype.getCloseTimestamp = function() {
     return this.closeTimestamp;
 };
 
-Base.prototype.isOpen = function() {
+Base.prototype.getExpirationTimestamp = function() {
+    return this.expirationTimestamp;
+};
+
+Base.prototype.getIsOpen = function() {
     return this.isOpen;
 };
 
-Base.prototype.hasExpired = function(dataPoint) {
+Base.prototype.getHasExpired = function(timestamp) {
     // The option has expired if the current data point's timestamp is after the expiration timestamp.
-    if (dataPoint.timestamp >= this.expirationTimestamp) {
-        console.log('Position ' + this.symbol + ' is expired');
+    if (timestamp >= this.expirationTimestamp) {
+        console.log('Position ' + this.symbol + ' has expired');
         return true;
     }
 

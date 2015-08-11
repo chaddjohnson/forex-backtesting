@@ -8,6 +8,10 @@ function Put(symbol, timestamp, price, investment, profitability, expirationMinu
 // Create a copy of the Base "class" prototype for use in this "class."
 Put.prototype = Object.create(Base.prototype);
 
+Put.prototype.getTransactionType = function() {
+    return 'PUT';
+};
+
 Put.prototype.getProfitLoss = function() {
     if (this.getIsOpen()) {
         return 0.0;

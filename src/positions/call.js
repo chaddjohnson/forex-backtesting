@@ -8,6 +8,10 @@ function Call(symbol, timestamp, price, investment, profitability, expirationMin
 // Create a copy of the Base "class" prototype for use in this "class."
 Call.prototype = Object.create(Base.prototype);
 
+Call.prototype.getTransactionType = function() {
+    return 'CALL';
+};
+
 Call.prototype.getProfitLoss = function() {
     if (this.getIsOpen()) {
         return 0.0;

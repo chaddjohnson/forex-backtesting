@@ -48,6 +48,10 @@ Base.prototype.getExpirationTimestamp = function() {
     return this.expirationTimestamp;
 };
 
+Base.prototype.getTransactionType = function() {
+    throw 'getTransactionType() not implemented.';
+};
+
 Base.prototype.getIsOpen = function() {
     return this.isOpen;
 };
@@ -63,7 +67,7 @@ Base.prototype.close = function(price, timestamp) {
     this.closePrice = price;
     this.closeTimestamp = timestamp;
 
-    console.log('\n    Position ' + this.symbol + ' closed for $' + this.getProfitLoss() + ' profit/loss at ' + new Date(timestamp) + '\n');
+    console.log('\n    ' + this.getTransactionType() + ' ' + this.symbol + ' closed for $' + this.getProfitLoss() + ' profit/loss at ' + new Date(timestamp) + '\n');
 };
 
 Base.prototype.getProfitLoss = function() {

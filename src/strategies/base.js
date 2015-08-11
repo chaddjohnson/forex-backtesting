@@ -75,7 +75,7 @@ Base.prototype.closeExpiredPositions = function(dataPoint) {
             profitLoss = position.getProfitLoss();
             self.profitLoss += profitLoss;
 
-            if (profitLoss > 0) {
+            if (profitLoss > position.getInvestment()) {
                 self.winCount++;
             }
             if (profitLoss === 0) {

@@ -101,7 +101,7 @@ NateAug2015.prototype.backtest = function(investment, profitability) {
         volumeChangedSignificantly = previousDataPoint && dataPoint.volume / previousDataPoint.volume >= 1.2;
 
         // Determine if there is a significant gap (> 5 seconds) between the current timestamp and the previous timestamp.
-        timeGapPresent = previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 5000;
+        timeGapPresent = previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 5 * 1000;
 
         // Determine whether to buy (CALL).
         if (uptrending && rsiOversold && volumeIsHighEnough && volumeChangedSignificantly && !timeGapPresent) {

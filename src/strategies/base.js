@@ -19,7 +19,7 @@ Base.prototype.prepareStudies = function(studyDefinitions) {
     // Iterate over each study definition...
     studyDefinitions.forEach(function(studyDefinition) {
         // Instantiate the study, and add it to the list of studies for this strategy.
-        self.studies.push(new studyDefinition.study(studyDefinition.namet, self.getData(), studyDefinition.inputs));
+        self.studies.push(new studyDefinition.study(studyDefinition.name, self.getData(), studyDefinition.inputs));
     });
 };
 

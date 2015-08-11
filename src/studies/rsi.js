@@ -1,5 +1,5 @@
 var Base = require('./base');
-var underscore = require('_');
+var underscore = require('underscore');
 
 function Rsi(name, data, inputs) {
     this.constructor = Rsi;
@@ -31,12 +31,12 @@ Rsi.prototype.tick = function() {
     else {
         // Calculate the average gain.
         averageGain = _(dataSegment).reduce(function(memo, dataPoint) {
-            return memo + dataPoint.ask;
+            return memo + dataPoint.price;
         }, 0) / dataSegment.length;
 
         // Calculate the average loss.
         averageLoss = _(dataSegment).reduce(function(memo, dataPoint) {
-            return memo + dataPoint.ask;
+            return memo + dataPoint.price;
         }, 0) / dataSegment.length;
     }
 

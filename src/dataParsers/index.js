@@ -1,1 +1,1 @@
-module.exports.trueFx = require('./trueFx');
+module.exports.dukascopy = require('./dukascopy');

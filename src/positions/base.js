@@ -1,4 +1,4 @@
-function Base(symbol, timestamp, price, investment, profitability) {
+function Base(symbol, timestamp, price, investment, profitability, expirationMinutes) {
     this.constructor = Base;
 
     this.symbol = symbol;
@@ -7,16 +7,17 @@ function Base(symbol, timestamp, price, investment, profitability) {
     this.investment = investment;
     this.profitability = profitability;
     this.closePrice = 0.0;
-    this.profitLoss = 0.0;
     this.isOpen = true;
 
     // Calculate the expiration time.
-    this.expirationTimestamp = this.getExpirationTimestamp(this.timestamp);
+    this.expirationTimestamp = timestamp + (expirationMinutes * 1000 * 60);
 
     console.log('New position created:');
+    console.log('    Timestamp:\t' + new Date(this.timestamp));
     console.log('    Symbol:\t' + symbol);
     console.log('    Time:\t' + timestamp);
     console.log('    Price:\t$' + price);
+    console.log('    Expires: \t' + new Date(this.expirationTimestamp));
 }
 
 Base.prototype.getPrice = function() {
@@ -33,15 +34,6 @@ Base.prototype.getInvestment = function() {
 
 Base.prototype.getProfitability = function() {
     return this.profitability;
-};
-
-Base.prototype.getExpirationTimestamp = function(timestamp) {
-    // If the position was opened before the 30 second mark, then it expires at 00 of the next minute.
-    // ...
-
-    // If the position was opened after the 30 second mark, then it expires at 00 of the minute
-    // after the next.
-    // ...
 };
 
 Base.prototype.isOpen = function() {
@@ -61,9 +53,9 @@ Base.prototype.hasExpired = function(dataPoint) {
 Base.prototype.close = function(dataPoint) {
     // Mark this position as closed, and record the closing price.
     this.isOpen = false;
-    this.closePrice = datapoint.bid;
+    this.closePrice = datapoint.price;
 
-    console.log('Position ' + this.symbol + ' closed for $' + this.profitLoss + ' profit/loss');
+    console.log('Position ' + this.symbol + ' closed for $' + this.getProfitLoss() + ' profit/loss at ' + new Date(dataPoint.timestamp));
 };
 
 Base.prototype.getProfitLoss = function() {

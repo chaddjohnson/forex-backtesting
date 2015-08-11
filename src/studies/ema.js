@@ -9,7 +9,7 @@ function Ema(name, data, inputs) {
     }
 
     // Use the last data item as the first previous EMA value.
-    this.previousEma = this.getLast().ask;
+    this.previousEma = this.getLast().price;
 }
 
 // Create a copy of the Base "class" prototype for use in this "class."
@@ -17,7 +17,7 @@ Ema.prototype = Object.create(Base.prototype);
 
 Ema.prototype.tick = function() {
     var K = 2 / (1 + this.getInput('length'));
-    var ema = (this.getLast().ask * K) + (this.previousEma * (1 - K));
+    var ema = (this.getLast().price * K) + (this.previousEma * (1 - K));
 
     // Set the new EMA just calculated as the previous EMA.
     this.previousEma = ema;

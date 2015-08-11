@@ -1,5 +1,5 @@
 var Base = require('./base');
-var underscore = require('_');
+var underscore = require('underscore');
 
 function Sma(name, data, inputs) {
     this.constructor = Sma;
@@ -18,7 +18,7 @@ Sma.prototype.tick = function() {
 
     // Calculate SMA.
     var sma = _(dataSegment).reduce(function(memo, dataPoint) {
-        return memo + dataPoint.ask;
+        return memo + dataPoint.price;
     }, 0) / dataSegment.length;
 
     return sma;

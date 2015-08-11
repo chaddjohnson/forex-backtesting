@@ -1,8 +1,8 @@
 var Base = require('./base');
 
-function Call(symbol, timestamp, price, investment, profitability) {
+function Call(symbol, timestamp, price, investment, profitability, expirationMinutes) {
     this.constructor = Call;
-    Base.call(this, symbol, timestamp, price, investment, profitability);
+    Base.call(this, symbol, timestamp, price, investment, profitability, expirationMinutes);
 }
 
 // Create a copy of the Base "class" prototype for use in this "class."
@@ -14,17 +14,17 @@ Call.prototype.getProfitLoss = function() {
     }
 
     // Disregard transaction (set it to 0 profit/loss) if we don't have a good data point close to the expiry time available.
-    if () {
-        return investment;
-    }
+    // if () {
+    //     return this.getInvestment();
+    // }
 
     // A win occurs if the closing price is above the purchase price.
     if (this.getClosePrice() > this.getPrice()) {
-        return investment + (this.getProfitability() * this.investment);
+        return this.getInvestment() + (this.getProfitability() * this.getInvestment());
     }
     // A draw occurs if the closing price is the same as the purchase price.
     else if (this.getClosePrice() === this.getPrice()) {
-        return investment;
+        return this.getInvestment();
     }
     else {
         return 0;

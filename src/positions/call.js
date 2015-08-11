@@ -14,9 +14,9 @@ Call.prototype.getProfitLoss = function() {
     }
 
     // Disregard transaction (set it to 0 profit/loss) if we don't have a good data point close to the expiry time available.
-    // if () {
-    //     return this.getInvestment();
-    // }
+    if (this.closeTimestamp() > this.expirationTimestamp()) {
+        return this.getInvestment();
+    }
 
     // A win occurs if the closing price is above the purchase price.
     if (this.getClosePrice() > this.getPrice()) {

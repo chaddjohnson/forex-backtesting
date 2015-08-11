@@ -60,10 +60,6 @@ Rsi.prototype.tick = function() {
     currentLoss = lastDataPoint.price < previousDataPoint.price ? previousDataPoint.price - lastDataPoint.price : 0;
 
     if (!this.previousAverageGain || !this.previousAverageLoss) {
-        if (dataSegment.length < this.getInput('length') + 1) {
-            return '';
-        }
-
         averageGain = this.previousAverageGain = this.calculateInitialAverageGain(previousDataPoint, dataSegment);
         averageLoss = this.previousAverageLoss = this.calculateInitialAverageLoss(previousDataPoint, dataSegment);
     }
@@ -75,7 +71,7 @@ Rsi.prototype.tick = function() {
     rs = averageGain / averageLoss;
 
     // Calculate RSI.
-    rsi = 100 - (100 / (1 + RS));
+    rsi = 100 - (100 / (1 + rs));
 
     return rsi;
 };

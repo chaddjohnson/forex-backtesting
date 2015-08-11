@@ -111,7 +111,7 @@ Base.prototype.saveOutput = function() {
     // Write data.
     self.cumulativeData.forEach(function(dataPoint) {
         // Write base data.
-        stream.write(dataPoint.symbol + ',' + dataPoint.timestamp + ',' + dataPoint.volume + ',' + dataPoint.price);
+        stream.write(dataPoint.symbol + ',' + new Date(dataPoint.timestamp) + ',' + dataPoint.volume + ',' + dataPoint.price);
 
         // Write data for studies.
         self.getStudies().forEach(function(study) {

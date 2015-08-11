@@ -51,9 +51,8 @@ function NateAug2015(data) {
 // Create a copy of the Base "class" prototype for use in this "class."
 NateAug2015.prototype = Object.create(Base.prototype);
 
-NateAug2015.prototype.backtest = function(investment, profitability) {
+NateAug2015.prototype.backtest = function(data, investment, profitability) {
     var self = this;
-    var data = self.getData();
     var earnings = 0.0;
     var callNextTick = false;
     var putNextTick = false;
@@ -69,7 +68,7 @@ NateAug2015.prototype.backtest = function(investment, profitability) {
     // For every data point...
     data.forEach(function(dataPoint) {
         // Simulate the next tick, and process update studies for the tick.
-        self.tick();
+        self.tick(dataPoint);
 
         if (callNextTick) {
             // Create a new position.
@@ -84,10 +83,10 @@ NateAug2015.prototype.backtest = function(investment, profitability) {
         }
 
         // Determine if a downtrend is occurring. In this case, the following will hold true: ema200 > ema100 > ema50 > sma13
-        downtrending = data.ema200 > data.ema100 && data.ema100 > data.ema50 && data.ema50 > data.sma13;
+        downtrending = dataPoint.ema200 > dataPoint.ema100 && dataPoint.ema100 > dataPoint.ema50 && dataPoint.ema50 > dataPoint.sma13;
 
         // Determine if an uptrend is occurring. In this case, the following will hold true: ema200 < ema100 < ema50 < sma13
-        uptrending = data.ema200 < data.ema100 && data.ema100 < data.ema50 && data.ema50 < data.sma13;
+        uptrending = dataPoint.ema200 < dataPoint.ema100 && dataPoint.ema100 < dataPoint.ema50 && dataPoint.ema50 < dataPoint.sma13;
 
         // Determine if RSI is above the overbought line.
         rsiOverbought = dataPoint.rsi7 && dataPoint.rsi7 >= 77;

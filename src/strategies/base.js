@@ -1,17 +1,9 @@
 function Base(data) {
-    if (!data.length) {
-        throw 'Empty data set provided to strategy.';
-    }
-
-    this.data = data;
     this.studies = [];
     this.positions = [];
     this.profitLoss = 0.0;
+    this.cumulativeData = [];
 }
-
-Base.prototype.getData = function() {
-    return this.data;
-};
 
 Base.prototype.prepareStudies = function(studyDefinitions) {
     var self = this;
@@ -19,7 +11,7 @@ Base.prototype.prepareStudies = function(studyDefinitions) {
     // Iterate over each study definition...
     studyDefinitions.forEach(function(studyDefinition) {
         // Instantiate the study, and add it to the list of studies for this strategy.
-        self.studies.push(new studyDefinition.study(studyDefinition.name, self.getData(), studyDefinition.inputs));
+        self.studies.push(new studyDefinition.study(studyDefinition.name, studyDefinition.inputs));
     });
 };
 
@@ -27,12 +19,14 @@ Base.prototype.getStudies = function() {
     return this.studies;
 };
 
-Base.prototype.tick = function() {
-    var data = this.getData();
-    var lastDataPoint = data[data.length - 1];
+Base.prototype.tick = function(dataPoint) {
+    var lastDataPoint = this.cumulativeData[cumulativeData.length - 1];
 
     // Iterate over each study...
     this.getStudies().forEach(function(study) {
+        // Update the data for the strategy.
+        study.setData(cumulativeData);
+
         // Augment the last data point with the data the study generates.
         lastDataPoint[study.getName()] = study.tick();
     });
@@ -41,7 +35,7 @@ Base.prototype.tick = function() {
     this.closeExpiredPositions(lastDataPoint);
 };
 
-Base.prototype.backtest = function(investment, profitability) {
+Base.prototype.backtest = function(data, investment, profitability) {
     throw 'backtest() not implemented.';
 };
 
@@ -88,7 +82,7 @@ Base.prototype.saveOutput = function() {
     stream.write('\n');
 
     // Write data.
-    this.getData().forEach(function(dataPoint) {
+    this.cumulativeData.forEach(function(dataPoint) {
         // Write base data.
         stream.write(dataPoint.symbol + ',' + dataPoint.timestamp + ',' + dataPoint.price + ',' + dataPoint.volume);
 

@@ -1,9 +1,9 @@
 var Base = require('./base');
 var underscore = require('underscore');
 
-function Rsi(name, data, inputs) {
+function Rsi(name, inputs) {
     this.constructor = Rsi;
-    Base.call(this, name, data, inputs);
+    Base.call(this, name, inputs);
 
     if (!inputs.length) {
         throw 'No length input parameter provided to study.';

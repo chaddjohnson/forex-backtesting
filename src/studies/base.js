@@ -1,10 +1,6 @@
-function Base(name, data, inputs) {
-    if (!data.length) {
-        throw 'Empty data set provided to study.';
-    }
-
+function Base(name, inputs) {
     this.name = name;
-    this.data = data;
+    this.data = [];
     this.inputs = inputs;
 }
 
@@ -14,6 +10,10 @@ Base.prototype.getName = function() {
 
 Base.prototype.getData = function() {
     return this.data;
+};
+
+Base.prototype.setData = function(data) {
+    this.data = data;
 };
 
 Base.prototype.getInput = function(key) {
@@ -27,7 +27,7 @@ Base.prototype.getDataSegment = function(length) {
     // length of the array (whichever is smallest so as to not surpass the data array length).
     var dataSegmentLength = Math.min(length, data.length);
 
-    return data.slice(0, dataSegmentLength);
+    return data.slice(data.length - dataSegmentLength, dataSegmentLength);
 };
 
 Base.prototype.getPrevious = function() {

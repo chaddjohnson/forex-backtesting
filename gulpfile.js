@@ -32,8 +32,8 @@ gulp.task('backtest', function(done) {
     }
 
     // Find the strategy based on the command line argument.
-    strategy = strategies[argv.strategy]
-    if (!strategy) {
+    strategyFn = strategies[argv.strategy]
+    if (!strategyFn) {
         gutil.log(gutil.colors.red('Invalid strategy'));
         showUsageInfo();
         process.exit(1);
@@ -65,14 +65,14 @@ gulp.task('backtest', function(done) {
         // Parse the raw data file.
         dataParser.parse(argv.symbol, argv.data).then(function(parsedData) {
             // Prepare the strategy.
-            strategy = new strategyFn(parsedData);
+            strategy = new strategyFn();
 
             if (argv.out) {
                 strategy.setDataOutputFilePath(argv.out);
             }
 
             // Backtest the strategy against the parsed data.
-            strategy.backtest(investment, profitability);
+            strategy.backtest(parsedData, investment, profitability);
 
             done();
         });

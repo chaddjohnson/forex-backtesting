@@ -1,8 +1,8 @@
 var Base = require('./base');
 
-function Ema(name, data, inputs) {
+function Ema(name, inputs) {
     this.constructor = Ema;
-    Base.call(this, name, data, inputs);
+    Base.call(this, name, inputs);
 
     if (!inputs.length) {
         throw 'No length input parameter provided to study.';

@@ -116,10 +116,10 @@ NateAug2015.prototype.backtest = function(data, investment, profitability) {
     });
 
     // Show the results.
-    console.log('EARNINGS: $' + self.getProfitLoss());
+    console.log('PROFIT/LOSS:\t$' + self.getProfitLoss());
     console.log('WIN RATE:\t' + self.getWinRate());
-    console.log('WINS:\t' + self.winCount);
-    console.log('LOSSES:\t' + self.loseCount);
+    console.log('WINS:\t\t' + self.winCount);
+    console.log('LOSSES:\t\t' + self.loseCount);
 
     // Save the output to a file.
     this.saveOutput();

@@ -60,7 +60,7 @@ NateAug2015.prototype.backtest = function(investment, profitability) {
     var uptrending = false;
     var rsiOverbought = false;
     var rsiOversold = false;
-    var volumeIsHighEnough = false;
+    var volumeHighEnough = false;
     var volumeChangedSignificantly = false;
     var timeGapPresent = false;
     var previousDataPoint;
@@ -95,7 +95,7 @@ NateAug2015.prototype.backtest = function(investment, profitability) {
         rsiOversold = dataPoint.rsi7 <= 23;
 
         // Determine if the volume is high enough.
-        volumeIsHighEnough = dataPoint.volume > 50;
+        volumeHighEnough = dataPoint.volume > 50;
 
         // Determine if the volume changed significantly since the last minute.
         volumeChangedSignificantly = previousDataPoint && dataPoint.volume / previousDataPoint.volume >= 1.2;
@@ -104,12 +104,12 @@ NateAug2015.prototype.backtest = function(investment, profitability) {
         timeGapPresent = previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 5 * 1000;
 
         // Determine whether to buy (CALL).
-        if (uptrending && rsiOversold && volumeIsHighEnough && volumeChangedSignificantly && !timeGapPresent) {
+        if (uptrending && rsiOversold && volumeHighEnough && volumeChangedSignificantly && !timeGapPresent) {
             callNextTick = true;
         }
 
         // Determine whether to buy (PUT).
-        if (downtrending && rsiOverbought && volumeIsHighEnough && volumeChangedSignificantly && !timeGapPresent) {
+        if (downtrending && rsiOverbought && volumeHighEnough && volumeChangedSignificantly && !timeGapPresent) {
             putNextTick = true;
         }
 

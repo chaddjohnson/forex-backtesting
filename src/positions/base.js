@@ -61,9 +61,9 @@ Base.prototype.close = function(price, timestamp) {
 
     console.log(this.getTransactionType());
     console.log('    Investment:\t\t$' + this.investment);
-    console.log('    Symbol:\t\t\t' + this.symbol);
-    console.log('    Time:\t\t\t' + new Date(this.timestamp));
-    console.log('    Price:\t\t\t$' + this.price);
+    console.log('    Symbol:\t\t' + this.symbol);
+    console.log('    Time:\t\t' + new Date(this.timestamp));
+    console.log('    Price:\t\t$' + this.price);
     console.log('    Expire time:\t' + new Date(this.expirationTimestamp));
     console.log('    Close time:\t\t' + new Date(this.closeTimestamp));
     console.log('    Close price:\t$' + this.closePrice);

@@ -1,4 +1,4 @@
-function Base(data) {
+function Base() {
     this.studies = [];
     this.positions = [];
     this.profitLoss = 0.0;
@@ -20,19 +20,22 @@ Base.prototype.getStudies = function() {
 };
 
 Base.prototype.tick = function(dataPoint) {
-    var lastDataPoint = this.cumulativeData[cumulativeData.length - 1];
+    var self = this;
+
+    // Add the data point to the cumulative data.
+    self.cumulativeData.push(dataPoint);
 
     // Iterate over each study...
-    this.getStudies().forEach(function(study) {
+    self.getStudies().forEach(function(study) {
         // Update the data for the strategy.
-        study.setData(cumulativeData);
+        study.setData(self.cumulativeData);
 
         // Augment the last data point with the data the study generates.
-        lastDataPoint[study.getName()] = study.tick();
+        dataPoint[study.getName()] = study.tick();
     });
 
     // Simulate expiry of and profit/loss related to positions held.
-    this.closeExpiredPositions(lastDataPoint);
+    self.closeExpiredPositions(dataPoint);
 };
 
 Base.prototype.backtest = function(data, investment, profitability) {
@@ -65,29 +68,31 @@ Base.prototype.setDataOutputFilePath = function(path) {
 };
 
 Base.prototype.saveOutput = function() {
-    if (!this.dataOutputFilePath) {
+    var self = this;
+
+    if (!self.dataOutputFilePath) {
         return;
     }
 
     // Save the data to a file.
-    stream = fs.createWriteStream(this.dataOutputFilePath, {flags: 'w'});
+    stream = fs.createWriteStream(self.dataOutputFilePath, {flags: 'w'});
 
     // Write headers for base data.
     stream.write('symbol,timestamp,price,volume');
 
     // Add study names to headers.
-    this.getStudies().forEach(function(study) {
+    self.getStudies().forEach(function(study) {
         stream.write(',' + study.getName());
     });
     stream.write('\n');
 
     // Write data.
-    this.cumulativeData.forEach(function(dataPoint) {
+    self.cumulativeData.forEach(function(dataPoint) {
         // Write base data.
         stream.write(dataPoint.symbol + ',' + dataPoint.timestamp + ',' + dataPoint.price + ',' + dataPoint.volume);
 
         // Write data for studies.
-        this.getStudies().forEach(function(study) {
+        self.getStudies().forEach(function(study) {
             stream.write(',' + dataPoint[study.getName()]);
         });
         stream.write('\n');

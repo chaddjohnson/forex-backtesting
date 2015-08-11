@@ -1,5 +1,5 @@
 var Base = require('./base');
-var underscore = require('underscore');
+var _ = require('underscore');
 
 function Rsi(name, inputs) {
     this.constructor = Rsi;

@@ -17,7 +17,7 @@ Base.prototype.setData = function(data) {
 };
 
 Base.prototype.getInput = function(key) {
-    return this.input[key];
+    return this.inputs[key];
 };
 
 Base.prototype.getDataSegment = function(length) {

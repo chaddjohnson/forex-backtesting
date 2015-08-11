@@ -41,9 +41,9 @@ var studyDefinitions = [
     }
 ];
 
-function NateAug2015(data) {
+function NateAug2015() {
     this.constructor = NateAug2015;
-    Base.call(this, data);
+    Base.call(this);
 
     this.prepareStudies(studyDefinitions);
 }

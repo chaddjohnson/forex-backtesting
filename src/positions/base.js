@@ -54,7 +54,7 @@ Base.prototype.getIsOpen = function() {
 Base.prototype.getHasExpired = function(timestamp) {
     // The option has expired if the current data point's timestamp is after the expiration timestamp.
     if (timestamp >= this.expirationTimestamp) {
-        console.log('Position ' + this.symbol + ' has expired');
+        console.log('Position ' + this.symbol + ' has expired\n');
         return true;
     }
 

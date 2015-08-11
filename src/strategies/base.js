@@ -21,6 +21,10 @@ Base.prototype.getStudies = function() {
     return this.studies;
 };
 
+Base.prototype.getProfitLoss = function() {
+    return this.profitLoss;
+};
+
 Base.prototype.tick = function(dataPoint) {
     var self = this;
 

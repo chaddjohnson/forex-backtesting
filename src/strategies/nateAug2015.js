@@ -52,7 +52,6 @@ NateAug2015.prototype = Object.create(Base.prototype);
 
 NateAug2015.prototype.backtest = function(data, investment, profitability) {
     var self = this;
-    var earnings = 0.0;
     var callNextTick = false;
     var putNextTick = false;
     var downtrending = false;
@@ -117,7 +116,7 @@ NateAug2015.prototype.backtest = function(data, investment, profitability) {
     });
 
     // Show the results.
-    console.log('EARNINGS: $' + earnings);
+    console.log('EARNINGS: $' + self.getProfitLoss());
 
     // Save the output to a file.
     this.saveOutput();

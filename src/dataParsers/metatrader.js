@@ -17,8 +17,7 @@ module.exports.parse = function(symbol, filePath) {
     stream = fs.createReadStream(filePath)
         .pipe(es.split())
         .pipe(es.mapSync(function(line) {
-
-            // pause the readstream
+            // Pause the readstream.
             stream.pause();
 
             (function() {
@@ -32,7 +31,7 @@ module.exports.parse = function(symbol, filePath) {
                     price: parseFloat(transactionData[5])
                 });
 
-                // resume the readstream
+                // Resume the read stream.
                 stream.resume();
             })();
         })

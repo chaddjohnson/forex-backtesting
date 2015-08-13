@@ -102,12 +102,12 @@ ChadAug2015.prototype.backtest = function(data, investment, profitability) {
         timeGapPresent = previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 60 * 1000;
 
         // Determine whether to buy (CALL).
-        if (uptrending && rsiOversold && volumeHighEnough && volumeChangedSignificantly && !timeGapPresent) { // && self.getProfitLoss() < investment * 2) {
+        if (uptrending && rsiOversold && volumeHighEnough && volumeChangedSignificantly && !timeGapPresent && self.getProfitLoss() < investment * 2) {
             callNextTick = true;
         }
 
         // Determine whether to buy (PUT).
-        if (downtrending && rsiOverbought && volumeHighEnough && volumeChangedSignificantly && !timeGapPresent) { // && self.getProfitLoss() < investment * 2) {
+        if (downtrending && rsiOverbought && volumeHighEnough && volumeChangedSignificantly && !timeGapPresent && self.getProfitLoss() < investment * 2) {
             putNextTick = true;
         }
 

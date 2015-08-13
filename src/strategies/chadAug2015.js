@@ -61,7 +61,6 @@ ChadAug2015.prototype.backtest = function(data, investment, profitability) {
     var volumeHighEnough = false;
     var volumeChangedSignificantly = false;
     var timeGapPresent = false;
-    var sma13Ema50DistanceEnough = false;
     var previousDataPoint;
 
     // For every data point...
@@ -71,13 +70,13 @@ ChadAug2015.prototype.backtest = function(data, investment, profitability) {
 
         if (callNextTick) {
             // Create a new position.
-            self.addPosition(new Call(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.price, investment, profitability, 5, dataPoint, previousDataPoint));
+            self.addPosition(new Call(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.price, investment, profitability, 5));
             callNextTick = false;
         }
 
         if (putNextTick) {
             // Create a new position.
-            self.addPosition(new Put(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.price, investment, profitability, 5, dataPoint, previousDataPoint));
+            self.addPosition(new Put(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.price, investment, profitability, 5));
             putNextTick = false;
         }
 
@@ -102,21 +101,13 @@ ChadAug2015.prototype.backtest = function(data, investment, profitability) {
         // Determine if there is a significant gap (> 60 seconds) between the current timestamp and the previous timestamp.
         timeGapPresent = previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 60 * 1000;
 
-        // sma13Ema50DistanceEnough = Math.abs(dataPoint.sma13 - dataPoint.ema50) >= 0.00009;  // USDCAD
-        // sma13Ema50DistanceEnough = Math.abs(dataPoint.sma13 - dataPoint.ema50) >= 0.00045;  // EURUSD
-        // sma13Ema50DistanceEnough = Math.abs(dataPoint.sma13 - dataPoint.ema50) >= 0.02;  // AUDJPY
-        // sma13Ema50DistanceEnough = Math.abs(dataPoint.sma13 - dataPoint.ema50) / dataPoint.price < 0.0009;
-        // sma13Ema50DistanceEnough = previousDataPoint && Math.abs(previousDataPoint.sma13 - previousDataPoint.ema50) >= 0.0005;
-        // sma13Ema50DistanceEnough = Math.abs(dataPoint.sma13 - dataPoint.ema50) >= 0.0002;  // EURGBP and others
-        sma13Ema50DistanceEnough = true;
-
         // Determine whether to buy (CALL).
-        if (uptrending && rsiOversold && volumeHighEnough && volumeChangedSignificantly && !timeGapPresent && sma13Ema50DistanceEnough && self.getProfitLoss() < investment * 6) {
+        if (uptrending && rsiOversold && volumeHighEnough && volumeChangedSignificantly && !timeGapPresent) { // && self.getProfitLoss() < investment * 2) {
             callNextTick = true;
         }
 
         // Determine whether to buy (PUT).
-        if (downtrending && rsiOverbought && volumeHighEnough && volumeChangedSignificantly && !timeGapPresent && sma13Ema50DistanceEnough && self.getProfitLoss() < investment * 6) {
+        if (downtrending && rsiOverbought && volumeHighEnough && volumeChangedSignificantly && !timeGapPresent) { // && self.getProfitLoss() < investment * 2) {
             putNextTick = true;
         }
 

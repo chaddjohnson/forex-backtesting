@@ -61,6 +61,7 @@ NateAug2015.prototype.backtest = function(data, investment, profitability) {
     var volumeHighEnough = false;
     var volumeChangedSignificantly = false;
     var timeGapPresent = false;
+    var sma13Ema50DistanceEnough = false;
     var previousDataPoint;
 
     // For every data point...
@@ -101,13 +102,15 @@ NateAug2015.prototype.backtest = function(data, investment, profitability) {
         // Determine if there is a significant gap (> 60 seconds) between the current timestamp and the previous timestamp.
         timeGapPresent = previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 60 * 1000;
 
+        sma13Ema50DistanceEnough = previousDataPoint && Math.abs(previousDataPoint.sma13 - previousDataPoint.ema50) >= 0.0005;
+
         // Determine whether to buy (CALL).
-        if (uptrending && rsiOversold && volumeHighEnough && volumeChangedSignificantly && !timeGapPresent) {
+        if (uptrending && rsiOversold && volumeHighEnough && volumeChangedSignificantly && !timeGapPresent && sma13Ema50DistanceEnough) {
             callNextTick = true;
         }
 
         // Determine whether to buy (PUT).
-        if (downtrending && rsiOverbought && volumeHighEnough && volumeChangedSignificantly && !timeGapPresent) {
+        if (downtrending && rsiOverbought && volumeHighEnough && volumeChangedSignificantly && !timeGapPresent && sma13Ema50DistanceEnough) {
             putNextTick = true;
         }
 

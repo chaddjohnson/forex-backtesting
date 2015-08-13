@@ -59,16 +59,16 @@ Base.prototype.close = function(price, timestamp) {
     this.closePrice = price;
     this.closeTimestamp = timestamp;
 
-    console.log(this.getTransactionType());
-    console.log('    Investment:\t\t$' + this.investment);
-    console.log('    Symbol:\t\t' + this.symbol);
-    console.log('    Time:\t\t' + new Date(this.timestamp));
-    console.log('    Price:\t\t$' + this.price);
-    console.log('    Expire time:\t' + new Date(this.expirationTimestamp));
-    console.log('    Close time:\t\t' + new Date(this.closeTimestamp));
-    console.log('    Close price:\t$' + this.closePrice);
-    console.log('    Profit/loss:\t$' + this.getProfitLoss());
-    console.log('');
+    // console.log(this.getTransactionType());
+    // console.log('    Investment:\t\t$' + this.investment);
+    // console.log('    Symbol:\t\t' + this.symbol);
+    // console.log('    Time:\t\t' + new Date(this.timestamp));
+    // console.log('    Price:\t\t$' + this.price);
+    // console.log('    Expire time:\t' + new Date(this.expirationTimestamp));
+    // console.log('    Close time:\t\t' + new Date(this.closeTimestamp));
+    // console.log('    Close price:\t$' + this.closePrice);
+    // console.log('    Profit/loss:\t$' + this.getProfitLoss());
+    // console.log('');
 };
 
 Base.prototype.getProfitLoss = function() {

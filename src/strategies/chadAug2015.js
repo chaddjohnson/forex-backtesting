@@ -40,17 +40,17 @@ var studyDefinitions = [
     }
 ];
 
-function NateAug2015() {
-    this.constructor = NateAug2015;
+function ChadAug2015() {
+    this.constructor = ChadAug2015;
     Base.call(this);
 
     this.prepareStudies(studyDefinitions);
 }
 
 // Create a copy of the Base "class" prototype for use in this "class."
-NateAug2015.prototype = Object.create(Base.prototype);
+ChadAug2015.prototype = Object.create(Base.prototype);
 
-NateAug2015.prototype.backtest = function(data, investment, profitability) {
+ChadAug2015.prototype.backtest = function(data, investment, profitability) {
     var self = this;
     var callNextTick = false;
     var putNextTick = false;
@@ -61,6 +61,7 @@ NateAug2015.prototype.backtest = function(data, investment, profitability) {
     var volumeHighEnough = false;
     var volumeChangedSignificantly = false;
     var timeGapPresent = false;
+    var sma13Ema50DistanceEnough = false;
     var previousDataPoint;
 
     // For every data point...
@@ -70,13 +71,13 @@ NateAug2015.prototype.backtest = function(data, investment, profitability) {
 
         if (callNextTick) {
             // Create a new position.
-            self.addPosition(new Call(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.price, investment, profitability, 5));
+            self.addPosition(new Call(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.price, investment, profitability, 5, dataPoint, previousDataPoint));
             callNextTick = false;
         }
 
         if (putNextTick) {
             // Create a new position.
-            self.addPosition(new Put(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.price, investment, profitability, 5));
+            self.addPosition(new Put(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.price, investment, profitability, 5, dataPoint, previousDataPoint));
             putNextTick = false;
         }
 
@@ -101,13 +102,21 @@ NateAug2015.prototype.backtest = function(data, investment, profitability) {
         // Determine if there is a significant gap (> 60 seconds) between the current timestamp and the previous timestamp.
         timeGapPresent = previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 60 * 1000;
 
+        // sma13Ema50DistanceEnough = Math.abs(dataPoint.sma13 - dataPoint.ema50) >= 0.00009;  // USDCAD
+        // sma13Ema50DistanceEnough = Math.abs(dataPoint.sma13 - dataPoint.ema50) >= 0.00045;  // EURUSD
+        // sma13Ema50DistanceEnough = Math.abs(dataPoint.sma13 - dataPoint.ema50) >= 0.02;  // AUDJPY
+        // sma13Ema50DistanceEnough = Math.abs(dataPoint.sma13 - dataPoint.ema50) / dataPoint.price < 0.0009;
+        // sma13Ema50DistanceEnough = previousDataPoint && Math.abs(previousDataPoint.sma13 - previousDataPoint.ema50) >= 0.0005;
+        // sma13Ema50DistanceEnough = Math.abs(dataPoint.sma13 - dataPoint.ema50) >= 0.0002;  // EURGBP and others
+        sma13Ema50DistanceEnough = true;
+
         // Determine whether to buy (CALL).
-        if (uptrending && rsiOversold && volumeHighEnough && volumeChangedSignificantly && !timeGapPresent) {
+        if (uptrending && rsiOversold && volumeHighEnough && volumeChangedSignificantly && !timeGapPresent && sma13Ema50DistanceEnough && self.getProfitLoss() < investment * 6) {
             callNextTick = true;
         }
 
         // Determine whether to buy (PUT).
-        if (downtrending && rsiOverbought && volumeHighEnough && volumeChangedSignificantly && !timeGapPresent) {
+        if (downtrending && rsiOverbought && volumeHighEnough && volumeChangedSignificantly && !timeGapPresent && sma13Ema50DistanceEnough && self.getProfitLoss() < investment * 6) {
             putNextTick = true;
         }
 
@@ -126,4 +135,4 @@ NateAug2015.prototype.backtest = function(data, investment, profitability) {
     this.saveOutput();
 };
 
-module.exports = NateAug2015;
+module.exports = ChadAug2015;

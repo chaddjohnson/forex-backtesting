@@ -40,17 +40,17 @@ var studyDefinitions = [
     }
 ];
 
-function NateAug2015() {
-    this.constructor = NateAug2015;
+function Reversals() {
+    this.constructor = Reversals;
     Base.call(this);
 
     this.prepareStudies(studyDefinitions);
 }
 
 // Create a copy of the Base "class" prototype for use in this "class."
-NateAug2015.prototype = Object.create(Base.prototype);
+Reversals.prototype = Object.create(Base.prototype);
 
-NateAug2015.prototype.backtest = function(data, investment, profitability) {
+Reversals.prototype.backtest = function(data, investment, profitability) {
     var self = this;
     var callNextTick = false;
     var putNextTick = false;
@@ -126,4 +126,4 @@ NateAug2015.prototype.backtest = function(data, investment, profitability) {
     this.saveOutput();
 };
 
-module.exports = NateAug2015;
+module.exports = Reversals;

@@ -28,6 +28,9 @@ Base.prototype.getProfitLoss = function() {
 };
 
 Base.prototype.getWinRate = function() {
+    if (this.winCount + this.loseCount === 0) {
+        return 0;
+    }
     return this.winCount / (this.winCount + this.loseCount);
 };
 

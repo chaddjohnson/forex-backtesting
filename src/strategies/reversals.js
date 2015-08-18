@@ -50,7 +50,8 @@ var studyDefinitions = [
     },{
         study: studies.PolynomialRegressionCurve,
         inputs: {
-            length: 200
+            length: 200,
+            deviations: 1.618
         },
         outputMap: {
             regression: 'pReg',

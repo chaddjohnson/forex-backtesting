@@ -81,8 +81,8 @@ PolynomialRegressionCurve.prototype.tick = function() {
 
         // Calculate the upper and lower values. These should be 1.618 standard deviations
         // in distance from the regression line.
-        upperValue = regressionValue + (regressionStandardDeviation * 1.618);
-        lowerValue = regressionValue - (regressionStandardDeviation * 1.618);
+        upperValue = regressionValue + (regressionStandardDeviation * self.getInput('deviations'));
+        lowerValue = regressionValue - (regressionStandardDeviation * self.getInput('deviations'));
     }
     else {
         upperValue = '';

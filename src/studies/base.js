@@ -1,12 +1,8 @@
-function Base(name, inputs) {
-    this.name = name;
-    this.data = [];
+function Base(inputs, outputMap) {
     this.inputs = inputs;
+    this.outputMap = outputMap;
+    this.data = [];
 }
-
-Base.prototype.getName = function() {
-    return this.name;
-};
 
 Base.prototype.getData = function() {
     return this.data;
@@ -18,6 +14,14 @@ Base.prototype.setData = function(data) {
 
 Base.prototype.getInput = function(key) {
     return this.inputs[key];
+};
+
+Base.prototype.getOutputMapping = function(key) {
+    return this.outputMap[key];
+};
+
+Base.prototype.getOutputMappings = function() {
+    return this.outputMap;
 };
 
 Base.prototype.getDataSegment = function(length) {

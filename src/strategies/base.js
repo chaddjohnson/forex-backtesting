@@ -15,7 +15,7 @@ Base.prototype.prepareStudies = function(studyDefinitions) {
     // Iterate over each study definition...
     studyDefinitions.forEach(function(studyDefinition) {
         // Instantiate the study, and add it to the list of studies for this strategy.
-        self.studies.push(new studyDefinition.study(studyDefinition.name, studyDefinition.inputs));
+        self.studies.push(new studyDefinition.study(studyDefinition.inputs, studyDefinition.outputMap));
     });
 };
 
@@ -43,24 +43,30 @@ Base.prototype.tick = function(dataPoint) {
 
     // Iterate over each study...
     self.getStudies().forEach(function(study) {
+        var studyProperty = '';
         var studyTickValue = 0.0;
+        var studyOutputs = study.getOutputMappings();
 
         // Update the data for the strategy.
         study.setData(self.cumulativeData);
 
-        studyTickValue = study.tick();
-
-        if (studyTickValue) {
-            studyTickValue = studyTickValue.toFixed(4);
-        }
+        studyTickValues = study.tick();
 
         // Augment the last data point with the data the study generates.
-        dataPoint[study.getName()] = studyTickValue;
+        for (studyProperty in studyOutputs) {
+            if (studyTickValues && studyTickValues[studyOutputs[studyProperty]]) {
+                // Include output in main output, and limit decimal precision without rounding.
+                dataPoint[studyOutputs[studyProperty]] = Math.floor(studyTickValues[studyOutputs[studyProperty]] * 10000) / 10000;
+            }
+            else {
+                dataPoint[studyOutputs[studyProperty]] = '';
+            }
+        }
     });
 
     if (previousDataPoint) {
         // Simulate expiry of and profit/loss related to positions held.
-        self.closeExpiredPositions(previousDataPoint.price, dataPoint.timestamp);
+        self.closeExpiredPositions(previousDataPoint.close, dataPoint.timestamp);
     }
 };
 
@@ -114,22 +120,32 @@ Base.prototype.saveOutput = function() {
     stream = fs.createWriteStream(self.dataOutputFilePath, {flags: 'w'});
 
     // Write headers for base data.
-    stream.write('symbol,timestamp,volume,price');
+    stream.write('symbol,timestamp,volume,open,high,low,close');
 
-    // Add study names to headers.
+    // Add study output names to headers.
     self.getStudies().forEach(function(study) {
-        stream.write(',' + study.getName());
+        var studyProperty = '';
+        var studyOutputs = study.getOutputMappings();
+
+        for (studyProperty in studyOutputs) {
+            stream.write(',' + studyOutputs[studyProperty]);
+        }
     });
     stream.write('\n');
 
     // Write data.
     self.cumulativeData.forEach(function(dataPoint) {
         // Write base data.
-        stream.write(dataPoint.symbol + ',' + new Date(dataPoint.timestamp) + ',' + dataPoint.volume + ',' + dataPoint.price);
+        stream.write(dataPoint.symbol + ',' + new Date(dataPoint.timestamp) + ',' + dataPoint.volume + ',' + dataPoint.open + ',' + dataPoint.high + ',' + dataPoint.low + ',' + dataPoint.close);
 
         // Write data for studies.
         self.getStudies().forEach(function(study) {
-            stream.write(',' + dataPoint[study.getName()]);
+            var studyProperty = '';
+            var studyOutputs = study.getOutputMappings();
+
+            for (studyProperty in studyOutputs) {
+                stream.write(',' + dataPoint[studyOutputs[studyProperty]]);
+            }
         });
         stream.write('\n');
     });

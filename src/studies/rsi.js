@@ -1,9 +1,9 @@
 var Base = require('./base');
 var _ = require('underscore');
 
-function Rsi(name, inputs) {
+function Rsi(inputs, outputMap) {
     this.constructor = Rsi;
-    Base.call(this, name, inputs);
+    Base.call(this, inputs, outputMap);
 
     if (!inputs.length) {
         throw 'No length input parameter provided to study.';
@@ -20,7 +20,7 @@ Rsi.prototype.calculateInitialAverageGain = function(initialDataPoint, dataSegme
     var previousDataPoint = initialDataPoint;
 
     return _(dataSegment).reduce(function(memo, dataPoint) {
-        var gain = dataPoint.price > previousDataPoint.price ? dataPoint.price - previousDataPoint.price : 0;
+        var gain = dataPoint.close > previousDataPoint.close ? dataPoint.close - previousDataPoint.close : 0;
 
         previousDataPoint = dataPoint;
 
@@ -32,7 +32,7 @@ Rsi.prototype.calculateInitialAverageLoss = function(initialDataPoint, dataSegme
     var previousDataPoint = initialDataPoint;
 
     return _(dataSegment).reduce(function(memo, dataPoint) {
-        var loss = dataPoint.price < previousDataPoint.price ? previousDataPoint.price - dataPoint.price : 0;
+        var loss = dataPoint.close < previousDataPoint.close ? previousDataPoint.close - dataPoint.close : 0;
 
         previousDataPoint = dataPoint;
 
@@ -49,14 +49,15 @@ Rsi.prototype.tick = function() {
     var currentGain = 0.0;
     var currentLoss = 0.0;
     var RS = 0.0;
+    var returnValue = {};
 
     if (dataSegment.length < this.getInput('length')) {
         return '';
     }
 
     // Calculate the current gain and the current loss.
-    currentGain = lastDataPoint.price > previousDataPoint.price ? lastDataPoint.price - previousDataPoint.price : 0;
-    currentLoss = lastDataPoint.price < previousDataPoint.price ? previousDataPoint.price - lastDataPoint.price : 0;
+    currentGain = lastDataPoint.close > previousDataPoint.close ? lastDataPoint.close - previousDataPoint.close : 0;
+    currentLoss = lastDataPoint.close < previousDataPoint.close ? previousDataPoint.close - lastDataPoint.close : 0;
 
     if (!this.previousAverageGain || !this.previousAverageLoss) {
         averageGain = this.previousAverageGain = this.calculateInitialAverageGain(previousDataPoint, dataSegment);
@@ -69,8 +70,9 @@ Rsi.prototype.tick = function() {
 
     RS = averageGain / averageLoss;
 
-    // Calculate RSI.
-    return 100 - (100 / (1 + RS));
+    returnValue[this.getOutputMapping('rsi')] = 100 - (100 / (1 + RS));
+
+    return returnValue;
 };
 
 module.exports = Rsi;

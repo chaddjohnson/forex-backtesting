@@ -6,37 +6,57 @@ var Put = require('../positions/put');
 // Define studies to use.
 var studyDefinitions = [
     {
-        name: 'ema200',
         study: studies.Ema,
         inputs: {
             length: 200
+        },
+        outputMap: {
+            ema: 'ema200'
         }
     },{
-        name: 'ema100',
         study: studies.Ema,
         inputs: {
             length: 100
+        },
+        outputMap: {
+            ema: 'ema100'
         }
     },{
-        name: 'ema50',
         study: studies.Ema,
         inputs: {
             length: 50
+        },
+        outputMap: {
+            ema: 'ema50'
         }
     },{
-        name: 'sma13',
         study: studies.Sma,
         inputs: {
             length: 13
+        },
+        outputMap: {
+            sma: 'sma13'
         }
     },{
-        name: 'rsi7',
         study: studies.Rsi,
         inputs: {
             length: 7,
             overbought: 77,
             oversold: 23
+        },
+        outputMap: {
+            rsi: 'rsi7'
         }
+    // },{
+    //     study: studies.PolynomialRegressionCurve,
+    //     inputs: {
+    //         length: 200
+    //     },
+    //     outputMap: {
+    //         regression: 'pReg',
+    //         upper: 'pRegUpper',
+    //         lower: 'pRegLower'
+    //     }
     }
 ];
 
@@ -60,6 +80,8 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
     var rsiOversold = false;
     var volumeHighEnough = false;
     var volumeChangedSignificantly = false;
+    var regressionUpperBoundBreached = false;
+    var regressionLowerBoundBreached = false;
     var timeGapPresent = false;
     var previousDataPoint;
 
@@ -70,13 +92,13 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
 
         if (callNextTick) {
             // Create a new position.
-            self.addPosition(new Call(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.price, investment, profitability, 5));
+            self.addPosition(new Call(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.close, investment, profitability, 5));
             callNextTick = false;
         }
 
         if (putNextTick) {
             // Create a new position.
-            self.addPosition(new Put(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.price, investment, profitability, 5));
+            self.addPosition(new Put(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.close, investment, profitability, 5));
             putNextTick = false;
         }
 
@@ -97,6 +119,12 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
 
         // Determine if the volume changed significantly since the last minute.
         volumeChangedSignificantly = previousDataPoint && dataPoint.volume / previousDataPoint.volume >= 1.2;
+
+        // Determine if the upper regression bound was breached by the high.
+        // ...
+
+        // Determine if the lower regression bound was breached by the low.
+        // ...
 
         // Determine if there is a significant gap (> 60 seconds) between the current timestamp and the previous timestamp.
         timeGapPresent = previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 60 * 1000;

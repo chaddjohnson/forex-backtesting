@@ -35,10 +35,10 @@ MorningTrend.prototype.backtest = function(data, investment, profitability) {
 
         if (timestampDate.getHours() === 9 && timestampDate.getMinutes() === 0) {
             if (previousDataPoint.close > priceAt1am) {
-                self.addPosition(new Call(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.close, investment, profitability, 60));
+                self.addPosition(new Call(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.close, investment, profitability, 120));
             }
             else {
-                self.addPosition(new Put(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.close, investment, profitability, 60));
+                self.addPosition(new Put(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.close, investment, profitability, 120));
             }
         }
 

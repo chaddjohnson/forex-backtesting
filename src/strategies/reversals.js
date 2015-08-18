@@ -47,16 +47,16 @@ var studyDefinitions = [
         outputMap: {
             rsi: 'rsi7'
         }
-    // },{
-    //     study: studies.PolynomialRegressionCurve,
-    //     inputs: {
-    //         length: 200
-    //     },
-    //     outputMap: {
-    //         regression: 'pReg',
-    //         upper: 'pRegUpper',
-    //         lower: 'pRegLower'
-    //     }
+    },{
+        study: studies.PolynomialRegressionCurve,
+        inputs: {
+            length: 200
+        },
+        outputMap: {
+            regression: 'pReg',
+            upper: 'pRegUpper',
+            lower: 'pRegLower'
+        }
     }
 ];
 
@@ -121,21 +121,21 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
         volumeChangedSignificantly = previousDataPoint && dataPoint.volume / previousDataPoint.volume >= 1.2;
 
         // Determine if the upper regression bound was breached by the high.
-        // ...
+        regressionUpperBoundBreached = dataPoint.high >= dataPoint.pRegUpper;
 
         // Determine if the lower regression bound was breached by the low.
-        // ...
+        regressionLowerBoundBreached = dataPoint.low <= dataPoint.pRegLower;
 
         // Determine if there is a significant gap (> 60 seconds) between the current timestamp and the previous timestamp.
         timeGapPresent = previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 60 * 1000;
 
         // Determine whether to buy (CALL).
-        if (uptrending && rsiOversold && volumeHighEnough && volumeChangedSignificantly && !timeGapPresent) {
+        if (uptrending && rsiOversold && volumeHighEnough && volumeChangedSignificantly && regressionLowerBoundBreached && !timeGapPresent) {
             callNextTick = true;
         }
 
         // Determine whether to buy (PUT).
-        if (downtrending && rsiOverbought && volumeHighEnough && volumeChangedSignificantly && !timeGapPresent) {
+        if (downtrending && rsiOverbought && volumeHighEnough && volumeChangedSignificantly && regressionUpperBoundBreached && !timeGapPresent) {
             putNextTick = true;
         }
 

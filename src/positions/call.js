@@ -22,7 +22,7 @@ Call.prototype.getProfitLoss = function() {
         return this.getInvestment();
     }
 
-    // A win occurs if the closing price is above the purchase price.
+    // A win occurs if the closing price is above the purchase price (i.e. we expected the price to go UP, and it did).
     if (this.getClosePrice() > this.getPrice()) {
         return this.getInvestment() + (this.getProfitability() * this.getInvestment());
     }

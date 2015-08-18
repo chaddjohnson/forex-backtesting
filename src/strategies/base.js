@@ -56,7 +56,7 @@ Base.prototype.tick = function(dataPoint) {
         for (studyProperty in studyOutputs) {
             if (studyTickValues && studyTickValues[studyOutputs[studyProperty]]) {
                 // Include output in main output, and limit decimal precision without rounding.
-                dataPoint[studyOutputs[studyProperty]] = Math.floor(studyTickValues[studyOutputs[studyProperty]] * 10000) / 10000;
+                dataPoint[studyOutputs[studyProperty]] = studyTickValues[studyOutputs[studyProperty]];
             }
             else {
                 dataPoint[studyOutputs[studyProperty]] = '';

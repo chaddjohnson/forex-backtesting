@@ -119,7 +119,7 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
         volumeHighEnough = dataPoint.volume > 50;
 
         // Determine if the volume changed significantly since the last minute.
-        volumeChangedSignificantly = previousDataPoint && dataPoint.volume / previousDataPoint.volume >= 1.2;
+        volumeChangedSignificantly = previousDataPoint && dataPoint.volume / previousDataPoint.volume >= 1.3;
 
         // Determine if the upper regression bound was breached by the high.
         regressionUpperBoundBreached = dataPoint.high >= dataPoint.pRegUpper;

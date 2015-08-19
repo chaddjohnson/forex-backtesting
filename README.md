@@ -1,6 +1,6 @@
-options-trading
+forex-trading
 ===============
-Small Node.js-based framework for backtesting options trading strategies. Allows creation of strategies and studies, and makes inclusion of studies within strategies easy.
+Small Node.js-based framework for backtesting Forex trading strategies. Allows creation of strategies and studies, and makes inclusion of studies within strategies easy.
 
 ### Setup
 

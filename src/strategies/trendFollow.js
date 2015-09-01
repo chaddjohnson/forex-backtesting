@@ -80,6 +80,8 @@ TrendFollow.prototype.backtest = function(data, investment, profitability) {
     var putNextTick = false;
     var callCondition = false;
     var putCondition = false;
+    var crossedBelowEma50 = false;
+    var crossedAboveEma50 = false;
     var timeGapPresent = false;
     var previousDataPoint;
 

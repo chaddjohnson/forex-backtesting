@@ -53,6 +53,14 @@ var studyDefinitions = [
         outputMap: {
             sma: 'sma6'
         }
+    },{
+        study: studies.Sma,
+        inputs: {
+            length: 3
+        },
+        outputMap: {
+            sma: 'sma3'
+        }
     }
 ];
 

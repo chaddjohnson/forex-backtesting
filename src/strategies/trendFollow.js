@@ -43,7 +43,7 @@ var studyDefinitions = [
             length: 13
         },
         outputMap: {
-            ema: 'sma13'
+            sma: 'sma13'
         }
     },{
         study: studies.Sma,
@@ -51,7 +51,7 @@ var studyDefinitions = [
             length: 6
         },
         outputMap: {
-            ema: 'sma6'
+            sma: 'sma6'
         }
     }
 ];

@@ -104,10 +104,10 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
             putNextTick = false;
         }
 
-        // Determine if a downtrend is occurring. In this case, the following will hold true: ema200 > ema100 > ema50 > sma13
+        // Determine if a downtrend is occurring.
         downtrending = dataPoint.ema200 > dataPoint.ema100 && dataPoint.ema100 > dataPoint.ema50 && dataPoint.ema50 > dataPoint.sma13;
 
-        // Determine if an uptrend is occurring. In this case, the following will hold true: ema200 < ema100 < ema50 < sma13
+        // Determine if an uptrend is occurring.
         uptrending = dataPoint.ema200 < dataPoint.ema100 && dataPoint.ema100 < dataPoint.ema50 && dataPoint.ema50 < dataPoint.sma13;
 
         // Determine if RSI is above the overbought line.

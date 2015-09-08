@@ -83,7 +83,6 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
     var volumeChangedSignificantly = false;
     var regressionUpperBoundBreached = false;
     var regressionLowerBoundBreached = false;
-    var sma13AndEma50DistanceIsEnough = false;
     var timeGapPresent = false;
     var previousDataPoint;
 
@@ -128,19 +127,16 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
         // Determine if the lower regression bound was breached by the low.
         regressionLowerBoundBreached = dataPoint.low <= dataPoint.pRegLower;
 
-        // Determine if there is a large enough gap between the SMA13 and EMA50 lines.
-        sma13AndEma50DistanceIsEnough = Math.abs(dataPoint.sma13 - dataPoint.ema50) >= 0.0001;
-
         // Determine if there is a significant gap (> 60 seconds) between the current timestamp and the previous timestamp.
         timeGapPresent = previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 60 * 1000;
 
         // Determine whether to buy (CALL).
-        if (uptrending && rsiOversold && volumeHighEnough && volumeChangedSignificantly && regressionLowerBoundBreached && sma13AndEma50DistanceIsEnough && !timeGapPresent) {
+        if (uptrending && rsiOversold && volumeHighEnough && volumeChangedSignificantly && regressionLowerBoundBreached && !timeGapPresent) {
             callNextTick = true;
         }
 
         // Determine whether to buy (PUT).
-        if (downtrending && rsiOverbought && volumeHighEnough && volumeChangedSignificantly && regressionUpperBoundBreached && sma13AndEma50DistanceIsEnough && !timeGapPresent) {
+        if (downtrending && rsiOverbought && volumeHighEnough && volumeChangedSignificantly && regressionUpperBoundBreached && !timeGapPresent) {
             putNextTick = true;
         }
 

@@ -79,8 +79,6 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
     var uptrending = false;
     var rsiOverbought = false;
     var rsiOversold = false;
-    var volumeHighEnough = false;
-    var volumeChangedSignificantly = false;
     var regressionUpperBoundBreached = false;
     var regressionLowerBoundBreached = false;
     var timeGapPresent = false;
@@ -115,12 +113,6 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
         // Determine if RSI is below the oversold line.
         rsiOversold = dataPoint.rsi7 && dataPoint.rsi7 <= 23;
 
-        // Determine if the volume is high enough.
-        volumeHighEnough = dataPoint.volume > 50;
-
-        // Determine if the volume changed significantly since the last minute.
-        volumeChangedSignificantly = previousDataPoint && dataPoint.volume / previousDataPoint.volume >= 1.3;
-
         // Determine if the upper regression bound was breached by the high.
         regressionUpperBoundBreached = dataPoint.high >= dataPoint.pRegUpper;
 
@@ -131,12 +123,12 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
         timeGapPresent = previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 60 * 1000;
 
         // Determine whether to buy (CALL).
-        if (uptrending && rsiOversold && volumeHighEnough && volumeChangedSignificantly && regressionLowerBoundBreached && !timeGapPresent) {
+        if (uptrending && rsiOversold && regressionLowerBoundBreached && !timeGapPresent) {
             callNextTick = true;
         }
 
         // Determine whether to buy (PUT).
-        if (downtrending && rsiOverbought && volumeHighEnough && volumeChangedSignificantly && regressionUpperBoundBreached && !timeGapPresent) {
+        if (downtrending && rsiOverbought && regressionUpperBoundBreached && !timeGapPresent) {
             putNextTick = true;
         }
 

@@ -51,12 +51,12 @@ var studyDefinitions = [
         study: studies.PolynomialRegressionCurve,
         inputs: {
             length: 200,
-            deviations: 1.75
+            deviations: 1.85
         },
         outputMap: {
-            regression: 'pReg',
-            upper: 'pRegUpper',
-            lower: 'pRegLower'
+            regression: 'pReg200',
+            upper: 'pRegUpper200',
+            lower: 'pRegLower200'
         }
     }
 ];
@@ -114,10 +114,10 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
         rsiOversold = dataPoint.rsi7 && dataPoint.rsi7 <= 23;
 
         // Determine if the upper regression bound was breached by the high.
-        regressionUpperBoundBreached = dataPoint.high >= dataPoint.pRegUpper;
+        regressionUpperBoundBreached = dataPoint.high >= dataPoint.pRegUpper200;
 
         // Determine if the lower regression bound was breached by the low.
-        regressionLowerBoundBreached = dataPoint.low <= dataPoint.pRegLower;
+        regressionLowerBoundBreached = dataPoint.low <= dataPoint.pRegLower200;
 
         // Determine if there is a significant gap (> 60 seconds) between the current timestamp and the previous timestamp.
         timeGapPresent = previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 60 * 1000;

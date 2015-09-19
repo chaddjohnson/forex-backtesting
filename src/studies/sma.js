@@ -19,7 +19,7 @@ Sma.prototype.tick = function() {
     var returnValue = {};
 
     if (dataSegment.length < this.getInput('length')) {
-        return '';
+        return returnValue;
     }
 
     sma = _(dataSegment).reduce(function(memo, dataPoint) {

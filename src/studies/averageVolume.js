@@ -19,7 +19,7 @@ AverageVolume.prototype.tick = function() {
     var returnValue = {};
 
     if (dataSegment.length < this.getInput('length')) {
-        return '';
+        return returnValue;
     }
 
     average = _(dataSegment).reduce(function(memo, dataPoint) {

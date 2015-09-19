@@ -54,7 +54,7 @@ Base.prototype.tick = function(dataPoint) {
 
         // Augment the last data point with the data the study generates.
         for (studyProperty in studyOutputs) {
-            if (studyTickValues && studyTickValues[studyOutputs[studyProperty]]) {
+            if (studyTickValues && typeof studyTickValues[studyOutputs[studyProperty]] === 'number') {
                 // Include output in main output, and limit decimal precision without rounding.
                 dataPoint[studyOutputs[studyProperty]] = studyTickValues[studyOutputs[studyProperty]];
             }

@@ -52,7 +52,7 @@ Rsi.prototype.tick = function() {
     var returnValue = {};
 
     if (dataSegment.length < this.getInput('length')) {
-        return '';
+        return returnValue;
     }
 
     // Calculate the current gain and the current loss.

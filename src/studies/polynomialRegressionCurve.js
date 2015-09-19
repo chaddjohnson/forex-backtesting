@@ -58,7 +58,7 @@ PolynomialRegressionCurve.prototype.tick = function() {
     var returnValue = {};
 
     if (dataSegment.length < self.getInput('length')) {
-        return '';
+        return returnValue;
     }
 
     // Calculate the regression.

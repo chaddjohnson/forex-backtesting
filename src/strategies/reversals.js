@@ -73,6 +73,9 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
     var regressionLowerBoundBreached = false;
     var timeGapPresent = false;
     var previousDataPoint;
+    var consecutiveLosses = 0;
+    var maxConsecutiveLosses = 0;
+    var lowestProfitLoss = 99999.0;
 
     // For every data point...
     data.forEach(function(dataPoint) {
@@ -122,6 +125,11 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
             putNextTick = true;
         }
 
+        // Determine and display the lowest profit/loss.
+        if (self.getProfitLoss() < lowestProfitLoss) {
+            lowestProfitLoss = self.getProfitLoss();
+        }
+
         // Track the current data point as the previous data point for the next tick.
         previousDataPoint = dataPoint;
     });
@@ -132,6 +140,18 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
     console.log('WIN RATE:\t' + self.getWinRate());
     console.log('WINS:\t\t' + self.winCount);
     console.log('LOSSES:\t\t' + self.loseCount);
+
+    // Determine the max consecutive losses.
+    this.positions.forEach(function(position) {
+        position.getProfitLoss() === 0 ? consecutiveLosses++ : consecutiveLosses = 0;
+
+        if (consecutiveLosses > maxConsecutiveLosses) {
+            maxConsecutiveLosses = consecutiveLosses;
+        }
+    });
+
+    console.log('MAX CONSECUTIVE LOSSES:\t' + maxConsecutiveLosses);
+    console.log('LOWEST PROFIT/LOSS:\t$' + lowestProfitLoss);
 
     // Save the output to a file.
     this.saveOutput();

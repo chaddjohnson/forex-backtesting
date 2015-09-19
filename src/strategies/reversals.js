@@ -8,14 +8,6 @@ var studyDefinitions = [
     {
         study: studies.Ema,
         inputs: {
-            length: 200
-        },
-        outputMap: {
-            ema: 'ema200'
-        }
-    },{
-        study: studies.Ema,
-        inputs: {
             length: 100
         },
         outputMap: {
@@ -100,10 +92,10 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
         }
 
         // Determine if a downtrend is occurring.
-        downtrending = dataPoint.ema200 > dataPoint.ema100 && dataPoint.ema100 > dataPoint.ema50 && dataPoint.ema50 > dataPoint.sma13;
+        downtrending = dataPoint.ema100 > dataPoint.ema50 && dataPoint.ema50 > dataPoint.sma13;
 
         // Determine if an uptrend is occurring.
-        uptrending = dataPoint.ema200 < dataPoint.ema100 && dataPoint.ema100 < dataPoint.ema50 && dataPoint.ema50 < dataPoint.sma13;
+        uptrending = dataPoint.ema100 < dataPoint.ema50 && dataPoint.ema50 < dataPoint.sma13;
 
         // Determine if RSI is above the overbought line.
         rsiOverbought = dataPoint.rsi7 && dataPoint.rsi7 >= 77;

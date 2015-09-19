@@ -40,9 +40,7 @@ var studyDefinitions = [
     },{
         study: studies.Rsi,
         inputs: {
-            length: 7,
-            overbought: 77,
-            oversold: 23
+            length: 7
         },
         outputMap: {
             rsi: 'rsi7'

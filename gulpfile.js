@@ -10,6 +10,12 @@ gulp.task('backtest', function(done) {
         console.log('Note that only minute-by-minute tick data may be used.\n');
     }
 
+    function handleInputError(message) {
+        gutil.log(gutil.colors.red('No symbol provided'));
+        showUsageInfo();
+        process.exit(1);
+    }
+
     var dataParsers = require('./src/dataParsers');
     var strategies = require('./src/strategies');
 
@@ -20,46 +26,34 @@ gulp.task('backtest', function(done) {
 
     // Find the data file based on the command line argument.
     if (!argv.data) {
-        gutil.log(gutil.colors.red('No data file provided'));
-        showUsageInfo();
-        process.exit(1);
+        handleInputError('No data file provided');
     }
 
     // Find the symbol based on the command line argument.
     if (!argv.symbol) {
-        gutil.log(gutil.colors.red('No symbol provided'));
-        showUsageInfo();
-        process.exit(1);
+        handleInputError('No symbol provided');
     }
 
     // Find the strategy based on the command line argument.
     strategyFn = strategies[argv.strategy]
     if (!strategyFn) {
-        gutil.log(gutil.colors.red('Invalid strategy'));
-        showUsageInfo();
-        process.exit(1);
+        handleInputError('Invalid strategy');
     }
 
     // Find the raw data parser based on command line argument.
     dataParser = dataParsers[argv.parser]
     if (!dataParser) {
-        gutil.log(gutil.colors.red('Invalid data parser'));
-        showUsageInfo();
-        process.exit(1);
+        handleInputError('Invalid data parser');
     }
 
     investment = parseFloat(argv.investment)
     if (!investment) {
-        gutil.log(gutil.colors.red('Invalid investment'));
-        showUsageInfo();
-        process.exit(1);
+        handleInputError('Invalid investment');
     }
 
     profitability = parseFloat(argv.profitability)
     if (!profitability) {
-        gutil.log(gutil.colors.red('No profitability provided'));
-        showUsageInfo();
-        process.exit(1);
+        handleInputError('No profitability provided');
     }
 
     try {

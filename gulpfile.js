@@ -6,8 +6,7 @@ var path = require('path');
 gulp.task('backtest', function(done) {
     function showUsageInfo() {
         console.log('Example usage:\n');
-        console.log('    gulp backtest --symbol EURUSD --parser dukascopy --data ./data/EURUSD.csv --strategy Reversals --investment 1000 --profitability 0.7 --out ./data/processed/EURUSD.csv\n');
-        console.log('Note that only minute-by-minute tick data may be used.\n');
+        console.log('gulp backtest --symbol EURUSD --parser dukascopy --data ./data/EURUSD.csv --strategy Reversals --investment 1000 --profitability 0.7 --out ./data/processed/EURUSD.csv\n');
     }
 
     function handleInputError(message) {

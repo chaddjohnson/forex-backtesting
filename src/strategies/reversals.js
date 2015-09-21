@@ -38,7 +38,7 @@ var studyDefinitions = [
             rsi: 'rsi7'
         }
     },{
-        study: studies.PolynomialRegressionCurve,
+        study: studies.PolynomialRegressionChannel,
         inputs: {
             length: 200,
             deviations: 1.95

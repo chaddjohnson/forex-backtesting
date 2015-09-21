@@ -2,8 +2,8 @@ var Base = require('./base');
 var _ = require('underscore');
 var regression = require('regression');
 
-function PolynomialRegressionCurve(inputs, outputMap) {
-    this.constructor = PolynomialRegressionCurve;
+function PolynomialRegressionChannel(inputs, outputMap) {
+    this.constructor = PolynomialRegressionChannel;
     Base.call(this, inputs, outputMap);
 
     if (!inputs.length) {
@@ -12,9 +12,9 @@ function PolynomialRegressionCurve(inputs, outputMap) {
 }
 
 // Create a copy of the Base "class" prototype for use in this "class."
-PolynomialRegressionCurve.prototype = Object.create(Base.prototype);
+PolynomialRegressionChannel.prototype = Object.create(Base.prototype);
 
-PolynomialRegressionCurve.prototype.calculateRegression = function(values, degree) {
+PolynomialRegressionChannel.prototype.calculateRegression = function(values, degree) {
     var data = [];
     var regressionOutput;
 
@@ -30,7 +30,7 @@ PolynomialRegressionCurve.prototype.calculateRegression = function(values, degre
     return regressionOutput.points[regressionOutput.points.length - 1][1];
 };
 
-PolynomialRegressionCurve.prototype.calculateStandardDeviation = function(values) {
+PolynomialRegressionChannel.prototype.calculateStandardDeviation = function(values) {
 
     var average = _(values).reduce(function(total, value) {
         return total + value;
@@ -46,7 +46,7 @@ PolynomialRegressionCurve.prototype.calculateStandardDeviation = function(values
     return Math.sqrt(squaredDeviations / values.length);
 };
 
-PolynomialRegressionCurve.prototype.tick = function() {
+PolynomialRegressionChannel.prototype.tick = function() {
     var self = this;
     var dataSegment = self.getDataSegment(self.getInput('length'));
     var regressionValue = 0.0;
@@ -96,4 +96,4 @@ PolynomialRegressionCurve.prototype.tick = function() {
     return returnValue;
 };
 
-module.exports = PolynomialRegressionCurve;
+module.exports = PolynomialRegressionChannel;

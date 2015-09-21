@@ -4,8 +4,9 @@ Small Node.js-based framework for backtesting Forex trading strategies. Allows c
 
 ### Setup
 
-1. Install Node.js: https://nodejs.org/download/
-1. Install Gulp globally: `npm install -g gulp`
+1. Install Node.js: https://nodejs.org/download/.
+1. Install Gulp globally: `npm install -g gulp`.
+1. Install Node modules: `npm install`.
 1. Download minute tick data for one security from a supported data provider.
     1. Dukascopy link: https://www.dukascopy.com/swiss/english/marketwatch/historical/
 1. Put the data into ./data/:

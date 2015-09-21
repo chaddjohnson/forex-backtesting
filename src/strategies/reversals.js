@@ -44,9 +44,9 @@ var studyDefinitions = [
             deviations: 1.95
         },
         outputMap: {
-            regression: 'pReg200',
-            upper: 'pRegUpper200',
-            lower: 'pRegLower200'
+            regression: 'prChannel200',
+            upper: 'prChannelUpper200',
+            lower: 'prChannelLower200'
         }
     }
 ];
@@ -107,10 +107,10 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
         rsiOversold = dataPoint.rsi7 && dataPoint.rsi7 <= 23;
 
         // Determine if the upper regression bound was breached by the high.
-        regressionUpperBoundBreached = dataPoint.high >= dataPoint.pRegUpper200;
+        regressionUpperBoundBreached = dataPoint.high >= dataPoint.prChannelUpper200;
 
         // Determine if the lower regression bound was breached by the low.
-        regressionLowerBoundBreached = dataPoint.low <= dataPoint.pRegLower200;
+        regressionLowerBoundBreached = dataPoint.low <= dataPoint.prChannelLower200;
 
         // Determine if there is a significant gap (> 60 seconds) between the current timestamp and the previous timestamp.
         timeGapPresent = previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 60 * 1000;

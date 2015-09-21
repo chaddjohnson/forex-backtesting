@@ -31,7 +31,6 @@ PolynomialRegressionChannel.prototype.calculateRegression = function(values, deg
 };
 
 PolynomialRegressionChannel.prototype.calculateStandardDeviation = function(values) {
-
     var average = _(values).reduce(function(total, value) {
         return total + value;
     }) / values.length;

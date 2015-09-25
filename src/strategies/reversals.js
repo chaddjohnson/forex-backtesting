@@ -33,6 +33,7 @@ var studyDefinitions = [
         study: studies.PolynomialRegressionChannel,
         inputs: {
             length: 250,
+            degree: 4,
             deviations: 1.95
         },
         outputMap: {
@@ -44,6 +45,7 @@ var studyDefinitions = [
     //     study: studies.PolynomialRegressionChannel,
     //     inputs: {
     //         length: 600,
+    //         degree: 4,
     //         deviations: 1.95
     //     },
     //     outputMap: {

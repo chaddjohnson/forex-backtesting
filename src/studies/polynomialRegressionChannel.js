@@ -62,7 +62,7 @@ PolynomialRegressionChannel.prototype.tick = function() {
 
     // Calculate the regression.
     pastPrices = _(dataSegment).pluck('close');
-    regressionValue = self.calculateRegression(pastPrices, 2);
+    regressionValue = self.calculateRegression(pastPrices, self.getInput('degree'));
 
     // Calculate the standard deviations of the regression. If there is no regression data
     // available, then skip

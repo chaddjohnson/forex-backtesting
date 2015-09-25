@@ -1,7 +1,7 @@
 var studies = require('../studies');
-var Base = require('./base');
-var Call = require('../positions/call');
-var Put = require('../positions/put');
+var Base = require('./Base');
+var Call = require('../positions/Call');
+var Put = require('../positions/Put');
 
 // Define studies to use.
 var studyDefinitions = [

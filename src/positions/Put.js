@@ -1,4 +1,4 @@
-var Base = require('./base');
+var Base = require('./Base');
 
 function Put(symbol, timestamp, price, investment, profitability, expirationMinutes) {
     this.constructor = Put;

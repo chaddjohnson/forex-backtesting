@@ -1,4 +1,4 @@
-var Base = require('./base');
+var Base = require('./Base');
 var _ = require('underscore');
 
 function Rsi(inputs, outputMap) {

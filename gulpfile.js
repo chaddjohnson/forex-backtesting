@@ -10,7 +10,7 @@ gulp.task('backtest', function(done) {
     }
 
     function handleInputError(message) {
-        gutil.log(gutil.colors.red('No symbol provided'));
+        gutil.log(gutil.colors.red(message));
         showUsageInfo();
         process.exit(1);
     }

@@ -1,4 +1,4 @@
-module.exports.Reversals = require('./reversals');
-module.exports.MorningTrend = require('./morningTrend');
-module.exports.Random = require('./random');
-module.exports.TrendFollow = require('./trendFollow');
+module.exports.Reversals = require('./Reversals');
+module.exports.MorningTrend = require('./MorningTrend');
+module.exports.Random = require('./Random');
+module.exports.TrendFollow = require('./TrendFollow');

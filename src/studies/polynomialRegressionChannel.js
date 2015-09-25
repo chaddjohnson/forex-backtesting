@@ -24,7 +24,7 @@ PolynomialRegressionChannel.prototype.calculateRegression = function(values, deg
     });
 
     // Use the library to calculate the regression.
-    regressionOutput = regression('polynomial', data, 2);
+    regressionOutput = regression('polynomial', data, degree);
 
     // Return the last regression data point.
     return regressionOutput.points[regressionOutput.points.length - 1][1];

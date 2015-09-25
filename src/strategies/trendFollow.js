@@ -6,20 +6,36 @@ var Put = require('../positions/put');
 // Define studies to use.
 var studyDefinitions = [
     {
-        study: studies.Ema,
+        study: studies.Sma,
         inputs: {
-            length: 350
+            length: 50
         },
         outputMap: {
-            ema: 'ema350'
+            sma: 'sma50'
         }
     },{
-        study: studies.Ema,
+        study: studies.Sma,
         inputs: {
-            length: 200
+            length: 25
         },
         outputMap: {
-            ema: 'ema200'
+            sma: 'sma25'
+        }
+    },{
+        study: studies.Sma,
+        inputs: {
+            length: 14
+        },
+        outputMap: {
+            sma: 'sma14'
+        }
+    },{
+        study: studies.Sma,
+        inputs: {
+            length: 3
+        },
+        outputMap: {
+            sma: 'sma3'
         }
     },{
         study: studies.Ema,
@@ -38,28 +54,23 @@ var studyDefinitions = [
             ema: 'ema50'
         }
     },{
-        study: studies.Sma,
+        study: studies.Ema,
         inputs: {
-            length: 13
+            length: 24
         },
         outputMap: {
-            sma: 'sma13'
+            ema: 'ema24'
         }
     },{
-        study: studies.Sma,
+        study: studies.PolynomialRegressionChannel,
         inputs: {
-            length: 6
+            length: 200,
+            deviations: 1.618
         },
         outputMap: {
-            sma: 'sma6'
-        }
-    },{
-        study: studies.Sma,
-        inputs: {
-            length: 3
-        },
-        outputMap: {
-            sma: 'sma3'
+            regression: 'prChannel200',
+            upper: 'prChannelUpper200',
+            lower: 'prChannelLower200'
         }
     }
 ];
@@ -78,12 +89,13 @@ TrendFollow.prototype.backtest = function(data, investment, profitability) {
     var self = this;
     var callNextTick = false;
     var putNextTick = false;
-    var callCondition = false;
-    var putCondition = false;
-    var crossedBelowEma50 = false;
-    var crossedAboveEma50 = false;
+    var movingAveragesUptrending = false;
+    var movingAveragesDowntrending = false;
+    var regressionUpperBoundBreached = false;
+    var regressionLowerBoundBreached = false;
     var timeGapPresent = false;
     var previousDataPoint;
+    var previousBalance = 0;
 
     // For every data point...
     data.forEach(function(dataPoint) {
@@ -102,38 +114,40 @@ TrendFollow.prototype.backtest = function(data, investment, profitability) {
             putNextTick = false;
         }
 
-        callCondition = dataPoint.ema350 < dataPoint.ema200 &&
-                        dataPoint.ema200 < dataPoint.ema100 &&
-                        dataPoint.sma6 > dataPoint.ema350 &&
-                        dataPoint.sma13 > dataPoint.ema350 &&
-                        dataPoint.ema50 > dataPoint.ema100 &&
-                        dataPoint.sma3 > dataPoint.ema50 &&
-                        dataPoint.sma13 > dataPoint.ema50;
+        movingAveragesUptrending = dataPoint.sma14 > dataPoint.ema24 &&
+                                   dataPoint.sma25 > dataPoint.ema50 &&
+                                   dataPoint.sma50 > dataPoint.ema100 &&
+                                   dataPoint.sma3  > dataPoint.ema50;
 
-        putCondition = dataPoint.ema350 > dataPoint.ema200 &&
-                       dataPoint.ema200 > dataPoint.ema100 &&
-                       dataPoint.sma6 < dataPoint.ema350 &&
-                       dataPoint.sma13 < dataPoint.ema350 &&
-                       dataPoint.ema50 < dataPoint.ema100 &&
-                       dataPoint.sma3 < dataPoint.ema50 &&
-                       dataPoint.sma13 < dataPoint.ema50;
+        movingAveragesDowntrending = dataPoint.sma14 < dataPoint.ema24 &&
+                                     dataPoint.sma25 < dataPoint.ema50 &&
+                                     dataPoint.sma50 < dataPoint.ema100 &&
+                                     dataPoint.sma3  < dataPoint.ema50;
 
-        crossedBelowEma50 = previousDataPoint && previousDataPoint.close >= previousDataPoint.ema50 && dataPoint.close < dataPoint.ema50;
+        // Determine if the upper regression bound was breached by the high.
+        regressionUpperBoundBreached = dataPoint.high >= dataPoint.prChannelUpper200;
 
-        crossedAboveEma50 = previousDataPoint && previousDataPoint.close <= previousDataPoint.ema50 && dataPoint.close > dataPoint.ema50;
+        // Determine if the lower regression bound was breached by the low.
+        regressionLowerBoundBreached = dataPoint.low <= dataPoint.prChannelLower200;
 
         // Determine if there is a significant gap (> 60 seconds) between the current timestamp and the previous timestamp.
         timeGapPresent = previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 60 * 1000;
 
         // Determine whether to buy (CALL).
-        if (callCondition && crossedBelowEma50 && !timeGapPresent) {
+        if (movingAveragesUptrending && regressionLowerBoundBreached && dataPoint.close < dataPoint.ema50 && timeGapPresent) {
             callNextTick = true;
         }
 
         // Determine whether to buy (PUT).
-        if (putCondition && crossedAboveEma50 && !timeGapPresent) {
+        if (movingAveragesDowntrending && regressionUpperBoundBreached && dataPoint.close > dataPoint.ema50 && !timeGapPresent) {
             putNextTick = true;
         }
+
+        if (self.getProfitLoss() !== previousBalance) {
+            console.log('BALANCE: $' + self.getProfitLoss());
+            console.log();
+        }
+        previousBalance = self.getProfitLoss();
 
         // Track the current data point as the previous data point for the next tick.
         previousDataPoint = dataPoint;

@@ -108,11 +108,11 @@ var studyDefinitions = [
 ];
 
 var configurationOptions = {
-    ema200: [false, true],
-    ema100: [false, true],
-    ema50: [false, true],
-    ema13: [false, true],
-    sma13: [false, true],
+    ema200: [true, false],
+    ema100: [true, false],
+    ema50: [true, false],
+    ema13: [true, false],
+    sma13: [true, false],
     rsi: [
         null,
         {rsi: 'rsi14', overbought: 70, oversold: 30},

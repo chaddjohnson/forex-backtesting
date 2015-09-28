@@ -85,7 +85,7 @@ gulp.task('backtest', function(done) {
 gulp.task('optimize', function(done) {
     function showUsageInfo() {
         console.log('Example usage:\n');
-        console.log('gulp optimize --symbol EURUSD --parser metatrader --data-directory ./data/metatrader/three-year --optimizer Reversals --investment 1000 --profitability 0.7\n');
+        console.log('gulp optimize --symbol EURUSD --parser metatrader --data ./data/EURUSD.csv --optimizer Reversals --investment 1000 --profitability 0.7\n');
     }
 
     function handleInputError(message) {
@@ -110,11 +110,6 @@ gulp.task('optimize', function(done) {
     dataParser = dataParsers[argv.parser]
     if (!dataParser) {
         handleInputError('Invalid data parser');
-    }
-
-    // Find the data directory based on the command line argument.
-    if (!argv.dataDirectory) {
-        handleInputError('No data directory provided');
     }
 
     // Find the strategy based on the command line argument.

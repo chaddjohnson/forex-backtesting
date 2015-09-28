@@ -3,6 +3,12 @@ var gutil = require('gulp-util');
 var argv = require('yargs').argv;
 var path = require('path');
 
+process.on('uncaughtException', function(error) {
+    console.error((new Date).toUTCString() + ' uncaughtException:', error.message);
+    console.error(error.stack);
+    process.exit(1);
+});
+
 gulp.task('backtest', function(done) {
     function showUsageInfo() {
         console.log('Example usage:\n');

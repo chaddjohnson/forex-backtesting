@@ -1,6 +1,5 @@
 var Base = require('./Base');
 var strategies = require('../src/strategies');
-var async = require('async');
 var Optimization = require('../models/Optimization');
 
 var studyDefinitions = [
@@ -116,11 +115,11 @@ var configurationOptions = {
     sma13: [false, true],
     rsi: [
         null,
-        {study: 'rsi14', overbought: 70, oversold: 30},
-        {study: 'rsi7', overbought: 77, oversold: 23},
-        {study: 'rsi7', overbought: 80, oversold: 20},
-        {study: 'rsi5', overbought: 80, oversold: 20},
-        {study: 'rsi2', overbought: 95, oversold: 5}
+        {rsi: 'rsi14', overbought: 70, oversold: 30},
+        {rsi: 'rsi7', overbought: 77, oversold: 23},
+        {rsi: 'rsi7', overbought: 80, oversold: 20},
+        {rsi: 'rsi5', overbought: 80, oversold: 20},
+        {rsi: 'rsi2', overbought: 95, oversold: 5}
     ],
     prChannel: [
         null,
@@ -316,15 +315,12 @@ var configurationOptions = {
     ]
 };
 
-function Reversals(data, investment, profitability) {
+function Reversals(symbol) {
     this.constructor = Reversals;
-    Base.call(this, data, investment, profitability);
+    Base.call(this, strategies.configurable.Reversals, symbol);
 
     // Prepare studies for use.
     this.prepareStudies(studyDefinitions);
-
-    // Prepare all data in advance for use.
-    this.prepareStudyData(data);
 
     // Prepare all optimization configurations.
     this.configurations = this.buildConfigurations(configurationOptions);
@@ -333,17 +329,11 @@ function Reversals(data, investment, profitability) {
 // Create a copy of the Base "class" prototype for use in this "class."
 Reversals.prototype = Object.create(Base.prototype);
 
-Reversals.prototype.optimize = function() {
-    async.each(configurations, function(configuration, callback) {
-        // Instantiate a fresh strategy.
-        var strategy = new strategies.configurable.Reversals();
+Reversals.prototype.optimize = function(data, investment, profitability) {
+    // Prepare all data in advance for use.
+    this.prepareStudyData(data);
 
-        // Backtest the strategy using the current configuration and the pre-built data.
-        var results = strategy.backtest(configuration, data, investment, profitability);
-
-        // Record the results.
-        Optimization.create(results, callback);
-    });
+    Base.prototype.optimize.call(this, configurations, data, investment, profitability);
 };
 
 module.exports = Reversals;

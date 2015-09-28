@@ -88,6 +88,7 @@ gulp.task('optimize', function(done) {
         process.exit(1);
     }
 
+    var db = require('./db');
     var dataParsers = require('./src/dataParsers');
 
     var strategyOptimizerFn;
@@ -126,11 +127,14 @@ gulp.task('optimize', function(done) {
         handleInputError('No profitability provided');
     }
 
+    // Set up database connection.
+    db.initialize();
+
     try {
         // Parse the raw data file.
         dataParser.parse(argv.symbol, argv.data).then(function(parsedData) {
             // Prepare the strategy.
-            var strategyOptimizer = new strategyOptimizerFn();
+            var strategyOptimizer = new strategyOptimizerFn(symbol);
 
             // Backtest the strategy against the parsed data.
             strategyOptimizer.optimize(parsedData, investment, profitability);

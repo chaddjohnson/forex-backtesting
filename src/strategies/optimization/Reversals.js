@@ -1,3 +1,4 @@
+var _ = require('underscore');
 var Base = require('./base');
 var Call = require('../positions/Call');
 var Put = require('../positions/Put');
@@ -12,111 +13,102 @@ Reversals.prototype = Object.create(Base.prototype);
 
 Reversals.prototype.backtest = function(configuration, data, investment, profitability) {
     var self = this;
+    var expirationMinutes = 5;
+    var callConditions = [];
+    var putConditions = [];
     var callNextTick = false;
     var putNextTick = false;
-    var movingAveragesDowntrending = false;
-    var movingAveragesUptrending = false;
-    var rsiOverbought = false;
-    var rsiOversold = false;
-    var regressionUpperBoundBreached = false;
-    var regressionLowerBoundBreached = false;
-    var longRegressionDowntrending = false;
-    var longRegressionUptrending = false;
-    var timeGapPresent = false;
     var previousDataPoint;
-    var previousBalance = 0;
-    var consecutiveLosses = 0;
-    var maxConsecutiveLosses = 0;
-    var lowestProfitLoss = 99999.0;
-    var results = {};
 
     // For every data point...
     data.forEach(function(dataPoint) {
         // Simulate the next tick, and process update studies for the tick.
         self.tick(dataPoint);
 
-        if (callNextTick) {
-            // Create a new position.
-            self.addPosition(new Call(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.close, investment, profitability, 5));
-            callNextTick = false;
-        }
-
         if (putNextTick) {
             // Create a new position.
-            self.addPosition(new Put(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.close, investment, profitability, 5));
+            self.addPosition(new Put(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.close, investment, profitability, expirationMinutes));
             putNextTick = false;
         }
 
-        // Determine if a downtrend is occurring.
-        movingAveragesDowntrending = dataPoint.ema200 > dataPoint.ema100 && dataPoint.ema100 > dataPoint.ema50 && dataPoint.ema50 > dataPoint.sma13;
+        if (callNextTick) {
+            // Create a new position.
+            self.addPosition(new Call(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.close, investment, profitability, expirationMinutes));
+            callNextTick = false;
+        }
 
-        // Determine if an uptrend is occurring.
-        movingAveragesUptrending = dataPoint.ema200 < dataPoint.ema100 && dataPoint.ema100 < dataPoint.ema50 && dataPoint.ema50 < dataPoint.sma13;
+        if (configuration.ema200 && configuration.ema100) {
+            // Determine if a downtrend is occurring.
+            putConditions.push(dataPoint.ema200 > dataPoint.ema100);
+
+            // Determine if an uptrend is occurring.
+            callConditions.push(dataPoint.ema200 < dataPoint.ema100);
+        }
+        if (configuration.ema100 && configuration.ema50) {
+            // Determine if a downtrend is occurring.
+            putConditions.push(dataPoint.ema100 > dataPoint.ema50);
+
+            // Determine if an uptrend is occurring.
+            callConditions.push(dataPoint.ema100 < dataPoint.ema50);
+        }
+        if (configuration.ema50 && configuration.sma13) {
+            // Determine if a downtrend is occurring.
+            putConditions.push(dataPoint.ema50 > dataPoint.sma13);
+
+            // Determine if an uptrend is occurring.
+            callConditions.push(dataPoint.ema50 < dataPoint.sma13);
+        }
+        if (configuration.ema50 && configuration.ema13) {
+            // Determine if a downtrend is occurring.
+            putConditions.push(dataPoint.ema50 > dataPoint.ema13);
+
+            // Determine if an uptrend is occurring.
+            callConditions.push(dataPoint.ema50 < dataPoint.ema13);
+        }
 
         if (configuration.rsi) {
             // Determine if RSI is above the overbought line.
-            rsiOverbought = dataPoint.rsi5 && dataPoint.rsi5 >= configuration.rsi.overbought;
+            putConditions.push(dataPoint[configuration.rsi.rsi] && dataPoint[configuration.rsi.rsi] >= configuration.rsi.overbought);
 
             // Determine if RSI is below the oversold line.
-            rsiOversold = dataPoint.rsi5 && dataPoint.rsi5 <= configuration.rsi.oversold;
+            callConditions.push(dataPoint[configuration.rsi.rsi] && dataPoint[configuration.rsi.rsi] <= configuration.rsi.oversold);
         }
 
-        // Determine if the upper regression bound was breached by the high.
-        regressionUpperBoundBreached = dataPoint.high >= dataPoint.prChannelUpper250;
+        if (configuration.prChannel) {
+            // Determine if the upper regression bound was breached by the high.
+            putConditions.push(dataPoint.high >= dataPoint[configuration.prChannel.upper]);
 
-        // Determine if the lower regression bound was breached by the low.
-        regressionLowerBoundBreached = dataPoint.low <= dataPoint.prChannelLower250;
+            // Determine if the lower regression bound was breached by the low.
+            callConditions.push(dataPoint.low <= dataPoint[configuration.prChannel.lower]);
+        }
 
-        longRegressionUptrending = previousDataPoint && dataPoint.prChannel600 > previousDataPoint.prChannel600;
-        longRegressionDowntrending = previousDataPoint && dataPoint.prChannel600 < previousDataPoint.prChannel600;
+        if (configuration.trendPrChannel) {
+            // Determine if a long-term downtrend is occurring.
+            putConditions.push(previousDataPoint && dataPoint[configuration.trendPrChannel.regression] < previousDataPoint[configuration.trendPrChannel.regression]);
+
+            // Determine if a long-term uptrand is occurring.
+            callConditions.push(previousDataPoint && dataPoint[configuration.trendPrChannel.regression] > previousDataPoint[configuration.trendPrChannel.regression]);
+        }
 
         // Determine if there is a significant gap (> 60 seconds) between the current timestamp and the previous timestamp.
-        timeGapPresent = previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 60 * 1000;
+        putConditions.push(previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 60 * 1000);
+        callConditions.push(previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 60 * 1000);
 
-        // Determine whether to buy (CALL).
-        if (movingAveragesUptrending && rsiOversold && regressionLowerBoundBreached && !timeGapPresent) {
-            callNextTick = true;
-        }
+        // Only do a PUT next tick if all necessary conditions for this strategy pass.
+        putNextTick = putConditions.length > 0 && _(putConditions).filter(function(condition) {
+            return condition === false;
+        }).length === 0;
 
-        // Determine whether to buy (PUT).
-        if (movingAveragesDowntrending && rsiOverbought && regressionUpperBoundBreached  && !timeGapPresent) {
-            putNextTick = true;
-        }
-
-        // Determine and display the lowest profit/loss.
-        if (self.getProfitLoss() < lowestProfitLoss) {
-            lowestProfitLoss = self.getProfitLoss();
-        }
-
-        if (self.getProfitLoss() !== previousBalance) {
-            // console.log('BALANCE: $' + self.getProfitLoss());
-            // console.log();
-        }
-        previousBalance = self.getProfitLoss();
+        // Only do a CALL next tick if all necessary conditions for this strategy pass.
+        callNextTick = callConditions.length > 0 && _(callConditions).filter(function(condition) {
+            return condition === false;
+        }).length === 0;
 
         // Track the current data point as the previous data point for the next tick.
         previousDataPoint = dataPoint;
     });
 
-    // Determine the max consecutive losses.
-    this.positions.forEach(function(position) {
-        position.getProfitLoss() === 0 ? consecutiveLosses++ : consecutiveLosses = 0;
-
-        if (consecutiveLosses > maxConsecutiveLosses) {
-            maxConsecutiveLosses = consecutiveLosses;
-        }
-    });
-
-    results = {
-        profitLoss: self.getProfitLoss(),
-        winRate: self.getWinRate(),
-        wins: self.getWinCount(),
-        losses: self.getLoseCount(),
-        maxConsecutiveLosses: maxConsecutiveLosses,
-        lowestProfitLoss: lowestProfitLoss
-    };
-
-    return results;
+    return this.getResults();
 };
 
 module.exports = Reversals;

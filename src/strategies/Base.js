@@ -82,6 +82,39 @@ Base.prototype.backtest = function(data, investment, profitability) {
     throw 'backtest() not implemented.';
 };
 
+Base.prototype.getResults = function() {
+    var consecutiveLosses = 0;
+    var maximumConsecutiveLosses = 0;
+    var minimumProfitLoss = 99999.0;
+
+    // Determine the max consecutive losses.
+    this.positions.forEach(function(position) {
+        var positionProfitLoss = position.getProfitLoss();
+
+        // Track minimum profit/loss.
+        if (positionProfitLoss < minimumProfitLoss) {
+            minimumProfitLoss = positionProfitLoss;
+        }
+
+        // Increment consecutive losses if the position was a loss.
+        profitLossposition.getProfitLoss() === 0 ? consecutiveLosses++ : consecutiveLosses = 0;
+
+        // Track the maximum consecutive losses.
+        if (consecutiveLosses > maximumConsecutiveLosses) {
+            maximumConsecutiveLosses = consecutiveLosses;
+        }
+    });
+
+    return {
+        profitLoss: this.getProfitLoss(),
+        winCount: this.getWinCount(),
+        loseCount: this.getLoseCount(),
+        winRate: this.getWinRate(),
+        maximumConsecutiveLosses: maximumConsecutiveLosses,
+        minimumProfitLoss: minimumProfitLoss
+    };
+};
+
 Base.prototype.addPosition = function(position) {
     this.positions.push(position);
 

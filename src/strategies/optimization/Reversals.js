@@ -20,8 +20,8 @@ Reversals.prototype.backtest = function(configuration, data, investment, profita
     var rsiOversold = false;
     var regressionUpperBoundBreached = false;
     var regressionLowerBoundBreached = false;
-    // var longRegressionDowntrending = false;
-    // var longRegressionUptrending = false;
+    var longRegressionDowntrending = false;
+    var longRegressionUptrending = false;
     var timeGapPresent = false;
     var previousDataPoint;
     var previousBalance = 0;
@@ -48,16 +48,18 @@ Reversals.prototype.backtest = function(configuration, data, investment, profita
         }
 
         // Determine if a downtrend is occurring.
-        movingAveragesDowntrending = dataPoint.ema50 > dataPoint.sma13;
+        movingAveragesDowntrending = dataPoint.ema200 > dataPoint.ema100 && dataPoint.ema100 > dataPoint.ema50 && dataPoint.ema50 > dataPoint.sma13;
 
         // Determine if an uptrend is occurring.
-        movingAveragesUptrending = dataPoint.ema50 < dataPoint.sma13;
+        movingAveragesUptrending = dataPoint.ema200 < dataPoint.ema100 && dataPoint.ema100 < dataPoint.ema50 && dataPoint.ema50 < dataPoint.sma13;
 
-        // Determine if RSI is above the overbought line.
-        rsiOverbought = dataPoint.rsi5 && dataPoint.rsi5 >= 80;
+        if (configuration.rsi) {
+            // Determine if RSI is above the overbought line.
+            rsiOverbought = dataPoint.rsi5 && dataPoint.rsi5 >= configuration.rsi.overbought;
 
-        // Determine if RSI is below the oversold line.
-        rsiOversold = dataPoint.rsi5 && dataPoint.rsi5 <= 20;
+            // Determine if RSI is below the oversold line.
+            rsiOversold = dataPoint.rsi5 && dataPoint.rsi5 <= configuration.rsi.oversold;
+        }
 
         // Determine if the upper regression bound was breached by the high.
         regressionUpperBoundBreached = dataPoint.high >= dataPoint.prChannelUpper250;
@@ -65,8 +67,8 @@ Reversals.prototype.backtest = function(configuration, data, investment, profita
         // Determine if the lower regression bound was breached by the low.
         regressionLowerBoundBreached = dataPoint.low <= dataPoint.prChannelLower250;
 
-        // longRegressionUptrending = previousDataPoint && dataPoint.prChannel600 > previousDataPoint.prChannel600;
-        // longRegressionDowntrending = previousDataPoint && dataPoint.prChannel600 < previousDataPoint.prChannel600;
+        longRegressionUptrending = previousDataPoint && dataPoint.prChannel600 > previousDataPoint.prChannel600;
+        longRegressionDowntrending = previousDataPoint && dataPoint.prChannel600 < previousDataPoint.prChannel600;
 
         // Determine if there is a significant gap (> 60 seconds) between the current timestamp and the previous timestamp.
         timeGapPresent = previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 60 * 1000;

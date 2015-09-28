@@ -89,8 +89,11 @@ PolynomialRegressionChannel.prototype.tick = function() {
     }
 
     returnValue[self.getOutputMapping('regression')] = regressionValue;
-    returnValue[self.getOutputMapping('upper')] = upperValue;
-    returnValue[self.getOutputMapping('lower')] = lowerValue;
+
+    if (self.getInput('deviations')) {
+        returnValue[self.getOutputMapping('upper')] = upperValue;
+        returnValue[self.getOutputMapping('lower')] = lowerValue;
+    }
 
     return returnValue;
 };

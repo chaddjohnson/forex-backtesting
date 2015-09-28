@@ -51,6 +51,8 @@ Base.prototype.buildConfigurations = function(combinations) {
         }
     }
 
+    // TODO Don't include if null.
+
     return configurations;
 };
 

@@ -79,7 +79,7 @@ gulp.task('backtest', function(done) {
 gulp.task('optimize', function(done) {
     function showUsageInfo() {
         console.log('Example usage:\n');
-        console.log('gulp optimize --symbols AUDCAD,AUDJPY,AUDNZD --parser metatrader --data-directory ./data/metatrader/three-year --optimizer Reversals --investment 1000 --profitability 0.7\n');
+        console.log('gulp optimize --symbol EURUSD --parser metatrader --data-directory ./data/metatrader/three-year --optimizer Reversals --investment 1000 --profitability 0.7\n');
     }
 
     function handleInputError(message) {
@@ -92,12 +92,11 @@ gulp.task('optimize', function(done) {
 
     var strategyOptimizerFn;
     var dataParser;
-    var symbols = [];
     var profitability = 0.0;
 
     // Find the symbol based on the command line argument.
-    if (!argv.symbols) {
-        handleInputError('No symbols provided');
+    if (!argv.symbol) {
+        handleInputError('No symbol provided');
     }
 
     // Find the raw data parser based on command line argument.
@@ -127,19 +126,14 @@ gulp.task('optimize', function(done) {
         handleInputError('No profitability provided');
     }
 
-    symbols = argv.symbols.split(',');
-
     try {
         // Parse the raw data file.
         dataParser.parse(argv.symbol, argv.data).then(function(parsedData) {
-            // Iterate over symbols.
-            symbols.forEach(function(symbol) {
-                // Prepare the strategy.
-                var strategyOptimizer = new strategyOptimizerFn();
+            // Prepare the strategy.
+            var strategyOptimizer = new strategyOptimizerFn();
 
-                // Backtest the strategy against the parsed data.
-                strategyOptimizer.optimize(parsedData.slice(), investment, profitability);
-            });
+            // Backtest the strategy against the parsed data.
+            strategyOptimizer.optimize(parsedData, investment, profitability);
 
             done();
         });

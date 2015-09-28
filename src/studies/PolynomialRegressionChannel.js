@@ -66,7 +66,7 @@ PolynomialRegressionChannel.prototype.tick = function() {
 
     // Calculate the standard deviations of the regression. If there is no regression data
     // available, then skip
-    if (dataSegment[dataSegment.length - 2][self.getOutputMapping('regression')]) {
+    if (self.getInput('deviations') && dataSegment[dataSegment.length - 2][self.getOutputMapping('regression')]) {
         // Build an array of regression data using only points that actually have regression data.
         dataSegment.forEach(function(dataPoint) {
             var dataPointRegression = dataPoint[self.getOutputMapping('regression')];

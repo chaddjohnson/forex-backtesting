@@ -1,72 +1,16 @@
-var studies = require('../studies');
 var Base = require('./base');
 var Call = require('../positions/Call');
 var Put = require('../positions/Put');
 
-// Define studies to use.
-var studyDefinitions = [
-    {
-        study: studies.Ema,
-        inputs: {
-            length: 50
-        },
-        outputMap: {
-            ema: 'ema50'
-        }
-    },{
-        study: studies.Sma,
-        inputs: {
-            length: 13
-        },
-        outputMap: {
-            sma: 'sma13'
-        }
-    },{
-        study: studies.Rsi,
-        inputs: {
-            length: 5
-        },
-        outputMap: {
-            rsi: 'rsi5'
-        }
-    },{
-        study: studies.PolynomialRegressionChannel,
-        inputs: {
-            length: 250,
-            degree: 4,
-            deviations: 1.95
-        },
-        outputMap: {
-            regression: 'prChannel250',
-            upper: 'prChannelUpper250',
-            lower: 'prChannelLower250'
-        }
-    // },{
-    //     study: studies.PolynomialRegressionChannel,
-    //     inputs: {
-    //         length: 600,
-    //         degree: 4,
-    //         deviations: 1.95
-    //     },
-    //     outputMap: {
-    //         regression: 'prChannel600',
-    //         upper: 'prChannelUpper600',
-    //         lower: 'prChannelLower600'
-    //     }
-    }
-];
-
 function Reversals() {
     this.constructor = Reversals;
     Base.call(this);
-
-    this.prepareStudies(studyDefinitions);
 }
 
 // Create a copy of the Base "class" prototype for use in this "class."
 Reversals.prototype = Object.create(Base.prototype);
 
-Reversals.prototype.backtest = function(data, investment, profitability) {
+Reversals.prototype.backtest = function(configuration, data, investment, profitability) {
     var self = this;
     var callNextTick = false;
     var putNextTick = false;
@@ -84,6 +28,7 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
     var consecutiveLosses = 0;
     var maxConsecutiveLosses = 0;
     var lowestProfitLoss = 99999.0;
+    var results = {};
 
     // For every data point...
     data.forEach(function(dataPoint) {
@@ -151,13 +96,6 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
         previousDataPoint = dataPoint;
     });
 
-    // Show the results.
-    console.log('SYMBOL:\t\t' + previousDataPoint.symbol);
-    console.log('PROFIT/LOSS:\t$' + self.getProfitLoss());
-    console.log('WIN RATE:\t' + self.getWinRate());
-    console.log('WINS:\t\t' + self.getWinCount());
-    console.log('LOSSES:\t\t' + self.getLoseCount());
-
     // Determine the max consecutive losses.
     this.positions.forEach(function(position) {
         position.getProfitLoss() === 0 ? consecutiveLosses++ : consecutiveLosses = 0;
@@ -167,11 +105,16 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
         }
     });
 
-    console.log('MAX CONSECUTIVE LOSSES:\t' + maxConsecutiveLosses);
-    console.log('LOWEST PROFIT/LOSS:\t$' + lowestProfitLoss);
+    results = {
+        profitLoss: self.getProfitLoss(),
+        winRate: self.getWinRate(),
+        wins: self.getWinCount(),
+        losses: self.getLoseCount(),
+        maxConsecutiveLosses: maxConsecutiveLosses,
+        lowestProfitLoss: lowestProfitLoss
+    };
 
-    // Save the output to a file.
-    this.saveOutput();
+    return results;
 };
 
 module.exports = Reversals;

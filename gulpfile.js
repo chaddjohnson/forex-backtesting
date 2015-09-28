@@ -19,7 +19,6 @@ gulp.task('backtest', function(done) {
     var strategies = require('./src/strategies');
 
     var strategyFn;
-    var strategy;
     var dataParser;
     var profitability = 0.0;
 
@@ -59,7 +58,7 @@ gulp.task('backtest', function(done) {
         // Parse the raw data file.
         dataParser.parse(argv.symbol, argv.data).then(function(parsedData) {
             // Prepare the strategy.
-            strategy = new strategyFn();
+            var strategy = new strategyFn();
 
             if (argv.out) {
                 strategy.setDataOutputFilePath(path.join(__dirname, argv.out));
@@ -67,6 +66,80 @@ gulp.task('backtest', function(done) {
 
             // Backtest the strategy against the parsed data.
             strategy.backtest(parsedData, investment, profitability);
+
+            done();
+        });
+    }
+    catch (error) {
+        console.error(error.message || error);
+        process.exit(1);
+    }
+});
+
+gulp.task('optimize', function(done) {
+    function showUsageInfo() {
+        console.log('Example usage:\n');
+        console.log('gulp optimize --symbols AUDCAD,AUDJPY,AUDNZD --parser metatrader --data-directory ./data/metatrader/three-year --optimizer Reversals --investment 1000 --profitability 0.7\n');
+    }
+
+    function handleInputError(message) {
+        gutil.log(gutil.colors.red(message));
+        showUsageInfo();
+        process.exit(1);
+    }
+
+    var dataParsers = require('./src/dataParsers');
+
+    var strategyOptimizerFn;
+    var dataParser;
+    var symbols = [];
+    var profitability = 0.0;
+
+    // Find the symbol based on the command line argument.
+    if (!argv.symbols) {
+        handleInputError('No symbols provided');
+    }
+
+    // Find the raw data parser based on command line argument.
+    dataParser = dataParsers[argv.parser]
+    if (!dataParser) {
+        handleInputError('Invalid data parser');
+    }
+
+    // Find the data directory based on the command line argument.
+    if (!argv.dataDirectory) {
+        handleInputError('No data directory provided');
+    }
+
+    // Find the strategy based on the command line argument.
+    strategyOptimizerFn = optimizers[argv.strategyOptimizer]
+    if (!strategyOptimizerFn) {
+        handleInputError('Invalid strategy optimizer');
+    }
+
+    investment = parseFloat(argv.investment)
+    if (!investment) {
+        handleInputError('Invalid investment');
+    }
+
+    profitability = parseFloat(argv.profitability)
+    if (!profitability) {
+        handleInputError('No profitability provided');
+    }
+
+    symbols = argv.symbols.split(',');
+
+    try {
+        // Parse the raw data file.
+        dataParser.parse(argv.symbol, argv.data).then(function(parsedData) {
+            // Iterate over symbols.
+            symbols.forEach(function(symbol) {
+                // Prepare the strategy.
+                var strategyOptimizer = new strategyOptimizerFn();
+
+                // Backtest the strategy against the parsed data.
+                strategyOptimizer.optimize(parsedData.slice(), investment, profitability);
+            });
 
             done();
         });

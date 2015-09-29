@@ -3,12 +3,6 @@ var gutil = require('gulp-util');
 var argv = require('yargs').argv;
 var path = require('path');
 
-process.on('uncaughtException', function(error) {
-    console.error((new Date).toUTCString() + ' uncaughtException:', error.message);
-    console.error(error.stack);
-    process.exit(1);
-});
-
 gulp.task('backtest', function(done) {
     function showUsageInfo() {
         console.log('Example usage:\n');
@@ -136,7 +130,7 @@ gulp.task('optimize', function(done) {
         // Parse the raw data file.
         dataParser.parse(argv.symbol, argv.data).then(function(parsedData) {
             // Prepare the strategy.
-            var optimizer = new optimizerFn(symbol);
+            var optimizer = new optimizerFn(argv.symbol);
 
             // Backtest the strategy against the parsed data.
             optimizer.optimize(parsedData, investment, profitability);

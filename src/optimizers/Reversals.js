@@ -254,7 +254,7 @@ var configurationOptions = {
 
 function Reversals(symbol) {
     this.constructor = Reversals;
-    Base.call(this, strategies.configurable.Reversals, symbol);
+    Base.call(this, strategies.optimization.Reversals, symbol);
 
     // Prepare studies for use.
     this.prepareStudies(studyDefinitions);

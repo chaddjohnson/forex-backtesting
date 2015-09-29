@@ -96,8 +96,9 @@ gulp.task('optimize', function(done) {
 
     var db = require('./db');
     var dataParsers = require('./src/dataParsers');
+    var optimizers = require('./src/optimizers');
 
-    var strategyOptimizerFn;
+    var optimizerFn;
     var dataParser;
     var profitability = 0.0;
 
@@ -113,8 +114,8 @@ gulp.task('optimize', function(done) {
     }
 
     // Find the strategy based on the command line argument.
-    strategyOptimizerFn = optimizers[argv.strategyOptimizer]
-    if (!strategyOptimizerFn) {
+    optimizerFn = optimizers[argv.optimizer]
+    if (!optimizerFn) {
         handleInputError('Invalid strategy optimizer');
     }
 
@@ -135,10 +136,10 @@ gulp.task('optimize', function(done) {
         // Parse the raw data file.
         dataParser.parse(argv.symbol, argv.data).then(function(parsedData) {
             // Prepare the strategy.
-            var strategyOptimizer = new strategyOptimizerFn(symbol);
+            var optimizer = new optimizerFn(symbol);
 
             // Backtest the strategy against the parsed data.
-            strategyOptimizer.optimize(parsedData, investment, profitability);
+            optimizer.optimize(parsedData, investment, profitability);
 
             done();
         });

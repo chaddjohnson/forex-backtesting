@@ -1,6 +1,6 @@
 var _ = require('underscore');
 var async = require('async');
-var Optimization = require('./models/optimization');
+var Optimization = require('../models/optimization');
 
 function Base(strategyFn, symbol) {
     this.strategyFn = strategyFn;

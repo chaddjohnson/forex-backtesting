@@ -1,7 +1,7 @@
 var _ = require('underscore');
 var Base = require('./base');
-var Call = require('../positions/Call');
-var Put = require('../positions/Put');
+var Call = require('../../positions/Call');
+var Put = require('../../positions/Put');
 
 function Reversals() {
     this.constructor = Reversals;

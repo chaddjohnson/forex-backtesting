@@ -32,7 +32,7 @@ Base.prototype.prepareStudyData = function(data) {
     process.stdout.write('Preparing data for studies...');
     data.forEach(function(dataPoint, index) {
         process.stdout.cursorTo(29);
-        process.stdout.write((index / dataPointCount).toFixed(4) + '%');
+        process.stdout.write((index / dataPointCount).toFixed(10) + '%');
 
         // Add the data point to the cumulative data.
         self.cumulativeData.push(dataPoint);
@@ -105,7 +105,7 @@ Base.prototype.optimize = function(configurations, data, investment, profitabili
     process.stdout.write('Optimizing...\n');
     async.forEachOf(configurations, function(configuration, index, callback) {
         process.stdout.cursorTo(13);
-        process.stdout.write((index / configurationsCount).toFixed(4) + '%');
+        process.stdout.write((index / configurationsCount).toFixed(10) + '%');
 
         // Instantiate a fresh strategy.
         var strategy = new self.strategyFn();

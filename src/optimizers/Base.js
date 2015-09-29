@@ -22,12 +22,9 @@ Base.prototype.prepareStudies = function(studyDefinitions) {
 
 Base.prototype.prepareStudyData = function(data) {
     var self = this;
-    var previousDataPoint;
 
     // For every data point...
     data.forEach(function(dataPoint) {
-        previousDataPoint = self.cumulativeData[self.cumulativeData.length - 1];
-
         // Add the data point to the cumulative data.
         self.cumulativeData.push(dataPoint);
 
@@ -54,6 +51,8 @@ Base.prototype.prepareStudyData = function(data) {
             }
         });
     });
+
+    return self.cumulativeData;
 };
 
 Base.prototype.buildConfigurations = function(options, optionIndex, results, current) {

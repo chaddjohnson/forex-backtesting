@@ -25,12 +25,17 @@ Base.prototype.prepareStudies = function(studyDefinitions) {
 
 Base.prototype.prepareStudyData = function(data) {
     var self = this;
+    var progress = 0.0;
+    var dataPointCount = data.length;
 
     // For every data point...
     process.stdout.write('Preparing data for studies...');
-    data.forEach(function(dataPoint) {
+    data.forEach(function(dataPoint, index) {
         // Add the data point to the cumulative data.
         self.cumulativeData.push(dataPoint);
+
+        process.stdout.cursorTo(29);
+        process.stdout.write((index / dataPointCount).toFixed(4) + '%...');
 
         // Iterate over each study...
         self.studies.forEach(function(study) {
@@ -86,7 +91,7 @@ Base.prototype.buildConfigurations = function(options, optionIndex, results, cur
     }
 
     if (!optionIndex) {
-        process.stdout.write('done');
+        process.stdout.write('done\n');
     }
 
     return results;

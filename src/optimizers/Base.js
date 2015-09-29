@@ -13,10 +13,14 @@ Base.prototype.prepareStudies = function(studyDefinitions) {
     var self = this;
 
     // Iterate over each study definition...
+    process.stdout.write('Preparing studies...\n');
     studyDefinitions.forEach(function(studyDefinition) {
         // Instantiate the study, and add it to the list of studies for this strategy.
+        process.stdout.write('    ' + studyDefinition.study.name + '...\n');
         self.studies.push(new studyDefinition.study(studyDefinition.inputs, studyDefinition.outputMap));
+        process.stdout.write('    done\n');
     });
+    process.stdout.write('    done\n');
 };
 
 
@@ -24,6 +28,7 @@ Base.prototype.prepareStudyData = function(data) {
     var self = this;
 
     // For every data point...
+    process.stdout.write('Preparing data for studies...');
     data.forEach(function(dataPoint) {
         // Add the data point to the cumulative data.
         self.cumulativeData.push(dataPoint);
@@ -51,6 +56,7 @@ Base.prototype.prepareStudyData = function(data) {
             }
         });
     });
+    process.stdout.write('done\n');
 
     return self.cumulativeData;
 };
@@ -59,6 +65,8 @@ Base.prototype.buildConfigurations = function(options, optionIndex, results, cur
     optionIndex = optionIndex || 0;
     results = results || [];
     current = current || {};
+
+    process.stdout.write('Building configurations...');
 
     var allKeys = Object.keys(options);
     var optionKey = allKeys[optionIndex];
@@ -76,12 +84,15 @@ Base.prototype.buildConfigurations = function(options, optionIndex, results, cur
         }
     }
 
+    process.stdout.write('done\n');
+
     return results;
 };
 
 Base.prototype.optimize = function(configurations, data, investment, profitability) {
     var self = this;
 
+    process.stdout.write('Optimizing...\n');
     async.each(configurations, function(configuration, callback) {
         // Instantiate a fresh strategy.
         var strategy = new self.strategyFn();
@@ -103,6 +114,7 @@ Base.prototype.optimize = function(configurations, data, investment, profitabili
             minimumProfitLoss: results.minimumProfitLoss
         }, callback);
     });
+    process.stdout.write('    done');
 };
 
 module.exports = Base;

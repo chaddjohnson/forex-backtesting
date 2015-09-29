@@ -16,11 +16,10 @@ Base.prototype.prepareStudies = function(studyDefinitions) {
     process.stdout.write('Preparing studies...\n');
     studyDefinitions.forEach(function(studyDefinition) {
         // Instantiate the study, and add it to the list of studies for this strategy.
-        process.stdout.write('    ' + studyDefinition.study.name + '...\n');
+        process.stdout.write('    ' + studyDefinition.study.name + '...');
         self.studies.push(new studyDefinition.study(studyDefinition.inputs, studyDefinition.outputMap));
-        process.stdout.write('    done\n');
+        process.stdout.write('done\n');
     });
-    process.stdout.write('    done\n');
 };
 
 
@@ -62,11 +61,13 @@ Base.prototype.prepareStudyData = function(data) {
 };
 
 Base.prototype.buildConfigurations = function(options, optionIndex, results, current) {
+    if (!optionIndex) {
+        process.stdout.write('Building configurations...');
+    }
+
     optionIndex = optionIndex || 0;
     results = results || [];
     current = current || {};
-
-    process.stdout.write('Building configurations...');
 
     var allKeys = Object.keys(options);
     var optionKey = allKeys[optionIndex];
@@ -84,7 +85,9 @@ Base.prototype.buildConfigurations = function(options, optionIndex, results, cur
         }
     }
 
-    process.stdout.write('done\n');
+    if (!optionIndex) {
+        process.stdout.write('done');
+    }
 
     return results;
 };

@@ -75,11 +75,20 @@ Reversals.prototype.backtest = function(configuration, data, investment, profita
         }
 
         if (configuration.prChannel) {
-            // Determine if the upper regression bound was breached by the high.
-            putConditions.push(dataPoint.high >= dataPoint[configuration.prChannel.upper]);
+            if (configuration.prChannel.close) {
+                // Determine if the upper regression bound was breached by the close price.
+                putConditions.push(dataPoint.close >= dataPoint[configuration.prChannel.upper]);
 
-            // Determine if the lower regression bound was breached by the low.
-            callConditions.push(dataPoint.low <= dataPoint[configuration.prChannel.lower]);
+                // Determine if the lower regression bound was breached by the close price.
+                callConditions.push(dataPoint.close <= dataPoint[configuration.prChannel.lower]);
+            }
+            else {
+                // Determine if the upper regression bound was breached by the high price.
+                putConditions.push(dataPoint.high >= dataPoint[configuration.prChannel.upper]);
+
+                // Determine if the lower regression bound was breached by the low price.
+                callConditions.push(dataPoint.low <= dataPoint[configuration.prChannel.lower]);
+            }
         }
 
         if (configuration.trendPrChannel) {

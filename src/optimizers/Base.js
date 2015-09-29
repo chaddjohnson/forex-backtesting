@@ -1,3 +1,4 @@
+var _ = require('underscore');
 var async = require('async');
 var Optimization = require('./models/optimization');
 
@@ -5,6 +6,7 @@ function Base(strategyFn, symbol) {
     this.strategyFn = strategyFn;
     this.symbol = symbol;
     this.studies = [];
+    this.cumulativeData = [];
 }
 
 Base.prototype.prepareStudies = function(studyDefinitions) {
@@ -19,46 +21,63 @@ Base.prototype.prepareStudies = function(studyDefinitions) {
 
 
 Base.prototype.prepareStudyData = function(data) {
-    // TODO
-};
+    var self = this;
+    var previousDataPoint;
 
-Base.prototype.buildConfigurations = function(combinations) {
-    var configurations = [];
-    var configuration = {};
-    var optionKeys = Object.keys(options);
-    var optionKeysCount = optionKeys.length;
-    var optionValues;
-    var optionValuesCount = optionValues.length;
-    var innerOptions;
-    var innerOptionsCount = innerOptions.length;
-    var i = 0;
-    var j = 0;
-    var k = 0;
-    var l = 0;
+    // For every data point...
+    data.forEach(function(dataPoint) {
+        previousDataPoint = self.cumulativeData[self.cumulativeData.length - 1];
 
-    // Iterate over the options.
-    for (i = 0; i < optionKeysCount; i++) {
-        // Get the values for the current option.
-        optionValues = options[optionKeys[i]];
+        // Add the data point to the cumulative data.
+        self.cumulativeData.push(dataPoint);
 
-        // Iterate through values for the current configuration...
-        for (j = 0; j < optionValuesCount; j++) {
-            // Iterate through the options after the current one.
-            for (k = i; k < ; k++) {
-                innerOptions = ...;  // TODO
+        // Iterate over each study...
+        self.studies.forEach(function(study) {
+            var studyProperty = '';
+            var studyTickValue = 0.0;
+            var studyOutputs = study.getOutputMappings();
 
-                for (l = 0; l < innerOptionsCount; l++) {
-                    configuration = {};
-                    configuration[optionKeys[i]] = optionValues[j];
-                    configuration[...] = ...;  // TODO
+            // Update the data for the strategy.
+            study.setData(self.cumulativeData);
 
-                    configurations.push(configuration);
+            studyTickValues = study.tick();
+
+            // Augment the last data point with the data the study generates.
+            for (studyProperty in studyOutputs) {
+                if (studyTickValues && typeof studyTickValues[studyOutputs[studyProperty]] === 'number') {
+                    // Include output in main output, and limit decimal precision without rounding.
+                    dataPoint[studyOutputs[studyProperty]] = studyTickValues[studyOutputs[studyProperty]];
+                }
+                else {
+                    dataPoint[studyOutputs[studyProperty]] = '';
                 }
             }
+        });
+    });
+};
+
+Base.prototype.buildConfigurations = function(options, optionIndex, results, current) {
+    optionIndex = optionIndex || 0;
+    results = results || [];
+    current = current || {};
+
+    var allKeys = Object.keys(options);
+    var optionKey = allKeys[optionIndex];
+    var vals = options[optionKey];
+    var i = 0;
+
+    for (i = 0; i < vals.length; i++) {
+        current[optionKey] = vals[i];
+
+        if (optionIndex + 1 < allKeys.length) {
+            this.buildConfigurations(options, optionIndex + 1, results, current);
+        }
+        else {
+            results.push(_(current).clone());
         }
     }
 
-    return configurations;
+    return results;
 };
 
 Base.prototype.optimize = function(configurations, data, investment, profitability) {

@@ -21,7 +21,6 @@ Reversals.prototype.backtest = function(configuration, data, investment, profita
     var previousDataPoint;
 
     // For every data point...
-    process.stdout.write('Backtesting Reversals...');
     data.forEach(function(dataPoint) {
         callConditions = [];
         putConditions = [];
@@ -111,7 +110,6 @@ Reversals.prototype.backtest = function(configuration, data, investment, profita
         // Track the current data point as the previous data point for the next tick.
         previousDataPoint = dataPoint;
     });
-    process.stdout.write('done');
 
     return this.getResults();
 };

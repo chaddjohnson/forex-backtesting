@@ -1,7 +1,7 @@
 {
   "name": "forex-trading",
   "dependencies": {
-    "async": "~0.9.0",
+    "async": "^1.4.2",
     "csv": "~0.4.1",
     "event-stream": "~3.2.1",
     "mongoose": "^4.1.8",

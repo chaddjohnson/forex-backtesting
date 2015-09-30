@@ -21,6 +21,12 @@ module.exports.parse = function(symbol, filePath) {
             stream.pause();
 
             (function() {
+                // Ignore blank lines.
+                if (!line) {
+                    stream.resume();
+                    return;
+                }
+
                 transactionData = line.split(',');
                 volume = parseFloat(transactionData[6]);
 

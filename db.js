@@ -9,3 +9,7 @@ module.exports.initialize = function() {
     });
     return mongoose.connection;
 };
+
+module.exports.disconnect = function() {
+    mongoose.disconnect();
+};

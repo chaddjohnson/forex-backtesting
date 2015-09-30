@@ -24,6 +24,12 @@ module.exports.parse = function(symbol, filePath) {
             (function() {
                 index++;
 
+                // Ignore blank lines.
+                if (!line) {
+                    stream.resume();
+                    return;
+                }
+
                 // Skip the first line (being header data).
                 if (index === 0) {
                     stream.resume();

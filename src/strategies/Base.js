@@ -97,7 +97,7 @@ Base.prototype.getResults = function() {
         }
 
         // Increment consecutive losses if the position was a loss.
-        profitLossposition.getProfitLoss() === 0 ? consecutiveLosses++ : consecutiveLosses = 0;
+        positionProfitLoss === 0 ? consecutiveLosses++ : consecutiveLosses = 0;
 
         // Track the maximum consecutive losses.
         if (consecutiveLosses > maximumConsecutiveLosses) {

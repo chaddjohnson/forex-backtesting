@@ -31,8 +31,9 @@ Base.prototype.prepareStudyData = function(data) {
     // For every data point...
     process.stdout.write('Preparing data for studies...');
     data.forEach(function(dataPoint, index) {
+        percentage = ((index / dataPointCount) * 100).toFixed(5);
         process.stdout.cursorTo(29);
-        process.stdout.write((index / dataPointCount).toFixed(10) + '%');
+        process.stdout.write(percentage + '%');
 
         // Add the data point to the cumulative data.
         self.cumulativeData.push(dataPoint);
@@ -60,7 +61,8 @@ Base.prototype.prepareStudyData = function(data) {
             }
         });
     });
-    process.stdout.write('...done\n');
+    process.stdout.cursorTo(29);
+    process.stdout.write((100).toFixed(5) + '%\n');
 
     return self.cumulativeData;
 };
@@ -97,15 +99,16 @@ Base.prototype.buildConfigurations = function(options, optionIndex, results, cur
     return results;
 };
 
-Base.prototype.optimize = function(configurations, data, investment, profitability) {
+Base.prototype.optimize = function(configurations, data, investment, profitability, done) {
     var self = this;
     var progress = 0.0;
-    var configurationsCount = data.length;
+    var configurationsCount = configurations.length;
 
-    process.stdout.write('Optimizing...\n');
+    process.stdout.write('Optimizing...');
     async.forEachOf(configurations, function(configuration, index, callback) {
+        var percentage = ((index / configurationsCount) * 100).toFixed(5);
         process.stdout.cursorTo(13);
-        process.stdout.write((index / configurationsCount).toFixed(10) + '%');
+        process.stdout.write(percentage + '%');
 
         // Instantiate a fresh strategy.
         var strategy = new self.strategyFn();
@@ -125,9 +128,17 @@ Base.prototype.optimize = function(configurations, data, investment, profitabili
             winRate: results.winRate,
             maximumConsecutiveLosses: results.maximumConsecutiveLosses,
             minimumProfitLoss: results.minimumProfitLoss
-        }, callback);
+        }, function(error) {
+            callback(error);
+        });
+    }, function(error) {
+        if (error) {
+            console.log(error.message || error);
+        }
+        done();
     });
-    process.stdout.write('...done\n');
+    process.stdout.cursorTo(13);
+    process.stdout.write((100).toFixed(5) + '%\n');
 };
 
 module.exports = Base;

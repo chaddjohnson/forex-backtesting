@@ -133,9 +133,10 @@ gulp.task('optimize', function(done) {
             var optimizer = new optimizerFn(argv.symbol);
 
             // Backtest the strategy against the parsed data.
-            optimizer.optimize(parsedData, investment, profitability);
-
-            done();
+            optimizer.optimize(parsedData, investment, profitability, function() {
+                db.disconnect();
+                done();
+            });
         });
     }
     catch (error) {

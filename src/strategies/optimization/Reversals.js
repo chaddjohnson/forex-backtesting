@@ -94,8 +94,8 @@ Reversals.prototype.backtest = function(configuration, data, investment, profita
         }
 
         // Determine if there is a significant gap (> 60 seconds) between the current timestamp and the previous timestamp.
-        putConditions.push(previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 60 * 1000);
-        callConditions.push(previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 60 * 1000);
+        putConditions.push(previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) === 60 * 1000);
+        callConditions.push(previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) === 60 * 1000);
 
         // Only do a PUT next tick if all necessary conditions for this strategy pass.
         putNextTick = putConditions.length > 0 && _(putConditions).filter(function(condition) {

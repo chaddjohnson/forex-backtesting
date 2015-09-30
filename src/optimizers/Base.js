@@ -117,7 +117,7 @@ Base.prototype.optimize = function(configurations, data, investment, profitabili
         var results = strategy.backtest(configuration, data, investment, profitability);
 
         // Record the results.
-        Optimization.create({
+        var optimization = new Optimization({
             symbol: self.symbol,
             strategyName: strategy.constructor.name,
             configuration: configuration,
@@ -128,7 +128,8 @@ Base.prototype.optimize = function(configurations, data, investment, profitabili
             winRate: results.winRate,
             maximumConsecutiveLosses: results.maximumConsecutiveLosses,
             minimumProfitLoss: results.minimumProfitLoss
-        }, function(error) {
+        });
+        optimization.save(function(error) {
             callback(error);
         });
     }, function(error) {

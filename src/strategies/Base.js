@@ -94,9 +94,9 @@ Base.prototype.getResults = function() {
         balance -= position.getInvestment();
         positionProfitLoss = position.getProfitLoss();
 
-        if (positionProfitLoss > 0 && positionProfitLoss < position.getInvestment()) {
+        if (positionProfitLoss === (position.getInvestment() + (position.getProfitability() * position.getInvestment()))) {
             // Won
-            balance += position.getProfitability();
+            balance += (position.getInvestment() + (position.getProfitability() * position.getInvestment()));
             consecutiveLosses = 0;
         }
         else if (positionProfitLoss === position.getInvestment()) {

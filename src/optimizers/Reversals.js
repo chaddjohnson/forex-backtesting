@@ -251,7 +251,7 @@ var studyDefinitions = [
     {study: studies.PolynomialRegressionChannel, inputs: {length: 600, degree: 2}, outputMap: {regression: 'trendPrChannel600_2'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 600, degree: 3}, outputMap: {regression: 'trendPrChannel600_3'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 600, degree: 4}, outputMap: {regression: 'trendPrChannel600_4'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 650, degree: 2}, outputMap: {regression: 'trendPrChannel650_2'}}
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 650, degree: 2}, outputMap: {regression: 'trendPrChannel650_2'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 650, degree: 3}, outputMap: {regression: 'trendPrChannel650_3'}}
 ];
 
@@ -290,7 +290,7 @@ var configurationOptions = {
         {regression: 'trendPrChannel600_2'},
         {regression: 'trendPrChannel600_3'},
         {regression: 'trendPrChannel600_4'},
-        {regression: 'trendPrChannel650_2'}
+        {regression: 'trendPrChannel650_2'},
         {regression: 'trendPrChannel650_3'}
     ]
 };

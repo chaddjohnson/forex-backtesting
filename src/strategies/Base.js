@@ -86,18 +86,32 @@ Base.prototype.getResults = function() {
     var consecutiveLosses = 0;
     var maximumConsecutiveLosses = 0;
     var minimumProfitLoss = 99999.0;
+    var positionProfitLoss = 0;
+    var balance = 0;
 
     // Determine the max consecutive losses.
     this.positions.forEach(function(position) {
-        var positionProfitLoss = position.getProfitLoss();
+        balance -= position.getInvestment();
+        positionProfitLoss = position.getProfitLoss();
 
-        // Track minimum profit/loss.
-        if (positionProfitLoss < minimumProfitLoss) {
-            minimumProfitLoss = positionProfitLoss;
+        if (positionProfitLoss > 0 && positionProfitLoss < position.getInvestment()) {
+            // Won
+            balance += position.getProfitability();
+            consecutiveLosses = 0;
+        }
+        else if (positionProfitLoss === position.getInvestment()) {
+            // Broke even
+            balance += position.getInvestment();
+        }
+        else {
+            // Lost
+            consecutiveLosses++;
         }
 
-        // Increment consecutive losses if the position was a loss.
-        positionProfitLoss === 0 ? consecutiveLosses++ : consecutiveLosses = 0;
+        // Track minimum profit/loss.
+        if (balance < minimumProfitLoss) {
+            minimumProfitLoss = balance;
+        }
 
         // Track the maximum consecutive losses.
         if (consecutiveLosses > maximumConsecutiveLosses) {

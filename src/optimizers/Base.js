@@ -12,13 +12,12 @@ Base.prototype.prepareStudies = function(studyDefinitions) {
     var self = this;
 
     // Iterate over each study definition...
-    process.stdout.write('Preparing studies...\n');
+    process.stdout.write('Preparing studies...');
     studyDefinitions.forEach(function(studyDefinition) {
         // Instantiate the study, and add it to the list of studies for this strategy.
-        process.stdout.write('    ' + studyDefinition.study.name + '...');
         self.studies.push(new studyDefinition.study(studyDefinition.inputs, studyDefinition.outputMap));
-        process.stdout.write('done\n');
     });
+    process.stdout.write('done\n');
 };
 
 
@@ -100,14 +99,14 @@ Base.prototype.buildConfigurations = function(options, optionIndex, results, cur
 
 Base.prototype.optimize = function(configurations, data, investment, profitability, done) {
     var self = this;
-    var progress = 0.0;
+    var configurationCompletionCount = -1;
     var configurationsCount = configurations.length;
 
     process.stdout.write('Optimizing...');
     async.forEachOf(configurations, function(configuration, index, callback) {
-        var percentage = ((index / configurationsCount) * 100).toFixed(5);
+        configurationCompletionCount++;
         process.stdout.cursorTo(13);
-        process.stdout.write(percentage + '%');
+        process.stdout.write(configurationCompletionCount + ' of ' + configurationsCount ' completed');
 
         // Instantiate a fresh strategy.
         var strategy = new self.strategyFn();

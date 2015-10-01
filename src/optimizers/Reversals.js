@@ -311,9 +311,12 @@ Reversals.prototype = Object.create(Base.prototype);
 
 Reversals.prototype.optimize = function(data, investment, profitability, done) {
     // Prepare all data in advance for use.
-    data = this.prepareStudyData(data);
+    var preparedData = this.prepareStudyData(data);
 
-    Base.prototype.optimize.call(this, this.configurations, data, investment, profitability, done);
+    // Release memory.
+    data = null;
+
+    Base.prototype.optimize.call(this, this.configurations, preparedData, investment, profitability, done);
 };
 
 module.exports = Reversals;

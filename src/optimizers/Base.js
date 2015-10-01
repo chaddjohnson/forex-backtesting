@@ -106,7 +106,7 @@ Base.prototype.optimize = function(configurations, data, investment, profitabili
     async.forEachOf(configurations, function(configuration, index, callback) {
         configurationCompletionCount++;
         process.stdout.cursorTo(13);
-        process.stdout.write(configurationCompletionCount + ' of ' + configurationsCount ' completed');
+        process.stdout.write(configurationCompletionCount + ' of ' + configurationsCount + ' completed');
 
         // Instantiate a fresh strategy.
         var strategy = new self.strategyFn();

@@ -1,4 +1,4 @@
-var StrategyBase = require('../base');
+var StrategyBase = require('../Base');
 
 function Base() {
     this.constructor = Base;

@@ -1,4 +1,4 @@
-var Base = require('./base');
+var Base = require('./Base');
 var studies = require('../studies');
 var Call = require('../positions/Call');
 var Put = require('../positions/Put');

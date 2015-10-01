@@ -1,5 +1,5 @@
 var _ = require('underscore');
-var Base = require('./base');
+var Base = require('./Base');
 var Call = require('../../positions/Call');
 var Put = require('../../positions/Put');
 

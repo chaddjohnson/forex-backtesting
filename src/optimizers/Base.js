@@ -128,6 +128,9 @@ Base.prototype.optimize = function(configurations, data, investment, profitabili
             minimumProfitLoss: results.minimumProfitLoss
         });
         optimization.save(function(error) {
+            // Free up memory...just in case...
+            strategy = null;
+
             callback(error);
         });
     }, function(error) {

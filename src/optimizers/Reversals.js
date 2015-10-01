@@ -6,8 +6,8 @@ var studyDefinitions = [
     {study: studies.Ema, inputs: {length: 200}, outputMap: {ema: 'ema200'}},
     {study: studies.Ema, inputs: {length: 100}, outputMap: {ema: 'ema100'}},
     {study: studies.Ema, inputs: {length: 50}, outputMap: {ema: 'ema50'}},
-    {study: studies.Ema, inputs: {length: 13}, outputMap: {ema: 'ema13'}},
     {study: studies.Sma, inputs: {length: 13}, outputMap: {ema: 'sma13'}},
+    {study: studies.Ema, inputs: {length: 13}, outputMap: {ema: 'ema13'}},
     {study: studies.Rsi, inputs: {length: 14}, outputMap: {rsi: 'rsi14'}},
     {study: studies.Rsi, inputs: {length: 7}, outputMap: {rsi: 'rsi7'}},
     {study: studies.Rsi, inputs: {length: 5}, outputMap: {rsi: 'rsi5'}},
@@ -86,25 +86,20 @@ var studyDefinitions = [
     {study: studies.PolynomialRegressionChannel, inputs: {length: 300, degree: 4, deviations: 2.1}, outputMap: {regression: 'prChannel300_4_21', upper: 'prChannelUpper300_4_21', lower: 'prChannelLower300_4_21'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 2}, outputMap: {regression: 'trendPrChannel200_2'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 3}, outputMap: {regression: 'trendPrChannel200_3'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 4}, outputMap: {regression: 'trendPrChannel200_4'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 300, degree: 2}, outputMap: {regression: 'trendPrChannel300_2'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 300, degree: 3}, outputMap: {regression: 'trendPrChannel300_3'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 300, degree: 4}, outputMap: {regression: 'trendPrChannel300_4'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 400, degree: 2}, outputMap: {regression: 'trendPrChannel400_2'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 400, degree: 3}, outputMap: {regression: 'trendPrChannel400_3'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 400, degree: 4}, outputMap: {regression: 'trendPrChannel400_4'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 450, degree: 2}, outputMap: {regression: 'trendPrChannel450_2'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 450, degree: 3}, outputMap: {regression: 'trendPrChannel450_3'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 450, degree: 4}, outputMap: {regression: 'trendPrChannel450_4'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 500, degree: 2}, outputMap: {regression: 'trendPrChannel500_2'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 500, degree: 3}, outputMap: {regression: 'trendPrChannel500_3'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 500, degree: 4}, outputMap: {regression: 'trendPrChannel500_4'}},
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 550, degree: 2}, outputMap: {regression: 'trendPrChannel550_2'}},
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 550, degree: 3}, outputMap: {regression: 'trendPrChannel550_3'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 600, degree: 2}, outputMap: {regression: 'trendPrChannel600_2'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 600, degree: 3}, outputMap: {regression: 'trendPrChannel600_3'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 600, degree: 4}, outputMap: {regression: 'trendPrChannel600_4'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 650, degree: 2}, outputMap: {regression: 'trendPrChannel650_2'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 650, degree: 3}, outputMap: {regression: 'trendPrChannel650_3'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 650, degree: 4}, outputMap: {regression: 'trendPrChannel650_4'}}
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 650, degree: 3}, outputMap: {regression: 'trendPrChannel650_3'}}
 ];
 
 var configurationOptions = {
@@ -200,28 +195,20 @@ var configurationOptions = {
         null,
         {regression: 'trendPrChannel200_2'},
         {regression: 'trendPrChannel200_3'},
-        {regression: 'trendPrChannel200_4'},
         {regression: 'trendPrChannel300_2'},
         {regression: 'trendPrChannel300_3'},
-        {regression: 'trendPrChannel300_4'},
         {regression: 'trendPrChannel400_2'},
         {regression: 'trendPrChannel400_3'},
-        {regression: 'trendPrChannel400_4'},
         {regression: 'trendPrChannel450_2'},
         {regression: 'trendPrChannel450_3'},
-        {regression: 'trendPrChannel450_4'},
         {regression: 'trendPrChannel500_2'},
         {regression: 'trendPrChannel500_3'},
-        {regression: 'trendPrChannel500_4'},
         {regression: 'trendPrChannel550_2'},
         {regression: 'trendPrChannel550_3'},
-        {regression: 'trendPrChannel550_4'},
         {regression: 'trendPrChannel600_2'},
         {regression: 'trendPrChannel600_3'},
-        {regression: 'trendPrChannel600_4'},
         {regression: 'trendPrChannel650_2'},
-        {regression: 'trendPrChannel650_3'},
-        {regression: 'trendPrChannel650_4'}
+        {regression: 'trendPrChannel650_3'}
     ]
 };
 

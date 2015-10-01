@@ -6,7 +6,6 @@ function Base(strategyFn, symbol) {
     this.strategyFn = strategyFn;
     this.symbol = symbol;
     this.studies = [];
-    this.cumulativeData = [];
 }
 
 Base.prototype.prepareStudies = function(studyDefinitions) {
@@ -27,6 +26,7 @@ Base.prototype.prepareStudyData = function(data) {
     var self = this;
     var progress = 0.0;
     var dataPointCount = data.length;
+    var cumulativeData = [];
 
     // For every data point...
     process.stdout.write('Preparing data for studies...');
@@ -36,7 +36,7 @@ Base.prototype.prepareStudyData = function(data) {
         process.stdout.write(percentage + '%');
 
         // Add the data point to the cumulative data.
-        self.cumulativeData.push(dataPoint);
+        cumulativeData.push(dataPoint);
 
         // Iterate over each study...
         self.studies.forEach(function(study) {
@@ -45,14 +45,13 @@ Base.prototype.prepareStudyData = function(data) {
             var studyOutputs = study.getOutputMappings();
 
             // Update the data for the strategy.
-            study.setData(self.cumulativeData);
+            study.setData(cumulativeData);
 
             studyTickValues = study.tick();
 
             // Augment the last data point with the data the study generates.
             for (studyProperty in studyOutputs) {
                 if (studyTickValues && typeof studyTickValues[studyOutputs[studyProperty]] === 'number') {
-                    // Include output in main output, and limit decimal precision without rounding.
                     dataPoint[studyOutputs[studyProperty]] = studyTickValues[studyOutputs[studyProperty]];
                 }
                 else {
@@ -64,7 +63,7 @@ Base.prototype.prepareStudyData = function(data) {
     process.stdout.cursorTo(29);
     process.stdout.write((100).toFixed(5) + '%\n');
 
-    return self.cumulativeData;
+    return cumulativeData;
 };
 
 Base.prototype.buildConfigurations = function(options, optionIndex, results, current) {

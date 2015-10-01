@@ -136,8 +136,6 @@ Base.prototype.optimize = function(configurations, data, investment, profitabili
         }
         done();
     });
-    process.stdout.cursorTo(13);
-    process.stdout.write((100).toFixed(5) + '%\n');
 };
 
 module.exports = Base;

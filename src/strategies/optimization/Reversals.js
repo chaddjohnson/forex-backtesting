@@ -12,104 +12,165 @@ function Reversals() {
 Reversals.prototype = Object.create(Base.prototype);
 
 Reversals.prototype.backtest = function(configuration, data, investment, profitability) {
-    var self = this;
+    var index = 0;
+    var dataPointCount = data.length;
+    var dataPoint;
     var expirationMinutes = 5;
-    var callConditions = [];
-    var putConditions = [];
-    var callNextTick = false;
     var putNextTick = false;
-    var previousDataPoint;
+    var callNextTick = false;
+    var previousDataPoint = null;
 
     // For every data point...
-    data.forEach(function(dataPoint) {
-        callConditions = [];
-        putConditions = [];
+    //data.forEach(function(dataPoint) {
+    for (index = 0; index < dataPointCount; index++) {
+        dataPoint = data[index];
 
         // Simulate the next tick, and process update studies for the tick.
-        self.tick(dataPoint);
+        this.tick(dataPoint);
 
-        if (putNextTick) {
-            // Create a new position.
-            self.addPosition(new Put(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.close, investment, profitability, expirationMinutes));
-            putNextTick = false;
+        if (previousDataPoint && index < dataPointCount - 1) {
+            if (putNextTick) {
+                // Create a new position.
+                this.addPosition(new Put(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.close, investment, profitability, expirationMinutes));
+            }
+
+            if (callNextTick) {
+                // Create a new position.
+                this.addPosition(new Call(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.close, investment, profitability, expirationMinutes));
+            }
         }
 
-        if (callNextTick) {
-            // Create a new position.
-            self.addPosition(new Call(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.close, investment, profitability, expirationMinutes));
-            callNextTick = false;
-        }
+        putNextTick = true;
+        callNextTick = true;
 
         if (configuration.ema200 && configuration.ema100) {
-            // Determine if a downtrend is occurring.
-            putConditions.push(dataPoint.ema200 > dataPoint.ema100);
+            if (!dataPoint.ema200 || !dataPoint.ema100) {
+                putNextTick = false;
+                callNextTick = false;
+            }
 
-            // Determine if an uptrend is occurring.
-            callConditions.push(dataPoint.ema200 < dataPoint.ema100);
+            // Determine if a downtrend is not occurring.
+            if (putNextTick && dataPoint.ema200 < dataPoint.ema100) {
+                putNextTick = false;
+            }
+
+            // Determine if an uptrend is not occurring.
+            if (callNextTick && dataPoint.ema200 > dataPoint.ema100) {
+                callNextTick = false;
+            }
         }
         if (configuration.ema100 && configuration.ema50) {
-            // Determine if a downtrend is occurring.
-            putConditions.push(dataPoint.ema100 > dataPoint.ema50);
+            if (!dataPoint.ema100 || !dataPoint.ema50) {
+                putNextTick = false;
+                callNextTick = false;
+            }
 
-            // Determine if an uptrend is occurring.
-            callConditions.push(dataPoint.ema100 < dataPoint.ema50);
+            // Determine if a downtrend is not occurring.
+            if (putNextTick && dataPoint.ema100 < dataPoint.ema50) {
+                putNextTick = false;
+            }
+
+            // Determine if an uptrend is not occurring.
+            if (callNextTick && dataPoint.ema100 > dataPoint.ema50) {
+                callNextTick = false;
+            }
         }
         if (configuration.ema50 && configuration.sma13) {
-            // Determine if a downtrend is occurring.
-            putConditions.push(dataPoint.ema50 > dataPoint.sma13);
+            if (!dataPoint.ema50 || !dataPoint.sma13) {
+                putNextTick = false;
+                callNextTick = false;
+            }
 
-            // Determine if an uptrend is occurring.
-            callConditions.push(dataPoint.ema50 < dataPoint.sma13);
+            // Determine if a downtrend is not occurring.
+            if (putNextTick && dataPoint.ema50 < dataPoint.sma13) {
+                putNextTick = false;
+            }
+
+            // Determine if an uptrend is not occurring.
+            if (callNextTick && dataPoint.ema50 > dataPoint.sma13) {
+                callNextTick = false;
+            }
         }
         if (configuration.ema50 && configuration.ema13) {
-            // Determine if a downtrend is occurring.
-            putConditions.push(dataPoint.ema50 > dataPoint.ema13);
+            if (!dataPoint.ema50 || !dataPoint.ema13) {
+                putNextTick = false;
+                callNextTick = false;
+            }
 
-            // Determine if an uptrend is occurring.
-            callConditions.push(dataPoint.ema50 < dataPoint.ema13);
+            // Determine if a downtrend is not occurring.
+            if (putNextTick && dataPoint.ema50 < dataPoint.ema13) {
+                putNextTick = false;
+            }
+
+            // Determine if an uptrend is not occurring.
+            if (callNextTick && dataPoint.ema50 > dataPoint.ema13) {
+                callNextTick = false;
+            }
         }
 
         if (configuration.rsi) {
-            // Determine if RSI is above the overbought line.
-            putConditions.push(dataPoint[configuration.rsi.rsi] && dataPoint[configuration.rsi.rsi] >= configuration.rsi.overbought);
+            if (typeof dataPoint[configuration.rsi.rsi] === 'number') {
+                // Determine if RSI is not above the overbought line.
+                if (putNextTick && dataPoint[configuration.rsi.rsi] <= configuration.rsi.overbought) {
+                    putNextTick = false;
+                }
 
-            // Determine if RSI is below the oversold line.
-            callConditions.push(dataPoint[configuration.rsi.rsi] && dataPoint[configuration.rsi.rsi] <= configuration.rsi.oversold);
+                // Determine if RSI is not below the oversold line.
+                if (callNextTick && dataPoint[configuration.rsi.rsi] >= configuration.rsi.oversold) {
+                    callNextTick = false;
+                }
+            }
+            else {
+                putNextTick = false;
+                callNextTick = false;
+            }
         }
 
         if (configuration.prChannel) {
-            // Determine if the upper regression bound was breached by the high price.
-            putConditions.push(dataPoint.high >= dataPoint[configuration.prChannel.upper]);
+            if (dataPoint[configuration.prChannel.upper] && dataPoint[configuration.prChannel.lower]) {
+                // Determine if the upper regression bound was not breached by the high price.
+                if (putNextTick && (!dataPoint[configuration.prChannel.upper] || dataPoint.high <= dataPoint[configuration.prChannel.upper])) {
+                    putNextTick = false;
+                }
 
-            // Determine if the lower regression bound was breached by the low price.
-            callConditions.push(dataPoint.low <= dataPoint[configuration.prChannel.lower]);
+                // Determine if the lower regression bound was not breached by the low price.
+                if (callNextTick && (!dataPoint[configuration.prChannel.lower] || dataPoint.low >= dataPoint[configuration.prChannel.lower])) {
+                    callNextTick = false;
+                }
+            }
+            else {
+                putNextTick = false;
+                callNextTick = false;
+            }
         }
 
         if (configuration.trendPrChannel) {
-            // Determine if a long-term downtrend is occurring.
-            putConditions.push(previousDataPoint && dataPoint[configuration.trendPrChannel.regression] < previousDataPoint[configuration.trendPrChannel.regression]);
+            if (previousDataPoint && dataPoint[configuration.trendPrChannel.regression] && previousDataPoint[configuration.trendPrChannel.regression]) {
+                // Determine if a long-term downtrend is not occurring.
+                if (putNextTick && dataPoint[configuration.trendPrChannel.regression] > previousDataPoint[configuration.trendPrChannel.regression]) {
+                    putNextTick = false;
+                }
 
-            // Determine if a long-term uptrand is occurring.
-            callConditions.push(previousDataPoint && dataPoint[configuration.trendPrChannel.regression] > previousDataPoint[configuration.trendPrChannel.regression]);
+                // Determine if a long-term uptrend is not occurring.
+                if (callNextTick && dataPoint[configuration.trendPrChannel.regression] < previousDataPoint[configuration.trendPrChannel.regression]) {
+                    callNextTick = false;
+                }
+            }
+            else {
+                putNextTick = false;
+                callNextTick = false;
+            }
         }
 
         // Determine if there is a significant gap (> 60 seconds) between the current timestamp and the previous timestamp.
-        putConditions.push(previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) === 60 * 1000);
-        callConditions.push(previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) === 60 * 1000);
-
-        // Only do a PUT next tick if all necessary conditions for this strategy pass.
-        putNextTick = putConditions.length > 0 && _(putConditions).filter(function(condition) {
-            return condition === false;
-        }).length === 0;
-
-        // Only do a CALL next tick if all necessary conditions for this strategy pass.
-        callNextTick = callConditions.length > 0 && _(callConditions).filter(function(condition) {
-            return condition === false;
-        }).length === 0;
+        if ((putNextTick || callNextTick) && (!previousDataPoint || (dataPoint.timestamp - previousDataPoint.timestamp) !== 60 * 1000)) {
+            putNextTick = false;
+            callNextTick = false;
+        }
 
         // Track the current data point as the previous data point for the next tick.
         previousDataPoint = dataPoint;
-    });
+    };
 
     return this.getResults();
 };

@@ -3,6 +3,7 @@ var fs = require('fs');
 function Base() {
     this.studies = [];
     this.positions = [];
+    this.openPositions = [];
     this.profitLoss = 0.0;
     this.cumulativeData = [];
     this.winCount = 0;
@@ -130,7 +131,11 @@ Base.prototype.getResults = function() {
 };
 
 Base.prototype.addPosition = function(position) {
+    // Add this new position to the list of positions.
     this.positions.push(position);
+
+    // Also track this position in the list of open positions.
+    this.openPositions.push(position);
 
     // Deduct the investment amount from the profit/loss for this strategy.
     this.profitLoss -= position.getInvestment();
@@ -139,10 +144,14 @@ Base.prototype.addPosition = function(position) {
 Base.prototype.closeExpiredPositions = function(price, timestamp) {
     var self = this;
 
-    self.positions.forEach(function(position) {
+    // Use a copy so that items can be removed from the original without messing up the loop.
+    var openPositionsCopy = self.openPositions.slice();
+
+    // Iterate over open positions.
+    openPositionsCopy.forEach(function(position, index) {
         var profitLoss = 0.0;
 
-        if (position.getIsOpen() && position.getHasExpired(timestamp)) {
+        if (position.getHasExpired(timestamp)) {
             // Close the position since it is open and has expired.
             position.close(price, timestamp);
 
@@ -156,6 +165,9 @@ Base.prototype.closeExpiredPositions = function(price, timestamp) {
             if (profitLoss === 0) {
                 self.loseCount++;
             }
+
+            // Remove the position from the list of open positions.
+            self.openPositions.splice(index, 1);
         }
     });
 };

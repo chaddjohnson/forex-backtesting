@@ -6,6 +6,14 @@ var Put = require('../positions/Put');
 // Define studies to use.
 var studyDefinitions = [
     {
+    //     study: studies.Ema,
+    //     inputs: {
+    //         length: 200
+    //     },
+    //     outputMap: {
+    //         ema: 'ema200'
+    //     }
+    // },{
         study: studies.Ema,
         inputs: {
             length: 100
@@ -95,38 +103,40 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
         // Simulate the next tick, and process update studies for the tick.
         self.tick(dataPoint);
 
-        if (callNextTick) {
-            // Create a new position.
-            self.addPosition(new Call(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.close, investment, profitability, 5));
-            callNextTick = false;
-        }
+        if (previousDataPoint) {
+            if (callNextTick) {
+                // Create a new position.
+                self.addPosition(new Call(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.close, investment, profitability, 5));
+                callNextTick = false;
+            }
 
-        if (putNextTick) {
-            // Create a new position.
-            self.addPosition(new Put(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.close, investment, profitability, 5));
-            putNextTick = false;
+            if (putNextTick) {
+                // Create a new position.
+                self.addPosition(new Put(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.close, investment, profitability, 5));
+                putNextTick = false;
+            }
         }
 
         // Determine if a downtrend is occurring.
-        movingAveragesDowntrending = dataPoint.ema100 > dataPoint.ema50 && dataPoint.ema50 > dataPoint.sma13;
+        movingAveragesDowntrending = dataPoint.ema100 && dataPoint.ema50 && dataPoint.sma13 && dataPoint.ema100 > dataPoint.ema50 && dataPoint.ema50 > dataPoint.sma13;
 
         // Determine if an uptrend is occurring.
-        movingAveragesUptrending = dataPoint.ema100 < dataPoint.ema50 && dataPoint.ema50 < dataPoint.sma13;
+        movingAveragesUptrending = dataPoint.ema100 && dataPoint.ema50 && dataPoint.sma13 && dataPoint.ema100 < dataPoint.ema50 && dataPoint.ema50 < dataPoint.sma13;
 
         // Determine if RSI is above the overbought line.
-        rsiOverbought = dataPoint.rsi5 && dataPoint.rsi5 >= 80;
+        rsiOverbought = typeof dataPoint.rsi5 === 'number' && dataPoint.rsi5 >= 80;
 
         // Determine if RSI is below the oversold line.
-        rsiOversold = dataPoint.rsi5 && dataPoint.rsi5 <= 20;
+        rsiOversold = typeof dataPoint.rsi5 === 'number' && dataPoint.rsi5 <= 20;
 
         // Determine if the upper regression bound was breached by the high.
-        regressionUpperBoundBreached = dataPoint.high >= dataPoint.prChannelUpper250;
+        regressionUpperBoundBreached = dataPoint.prChannelUpper250 && dataPoint.high >= dataPoint.prChannelUpper250;
 
         // Determine if the lower regression bound was breached by the low.
-        regressionLowerBoundBreached = dataPoint.low <= dataPoint.prChannelLower250;
+        regressionLowerBoundBreached = dataPoint.prChannelLower250 && dataPoint.low <= dataPoint.prChannelLower250;
 
-        longRegressionUptrending = previousDataPoint && dataPoint.prChannel600 > previousDataPoint.prChannel600;
-        longRegressionDowntrending = previousDataPoint && dataPoint.prChannel600 < previousDataPoint.prChannel600;
+        longRegressionUptrending = previousDataPoint && dataPoint.prChannel600 && previousDataPoint.prChannel600 && dataPoint.prChannel600 > previousDataPoint.prChannel600;
+        longRegressionDowntrending = previousDataPoint && dataPoint.prChannel600 && previousDataPoint.prChannel600 && dataPoint.prChannel600 < previousDataPoint.prChannel600;
 
         // Determine if there is a significant gap (> 60 seconds) between the current timestamp and the previous timestamp.
         timeGapPresent = previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 60 * 1000;

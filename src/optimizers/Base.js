@@ -1,6 +1,7 @@
 var _ = require('underscore');
 var async = require('async');
 var Optimization = require('../models/Optimization');
+var DataPoint = require('../models/DataPoint');
 
 function Base(strategyFn, symbol) {
     this.strategyFn = strategyFn;
@@ -20,49 +21,86 @@ Base.prototype.prepareStudies = function(studyDefinitions) {
     process.stdout.write('done\n');
 };
 
-
-Base.prototype.prepareStudyData = function(data) {
+Base.prototype.prepareStudyData = function(data, callback) {
     var self = this;
-    var progress = 0.0;
+    var percentage = 0.0;
     var dataPointCount = data.length;
-    var cumulativeData = [];
 
-    // For every data point...
     process.stdout.write('Preparing data for studies...');
-    data.forEach(function(dataPoint, index) {
-        percentage = ((index / dataPointCount) * 100).toFixed(5);
+
+    // Find cached data points, if any.
+    DataPoint.find({symbol: this.symbol}, function(error, dataPoints) {
+        var cumulativeData = [];
+
+        if (error) {
+            console.error(error.message || error);
+        }
+        if (dataPoints.length) {
+            process.stdout.write('using cached data\n');
+
+            cumulativeData = _(dataPoints).map(function(dataPoint) {
+                return dataPoint.data;
+            });
+            callback(cumulativeData);
+
+            return;
+        }
+
+        // For every data point...
+        data.forEach(function(dataPoint, index) {
+            percentage = ((index / dataPointCount) * 100).toFixed(5);
+            process.stdout.cursorTo(29);
+            process.stdout.write(percentage + '%');
+
+            // Add the data point to the cumulative data.
+            cumulativeData.push(dataPoint);
+
+            // Iterate over each study...
+            self.studies.forEach(function(study) {
+                var studyProperty = '';
+                var studyTickValue = 0.0;
+                var studyOutputs = study.getOutputMappings();
+
+                // Update the data for the strategy.
+                study.setData(cumulativeData);
+
+                studyTickValues = study.tick();
+
+                // Augment the last data point with the data the study generates.
+                for (studyProperty in studyOutputs) {
+                    if (studyTickValues && typeof studyTickValues[studyOutputs[studyProperty]] === 'number') {
+                        dataPoint[studyOutputs[studyProperty]] = studyTickValues[studyOutputs[studyProperty]];
+                    }
+                    else {
+                        dataPoint[studyOutputs[studyProperty]] = '';
+                    }
+                }
+            });
+        });
+
         process.stdout.cursorTo(29);
-        process.stdout.write(percentage + '%');
+        process.stdout.write((100).toFixed(5) + '%\n');
 
-        // Add the data point to the cumulative data.
-        cumulativeData.push(dataPoint);
-
-        // Iterate over each study...
-        self.studies.forEach(function(study) {
-            var studyProperty = '';
-            var studyTickValue = 0.0;
-            var studyOutputs = study.getOutputMappings();
-
-            // Update the data for the strategy.
-            study.setData(cumulativeData);
-
-            studyTickValues = study.tick();
-
-            // Augment the last data point with the data the study generates.
-            for (studyProperty in studyOutputs) {
-                if (studyTickValues && typeof studyTickValues[studyOutputs[studyProperty]] === 'number') {
-                    dataPoint[studyOutputs[studyProperty]] = studyTickValues[studyOutputs[studyProperty]];
-                }
-                else {
-                    dataPoint[studyOutputs[studyProperty]] = '';
-                }
-            }
+        // Cache the data.
+        process.stdout.write('Caching data...');
+        self.cacheData(cumulativeData, function() {
+            process.stdout.write('done\n');
+            callback(cumulativeData);
         });
     });
-    process.stdout.cursorTo(29);
-    process.stdout.write((100).toFixed(5) + '%\n');
+};
 
-    return cumulativeData;
+Base.prototype.cacheData = function(data, callback) {
+    var self = this;
+    var dataPoints = _(data).map(function(dataPoint) {
+        return {
+            symbol: self.symbol,
+            data: dataPoint
+        }
+    });
+    DataPoint.collection.insert(dataPoints, function() {
+        callback();
+    });
 };
 
 Base.prototype.buildConfigurations = function(options, optionIndex, results, current) {
@@ -97,13 +135,13 @@ Base.prototype.buildConfigurations = function(options, optionIndex, results, cur
     return results;
 };
 
-Base.prototype.optimize = function(configurations, data, investment, profitability, done) {
+Base.prototype.optimize = function(configurations, data, investment, profitability, callback) {
     var self = this;
     var configurationCompletionCount = -1;
     var configurationsCount = configurations.length;
 
     process.stdout.write('Optimizing...');
-    async.forEachOf(configurations, function(configuration, index, callback) {
+    async.each(configurations, function(configuration, asyncCallback) {
         configurationCompletionCount++;
         process.stdout.cursorTo(13);
         process.stdout.write(configurationCompletionCount + ' of ' + configurationsCount + ' completed');
@@ -131,16 +169,16 @@ Base.prototype.optimize = function(configurations, data, investment, profitabili
             // Free up memory...just in case...
             strategy = null;
 
-            callback(error);
+            asyncCallback(error);
         });
     }, function(error) {
         if (error) {
             console.log(error.message || error);
         }
-        done();
+        process.stdout.cursorTo(13);
+        process.stdout.write(configurationsCount + ' of ' + configurationsCount + ' completed\n');
+        callback();
     });
-    process.stdout.cursorTo(13);
-    process.stdout.write(configurationsCount + ' of ' + configurationsCount + ' completed');
 };
 
 module.exports = Base;

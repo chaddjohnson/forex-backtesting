@@ -171,6 +171,11 @@ Base.prototype.optimize = function(configurations, data, investment, profitabili
             results = null;
             backtest = null;
 
+            // Trigger garbage collection gc is exposed.
+            if (global.gc) {
+                global.gc();
+            }
+
             asyncCallback(error);
         });
     }, function(error) {

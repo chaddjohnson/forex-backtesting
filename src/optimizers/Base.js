@@ -165,7 +165,7 @@ Base.prototype.optimize = function(configurations, data, investment, profitabili
             maximumConsecutiveLosses: results.maximumConsecutiveLosses,
             minimumProfitLoss: results.minimumProfitLoss
         });
-        backtest.save(function(error) {
+        Backtest.collection.insert(backtest, function(error) {
             // Free up memory...just in case...
             strategy = null;
             results = null;

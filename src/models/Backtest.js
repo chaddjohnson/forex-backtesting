@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-var optimizationSchema = mongoose.Schema({
+var backtestSchema = mongoose.Schema({
     symbol: {type: String, required: true},
     strategyName: {type: String, required: true},
     configuration: {type: mongoose.Schema.Types.Mixed, required: true},
@@ -13,4 +13,4 @@ var optimizationSchema = mongoose.Schema({
     minimumProfitLoss: {type: Number, required: true}
 });
 
-module.exports = mongoose.connection.model('Optimization', optimizationSchema);
+module.exports = mongoose.connection.model('Backtest', backtestSchema);

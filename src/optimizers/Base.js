@@ -1,6 +1,6 @@
 var _ = require('underscore');
 var async = require('async');
-var Optimization = require('../models/Optimization');
+var Backtest = require('../models/Backtest');
 var DataPoint = require('../models/DataPoint');
 
 function Base(strategyFn, symbol) {
@@ -153,7 +153,7 @@ Base.prototype.optimize = function(configurations, data, investment, profitabili
         var results = strategy.backtest(configuration, data, investment, profitability);
 
         // Record the results.
-        var optimization = new Optimization({
+        var backtest = new Backtest({
             symbol: self.symbol,
             strategyName: strategy.constructor.name,
             configuration: configuration,
@@ -165,7 +165,7 @@ Base.prototype.optimize = function(configurations, data, investment, profitabili
             maximumConsecutiveLosses: results.maximumConsecutiveLosses,
             minimumProfitLoss: results.minimumProfitLoss
         });
-        optimization.save(function(error) {
+        backtest.save(function(error) {
             // Free up memory...just in case...
             strategy = null;
 

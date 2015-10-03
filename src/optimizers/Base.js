@@ -1,3 +1,4 @@
+var mongoose = require('mongoose');
 var _ = require('underscore');
 var async = require('async');
 var Backtest = require('../models/Backtest');
@@ -175,6 +176,11 @@ Base.prototype.optimize = function(configurations, data, investment, profitabili
             if (global.gc) {
                 global.gc();
             }
+
+            // Manually force Mongoose to release memory.
+            delete mongoose.connection.models.Backtest;
+            delete mongoose.connection.collections.backtests;
+            delete mongoose.connection.base.modelSchemas.Backtest;
 
             asyncCallback(error);
         });

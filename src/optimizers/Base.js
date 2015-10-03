@@ -168,6 +168,7 @@ Base.prototype.optimize = function(configurations, data, investment, profitabili
         backtest.save(function(error) {
             // Free up memory...just in case...
             strategy = null;
+            results = null;
 
             asyncCallback(error);
         });

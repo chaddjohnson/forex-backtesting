@@ -153,7 +153,7 @@ Base.prototype.optimize = function(configurations, data, investment, profitabili
         var results = strategy.backtest(configuration, data, investment, profitability);
 
         // Record the results.
-        var backtest = new Backtest({
+        var backtest = {
             symbol: self.symbol,
             strategyName: strategy.constructor.name,
             configuration: configuration,
@@ -164,7 +164,7 @@ Base.prototype.optimize = function(configurations, data, investment, profitabili
             winRate: results.winRate,
             maximumConsecutiveLosses: results.maximumConsecutiveLosses,
             minimumProfitLoss: results.minimumProfitLoss
-        });
+        };
         Backtest.collection.insert(backtest, function(error) {
             // Free up memory...just in case...
             strategy = null;

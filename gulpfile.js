@@ -6,7 +6,7 @@ var path = require('path');
 gulp.task('backtest', function(done) {
     function showUsageInfo() {
         console.log('Example usage:\n');
-        console.log('gulp backtest --symbol EURUSD --parser dukascopy --data ./data/EURUSD.csv --strategy Reversals --investment 1000 --profitability 0.7 --out ./data/processed/EURUSD.csv\n');
+        console.log('gulp backtest --symbol EURCHF --parser metatrader --data ./data/metatrader/three-year/EURCHF.csv --strategy Reversals --investment 1000 --profitability 0.7 --out ./data/processed/EURUSD.csv\n');
     }
 
     function handleInputError(message) {
@@ -79,7 +79,7 @@ gulp.task('backtest', function(done) {
 gulp.task('optimize', function(done) {
     function showUsageInfo() {
         console.log('Example usage:\n');
-        console.log('gulp optimize --symbol EURUSD --parser metatrader --data ./data/EURUSD.csv --optimizer Reversals --investment 1000 --profitability 0.7\n');
+        console.log('gulp optimize --symbol EURCHF --parser metatrader --data ./data/metatrader/three-year/EURCHF.csv --optimizer Reversals --investment 1000 --profitability 0.7\n');
     }
 
     function handleInputError(message) {

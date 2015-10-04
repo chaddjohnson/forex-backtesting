@@ -1,4 +1,3 @@
-var mongoose = require('mongoose');
 var _ = require('underscore');
 var async = require('async');
 var Backtest = require('../models/Backtest');
@@ -136,61 +135,80 @@ Base.prototype.buildConfigurations = function(options, optionIndex, results, cur
     return results;
 };
 
+Base.prototype.removeCompletedConfigurations = function(callback) {
+    Backtest.find({symbol: this.symbol}, function(error, backtests) {
+        if (error) {
+            console.error(error.message || error);
+        }
+
+        // Get the configurations for completed backtests.
+        var completedConfigurations = _(backtests).map(function(backtest) {
+            return backtest.configuration;
+        });
+
+        // Iterate of configurations, and remove ones already used in completed backtests.
+        completedConfigurations.forEach(function(completedConfiguration, index) {
+            var found = _(configurations).find(completedConfiguration);
+
+            if (found) {
+                // The configuration was already backtested, so remove it from the list
+                // of configurations to backtest.
+                configurations.splice(index, 1);
+            }
+        });
+    });
+};
+
 Base.prototype.optimize = function(configurations, data, investment, profitability, callback) {
     var self = this;
-    var configurationCompletionCount = -1;
-    var configurationsCount = configurations.length;
 
     process.stdout.write('Optimizing...');
-    async.each(configurations, function(configuration, asyncCallback) {
-        configurationCompletionCount++;
-        process.stdout.cursorTo(13);
-        process.stdout.write(configurationCompletionCount + ' of ' + configurationsCount + ' completed');
 
-        // Instantiate a fresh strategy.
-        var strategy = new self.strategyFn();
+    // Exclude configurations that have already been backtested.
+    self.removeCompletedConfigurations(function() {
+        var configurationCompletionCount = -1;
+        var configurationsCount = configurations.length;
 
-        // Backtest the strategy using the current configuration and the pre-built data.
-        var results = strategy.backtest(configuration, data, investment, profitability);
+        async.each(configurations, function(configuration, asyncCallback) {
+            configurationCompletionCount++;
+            process.stdout.cursorTo(13);
+            process.stdout.write(configurationCompletionCount + ' of ' + configurationsCount + ' completed');
 
-        // Record the results.
-        var backtest = {
-            symbol: self.symbol,
-            strategyName: strategy.constructor.name,
-            configuration: configuration,
-            profitLoss: results.profitLoss,
-            winCount: results.winCount,
-            loseCount: results.loseCount,
-            tradeCount: results.winCount + results.loseCount,
-            winRate: results.winRate,
-            maximumConsecutiveLosses: results.maximumConsecutiveLosses,
-            minimumProfitLoss: results.minimumProfitLoss
-        };
-        Backtest.collection.insert(backtest, function(error) {
-            // Free up memory...just in case...
-            strategy = null;
-            results = null;
-            backtest = null;
+            // Instantiate a fresh strategy.
+            var strategy = new self.strategyFn();
 
-            // Trigger garbage collection gc is exposed.
-            if (global.gc) {
-                global.gc();
+            // Backtest the strategy using the current configuration and the pre-built data.
+            var results = strategy.backtest(configuration, data, investment, profitability);
+
+            // Record the results.
+            var backtest = {
+                symbol: self.symbol,
+                strategyName: strategy.constructor.name,
+                configuration: configuration,
+                profitLoss: results.profitLoss,
+                winCount: results.winCount,
+                loseCount: results.loseCount,
+                tradeCount: results.winCount + results.loseCount,
+                winRate: results.winRate,
+                maximumConsecutiveLosses: results.maximumConsecutiveLosses,
+                minimumProfitLoss: results.minimumProfitLoss
+            };
+            Backtest.collection.insert(backtest, function(error) {
+                // Free up memory...just in case...
+                strategy = null;
+                results = null;
+                backtest = null;
+
+                asyncCallback(error);
+            });
+        }, function(error) {
+            if (error) {
+                console.log(error.message || error);
             }
-
-            // Manually force Mongoose to release memory.
-            delete mongoose.connection.models.Backtest;
-            delete mongoose.connection.collections.backtests;
-            delete mongoose.connection.base.modelSchemas.Backtest;
-
-            asyncCallback(error);
+            process.stdout.cursorTo(13);
+            process.stdout.write(configurationsCount + ' of ' + configurationsCount + ' completed\n');
+            callback();
         });
-    }, function(error) {
-        if (error) {
-            console.log(error.message || error);
-        }
-        process.stdout.cursorTo(13);
-        process.stdout.write(configurationsCount + ' of ' + configurationsCount + ' completed\n');
-        callback();
     });
 };
 

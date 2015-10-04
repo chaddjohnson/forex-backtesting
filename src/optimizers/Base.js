@@ -156,6 +156,8 @@ Base.prototype.removeCompletedConfigurations = function(callback) {
                 configurations.splice(index, 1);
             }
         });
+
+        callback();
     });
 };
 

@@ -150,10 +150,12 @@ Base.prototype.removeCompletedConfigurations = function(callback) {
         completedConfigurations.forEach(function(completedConfiguration) {
             var foundIndex = -1;
 
-            configurations.forEach(function(configuration, index) {
-                if (_(configuration).isEqual(completedConfiguration)) {
+            _(configurations).find(function(configuration, index) {
+                var found = _(configuration).isEqual(completedConfiguration);
+                if (found) {
                     foundIndex = index;
                 }
+                return found;
             });
 
             if (foundIndex > -1) {

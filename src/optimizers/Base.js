@@ -147,13 +147,19 @@ Base.prototype.removeCompletedConfigurations = function(callback) {
         });
 
         // Iterate of configurations, and remove ones already used in completed backtests.
-        completedConfigurations.forEach(function(completedConfiguration, index) {
-            var found = _(configurations).find(completedConfiguration);
+        completedConfigurations.forEach(function(completedConfiguration) {
+            var foundIndex = -1;
 
-            if (found) {
+            configurations.forEach(function(configuration, index) {
+                if (_(configuration).isEqual(completedConfiguration)) {
+                    foundIndex = index;
+                }
+            });
+
+            if (foundIndex > -1) {
                 // The configuration was already backtested, so remove it from the list
                 // of configurations to backtest.
-                configurations.splice(index, 1);
+                configurations.splice(foundIndex, 1);
             }
         });
 

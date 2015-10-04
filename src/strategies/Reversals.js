@@ -6,14 +6,14 @@ var Put = require('../positions/Put');
 // Define studies to use.
 var studyDefinitions = [
     {
-    //     study: studies.Ema,
-    //     inputs: {
-    //         length: 200
-    //     },
-    //     outputMap: {
-    //         ema: 'ema200'
-    //     }
-    // },{
+        study: studies.Ema,
+        inputs: {
+            length: 200
+        },
+        outputMap: {
+            ema: 'ema200'
+        }
+    },{
         study: studies.Ema,
         inputs: {
             length: 100
@@ -48,24 +48,24 @@ var studyDefinitions = [
     },{
         study: studies.PolynomialRegressionChannel,
         inputs: {
-            length: 250,
+            length: 200,
             degree: 3,
-            deviations: 1.9
+            deviations: 2.1
         },
         outputMap: {
-            regression: 'prChannel250',
-            upper: 'prChannelUpper250',
-            lower: 'prChannelLower250'
+            regression: 'prChannel',
+            upper: 'prChannelUpper',
+            lower: 'prChannelLower'
         }
-    },{
-        study: studies.PolynomialRegressionChannel,
-        inputs: {
-            length: 600,
-            degree: 2
-        },
-        outputMap: {
-            regression: 'prChannel600'
-        }
+    // },{
+    //     study: studies.PolynomialRegressionChannel,
+    //     inputs: {
+    //         length: 600,
+    //         degree: 2
+    //     },
+    //     outputMap: {
+    //         regression: 'trendPrChannel'
+    //     }
     }
 ];
 
@@ -89,8 +89,8 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
     var rsiOversold = false;
     var regressionUpperBoundBreached = false;
     var regressionLowerBoundBreached = false;
-    var longRegressionDowntrending = false;
-    var longRegressionUptrending = false;
+    // var longRegressionDowntrending = false;
+    // var longRegressionUptrending = false;
     var timeGapPresent = false;
     var previousDataPoint;
     var previousBalance = 0;
@@ -130,24 +130,24 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
         rsiOversold = typeof dataPoint.rsi5 === 'number' && dataPoint.rsi5 <= 20;
 
         // Determine if the upper regression bound was breached by the high.
-        regressionUpperBoundBreached = dataPoint.prChannelUpper250 && dataPoint.high >= dataPoint.prChannelUpper250;
+        regressionUpperBoundBreached = dataPoint.prChannelUpper && dataPoint.high >= dataPoint.prChannelUpper;
 
         // Determine if the lower regression bound was breached by the low.
-        regressionLowerBoundBreached = dataPoint.prChannelLower250 && dataPoint.low <= dataPoint.prChannelLower250;
+        regressionLowerBoundBreached = dataPoint.prChannelLower && dataPoint.low <= dataPoint.prChannelLower;
 
-        longRegressionUptrending = previousDataPoint && dataPoint.prChannel600 && previousDataPoint.prChannel600 && dataPoint.prChannel600 > previousDataPoint.prChannel600;
-        longRegressionDowntrending = previousDataPoint && dataPoint.prChannel600 && previousDataPoint.prChannel600 && dataPoint.prChannel600 < previousDataPoint.prChannel600;
+        // longRegressionUptrending = previousDataPoint && dataPoint.trendPrChannel && previousDataPoint.trendPrChannel && dataPoint.trendPrChannel > previousDataPoint.trendPrChannel;
+        // longRegressionDowntrending = previousDataPoint && dataPoint.trendPrChannel && previousDataPoint.trendPrChannel && dataPoint.trendPrChannel < previousDataPoint.trendPrChannel;
 
         // Determine if there is a significant gap (> 60 seconds) between the current timestamp and the previous timestamp.
         timeGapPresent = previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 60 * 1000;
 
         // Determine whether to buy (CALL).
-        if (movingAveragesUptrending && rsiOversold && regressionLowerBoundBreached && longRegressionUptrending && !timeGapPresent) {
+        if (movingAveragesUptrending && rsiOversold && regressionLowerBoundBreached && !timeGapPresent) {
             callNextTick = true;
         }
 
         // Determine whether to buy (PUT).
-        if (movingAveragesDowntrending && rsiOverbought && regressionUpperBoundBreached && longRegressionDowntrending && !timeGapPresent) {
+        if (movingAveragesDowntrending && rsiOverbought && regressionUpperBoundBreached && !timeGapPresent) {
             putNextTick = true;
         }
 
@@ -157,8 +157,8 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
         }
 
         if (self.getProfitLoss() !== previousBalance) {
-            // console.log('BALANCE: $' + self.getProfitLoss());
-            // console.log();
+            console.log('BALANCE: $' + self.getProfitLoss());
+            console.log();
         }
         previousBalance = self.getProfitLoss();
 

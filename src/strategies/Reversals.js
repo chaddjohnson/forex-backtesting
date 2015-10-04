@@ -118,10 +118,10 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
         }
 
         // Determine if a downtrend is occurring.
-        movingAveragesDowntrending = dataPoint.ema100 && dataPoint.ema50 && dataPoint.sma13 && dataPoint.ema100 > dataPoint.ema50 && dataPoint.ema50 > dataPoint.sma13;
+        movingAveragesDowntrending = dataPoint.ema200 && dataPoint.ema100 && dataPoint.ema50 && dataPoint.sma13 && dataPoint.ema200 > dataPoint.ema100 && dataPoint.ema100 > dataPoint.ema50 && dataPoint.ema50 > dataPoint.sma13;
 
         // Determine if an uptrend is occurring.
-        movingAveragesUptrending = dataPoint.ema100 && dataPoint.ema50 && dataPoint.sma13 && dataPoint.ema100 < dataPoint.ema50 && dataPoint.ema50 < dataPoint.sma13;
+        movingAveragesUptrending = dataPoint.ema200 && dataPoint.ema100 && dataPoint.ema50 && dataPoint.sma13 && dataPoint.ema200 < dataPoint.ema100 && dataPoint.ema100 < dataPoint.ema50 && dataPoint.ema50 < dataPoint.sma13;
 
         // Determine if RSI is above the overbought line.
         rsiOverbought = typeof dataPoint.rsi5 === 'number' && dataPoint.rsi5 >= 80;

@@ -135,7 +135,7 @@ Base.prototype.buildConfigurations = function(options, optionIndex, results, cur
     return results;
 };
 
-Base.prototype.removeCompletedConfigurations = function(callback) {
+Base.prototype.removeCompletedConfigurations = function(configurations, callback) {
     Backtest.find({symbol: this.symbol}, function(error, backtests) {
         if (error) {
             console.error(error.message || error);
@@ -175,7 +175,7 @@ Base.prototype.optimize = function(configurations, data, investment, profitabili
     process.stdout.write('Optimizing...');
 
     // Exclude configurations that have already been backtested.
-    self.removeCompletedConfigurations(function() {
+    self.removeCompletedConfigurations(configurations, function() {
         var configurationCompletionCount = -1;
         var configurationsCount = configurations.length;
 

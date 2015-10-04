@@ -157,8 +157,8 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
         }
 
         if (self.getProfitLoss() !== previousBalance) {
-            console.log('BALANCE: $' + self.getProfitLoss());
-            console.log();
+            // console.log('BALANCE: $' + self.getProfitLoss());
+            // console.log();
         }
         previousBalance = self.getProfitLoss();
 

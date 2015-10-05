@@ -55,7 +55,7 @@ Base.prototype.tick = function(dataPoint) {
         var studyTickValue = 0.0;
         var studyOutputs = study.getOutputMappings();
 
-        // Update the data for the strategy.
+        // Update the data for the study.
         study.setData(self.cumulativeData);
 
         studyTickValues = study.tick();

@@ -61,7 +61,7 @@ Base.prototype.prepareStudyData = function(data, callback) {
                 var studyTickValue = 0.0;
                 var studyOutputs = study.getOutputMappings();
 
-                // Update the data for the strategy.
+                // Update the data for the study.
                 study.setData(cumulativeData);
 
                 studyTickValues = study.tick();

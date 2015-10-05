@@ -143,7 +143,7 @@ var configurationOptions = {
         {upper: 'prChannelUpper250_4_215', lower: 'prChannelLower250_4_215'},
         {upper: 'prChannelUpper300_2_215', lower: 'prChannelLower300_2_215'},
         {upper: 'prChannelUpper300_3_215', lower: 'prChannelLower300_3_215'},
-        {upper: 'prChannelUpper300_4_215', lower: 'prChannelLower300_4_215'}
+        {upper: 'prChannelUpper300_4_215', lower: 'prChannelLower300_4_215'},
         {upper: 'prChannelUpper300_2_19', lower: 'prChannelLower300_2_19'},
         {upper: 'prChannelUpper300_3_19', lower: 'prChannelLower300_3_19'},
         {upper: 'prChannelUpper300_4_19', lower: 'prChannelLower300_4_19'},

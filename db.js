@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var dbUri = 'mongodb://localhost/forex-trading';
+var dbUri = 'mongodb://localhost/forex-backtesting';
 
 module.exports.initialize = function() {
     mongoose.connect(dbUri);

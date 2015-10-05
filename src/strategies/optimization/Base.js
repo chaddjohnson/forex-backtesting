@@ -9,11 +9,8 @@ function Base() {
 Base.prototype = Object.create(StrategyBase.prototype);
 
 Base.prototype.tick = function(dataPoint) {
-    if (this.previousDataPoint) {
-        // Simulate expiry of and profit/loss related to positions held.
-        this.closeExpiredPositions(this.previousDataPoint.close, dataPoint.timestamp);
-    }
-    this.previousDataPoint = dataPoint;
+    // Simulate expiry of and profit/loss related to positions held.
+    this.closeExpiredPositions(dataPoint.open, dataPoint.timestamp);
 };
 
 module.exports = Base;

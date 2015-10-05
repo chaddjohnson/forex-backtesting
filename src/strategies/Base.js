@@ -45,7 +45,6 @@ Base.prototype.getWinRate = function() {
 
 Base.prototype.tick = function(dataPoint) {
     var self = this;
-    var previousDataPoint = self.cumulativeData[self.cumulativeData.length - 1];
 
     // Add the data point to the cumulative data.
     self.cumulativeData.push(dataPoint);
@@ -73,10 +72,8 @@ Base.prototype.tick = function(dataPoint) {
         }
     });
 
-    if (previousDataPoint) {
-        // Simulate expiry of and profit/loss related to positions held.
-        self.closeExpiredPositions(previousDataPoint.close, dataPoint.timestamp);
-    }
+    // Simulate expiry of and profit/loss related to positions held.
+    self.closeExpiredPositions(dataPoint.open, dataPoint.timestamp);
 };
 
 Base.prototype.backtest = function(data, investment, profitability) {

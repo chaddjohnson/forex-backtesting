@@ -6,38 +6,38 @@ var Put = require('../positions/Put');
 // Define studies to use.
 var studyDefinitions = [
     {
-        study: studies.Ema,
-        inputs: {
-            length: 200
-        },
-        outputMap: {
-            ema: 'ema200'
-        }
-    },{
-        study: studies.Ema,
-        inputs: {
-            length: 100
-        },
-        outputMap: {
-            ema: 'ema100'
-        }
-    },{
-        study: studies.Ema,
-        inputs: {
-            length: 50
-        },
-        outputMap: {
-            ema: 'ema50'
-        }
-    },{
-        study: studies.Sma,
-        inputs: {
-            length: 13
-        },
-        outputMap: {
-            sma: 'sma13'
-        }
-    },{
+    //     study: studies.Ema,
+    //     inputs: {
+    //         length: 200
+    //     },
+    //     outputMap: {
+    //         ema: 'ema200'
+    //     }
+    // },{
+    //     study: studies.Ema,
+    //     inputs: {
+    //         length: 100
+    //     },
+    //     outputMap: {
+    //         ema: 'ema100'
+    //     }
+    // },{
+    //     study: studies.Ema,
+    //     inputs: {
+    //         length: 50
+    //     },
+    //     outputMap: {
+    //         ema: 'ema50'
+    //     }
+    // },{
+    //     study: studies.Sma,
+    //     inputs: {
+    //         length: 13
+    //     },
+    //     outputMap: {
+    //         sma: 'sma13'
+    //     }
+    // },{
         study: studies.Rsi,
         inputs: {
             length: 5
@@ -48,8 +48,8 @@ var studyDefinitions = [
     },{
         study: studies.PolynomialRegressionChannel,
         inputs: {
-            length: 200,
-            degree: 3,
+            length: 100,
+            degree: 4,
             deviations: 2.1
         },
         outputMap: {
@@ -106,28 +106,28 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
         if (previousDataPoint) {
             if (callNextTick) {
                 // Create a new position.
-                self.addPosition(new Call(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.close, investment, profitability, 5));
+                self.addPosition(new Call(dataPoint.symbol, dataPoint.timestamp, dataPoint.open, investment, profitability, 5));
                 callNextTick = false;
             }
 
             if (putNextTick) {
                 // Create a new position.
-                self.addPosition(new Put(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.close, investment, profitability, 5));
+                self.addPosition(new Put(dataPoint.symbol, dataPoint.timestamp, dataPoint.open, investment, profitability, 5));
                 putNextTick = false;
             }
         }
 
         // Determine if a downtrend is occurring.
-        movingAveragesDowntrending = dataPoint.ema200 && dataPoint.ema100 && dataPoint.ema50 && dataPoint.sma13 && dataPoint.ema200 > dataPoint.ema100 && dataPoint.ema100 > dataPoint.ema50 && dataPoint.ema50 > dataPoint.sma13;
+        // movingAveragesDowntrending = dataPoint.ema200 && dataPoint.ema100 && dataPoint.ema50 && dataPoint.sma13 && dataPoint.ema200 > dataPoint.ema100 && dataPoint.ema100 > dataPoint.ema50 && dataPoint.ema50 > dataPoint.sma13;
 
         // Determine if an uptrend is occurring.
-        movingAveragesUptrending = dataPoint.ema200 && dataPoint.ema100 && dataPoint.ema50 && dataPoint.sma13 && dataPoint.ema200 < dataPoint.ema100 && dataPoint.ema100 < dataPoint.ema50 && dataPoint.ema50 < dataPoint.sma13;
+        // movingAveragesUptrending = dataPoint.ema200 && dataPoint.ema100 && dataPoint.ema50 && dataPoint.sma13 && dataPoint.ema200 < dataPoint.ema100 && dataPoint.ema100 < dataPoint.ema50 && dataPoint.ema50 < dataPoint.sma13;
 
         // Determine if RSI is above the overbought line.
-        rsiOverbought = typeof dataPoint.rsi5 === 'number' && dataPoint.rsi5 >= 80;
+        rsiOverbought = typeof dataPoint.rsi5 === 'number' && dataPoint.rsi5 >= 77;
 
         // Determine if RSI is below the oversold line.
-        rsiOversold = typeof dataPoint.rsi5 === 'number' && dataPoint.rsi5 <= 20;
+        rsiOversold = typeof dataPoint.rsi5 === 'number' && dataPoint.rsi5 <= 23;
 
         // Determine if the upper regression bound was breached by the high.
         regressionUpperBoundBreached = dataPoint.prChannelUpper && dataPoint.high >= dataPoint.prChannelUpper;
@@ -142,12 +142,12 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
         timeGapPresent = previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 60 * 1000;
 
         // Determine whether to buy (CALL).
-        if (movingAveragesUptrending && rsiOversold && regressionLowerBoundBreached && !timeGapPresent) {
+        if (rsiOversold && regressionLowerBoundBreached && !timeGapPresent) {
             callNextTick = true;
         }
 
         // Determine whether to buy (PUT).
-        if (movingAveragesDowntrending && rsiOverbought && regressionUpperBoundBreached && !timeGapPresent) {
+        if (rsiOverbought && regressionUpperBoundBreached && !timeGapPresent) {
             putNextTick = true;
         }
 

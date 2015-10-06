@@ -58,7 +58,7 @@ Base.prototype.tick = function(dataPoint) {
         // Update the data for the study.
         study.setData(self.cumulativeData);
 
-        studyTickValues = study.tick();
+        var studyTickValues = study.tick();
 
         // Augment the last data point with the data the study generates.
         for (studyProperty in studyOutputs) {

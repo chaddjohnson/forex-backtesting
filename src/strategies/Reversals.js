@@ -139,7 +139,7 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
         // longRegressionDowntrending = previousDataPoint && dataPoint.trendPrChannel && previousDataPoint.trendPrChannel && dataPoint.trendPrChannel < previousDataPoint.trendPrChannel;
 
         // Determine if there is a significant gap (> 60 seconds) between the current timestamp and the previous timestamp.
-        timeGapPresent = previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 60 * 1000;
+        timeGapPresent = previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) !== 60 * 1000;
 
         // Determine whether to buy (CALL).
         if (rsiOversold && regressionLowerBoundBreached && !timeGapPresent) {

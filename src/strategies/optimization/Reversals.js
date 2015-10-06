@@ -91,23 +91,6 @@ Reversals.prototype.backtest = function(configuration, data, investment, profita
                 callNextTick = false;
             }
         }
-        if (configuration.ema50 && configuration.ema13) {
-            if (!dataPoint.ema50 || !dataPoint.ema13) {
-                putNextTick = false;
-                callNextTick = false;
-            }
-
-            // Determine if a downtrend is not occurring.
-            if (putNextTick && dataPoint.ema50 < dataPoint.ema13) {
-                putNextTick = false;
-            }
-
-            // Determine if an uptrend is not occurring.
-            if (callNextTick && dataPoint.ema50 > dataPoint.ema13) {
-                callNextTick = false;
-            }
-        }
-
         if (configuration.rsi) {
             if (typeof dataPoint[configuration.rsi.rsi] === 'number') {
                 // Determine if RSI is not above the overbought line.
@@ -125,7 +108,6 @@ Reversals.prototype.backtest = function(configuration, data, investment, profita
                 callNextTick = false;
             }
         }
-
         if (configuration.prChannel) {
             if (dataPoint[configuration.prChannel.upper] && dataPoint[configuration.prChannel.lower]) {
                 // Determine if the upper regression bound was not breached by the high price.
@@ -143,7 +125,6 @@ Reversals.prototype.backtest = function(configuration, data, investment, profita
                 callNextTick = false;
             }
         }
-
         if (configuration.trendPrChannel) {
             if (previousDataPoint && dataPoint[configuration.trendPrChannel.regression] && previousDataPoint[configuration.trendPrChannel.regression]) {
                 // Determine if a long-term downtrend is not occurring.

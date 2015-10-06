@@ -40,17 +40,17 @@ var studyDefinitions = [
     // },{
         study: studies.Rsi,
         inputs: {
-            length: 5
+            length: 7
         },
         outputMap: {
-            rsi: 'rsi5'
+            rsi: 'rsi'
         }
     },{
         study: studies.PolynomialRegressionChannel,
         inputs: {
             length: 100,
             degree: 4,
-            deviations: 2.1
+            deviations: 2.0
         },
         outputMap: {
             regression: 'prChannel',
@@ -124,10 +124,10 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
         // movingAveragesUptrending = dataPoint.ema200 && dataPoint.ema100 && dataPoint.ema50 && dataPoint.sma13 && dataPoint.ema200 < dataPoint.ema100 && dataPoint.ema100 < dataPoint.ema50 && dataPoint.ema50 < dataPoint.sma13;
 
         // Determine if RSI is above the overbought line.
-        rsiOverbought = typeof dataPoint.rsi5 === 'number' && dataPoint.rsi5 >= 77;
+        rsiOverbought = typeof dataPoint.rsi === 'number' && dataPoint.rsi >= 77;
 
         // Determine if RSI is below the oversold line.
-        rsiOversold = typeof dataPoint.rsi5 === 'number' && dataPoint.rsi5 <= 23;
+        rsiOversold = typeof dataPoint.rsi === 'number' && dataPoint.rsi <= 23;
 
         // Determine if the upper regression bound was breached by the high.
         regressionUpperBoundBreached = dataPoint.prChannelUpper && dataPoint.high >= dataPoint.prChannelUpper;

@@ -43,8 +43,7 @@ module.exports.parse = function(symbol, filePath) {
                 // Resume the read stream.
                 stream.resume();
             })();
-        })
-    );
+        }));
 
     stream.on('close', function() {
         deferred.resolve(formattedData);

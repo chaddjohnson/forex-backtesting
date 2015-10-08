@@ -296,13 +296,13 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
                 callThisConfiguration = false;
             }
 
-            // Track the current data point as the previous data point for the next tick.
-            previousDataPoint = dataPoint;
-
             // Determine whether to trade next tick.
             putNextTick = putNextTick || putThisConfiguration;
             callNextTick = callNextTick || callThisConfiguration;
         });
+
+        // Track the current data point as the previous data point for the next tick.
+        previousDataPoint = dataPoint;
     });
 
     return self.getResults();

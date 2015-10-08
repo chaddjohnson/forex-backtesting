@@ -21,11 +21,10 @@ Reversals.prototype.backtest = function(configuration, data, investment, profita
     var previousDataPoint = null;
 
     // For every data point...
-    //data.forEach(function(dataPoint) {
     for (index = 0; index < dataPointCount; index++) {
         dataPoint = data[index];
 
-        // Simulate the next tick, and process update studies for the tick.
+        // Simulate the next tick, and process studies for the tick.
         this.tick(dataPoint);
 
         if (previousDataPoint && index < dataPointCount - 1) {

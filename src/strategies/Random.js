@@ -24,7 +24,7 @@ Random.prototype.backtest = function(data, investment, profitability) {
 
     // For every data point...
     data.forEach(function(dataPoint, index) {
-        // Simulate the next tick, and process update studies for the tick.
+        // Simulate the next tick, and process studies for the tick.
         self.tick(dataPoint);
 
         if (waitTicks <= 0 && previousDataPoint) {

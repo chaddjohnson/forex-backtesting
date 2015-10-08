@@ -100,7 +100,7 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
 
     // For every data point...
     data.forEach(function(dataPoint) {
-        // Simulate the next tick, and process update studies for the tick.
+        // Simulate the next tick, and process studies for the tick.
         self.tick(dataPoint);
 
         if (previousDataPoint) {

@@ -7,6 +7,23 @@ var Put = require('../positions/Put');
 var configurations = [
     {
         "ema200" : true,
+        "ema100" : false,
+        "ema50" : true,
+        "sma13" : false,
+        "rsi" : {
+            "rsi" : "rsi7",
+            "overbought" : 80,
+            "oversold" : 20
+        },
+        "prChannel" : {
+            "upper" : "prChannelUpper300_3_20",
+            "lower" : "prChannelLower300_3_20"
+        },
+        "trendPrChannel" : {
+            "regression" : "trendPrChannel600_2"
+        }
+    },{
+        "ema200" : true,
         "ema100" : true,
         "ema50" : false,
         "sma13" : false,

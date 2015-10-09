@@ -184,9 +184,6 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
 
     console.log('MAX CONSECUTIVE LOSSES:\t' + maxConsecutiveLosses);
     console.log('LOWEST PROFIT/LOSS:\t$' + lowestProfitLoss);
-
-    // Save the output to a file.
-    this.saveOutput();
 };
 
 module.exports = Reversals;

@@ -10,6 +10,7 @@ Base.prototype.getData = function() {
 
 Base.prototype.setData = function(data) {
     this.data = data;
+    this.dataPointCount = data.length;
 };
 
 Base.prototype.getInput = function(key) {
@@ -29,19 +30,19 @@ Base.prototype.getDataSegment = function(length) {
 
     // Get only last n data points, where n is either the length provided as input or the
     // length of the array (whichever is smallest so as to not surpass the data array length).
-    var dataSegmentLength = Math.min(length, data.length);
+    var dataSegmentLength = Math.min(length, this.dataPointCount);
 
-    return data.slice(data.length - dataSegmentLength, data.length);
+    return data.slice(this.dataPointCount - dataSegmentLength, this.dataPointCount);
 };
 
 Base.prototype.getPrevious = function() {
     var data = this.getData();
-    return data[data.length - 2];
+    return data[this.dataPointCount - 2];
 };
 
 Base.prototype.getLast = function() {
     var data = this.getData();
-    return data[data.length - 1];
+    return data[this.dataPointCount - 1];
 };
 
 Base.prototype.tick = function() {

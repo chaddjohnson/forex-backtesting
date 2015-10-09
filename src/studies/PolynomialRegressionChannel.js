@@ -31,9 +31,11 @@ PolynomialRegressionChannel.prototype.calculateRegression = function(values, deg
 };
 
 PolynomialRegressionChannel.prototype.calculateStandardDeviation = function(values) {
+    var valuesCount = values.length;
+
     var average = _(values).reduce(function(total, value) {
         return total + value;
-    }) / values.length;
+    }) / valuesCount;
 
     var squaredDeviations = _(values).reduce(function(total, value) {
         var deviation = value - average;
@@ -42,12 +44,13 @@ PolynomialRegressionChannel.prototype.calculateStandardDeviation = function(valu
         return total + deviationSquared;
     }, 0);
 
-    return Math.sqrt(squaredDeviations / values.length);
+    return Math.sqrt(squaredDeviations / valuesCount);
 };
 
 PolynomialRegressionChannel.prototype.tick = function() {
     var self = this;
     var dataSegment = self.getDataSegment(self.getInput('length'));
+    var dataSegmentLength = dataSegment.length;
     var regressionValue = 0.0;
     var regressionStandardDeviation = 0.0;
     var upperValue = 0.0;
@@ -56,7 +59,7 @@ PolynomialRegressionChannel.prototype.tick = function() {
     var pastRegressions = [];
     var returnValue = {};
 
-    if (dataSegment.length < self.getInput('length')) {
+    if (dataSegmentLength < self.getInput('length')) {
         return returnValue;
     }
 
@@ -66,7 +69,7 @@ PolynomialRegressionChannel.prototype.tick = function() {
 
     // Calculate the standard deviations of the regression. If there is no regression data
     // available, then skip
-    if (self.getInput('deviations') && dataSegment[dataSegment.length - 2][self.getOutputMapping('regression')]) {
+    if (self.getInput('deviations') && dataSegment[dataSegmentLength - 2][self.getOutputMapping('regression')]) {
         // Build an array of regression data using only points that actually have regression data.
         dataSegment.forEach(function(dataPoint) {
             var dataPointRegression = dataPoint[self.getOutputMapping('regression')];

@@ -16,6 +16,7 @@ StochasticOscillator.prototype = Object.create(Base.prototype);
 StochasticOscillator.prototype.tick = function() {
     var self = this;
     var dataSegment = this.getDataSegment(this.getInput('length'));
+    var dataSegmentLength = dataSegment.length;
     var averageLengthDataSegment = this.getDataSegment(this.getInput('averageLength') + 1).slice(0, this.getInput('averageLength'));
     var lastDataPoint = this.getLast();
     var low = 0.0;
@@ -24,7 +25,7 @@ StochasticOscillator.prototype.tick = function() {
     var D = 0.0;
     var returnValue = {};
 
-    if (dataSegment.length < this.getInput('length')) {
+    if (dataSegmentLength < this.getInput('length')) {
         return returnValue;
     }
 

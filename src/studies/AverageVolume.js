@@ -15,16 +15,17 @@ AverageVolume.prototype = Object.create(Base.prototype);
 
 AverageVolume.prototype.tick = function() {
     var dataSegment = this.getDataSegment(this.getInput('length'));
+    var dataSegmentLength = dataSegment.length;
     var average = 0.0;
     var returnValue = {};
 
-    if (dataSegment.length < this.getInput('length')) {
+    if (dataSegmentLength < this.getInput('length')) {
         return returnValue;
     }
 
     average = _(dataSegment).reduce(function(memo, dataPoint) {
         return memo + dataPoint.volume;
-    }, 0) / dataSegment.length;
+    }, 0) / dataSegmentLength;
 
     returnValue[this.getOutputMapping('average')] = average;
 

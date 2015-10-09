@@ -15,16 +15,17 @@ Sma.prototype = Object.create(Base.prototype);
 
 Sma.prototype.tick = function() {
     var dataSegment = this.getDataSegment(this.getInput('length'));
+    var dataSegmentLength = dataSegment.length;
     var sma = 0.0;
     var returnValue = {};
 
-    if (dataSegment.length < this.getInput('length')) {
+    if (dataSegmentLength < this.getInput('length')) {
         return returnValue;
     }
 
     sma = _(dataSegment).reduce(function(memo, dataPoint) {
         return memo + dataPoint.close;
-    }, 0) / dataSegment.length;
+    }, 0) / dataSegmentLength;
 
     returnValue[this.getOutputMapping('sma')] = sma;
 

@@ -6,6 +6,7 @@ function Base() {
     this.openPositions = [];
     this.profitLoss = 0.0;
     this.cumulativeData = [];
+    this.cumulativeDataCount = 0;
     this.winCount = 0;
     this.loseCount = 0;
 }
@@ -48,6 +49,7 @@ Base.prototype.tick = function(dataPoint) {
 
     // Add the data point to the cumulative data.
     self.cumulativeData.push(dataPoint);
+    self.cumulativeDataCount++;
 
     // Iterate over each study...
     self.getStudies().forEach(function(study) {
@@ -74,6 +76,12 @@ Base.prototype.tick = function(dataPoint) {
 
     // Simulate expiry of and profit/loss related to positions held.
     self.closeExpiredPositions(dataPoint.open, dataPoint.timestamp);
+
+    // Remove unused data every so often.
+    if (self.cumulativeDataCount >= 2000) {
+        self.cumulativeData.splice(0, 1000);
+        self.cumulativeDataCount = 1000;
+    }
 };
 
 Base.prototype.backtest = function(data, investment, profitability) {
@@ -166,52 +174,6 @@ Base.prototype.closeExpiredPositions = function(price, timestamp) {
             // Remove the position from the list of open positions.
             self.openPositions.splice(index, 1);
         }
-    });
-};
-
-Base.prototype.setDataOutputFilePath = function(path) {
-    this.dataOutputFilePath = path;
-};
-
-Base.prototype.saveOutput = function() {
-    var self = this;
-
-    if (!self.dataOutputFilePath) {
-        return;
-    }
-
-    // Save the data to a file.
-    stream = fs.createWriteStream(self.dataOutputFilePath, {flags: 'w'});
-
-    // Write headers for base data.
-    stream.write('symbol,timestamp,volume,open,high,low,close');
-
-    // Add study output names to headers.
-    self.getStudies().forEach(function(study) {
-        var studyProperty = '';
-        var studyOutputs = study.getOutputMappings();
-
-        for (studyProperty in studyOutputs) {
-            stream.write(',' + studyOutputs[studyProperty]);
-        }
-    });
-    stream.write('\n');
-
-    // Write data.
-    self.cumulativeData.forEach(function(dataPoint) {
-        // Write base data.
-        stream.write(dataPoint.symbol + ',' + new Date(dataPoint.timestamp) + ',' + dataPoint.volume + ',' + dataPoint.open + ',' + dataPoint.high + ',' + dataPoint.low + ',' + dataPoint.close);
-
-        // Write data for studies.
-        self.getStudies().forEach(function(study) {
-            var studyProperty = '';
-            var studyOutputs = study.getOutputMappings();
-
-            for (studyProperty in studyOutputs) {
-                stream.write(',' + dataPoint[studyOutputs[studyProperty]]);
-            }
-        });
-        stream.write('\n');
     });
 };
 

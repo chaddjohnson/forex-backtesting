@@ -51,9 +51,6 @@ Random.prototype.backtest = function(data, investment, profitability) {
     console.log('WIN RATE:\t' + self.getWinRate());
     console.log('WINS:\t\t' + self.winCount);
     console.log('LOSSES:\t\t' + self.loseCount);
-
-    // Save the output to a file.
-    this.saveOutput();
 };
 
 module.exports = Random;

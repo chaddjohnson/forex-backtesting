@@ -25,7 +25,7 @@ Rsi.prototype.calculateInitialAverageGain = function(initialDataPoint, dataSegme
         previousDataPoint = dataPoint;
 
         return memo + gain;
-    }, 0) / dataSegment.length;
+    }, 0) / this.dataSegmentLength;
 };
 
 Rsi.prototype.calculateInitialAverageLoss = function(initialDataPoint, dataSegment) {
@@ -37,7 +37,7 @@ Rsi.prototype.calculateInitialAverageLoss = function(initialDataPoint, dataSegme
         previousDataPoint = dataPoint;
 
         return memo + loss;
-    }, 0) / dataSegment.length;
+    }, 0) / this.dataSegmentLength;
 };
 
 Rsi.prototype.tick = function() {
@@ -51,7 +51,9 @@ Rsi.prototype.tick = function() {
     var RS = 0.0;
     var returnValue = {};
 
-    if (dataSegment.length < this.getInput('length')) {
+    this.dataSegmentLength = dataSegment.length;
+
+    if (this.dataSegmentLength < this.getInput('length')) {
         return returnValue;
     }
 

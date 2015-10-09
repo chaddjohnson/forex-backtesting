@@ -6,7 +6,7 @@ var path = require('path');
 gulp.task('backtest', function(done) {
     function showUsageInfo() {
         console.log('Example usage:\n');
-        console.log('gulp backtest --symbol EURCHF --parser metatrader --data ./data/metatrader/three-year/EURCHF.csv --strategy Reversals --investment 1000 --profitability 0.7 --out ./data/processed/EURUSD.csv\n');
+        console.log('gulp backtest --symbol EURCHF --parser metatrader --data ./data/metatrader/three-year/EURCHF.csv --strategy Reversals --investment 1000 --profitability 0.7\n');
     }
 
     function handleInputError(message) {
@@ -59,10 +59,6 @@ gulp.task('backtest', function(done) {
         dataParser.parse(argv.symbol, argv.data).then(function(parsedData) {
             // Prepare the strategy.
             var strategy = new strategyFn();
-
-            if (argv.out) {
-                strategy.setDataOutputFilePath(path.join(__dirname, argv.out));
-            }
 
             // Backtest the strategy against the parsed data.
             strategy.backtest(parsedData, investment, profitability);

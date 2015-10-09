@@ -17,17 +17,18 @@ Ema.prototype.tick = function() {
     var K = 0.0;
     var ema = 0.0;
     var returnValue = {};
+    var previousEma = lastDataPoint && lastDataPoint[this.getOutputMapping('ema')];
 
-    if (!this.previousEma) {
+    if (!previousEma) {
         // Use the last data item as the first previous EMA value.
-        this.previousEma = lastDataPoint.close;
+        previousEma = lastDataPoint.close;
     }
 
     K = 2 / (1 + this.getInput('length'));
-    ema = (lastDataPoint.close * K) + (this.previousEma * (1 - K));
+    ema = (lastDataPoint.close * K) + (previousEma * (1 - K));
 
     // Set the new EMA just calculated as the previous EMA.
-    this.previousEma = ema;
+    previousEma = ema;
 
     returnValue[this.getOutputMapping('ema')] = ema;
 

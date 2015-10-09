@@ -1,9 +1,7 @@
 var fs = require('fs');
-var workerFarm = require('worker-farm');
-var workers = workerFarm(require.resolve('../studyCalculator'));
 
-function Base(studyDefinitions) {
-    this.studyDefinitions = studyDefinitions;
+function Base() {
+    this.studies = [];
     this.positions = [];
     this.openPositions = [];
     this.profitLoss = 0.0;
@@ -13,8 +11,18 @@ function Base(studyDefinitions) {
     this.loseCount = 0;
 }
 
-Base.prototype.getStudyDefinitions = function() {
-    return this.studyDefinitions;
+Base.prototype.prepareStudies = function(studyDefinitions) {
+    var self = this;
+
+    // Iterate over each study definition...
+    studyDefinitions.forEach(function(studyDefinition) {
+        // Instantiate the study, and add it to the list of studies for this strategy.
+        self.studies.push(new studyDefinition.study(studyDefinition.inputs, studyDefinition.outputMap));
+    });
+};
+
+Base.prototype.getStudies = function() {
+    return this.studies;
 };
 
 Base.prototype.getProfitLoss = function() {
@@ -36,58 +44,44 @@ Base.prototype.getWinRate = function() {
     return this.winCount / (this.winCount + this.loseCount);
 };
 
-Base.prototype.tick = function(dataPoint, callback) {
+Base.prototype.tick = function(dataPoint) {
     var self = this;
-    var studyCount = self.getStudyDefinitions().length;
-    var completedWorkerCount = 0;
 
     // Add the data point to the cumulative data.
     self.cumulativeData.push(dataPoint);
     self.cumulativeDataCount++;
 
     // Iterate over each study...
-    self.getStudyDefinitions().forEach(function(studyDefinition) {
-        var workerInput = {
-            data: self.cumulativeData,
-            name: studyDefinition.name,
-            inputs: studyDefinition.inputs,
-            outputMap: studyDefinition.outputMap
-        };
-        workers(workerInput, function(error, studyTickValues) {
-            console.log('callback called');
-            var studyProperty = '';
-            var studyTickValue = 0.0;
+    self.getStudies().forEach(function(study) {
+        var studyProperty = '';
+        var studyTickValue = 0.0;
+        var studyOutputs = study.getOutputMappings();
 
-            // Augment the last data point with the data the study generates.
-            for (studyProperty in studyDefinition.outputMap) {
-                studyTickValue = studyTickValues[studyDefinition.outputMap[studyProperty]];
+        // Update the data for the study.
+        study.setData(self.cumulativeData);
 
-                if (studyTickValues && typeof studyTickValue === 'number') {
-                    // Include output in main output, and limit decimal precision without rounding.
-                    dataPoint[studyDefinition.outputMap[studyProperty]] = studyTickValue;
-                }
-                else {
-                    dataPoint[studyDefinition.outputMap[studyProperty]] = '';
-                }
+        var studyTickValues = study.tick();
+
+        // Augment the last data point with the data the study generates.
+        for (studyProperty in studyOutputs) {
+            if (studyTickValues && typeof studyTickValues[studyOutputs[studyProperty]] === 'number') {
+                // Include output in main output, and limit decimal precision without rounding.
+                dataPoint[studyOutputs[studyProperty]] = studyTickValues[studyOutputs[studyProperty]];
             }
-
-            completedWorkerCount++;
-
-            if (completedWorkerCount >= studyCount) {
-                // Simulate expiry of and profit/loss related to positions held.
-                self.closeExpiredPositions(dataPoint.open, dataPoint.timestamp);
-
-                // Remove unused data every so often.
-                if (self.cumulativeDataCount >= 2000) {
-                    self.cumulativeData.splice(0, 1000);
-                    self.cumulativeDataCount = 1000;
-                }
-
-                // Done with the current tick for this strategy.
-                callback();
+            else {
+                dataPoint[studyOutputs[studyProperty]] = '';
             }
-        });
+        }
     });
+
+    // Simulate expiry of and profit/loss related to positions held.
+    self.closeExpiredPositions(dataPoint.open, dataPoint.timestamp);
+
+    // Remove unused data every so often.
+    if (self.cumulativeDataCount >= 2000) {
+        self.cumulativeData.splice(0, 1000);
+        self.cumulativeDataCount = 1000;
+    }
 };
 
 Base.prototype.backtest = function(data, investment, profitability) {

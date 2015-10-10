@@ -3,6 +3,26 @@ var gutil = require('gulp-util');
 var argv = require('yargs').argv;
 var path = require('path');
 
+var garbageCollectionTimeout = null;
+
+function scheduleGarbageCollection() {
+    if (!global.gc) {
+        return;
+    }
+    garbageCollectionTimeout = setTimeout(function(){
+        // Allow the timeout to be garbage collected.
+        garbageCollectionTimeout = null;
+
+        // Collect garbage.
+        global.gc();
+
+        // Re-schedule garbage collection.
+        scheduleGarbageCollection();
+    }, 5 * 60 * 1000);
+}
+
+scheduleGarbageCollection();
+
 gulp.task('backtest', function(done) {
     function showUsageInfo() {
         console.log('Example usage:\n');

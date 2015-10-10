@@ -46,6 +46,7 @@ Base.prototype.getWinRate = function() {
 
 Base.prototype.tick = function(dataPoint) {
     var self = this;
+    var i = 0;
 
     // Add the data point to the cumulative data.
     self.cumulativeData.push(dataPoint);
@@ -79,6 +80,12 @@ Base.prototype.tick = function(dataPoint) {
 
     // Remove unused data every so often.
     if (self.cumulativeDataCount >= 2000) {
+        // Manually free memory for old data points in the array.
+        for (i = 0; i < 1000; i++) {
+            self.cumulativeData[i] = null;
+        }
+
+        // Remove the excess data points from the array.
         self.cumulativeData.splice(0, 1000);
         self.cumulativeDataCount = 1000;
     }

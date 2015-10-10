@@ -75,6 +75,9 @@ Base.prototype.prepareStudyData = function(data, callback) {
                         dataPoint[studyOutputs[studyProperty]] = '';
                     }
                 }
+
+                // Ensure memory is freed.
+                studyTickValues = null;
             });
         });
 
@@ -99,6 +102,7 @@ Base.prototype.cacheData = function(data, callback) {
         }
     });
     DataPoint.collection.insert(dataPoints, function() {
+        dataPoints = null;
         callback();
     });
 };
@@ -204,7 +208,7 @@ Base.prototype.optimize = function(configurations, data, investment, profitabili
                 minimumProfitLoss: results.minimumProfitLoss
             };
             Backtest.collection.insert(backtest, function(error) {
-                // Free up memory...just in case...
+                // Ensure memory is freed.
                 strategy = null;
                 results = null;
                 backtest = null;

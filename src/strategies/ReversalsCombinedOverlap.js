@@ -352,17 +352,20 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
         if (previousDataPoint && index < dataPointCount - 1) {
             if (putNextTick) {
                 // Create a new position.
-                self.addPosition(new Put(dataPoint.symbol, (dataPoint.timestamp - 1000), previousDataPoint.close, investment, profitability, expirationMinutes));
+                self.addPosition(new Put(dataPoint.symbol, (dataPoint.timestamp - 1000), previousDataPoint.close, putInvestment, profitability, expirationMinutes));
             }
 
             if (callNextTick) {
                 // Create a new position.
-                self.addPosition(new Call(dataPoint.symbol, (dataPoint.timestamp - 1000), previousDataPoint.close, investment, profitability, expirationMinutes));
+                self.addPosition(new Call(dataPoint.symbol, (dataPoint.timestamp - 1000), previousDataPoint.close, callInvestment, profitability, expirationMinutes));
             }
         }
 
         putNextTick = false;
         callNextTick = false;
+
+        putInvestment = 0;
+        callInvestment = 0;
 
         // For every configuration...
         configurations.forEach(function(configuration) {
@@ -473,6 +476,13 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
             if ((putThisConfiguration || callThisConfiguration) && (!previousDataPoint || (dataPoint.timestamp - previousDataPoint.timestamp) !== 60 * 1000)) {
                 putThisConfiguration = false;
                 callThisConfiguration = false;
+            }
+
+            if (putThisConfiguration) {
+                putInvestment += investment;
+            }
+            if (callThisConfiguration) {
+                callInvestment += investment;
             }
 
             // Determine whether to trade next tick.

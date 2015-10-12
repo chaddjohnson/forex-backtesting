@@ -9,7 +9,7 @@ function scheduleGarbageCollection() {
     if (!global.gc) {
         return;
     }
-    garbageCollectionTimeout = setTimeout(function(){
+    garbageCollectionTimeout = setTimeout(function() {
         // Allow the timeout to be garbage collected.
         garbageCollectionTimeout = null;
 

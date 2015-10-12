@@ -8,7 +8,7 @@ var studyDefinitions = [
     {study: studies.Ema, inputs: {length: 50}, outputMap: {ema: 'ema50'}},
     {study: studies.Sma, inputs: {length: 13}, outputMap: {sma: 'sma13'}},
     {study: studies.Rsi, inputs: {length: 7}, outputMap: {rsi: 'rsi7'}},
-    {study: studies.Rsiz, inputs: {length: 5}, outputMap: {rsi: 'rsi5'}},
+    {study: studies.Rsi, inputs: {length: 5}, outputMap: {rsi: 'rsi5'}},
     {study: studies.Rsi, inputs: {length: 2}, outputMap: {rsi: 'rsi2'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 100, degree: 2, deviations: 1.9}, outputMap: {regression: 'prChannel100_2_19', upper: 'prChannelUpper100_2_19', lower: 'prChannelLower100_2_19'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 100, degree: 3, deviations: 1.9}, outputMap: {regression: 'prChannel100_3_19', upper: 'prChannelUpper100_3_19', lower: 'prChannelLower100_3_19'}},

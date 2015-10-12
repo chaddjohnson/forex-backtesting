@@ -334,7 +334,7 @@ function ReversalsCombined() {
 
 ReversalsCombined.prototype = Object.create(Base.prototype);
 
-Reversals.prototype.backtest = function(data, investment, profitability) {
+ReversalsCombined.prototype.backtest = function(data, investment, profitability) {
     var self = this;
     var expirationMinutes = 5;
     var putNextTick = false;

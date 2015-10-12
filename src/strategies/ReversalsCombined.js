@@ -325,14 +325,14 @@ var studyDefinitions = [
     {study: studies.PolynomialRegressionChannel, inputs: {length: 650, degree: 2}, outputMap: {regression: 'trendPrChannel650_2'}}
 ];
 
-function Reversals() {
-    this.constructor = Reversals;
+function ReversalsCombined() {
+    this.constructor = ReversalsCombined;
     Base.call(this);
 
     this.prepareStudies(studyDefinitions);
 }
 
-Reversals.prototype = Object.create(Base.prototype);
+ReversalsCombined.prototype = Object.create(Base.prototype);
 
 Reversals.prototype.backtest = function(data, investment, profitability) {
     var self = this;
@@ -496,4 +496,4 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
     console.log(self.getResults());
 };
 
-module.exports = Reversals;
+module.exports = ReversalsCombined;

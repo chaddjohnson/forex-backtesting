@@ -1,3 +1,4 @@
+var argv = require('yargs').argv;
 var _ = require('underscore');
 var Base = require('./Base');
 var studies = require('../studies');
@@ -490,11 +491,13 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
             callNextTick = callNextTick || callThisConfiguration;
         });
 
-        if (self.getProfitLoss() !== previousBalance) {
-            // console.log('BALANCE: $' + self.getProfitLoss());
-            // console.log();
+        if (argv.showTrades) {
+            if (self.getProfitLoss() !== previousBalance) {
+                console.log('BALANCE: $' + self.getProfitLoss());
+                console.log();
+            }
+            previousBalance = self.getProfitLoss();
         }
-        previousBalance = self.getProfitLoss();
 
         // Track the current data point as the previous data point for the next tick.
         previousDataPoint = dataPoint;

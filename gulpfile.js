@@ -139,8 +139,12 @@ gulp.task('optimize', function(done) {
         handleInputError('No profitability provided');
     }
 
+    if (!argv.database) {
+        handleInputError('No database provided');
+    }
+
     // Set up database connection.
-    db.initialize();
+    db.initialize(argv.database);
 
     try {
         // Parse the raw data file.

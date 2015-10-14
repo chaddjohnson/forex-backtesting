@@ -182,7 +182,6 @@ Base.prototype.optimize = function(configurations, data, investment, profitabili
     self.removeCompletedConfigurations(configurations, function() {
         var configurationCompletionCount = -1;
         var configurationsCount = configurations.length;
-        var backtests = [];
 
         async.each(configurations, function(configuration, asyncCallback) {
             configurationCompletionCount++;
@@ -196,7 +195,7 @@ Base.prototype.optimize = function(configurations, data, investment, profitabili
             var results = strategy.backtest(configuration, data, investment, profitability);
 
             // Record the results.
-            backtests.push({
+            var backtest = {
                 symbol: self.symbol,
                 strategyName: strategy.constructor.name,
                 configuration: configuration,
@@ -207,20 +206,19 @@ Base.prototype.optimize = function(configurations, data, investment, profitabili
                 winRate: results.winRate,
                 maximumConsecutiveLosses: results.maximumConsecutiveLosses,
                 minimumProfitLoss: results.minimumProfitLoss
+            };
+            Backtest.collection.insert(backtest, function(error) {
+                // Ensure memory is freed.
+                strategy = null;
+                results = null;
+                backtest = null;
+
+                asyncCallback(error);
             });
         }, function(error) {
             if (error) {
                 console.log(error.message || error);
             }
-
-            Backtest.collection.insert(backtests, function(error) {
-                // Ensure memory is freed.
-                strategy = null;
-                results = null;
-
-                asyncCallback(error);
-            });
-
             process.stdout.cursorTo(13);
             process.stdout.write(configurationsCount + ' of ' + configurationsCount + ' completed\n');
             callback();

@@ -207,10 +207,11 @@ Base.prototype.optimize = function(configurations, data, investment, profitabili
                 maximumConsecutiveLosses: results.maximumConsecutiveLosses,
                 minimumProfitLoss: results.minimumProfitLoss
             };
+
+            strategy = null;
+            results = null;
+
             Backtest.collection.insert(backtest, function(error) {
-                // Ensure memory is freed.
-                strategy = null;
-                results = null;
                 backtest = null;
 
                 asyncCallback(error);

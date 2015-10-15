@@ -183,7 +183,7 @@ Base.prototype.optimize = function(configurations, data, investment, profitabili
         var configurationCompletionCount = -1;
         var configurationsCount = configurations.length;
 
-        async.each(configurations, function(configuration, asyncCallback) {
+        var task = function(configuration, taskCallback) {
             configurationCompletionCount++;
             process.stdout.cursorTo(13);
             process.stdout.write(configurationCompletionCount + ' of ' + configurationsCount + ' completed');
@@ -213,10 +213,18 @@ Base.prototype.optimize = function(configurations, data, investment, profitabili
 
             Backtest.collection.insert(backtest, function(error) {
                 backtest = null;
-
-                asyncCallback(error);
+                taskCallback(error);
             });
-        }, function(error) {
+        };
+
+        var tasks = [];
+
+        configurations.forEach(function(configuration) {
+            tasks.push(function(taskCallback) {
+                task(configuration, taskCallback);
+            });
+        });
+        async.series(tasks, function(error) {
             if (error) {
                 console.log(error.message || error);
             }

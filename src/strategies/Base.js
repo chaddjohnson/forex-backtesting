@@ -9,6 +9,7 @@ function Base() {
     this.cumulativeDataCount = 0;
     this.winCount = 0;
     this.loseCount = 0;
+    this.showTrades = false;
 }
 
 Base.prototype.prepareStudies = function(studyDefinitions) {
@@ -182,6 +183,14 @@ Base.prototype.closeExpiredPositions = function(price, timestamp) {
             self.openPositions.splice(index, 1);
         }
     });
+};
+
+Base.prototype.setShowTrades = function(showTrades) {
+    this.showTrades = showTrades;
+};
+
+Base.prototype.getShowTrades = function() {
+    return this.showTrades;
 };
 
 module.exports = Base;

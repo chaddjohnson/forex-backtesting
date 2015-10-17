@@ -1,4 +1,3 @@
-var argv = require('yargs').argv;
 var Base = require('./Base');
 var Call = require('../../positions/Call');
 var Put = require('../../positions/Put');
@@ -21,21 +20,28 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
     var callThisConfiguration = false;
     var previousDataPoint;
     var dataPointCount = data.length;
+    var previousBalance = 0;
 
     // For every data point...
     data.forEach(function(dataPoint, index) {
+        var position;
+
         // Simulate the next tick.
         self.tick(dataPoint);
 
         if (previousDataPoint && index < dataPointCount - 1) {
             if (putNextTick) {
                 // Create a new position.
-                self.addPosition(new Put(dataPoint.symbol, (dataPoint.timestamp - 1000), previousDataPoint.close, investment, profitability, expirationMinutes));
+                position = new Put(dataPoint.symbol, (dataPoint.timestamp - 1000), previousDataPoint.close, investment, profitability, expirationMinutes);
+                position.setShowTrades(this.getShowTrades());
+                self.addPosition(position);
             }
 
             if (callNextTick) {
                 // Create a new position.
-                self.addPosition(new Call(dataPoint.symbol, (dataPoint.timestamp - 1000), previousDataPoint.close, investment, profitability, expirationMinutes));
+                position = new Call(dataPoint.symbol, (dataPoint.timestamp - 1000), previousDataPoint.close, investment, profitability, expirationMinutes)
+                position.setShowTrades(this.getShowTrades());
+                self.addPosition(position);
             }
         }
 
@@ -158,6 +164,14 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
             callNextTick = callNextTick || callThisConfiguration;
         });
 
+        if (self.getShowTrades()) {
+            if (self.getProfitLoss() !== previousBalance) {
+                console.log('BALANCE: $' + self.getProfitLoss());
+                console.log();
+            }
+            previousBalance = self.getProfitLoss();
+        }
+        
         // Track the current data point as the previous data point for the next tick.
         previousDataPoint = dataPoint;
     });

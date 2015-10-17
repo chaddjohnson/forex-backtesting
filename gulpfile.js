@@ -220,7 +220,7 @@ gulp.task('combine', function(done) {
         var backtestConstraints = {
             symbol: argv.symbol,
             //strategyName: strategyFn.name,
-            minimumProfitLoss: {'$gte': -12000},
+            minimumProfitLoss: {'$gte': -10000},
             maximumConsecutiveLosses: {'$lte': 12},
             winRate: {'$gte': 0.6}
         };
@@ -253,7 +253,7 @@ gulp.task('combine', function(done) {
             process.stdout.write('Combining configurations...');
             configurations.forEach(function(configuration, index) {
                 process.stdout.cursorTo(27);
-                process.stdout.write(index + ' of ' + configurationCount + ' completed');
+                process.stdout.write(index + ' of ' + configurationCount + ' completed (' + optimalConfigurations.length + ' / $' + benchmarkProfitLoss + ')');
 
                 // Make a shallow copy of the optimal configurations.
                 var strategyConfigurations = _.clone(optimalConfigurations);
@@ -267,7 +267,7 @@ gulp.task('combine', function(done) {
                 results = strategy.getResults();
 
                 // If including the configuration improved things, then include it in the list of optimal configurations.
-                if (results.profitLoss >= benchmarkProfitLoss + 1000 && results.winRate >= 0.6 && results.maximumConsecutiveLosses <= 15 && results.minimumProfitLoss >= -12000) {
+                if (results.profitLoss >= benchmarkProfitLoss + 1000 && results.winRate >= 0.6 && results.maximumConsecutiveLosses <= 12 && results.minimumProfitLoss >= -10000) {
                     optimalConfigurations.push(configuration);
 
                     // Update the benchmark.
@@ -277,6 +277,7 @@ gulp.task('combine', function(done) {
 
             // Do a final backtest using the optimal configuration combination.
             strategy = new strategyFn(optimalConfigurations);
+            srategy.setShowTrades(true);
             strategy.backtest(data, investment, profitability);
 
             // Save the results.

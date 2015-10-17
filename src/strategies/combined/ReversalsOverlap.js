@@ -1,4 +1,3 @@
-var argv = require('yargs').argv;
 var Base = require('./Base');
 var studies = require('../../studies');
 var Call = require('../../positions/Call');

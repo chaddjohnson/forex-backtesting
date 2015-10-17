@@ -9,6 +9,7 @@ function Base(symbol, timestamp, price, investment, profitability, expirationMin
     this.closePrice = 0.0;
     this.isOpen = true;
     this.closeTimestamp = null;
+    this.showTrades = false;
 
     // Calculate the expiration time.
     this.expirationTimestamp = this.timestamp + (expirationMinutes * 1000 * 60);
@@ -61,7 +62,7 @@ Base.prototype.close = function(price, timestamp) {
     this.closePrice = price;
     this.closeTimestamp = timestamp;
 
-    if (argv.showTrades) {
+    if (this.showTrades) {
         console.log(this.getTransactionType());
         console.log('    Investment:\t\t$' + this.investment);
         console.log('    Symbol:\t\t' + this.symbol);
@@ -77,6 +78,10 @@ Base.prototype.close = function(price, timestamp) {
 
 Base.prototype.getProfitLoss = function() {
     throw 'getProfitLoss() not implemented.'
+};
+
+Base.prototype.setShowTrades = function(showTrades) {
+    this.showTrades = showTrades;
 };
 
 module.exports = Base;

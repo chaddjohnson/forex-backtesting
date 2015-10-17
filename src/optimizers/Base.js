@@ -272,7 +272,7 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
             backtests.push({
                 symbol: self.symbol,
                 strategyName: strategy.constructor.name,
-                configuration: configuration,
+                configuration: strategy.getConfiguration(),
                 profitLoss: results.profitLoss,
                 winCount: results.winCount,
                 loseCount: results.loseCount,

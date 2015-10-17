@@ -5,7 +5,7 @@ var Put = require('../../positions/Put');
 
 function Reversals(configuration) {
     this.constructor = Reversals;
-    Base.call(this);
+    Base.call(this, configuration);
 
     this.configuration = configuration;
     this.putNextTick = false;

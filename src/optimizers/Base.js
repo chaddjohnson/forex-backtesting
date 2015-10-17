@@ -109,15 +109,18 @@ Base.prototype.prepareStudyData = function(data, callback) {
                 console.log(error.message || error);
             }
 
-            data = null;
-            cumulativeData = null;
-            self.studies = null;
+            // Save the data just removed prior to derefrencing it.
+            self.saveDataPoints(cumulativeData, function() {
+                data = null;
+                cumulativeData = null;
+                self.studies = null;
 
-            process.stdout.cursorTo(29);
-            process.stdout.write((100).toFixed(5) + '%\n');
+                process.stdout.cursorTo(29);
+                process.stdout.write((100).toFixed(5) + '%\n');
 
-            // Done preparing study data.
-            callback();
+                // Done preparing study data.
+                callback();
+            });
         });
     });
 };

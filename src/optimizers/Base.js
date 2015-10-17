@@ -29,30 +29,26 @@ Base.prototype.prepareStudyData = function(data, callback) {
     process.stdout.write('Preparing data for studies...');
 
     // Find cached data points, if any.
-    DataPoint.find({symbol: this.symbol}, function(error, dataPoints) {
-        var cumulativeData = [];
-
+    DataPoint.count({symbol: self.symbol}, function(error, count) {
         if (error) {
             console.error(error.message || error);
         }
-        if (dataPoints.length) {
+        if (count > 0) {
             process.stdout.write('using cached data\n');
-
-            cumulativeData = _(dataPoints).map(function(dataPoint) {
-                return dataPoint.data;
-            });
-            callback(cumulativeData);
-
+            callback();
             return;
         }
 
-        // For every data point...
-        data.forEach(function(dataPoint, index) {
+        var cumulativeData = [];
+
+        var prepareDataPoint = function(dataPoint, index, taskCallback) {
+            var completedDataPoints = [];
+
             percentage = ((index / dataPointCount) * 100).toFixed(5);
             process.stdout.cursorTo(29);
             process.stdout.write(percentage + '%');
 
-            // Add the data point to the cumulative data.
+            // Add the data point (cloned) to the cumulative data.
             cumulativeData.push(dataPoint);
 
             // Iterate over each study...
@@ -79,21 +75,54 @@ Base.prototype.prepareStudyData = function(data, callback) {
                 // Ensure memory is freed.
                 studyTickValues = null;
             });
+
+            // Periodically free up memory.
+            if (cumulativeData.length >= 2000) {
+                // Remove a chunk of completed items from the cumulative data.
+                completedDataPoints = cumulativeData.splice(0, 1000);
+
+                // Save the data just removed prior to derefrencing it.
+                self.saveDataPoints(completedDataPoints, function() {
+                    // Explicitly mark each item as ready for garbage collection, and then the whole array.
+                    completedDataPoints.forEach(function(item, index) {
+                        completedDataPoints[index] = null;
+                    });
+                    completedDataPoints = null;
+
+                    taskCallback();
+                });
+            }
+            else {
+                taskCallback();
+            }
+        };
+
+        var tasks = [];
+
+        data.forEach(function(dataPoint, index) {
+            tasks.push(function(taskCallback) {
+                prepareDataPoint(_.clone(dataPoint), index, taskCallback);
+            });
         });
+        async.series(tasks, function(error) {
+            if (error) {
+                console.log(error.message || error);
+            }
 
-        process.stdout.cursorTo(29);
-        process.stdout.write((100).toFixed(5) + '%\n');
+            data = null;
+            cumulativeData = null;
+            self.studies = null;
 
-        // Cache the data.
-        process.stdout.write('Caching data...');
-        self.cacheData(cumulativeData, function() {
-            process.stdout.write('done\n');
-            callback(cumulativeData);
+            process.stdout.cursorTo(29);
+            process.stdout.write((100).toFixed(5) + '%\n');
+
+            // Done preparing study data.
+            callback();
         });
     });
 };
 
-Base.prototype.cacheData = function(data, callback) {
+Base.prototype.saveDataPoints = function(data, callback) {
     var self = this;
     var dataPoints = _(data).map(function(dataPoint) {
         return {
@@ -128,7 +157,7 @@ Base.prototype.buildConfigurations = function(options, optionIndex, results, cur
             this.buildConfigurations(options, optionIndex + 1, results, current);
         }
         else {
-            results.push(_.clone(current));
+            results.push(JSON.parse(JSON.stringify(current)));
         }
     }
 
@@ -173,29 +202,71 @@ Base.prototype.removeCompletedConfigurations = function(configurations, callback
     });
 };
 
-Base.prototype.optimize = function(configurations, data, investment, profitability, callback) {
+Base.prototype.optimize = function(configurations, investment, profitability, callback) {
     var self = this;
+    var strategies = [];
+    var dataPointCount = 0;
+    var tasks = [];
 
     process.stdout.write('Optimizing...');
 
-    // Exclude configurations that have already been backtested.
-    self.removeCompletedConfigurations(configurations, function() {
-        var configurationCompletionCount = -1;
-        var configurationsCount = configurations.length;
+    tasks.push(function(taskCallback) {
+        // Exclude configurations that have already been backtested.
+        self.removeCompletedConfigurations(configurations, taskCallback);
+    });
 
-        var task = function(configuration, taskCallback) {
-            configurationCompletionCount++;
+    tasks.push(function(taskCallback) {
+        // Get a count of all data points.
+        DataPoint.count({symbol: self.symbol}, function(error, count) {
+            dataPointCount = count;
+            taskCallback(error);
+        });
+    });
+
+    tasks.push(function(taskCallback) {
+        // Instantiate one strategy per configuration.
+        strategies = _(configurations).map(function(configuration) {
+            return new self.strategyFn(configuration);
+        });
+
+        taskCallback();
+    });
+
+    tasks.push(function(taskCallback) {
+        var tasks = [];
+        var index = 0;
+
+        // Use a stream to interate over the data in batches so as to not consume too much memory.
+        var stream = DataPoint.find({symbol: self.symbol}).stream();
+
+        // Iterate through the data.
+        stream.on('data', function(dataPoint) {
+            // Backtest each strategy against the current data point..
+            strategies.forEach(function(strategy) {
+                strategy.backtest(dataPoint, investment, profitability);
+            });
+
+            index++;
+
             process.stdout.cursorTo(13);
-            process.stdout.write(configurationCompletionCount + ' of ' + configurationsCount + ' completed');
+            process.stdout.write(index + ' of ' + dataPointCount + ' completed');
+        });
 
-            // Instantiate a fresh strategy.
-            var strategy = new self.strategyFn();
+        stream.on('close', taskCallback);
+    });
 
-            // Backtest the strategy using the current configuration and the pre-built data.
-            var results = strategy.backtest(configuration, data, investment, profitability);
+    tasks.push(function(taskCallback) {
+        process.stdout.cursorTo(13);
+        process.stdout.write(dataPointCount + ' of ' + dataPointCount + ' completed\n');
+        process.stdout.write('Saving results...');
 
-            // Record the results.
-            var backtest = {
+        var backtests = [];
+
+        // Record the results for each strategy.
+        strategies.forEach(function(strategy) {
+            var results = strategy.getResults();
+
+            backtests.push({
                 symbol: self.symbol,
                 strategyName: strategy.constructor.name,
                 configuration: configuration,
@@ -206,33 +277,16 @@ Base.prototype.optimize = function(configurations, data, investment, profitabili
                 winRate: results.winRate,
                 maximumConsecutiveLosses: results.maximumConsecutiveLosses,
                 minimumProfitLoss: results.minimumProfitLoss
-            };
-
-            strategy = null;
-            results = null;
-
-            Backtest.collection.insert(backtest, function(error) {
-                backtest = null;
-                taskCallback(error);
-            });
-        };
-
-        var tasks = [];
-
-        configurations.forEach(function(configuration) {
-            tasks.push(function(taskCallback) {
-                task(configuration, taskCallback);
             });
         });
-        async.series(tasks, function(error) {
-            if (error) {
-                console.log(error.message || error);
-            }
-            process.stdout.cursorTo(13);
-            process.stdout.write(configurationsCount + ' of ' + configurationsCount + ' completed\n');
-            callback();
+
+        Backtest.collection.insert(backtests, function(error) {
+            process.stdout.write('done\n');
+            taskCallback(error);
         });
     });
+
+    async.series(tasks, callback);
 };
 
 module.exports = Base;

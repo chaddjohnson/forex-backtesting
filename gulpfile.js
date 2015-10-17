@@ -18,7 +18,7 @@ function scheduleGarbageCollection() {
 
         // Re-schedule garbage collection.
         scheduleGarbageCollection();
-    }, 5 * 60 * 1000);
+    }, 1 * 60 * 1000);
 }
 
 scheduleGarbageCollection();

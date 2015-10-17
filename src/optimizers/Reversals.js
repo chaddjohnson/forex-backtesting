@@ -190,11 +190,11 @@ Reversals.prototype.optimize = function(data, investment, profitability, done) {
     var self = this;
 
     // Prepare all data in advance for use.
-    self.prepareStudyData(data, function(preparedData) {
+    self.prepareStudyData(data, function() {
         // Ensure memory is released.
         data = null;
 
-        Base.prototype.optimize.call(self, self.configurations, preparedData, investment, profitability, done);
+        Base.prototype.optimize.call(self, self.configurations, investment, profitability, done);
     });
 };
 

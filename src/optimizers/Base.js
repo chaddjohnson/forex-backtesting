@@ -210,21 +210,21 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
 
     process.stdout.write('Optimizing...');
 
+    // Exclude configurations that have already been backtested.
     tasks.push(function(taskCallback) {
-        // Exclude configurations that have already been backtested.
         self.removeCompletedConfigurations(configurations, taskCallback);
     });
 
+    // Get a count of all data points.
     tasks.push(function(taskCallback) {
-        // Get a count of all data points.
         DataPoint.count({symbol: self.symbol}, function(error, count) {
             dataPointCount = count;
             taskCallback(error);
         });
     });
 
+    // Instantiate one strategy per configuration.
     tasks.push(function(taskCallback) {
-        // Instantiate one strategy per configuration.
         strategies = _(configurations).map(function(configuration) {
             return new self.strategyFn(configuration);
         });
@@ -232,11 +232,11 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
         taskCallback();
     });
 
+    // Use a stream to interate over the data in batches so as to not consume too much memory.
     tasks.push(function(taskCallback) {
         var tasks = [];
         var index = 0;
 
-        // Use a stream to interate over the data in batches so as to not consume too much memory.
         var stream = DataPoint.find({symbol: self.symbol}).stream();
 
         // Iterate through the data.
@@ -255,6 +255,7 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
         stream.on('close', taskCallback);
     });
 
+    // Record the results for each strategy.
     tasks.push(function(taskCallback) {
         process.stdout.cursorTo(13);
         process.stdout.write(dataPointCount + ' of ' + dataPointCount + ' completed\n');
@@ -262,7 +263,6 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
 
         var backtests = [];
 
-        // Record the results for each strategy.
         strategies.forEach(function(strategy) {
             var results = strategy.getResults();
 
@@ -286,6 +286,7 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
         });
     });
 
+    // Run tasks.
     async.series(tasks, callback);
 };
 

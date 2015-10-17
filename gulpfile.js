@@ -267,7 +267,7 @@ gulp.task('combine', function(done) {
                 results = strategy.getResults();
 
                 // If including the configuration improved things, then include it in the list of optimal configurations.
-                if (results.profitLoss >= benchmarkProfitLoss + 1000 && results.winRate >= 0.6 && results.maximumConsecutiveLosses <= 15 && results.minimumProfitLoss >= -10000) {
+                if (results.profitLoss >= benchmarkProfitLoss + 1000 && results.winRate >= 0.6 && results.maximumConsecutiveLosses <= 15 && results.minimumProfitLoss >= -12000) {
                     optimalConfigurations.push(configuration);
 
                     // Update the benchmark.

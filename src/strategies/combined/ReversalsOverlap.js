@@ -1,9 +1,8 @@
 var argv = require('yargs').argv;
-var _ = require('underscore');
 var Base = require('./Base');
-var studies = require('../studies');
-var Call = require('../positions/Call');
-var Put = require('../positions/Put');
+var studies = require('../../studies');
+var Call = require('../../positions/Call');
+var Put = require('../../positions/Put');
 
 var configurations = [
     {
@@ -310,16 +309,16 @@ var studyDefinitions = [
     {study: studies.PolynomialRegressionChannel, inputs: {length: 550, degree: 2}, outputMap: {regression: 'trendPrChannel550_2'}}
 ];
 
-function ReversalsCombined() {
-    this.constructor = ReversalsCombined;
+function ReversalsCombinedOverlap() {
+    this.constructor = ReversalsCombinedOverlap;
     Base.call(this);
 
     this.prepareStudies(studyDefinitions);
 }
 
-ReversalsCombined.prototype = Object.create(Base.prototype);
+ReversalsCombinedOverlap.prototype = Object.create(Base.prototype);
 
-ReversalsCombined.prototype.backtest = function(data, investment, profitability) {
+ReversalsCombinedOverlap.prototype.backtest = function(data, investment, profitability) {
     var self = this;
     var expirationMinutes = 5;
     var putNextTick = false;
@@ -338,17 +337,20 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
         if (previousDataPoint && index < dataPointCount - 1) {
             if (putNextTick) {
                 // Create a new position.
-                self.addPosition(new Put(dataPoint.symbol, (dataPoint.timestamp - 1000), previousDataPoint.close, investment, profitability, expirationMinutes));
+                self.addPosition(new Put(dataPoint.symbol, (dataPoint.timestamp - 1000), previousDataPoint.close, putInvestment, profitability, expirationMinutes));
             }
 
             if (callNextTick) {
                 // Create a new position.
-                self.addPosition(new Call(dataPoint.symbol, (dataPoint.timestamp - 1000), previousDataPoint.close, investment, profitability, expirationMinutes));
+                self.addPosition(new Call(dataPoint.symbol, (dataPoint.timestamp - 1000), previousDataPoint.close, callInvestment, profitability, expirationMinutes));
             }
         }
 
         putNextTick = false;
         callNextTick = false;
+
+        putInvestment = 0;
+        callInvestment = 0;
 
         // For every configuration...
         configurations.forEach(function(configuration) {
@@ -461,6 +463,13 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
                 callThisConfiguration = false;
             }
 
+            if (putThisConfiguration) {
+                putInvestment += investment;
+            }
+            if (callThisConfiguration) {
+                callInvestment += investment;
+            }
+
             // Determine whether to trade next tick.
             putNextTick = putNextTick || putThisConfiguration;
             callNextTick = callNextTick || callThisConfiguration;
@@ -481,4 +490,4 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
     console.log(self.getResults());
 };
 
-module.exports = ReversalsCombined;
+module.exports = ReversalsCombinedOverlap;

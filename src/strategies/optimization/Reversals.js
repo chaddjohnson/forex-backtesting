@@ -1,4 +1,3 @@
-var _ = require('underscore');
 var Base = require('./Base');
 var Call = require('../../positions/Call');
 var Put = require('../../positions/Put');
@@ -18,7 +17,7 @@ Reversals.prototype = Object.create(Base.prototype);
 Reversals.prototype.backtest = function(dataPoint, investment, profitability) {
     var expirationMinutes = 5;
 
-    // Simulate the next tick, and process studies for the tick.
+    // Simulate the next tick.
     this.tick(dataPoint);
 
     if (this.previousDataPoint) {

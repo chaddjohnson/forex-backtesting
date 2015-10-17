@@ -2,6 +2,7 @@ var gulp = require('gulp');
 var gutil = require('gulp-util');
 var argv = require('yargs').argv;
 var path = require('path');
+var _ = require('underscore');
 
 var garbageCollectionTimeout = null;
 
@@ -95,7 +96,7 @@ gulp.task('backtest', function(done) {
 gulp.task('optimize', function(done) {
     function showUsageInfo() {
         console.log('Example usage:\n');
-        console.log('gulp optimize --symbol EURCHF --parser metatrader --data ./data/metatrader/three-year/EURCHF.csv --optimizer Reversals --investment 1000 --profitability 0.7\n');
+        console.log('gulp optimize --symbol EURCHF --parser metatrader --data ./data/metatrader/three-year/EURCHF.csv --optimizer Reversals --investment 1000 --profitability 0.7 --database forex-backtesting\n');
     }
 
     function handleInputError(message) {
@@ -163,4 +164,114 @@ gulp.task('optimize', function(done) {
         console.error(error.message || error);
         process.exit(1);
     }
+});
+
+gulp.task('combine', function(done) {
+    function showUsageInfo() {
+        console.log('Example usage:\n');
+        console.log('gulp combine --symbol EURCHF --strategy Reversals --investment 1000 --profitability 0.7 --database forex-backtesting\n');
+    }
+
+    function handleInputError(message) {
+        gutil.log(gutil.colors.red(message));
+        showUsageInfo();
+        process.exit(1);
+    }
+
+    var db = require('./db');
+    var strategies = require('./src/strategies');
+
+    var DataPoint = require('./src/models/DataPoint');
+    var Backtest = require('./src/models/Backtest');
+    var Combination = require('./src/models/Combination');
+
+    var strategyFn;
+    var profitability = 0.0;
+
+    // Find the symbol based on the command line argument.
+    if (!argv.symbol) {
+        handleInputError('No symbol provided');
+    }
+
+    // Find the strategy based on the command line argument.
+    strategyFn = strategies.combined[argv.strategy]
+    if (!strategyFn) {
+        handleInputError('Invalid strategy');
+    }
+
+    investment = parseFloat(argv.investment)
+    if (!investment) {
+        handleInputError('Invalid investment');
+    }
+
+    profitability = parseFloat(argv.profitability)
+    if (!profitability) {
+        handleInputError('No profitability provided');
+    }
+
+    if (!argv.database) {
+        handleInputError('No database provided');
+    }
+
+    // Set up database connection.
+    db.initialize(argv.database);
+
+    DataPoint.find({symbol: argv.symbol}, function(error, dataPoints) {
+        var backtestConstraints = {
+            symbol: argv.symbol,
+            //strategyName: strategyFn.name,
+            minimumProfitLoss: {'$gte': -12000},
+            maximumConsecutiveLosses: {'$lte': 12},
+            winRate: {'$gte': 0.6}
+        };
+
+        Backtest.find(backtestConstraints).sort({profitLoss: -1}).exec(function(error, backtests) {
+            // Use the highest profit/loss figure as the benchmark.
+            var benchmarkProfitLoss = backtest[0].profitLoss;
+            var optimalConfigurations = [];
+            var configurations = _(backtests).map(function(backtest) {
+                return backtest.configuration;
+            });
+            var percentage = 0.0;
+            var configurationCount = configurations.length - 1;
+
+            // Use the backtest having the highest profit/loss as first configuration.
+            optimalConfigurations.push(configurations.shift());
+
+            // Iterate through the remaining strategy configurations.
+            process.stdout.write('Combining configurations...');
+            configurations.forEach(function(configuration, index) {
+                process.stdout.cursorTo(27);
+                process.stdout.write(index + ' of ' + configurationCount + ' completed');
+
+                // Make a shallow copy of the optimal configurations.
+                var strategyConfigurations = _.clone(optimalConfigurations);
+                var strategy;
+
+                // Add the current configuration onto the list of optimal configurations.
+                strategyConfigurations.push(configuration);
+
+                // Backtest the strategy using the optimal configurations plus the current configuration.
+                strategy = new strategyFn(strategyConfigurations);
+                strategy.backtest(dataPoints, investment, profitability);
+                results = strategy.getResults();
+
+                // If including the configuration improved things, then include it in the list of optimal configurations.
+                if (results.profitLoss >= benchmarkProfitLoss + 1000 && results.winRate >= 0.6 && results.maximumConsecutiveLosses <= 15 && results.minimumProfitLoss >= -10000) {
+                    optimalConfigurations.push(configuration);
+                }
+            });
+
+            // Save the results.
+            Combination.create({
+                symbol: argv.symbol,
+                strategyName: strategyFn.name,
+                configurations: optimalConfigurations
+            }, function() {
+                process.stdout.cursorTo(27);
+                process.stdout.write(configurationCount + ' of ' + configurationCount + ' completed\n');;
+                done();
+            });
+        });
+    });
 });

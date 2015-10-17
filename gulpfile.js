@@ -224,6 +224,12 @@ gulp.task('combine', function(done) {
             maximumConsecutiveLosses: {'$lte': 12},
             winRate: {'$gte': 0.6}
         };
+        var data = _(dataPoints).map(function(dataPoint) {
+            return dataPoint.data;
+        });
+
+        // Free up memory.
+        dataPoints = null;
 
         Backtest.find(backtestConstraints).sort({profitLoss: -1}).exec(function(error, backtests) {
             // Use the highest profit/loss figure as the benchmark.
@@ -234,6 +240,8 @@ gulp.task('combine', function(done) {
             });
             var percentage = 0.0;
             var configurationCount = configurations.length - 1;
+            var strategy;
+            var results;
 
             // Use the backtest having the highest profit/loss as first configuration.
             optimalConfigurations.push(configurations.shift());
@@ -246,26 +254,33 @@ gulp.task('combine', function(done) {
 
                 // Make a shallow copy of the optimal configurations.
                 var strategyConfigurations = _.clone(optimalConfigurations);
-                var strategy;
 
                 // Add the current configuration onto the list of optimal configurations.
                 strategyConfigurations.push(configuration);
 
                 // Backtest the strategy using the optimal configurations plus the current configuration.
                 strategy = new strategyFn(strategyConfigurations);
-                strategy.backtest(dataPoints, investment, profitability);
+                strategy.backtest(data, investment, profitability);
                 results = strategy.getResults();
 
                 // If including the configuration improved things, then include it in the list of optimal configurations.
                 if (results.profitLoss >= benchmarkProfitLoss + 1000 && results.winRate >= 0.6 && results.maximumConsecutiveLosses <= 15 && results.minimumProfitLoss >= -10000) {
                     optimalConfigurations.push(configuration);
+
+                    // Update the benchmark.
+                    benchmarkProfitLoss = results.profitLoss;
                 }
             });
+
+            // Do a final backtest using the optimal configuration combination.
+            strategy = new strategyFn(optimalConfigurations);
+            strategy.backtest(data, investment, profitability);
 
             // Save the results.
             Combination.create({
                 symbol: argv.symbol,
                 strategyName: strategyFn.name,
+                results: strategy.getResults(),
                 configurations: optimalConfigurations
             }, function() {
                 process.stdout.cursorTo(27);

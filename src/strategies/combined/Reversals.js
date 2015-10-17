@@ -43,7 +43,7 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
         callNextTick = false;
 
         // For every configuration...
-        this.configurations.forEach(function(configuration) {
+        self.configurations.forEach(function(configuration) {
             putThisConfiguration = true;
             callThisConfiguration = true;
 

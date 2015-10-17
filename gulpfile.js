@@ -227,7 +227,7 @@ gulp.task('combine', function(done) {
 
         Backtest.find(backtestConstraints).sort({profitLoss: -1}).exec(function(error, backtests) {
             // Use the highest profit/loss figure as the benchmark.
-            var benchmarkProfitLoss = backtest[0].profitLoss;
+            var benchmarkProfitLoss = backtests[0].profitLoss;
             var optimalConfigurations = [];
             var configurations = _(backtests).map(function(backtest) {
                 return backtest.configuration;

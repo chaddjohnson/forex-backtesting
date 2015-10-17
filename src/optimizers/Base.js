@@ -106,7 +106,7 @@ Base.prototype.prepareStudyData = function(data, callback) {
         });
         async.series(tasks, function(error) {
             if (error) {
-                console.log(error.message || error);
+                console.error(error.message || error);
             }
 
             // Save the data just removed prior to derefrencing it.
@@ -246,7 +246,7 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
         stream.on('data', function(dataPoint) {
             // Backtest each strategy against the current data point..
             strategies.forEach(function(strategy) {
-                strategy.backtest(dataPoint, investment, profitability);
+                strategy.backtest(dataPoint.data, investment, profitability);
             });
 
             index++;

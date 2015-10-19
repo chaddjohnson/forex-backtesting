@@ -51,7 +51,6 @@ Base.prototype.getWinRate = function() {
 };
 
 Base.prototype.tick = function(dataPoint) {
-    console.log('bad');
     var self = this;
     var i = 0;
 

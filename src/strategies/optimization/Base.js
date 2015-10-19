@@ -2,7 +2,7 @@ var StrategyBase = require('../Base');
 
 function Base(symbol, configuration) {
     this.constructor = Base;
-    StrategyBase.call(symbol, this);
+    StrategyBase.call(this, symbol);
 
     this.configuration = configuration;
 }
@@ -11,7 +11,6 @@ function Base(symbol, configuration) {
 Base.prototype = Object.create(StrategyBase.prototype);
 
 Base.prototype.tick = function(dataPoint) {
-    console.log('good');
     // Simulate expiry of and profit/loss related to positions held.
     this.closeExpiredPositions(dataPoint.open, dataPoint.timestamp);
 };

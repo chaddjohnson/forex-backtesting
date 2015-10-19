@@ -3,7 +3,6 @@ var fs = require('fs');
 function Base(symbol) {
     this.symbol = symbol;
     this.studies = [];
-    this.positions = [];
     this.openPositions = [];
     this.profitLoss = 0.0;
     this.cumulativeData = [];
@@ -11,6 +10,9 @@ function Base(symbol) {
     this.winCount = 0;
     this.loseCount = 0;
     this.showTrades = false;
+    this.consecutiveLosses = 0;
+    this.maximumConsecutiveLosses = 0;
+    this.minimumProfitLoss = 99999;
 }
 
 Base.prototype.getSymbol = function() {
@@ -33,14 +35,6 @@ Base.prototype.getStudies = function() {
 
 Base.prototype.getProfitLoss = function() {
     return this.profitLoss;
-};
-
-Base.prototype.getWinCount = function() {
-    return this.winCount;
-};
-
-Base.prototype.getLoseCount = function() {
-    return this.loseCount;
 };
 
 Base.prototype.getWinRate = function() {
@@ -102,56 +96,17 @@ Base.prototype.backtest = function(data, investment, profitability) {
 };
 
 Base.prototype.getResults = function() {
-    var consecutiveLosses = 0;
-    var maximumConsecutiveLosses = 0;
-    var minimumProfitLoss = 99999.0;
-    var positionProfitLoss = 0;
-    var balance = 0;
-
-    // Determine the max consecutive losses.
-    this.positions.forEach(function(position) {
-        balance -= position.getInvestment();
-        positionProfitLoss = position.getProfitLoss();
-
-        if (positionProfitLoss === (position.getInvestment() + (position.getProfitability() * position.getInvestment()))) {
-            // Won
-            balance += (position.getInvestment() + (position.getProfitability() * position.getInvestment()));
-            consecutiveLosses = 0;
-        }
-        else if (positionProfitLoss === position.getInvestment()) {
-            // Broke even
-            balance += position.getInvestment();
-        }
-        else {
-            // Lost
-            consecutiveLosses++;
-        }
-
-        // Track minimum profit/loss.
-        if (balance < minimumProfitLoss) {
-            minimumProfitLoss = balance;
-        }
-
-        // Track the maximum consecutive losses.
-        if (consecutiveLosses > maximumConsecutiveLosses) {
-            maximumConsecutiveLosses = consecutiveLosses;
-        }
-    });
-
     return {
-        profitLoss: this.getProfitLoss(),
-        winCount: this.getWinCount(),
-        loseCount: this.getLoseCount(),
+        profitLoss: this.profitLoss,
+        winCount: this.winCount,
+        loseCount: this.loseCount,
         winRate: this.getWinRate(),
-        maximumConsecutiveLosses: maximumConsecutiveLosses,
-        minimumProfitLoss: minimumProfitLoss
+        maximumConsecutiveLosses: this.maximumConsecutiveLosses,
+        minimumProfitLoss: this.minimumProfitLoss
     };
 };
 
 Base.prototype.addPosition = function(position) {
-    // Add this new position to the list of positions.
-    this.positions.push(position);
-
     // Also track this position in the list of open positions.
     this.openPositions.push(position);
 
@@ -179,9 +134,21 @@ Base.prototype.closeExpiredPositions = function(price, timestamp) {
 
             if (profitLoss > position.getInvestment()) {
                 self.winCount++;
+                self.consecutiveLosses = 0;
             }
             if (profitLoss === 0) {
                 self.loseCount++;
+                self.consecutiveLosses++;
+            }
+
+            // Track minimum profit/loss.
+            if (profitLoss < self.minimumProfitLoss) {
+                self.minimumProfitLoss = profitLoss;
+            }
+
+            // Track the maximum consecutive losses.
+            if (self.consecutiveLosses > self.maximumConsecutiveLosses) {
+                self.maximumConsecutiveLosses = self.consecutiveLosses;
             }
 
             // Remove the position from the list of open positions.

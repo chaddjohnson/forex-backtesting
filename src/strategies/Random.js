@@ -45,12 +45,7 @@ Random.prototype.backtest = function(data, investment, profitability) {
         previousDataPoint = dataPoint;
     });
 
-    // Show the results.
-    console.log('SYMBOL:\t\t' + self.getSymbol());
-    console.log('PROFIT/LOSS:\t$' + self.getProfitLoss());
-    console.log('WIN RATE:\t' + self.getWinRate());
-    console.log('WINS:\t\t' + self.winCount);
-    console.log('LOSSES:\t\t' + self.loseCount);
+    console.log(self.getResults());
 };
 
 module.exports = Random;

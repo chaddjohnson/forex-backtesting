@@ -94,9 +94,6 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
     var timeGapPresent = false;
     var previousDataPoint;
     var previousBalance = 0;
-    var consecutiveLosses = 0;
-    var maxConsecutiveLosses = 0;
-    var lowestProfitLoss = 99999.0;
 
     // For every data point...
     data.forEach(function(dataPoint) {
@@ -151,11 +148,6 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
             putNextTick = true;
         }
 
-        // Determine and display the lowest profit/loss.
-        if (self.getProfitLoss() < lowestProfitLoss) {
-            lowestProfitLoss = self.getProfitLoss();
-        }
-
         if (self.getProfitLoss() !== previousBalance) {
             // console.log('BALANCE: $' + self.getProfitLoss());
             // console.log();
@@ -166,24 +158,7 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
         previousDataPoint = dataPoint;
     });
 
-    // Show the results.
-    console.log('SYMBOL:\t\t' + self.getSymbol());
-    console.log('PROFIT/LOSS:\t$' + self.getProfitLoss());
-    console.log('WIN RATE:\t' + self.getWinRate());
-    console.log('WINS:\t\t' + self.getWinCount());
-    console.log('LOSSES:\t\t' + self.getLoseCount());
-
-    // Determine the max consecutive losses.
-    this.positions.forEach(function(position) {
-        position.getProfitLoss() === 0 ? consecutiveLosses++ : consecutiveLosses = 0;
-
-        if (consecutiveLosses > maxConsecutiveLosses) {
-            maxConsecutiveLosses = consecutiveLosses;
-        }
-    });
-
-    console.log('MAX CONSECUTIVE LOSSES:\t' + maxConsecutiveLosses);
-    console.log('LOWEST PROFIT/LOSS:\t$' + lowestProfitLoss);
+    console.log(self.getResults());
 };
 
 module.exports = Reversals;

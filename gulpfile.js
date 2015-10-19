@@ -77,9 +77,9 @@ gulp.task('backtest', function(done) {
 
     try {
         // Parse the raw data file.
-        dataParser.parse(argv.symbol, argv.data).then(function(parsedData) {
+        dataParser.parse(argv.data).then(function(parsedData) {
             // Prepare the strategy.
-            var strategy = new strategyFn();
+            var strategy = new strategyFn(argv.symbol);
 
             // Backtest the strategy against the parsed data.
             strategy.backtest(parsedData, investment, profitability);
@@ -149,7 +149,7 @@ gulp.task('optimize', function(done) {
 
     try {
         // Parse the raw data file.
-        dataParser.parse(argv.symbol, argv.data).then(function(parsedData) {
+        dataParser.parse(argv.data).then(function(parsedData) {
             // Prepare the strategy.
             var optimizer = new optimizerFn(argv.symbol);
 
@@ -262,7 +262,7 @@ gulp.task('combine', function(done) {
                 strategyConfigurations.push(configuration);
 
                 // Backtest the strategy using the optimal configurations plus the current configuration.
-                strategy = new strategyFn(strategyConfigurations);
+                strategy = new strategyFn(argv.symbol, strategyConfigurations);
                 strategy.backtest(data, investment, profitability);
                 results = strategy.getResults();
 
@@ -276,7 +276,7 @@ gulp.task('combine', function(done) {
             });
 
             // Do a final backtest using the optimal configuration combination.
-            strategy = new strategyFn(optimalConfigurations);
+            strategy = new strategyFn(argv.symbol, optimalConfigurations);
             srategy.setShowTrades(true);
             strategy.backtest(data, investment, profitability);
 

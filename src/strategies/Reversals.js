@@ -69,9 +69,9 @@ var studyDefinitions = [
     }
 ];
 
-function Reversals() {
+function Reversals(symbol) {
     this.constructor = Reversals;
-    Base.call(this);
+    Base.call(this, symbol);
 
     this.prepareStudies(studyDefinitions);
 }
@@ -106,13 +106,13 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
         if (previousDataPoint) {
             if (callNextTick) {
                 // Create a new position.
-                self.addPosition(new Call(dataPoint.symbol, (dataPoint.timestamp - 1000), previousDataPoint.close, investment, profitability, 5));
+                self.addPosition(new Call(self.getSymbol(), (dataPoint.timestamp - 1000), previousDataPoint.close, investment, profitability, 5));
                 callNextTick = false;
             }
 
             if (putNextTick) {
                 // Create a new position.
-                self.addPosition(new Put(dataPoint.symbol, (dataPoint.timestamp - 1000), previousDataPoint.close, investment, profitability, 5));
+                self.addPosition(new Put(self.getSymbol(), (dataPoint.timestamp - 1000), previousDataPoint.close, investment, profitability, 5));
                 putNextTick = false;
             }
         }
@@ -167,7 +167,7 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
     });
 
     // Show the results.
-    console.log('SYMBOL:\t\t' + previousDataPoint.symbol);
+    console.log('SYMBOL:\t\t' + self.getSymbol());
     console.log('PROFIT/LOSS:\t$' + self.getProfitLoss());
     console.log('WIN RATE:\t' + self.getWinRate());
     console.log('WINS:\t\t' + self.getWinCount());

@@ -1,8 +1,8 @@
 var StrategyBase = require('../Base');
 
-function Base(configurations) {
+function Base(symbol, configurations) {
     this.constructor = Base;
-    StrategyBase.call(this, configurations);
+    StrategyBase.call(this, symbol, configurations);
 
     this.configurations = configurations;
 }

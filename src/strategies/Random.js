@@ -6,9 +6,9 @@ var Put = require('../positions/Put');
 // Define studies to use.
 var studyDefinitions = [];
 
-function Random() {
+function Random(symbol) {
     this.constructor = Random;
-    Base.call(this);
+    Base.call(this, symbol);
 
     this.prepareStudies(studyDefinitions);
 }
@@ -32,10 +32,10 @@ Random.prototype.backtest = function(data, investment, profitability) {
             waitTicks = Math.floor(Math.random() * ((250 - 1) + 1)) + 1;
 
             if (decisionPivot <= 50) {
-                self.addPosition(new Call(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.close, investment, profitability, 120));
+                self.addPosition(new Call(self.getSymbol(), dataPoint.timestamp, previousDataPoint.close, investment, profitability, 120));
             }
             else {
-                self.addPosition(new Put(dataPoint.symbol, dataPoint.timestamp, previousDataPoint.close, investment, profitability, 120));
+                self.addPosition(new Put(self.getSymbol(), dataPoint.timestamp, previousDataPoint.close, investment, profitability, 120));
             }
         }
 
@@ -46,7 +46,7 @@ Random.prototype.backtest = function(data, investment, profitability) {
     });
 
     // Show the results.
-    console.log('SYMBOL:\t\t' + previousDataPoint.symbol);
+    console.log('SYMBOL:\t\t' + self.getSymbol());
     console.log('PROFIT/LOSS:\t$' + self.getProfitLoss());
     console.log('WIN RATE:\t' + self.getWinRate());
     console.log('WINS:\t\t' + self.winCount);

@@ -1,5 +1,3 @@
-var argv = require('yargs').argv;
-
 function Base(symbol, timestamp, price, investment, profitability, expirationMinutes) {
     this.symbol = symbol;
     this.timestamp = timestamp;

@@ -2,7 +2,7 @@ var fs = require('fs');
 var es = require('event-stream');
 var Q = require('q');
 
-module.exports.parse = function(symbol, filePath) {
+module.exports.parse = function(filePath) {
     var deferred = Q.defer();
     var stream;
 
@@ -41,7 +41,6 @@ module.exports.parse = function(symbol, filePath) {
 
                 if (volume > 0) {
                     formattedData.push({
-                        symbol: symbol,
                         timestamp: new Date(transactionData[0].replace(/(\d{2})\.(\d{2})\.(\d{4}) (.*)/, '$2-$1-$3 $4')).getTime(),
                         volume: volume,
                         open: parseFloat(transactionData[1]),

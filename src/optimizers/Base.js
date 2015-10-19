@@ -229,9 +229,8 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
     // Instantiate one strategy per configuration.
     tasks.push(function(taskCallback) {
         strategies = _(configurations).map(function(configuration) {
-            return new self.strategyFn(configuration);
+            return new self.strategyFn(this.symbol, configuration);
         });
-
         taskCallback();
     });
 
@@ -240,10 +239,7 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
         var tasks = [];
         var index = 0;
 
-        var stream = DataPoint.find({symbol: self.symbol}).stream();
-
-        // Iterate through the data.
-        stream.on('data', function(dataPoint) {
+        var streamer = function(dataPoint) {
             // Backtest each strategy against the current data point..
             strategies.forEach(function(strategy) {
                 strategy.backtest(dataPoint.data, investment, profitability);
@@ -251,10 +247,15 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
 
             index++;
 
+            dataPoint = null;
+
             process.stdout.cursorTo(13);
             process.stdout.write(index + ' of ' + dataPointCount + ' completed');
-        });
+        };
 
+        var stream = DataPoint.find({symbol: self.symbol}).stream();
+
+        stream.on('data', streamer);
         stream.on('close', taskCallback);
     });
 

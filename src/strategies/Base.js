@@ -1,6 +1,7 @@
 var fs = require('fs');
 
-function Base() {
+function Base(symbol) {
+    this.symbol = symbol;
     this.studies = [];
     this.positions = [];
     this.openPositions = [];
@@ -11,6 +12,10 @@ function Base() {
     this.loseCount = 0;
     this.showTrades = false;
 }
+
+Base.prototype.getSymbol = function() {
+    return this.symbol;
+};
 
 Base.prototype.prepareStudies = function(studyDefinitions) {
     var self = this;
@@ -46,6 +51,7 @@ Base.prototype.getWinRate = function() {
 };
 
 Base.prototype.tick = function(dataPoint) {
+    console.log('bad');
     var self = this;
     var i = 0;
 

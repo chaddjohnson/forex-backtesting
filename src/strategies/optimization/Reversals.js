@@ -2,9 +2,9 @@ var Base = require('./Base');
 var Call = require('../../positions/Call');
 var Put = require('../../positions/Put');
 
-function Reversals(configuration) {
+function Reversals(symbol, configuration) {
     this.constructor = Reversals;
-    Base.call(this, configuration);
+    Base.call(this, symbol, configuration);
 
     this.configuration = configuration;
     this.putNextTick = false;
@@ -23,12 +23,12 @@ Reversals.prototype.backtest = function(dataPoint, investment, profitability) {
     if (this.previousDataPoint) {
         if (this.putNextTick) {
             // Create a new position.
-            this.addPosition(new Put(dataPoint.symbol, (dataPoint.timestamp - 1000), this.previousDataPoint.close, investment, profitability, expirationMinutes));
+            this.addPosition(new Put(self.getSymbol(), (dataPoint.timestamp - 1000), this.previousDataPoint.close, investment, profitability, expirationMinutes));
         }
 
         if (this.callNextTick) {
             // Create a new position.
-            this.addPosition(new Call(dataPoint.symbol, (dataPoint.timestamp - 1000), this.previousDataPoint.close, investment, profitability, expirationMinutes));
+            this.addPosition(new Call(self.getSymbol(), (dataPoint.timestamp - 1000), this.previousDataPoint.close, investment, profitability, expirationMinutes));
         }
     }
 
@@ -142,6 +142,7 @@ Reversals.prototype.backtest = function(dataPoint, investment, profitability) {
     }
 
     // Track the current data point as the previous data point for the next tick.
+    this.previousDataPoint = null;
     this.previousDataPoint = dataPoint;
 };
 

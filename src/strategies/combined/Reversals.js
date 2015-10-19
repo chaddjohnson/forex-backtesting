@@ -2,9 +2,9 @@ var Base = require('./Base');
 var Call = require('../../positions/Call');
 var Put = require('../../positions/Put');
 
-function ReversalsCombined(configurations) {
+function ReversalsCombined(symbol, configurations) {
     this.constructor = ReversalsCombined;
-    Base.call(this, configurations);
+    Base.call(this, symbol, configurations);
 
     this.configurations = configurations;
 }
@@ -32,14 +32,14 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
         if (previousDataPoint && index < dataPointCount - 1) {
             if (putNextTick) {
                 // Create a new position.
-                position = new Put(dataPoint.symbol, (dataPoint.timestamp - 1000), previousDataPoint.close, investment, profitability, expirationMinutes);
+                position = new Put(self.getSymbol(), (dataPoint.timestamp - 1000), previousDataPoint.close, investment, profitability, expirationMinutes);
                 position.setShowTrades(this.getShowTrades());
                 self.addPosition(position);
             }
 
             if (callNextTick) {
                 // Create a new position.
-                position = new Call(dataPoint.symbol, (dataPoint.timestamp - 1000), previousDataPoint.close, investment, profitability, expirationMinutes)
+                position = new Call(self.getSymbol(), (dataPoint.timestamp - 1000), previousDataPoint.close, investment, profitability, expirationMinutes)
                 position.setShowTrades(this.getShowTrades());
                 self.addPosition(position);
             }

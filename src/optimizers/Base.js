@@ -236,21 +236,22 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
 
     // Use a stream to interate over the data in batches so as to not consume too much memory.
     tasks.push(function(taskCallback) {
-        var tasks = [];
         var index = 0;
 
         var streamer = function(dataPoint) {
-            // Backtest each strategy against the current data point..
+            stream.pause();
+
+            // Backtest each strategy against the current data point.
             strategies.forEach(function(strategy) {
-                strategy.backtest(_.clone(dataPoint.data), investment, profitability);
+                strategy.backtest(dataPoint.data, investment, profitability);
             });
 
             index++;
 
-            dataPoint = null;
-
             process.stdout.cursorTo(13);
             process.stdout.write(index + ' of ' + dataPointCount + ' completed');
+
+            stream.resume();
         };
 
         var stream = DataPoint.find({symbol: self.symbol}).stream();

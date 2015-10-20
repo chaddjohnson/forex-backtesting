@@ -241,7 +241,7 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
         var streamer = function(dataPoint) {
             stream.pause();
 
-            var dataPointDataCopy = _.clone(dataPoint);
+            var dataPointDataCopy = _.clone(dataPoint.data);
 
             // Backtest each strategy against the current data point.
             strategies.forEach(function(strategy) {

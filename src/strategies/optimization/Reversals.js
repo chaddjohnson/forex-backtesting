@@ -16,9 +16,20 @@ Reversals.prototype = Object.create(Base.prototype);
 
 Reversals.prototype.backtest = function(dataPoint, investment, profitability) {
     var expirationMinutes = 5;
+    var timestampHour = new Date(dataPoint.timestamp).getHours();
 
     // Simulate the next tick.
     this.tick(dataPoint);
+
+    // Only trade when the profitability is highest (8am - 6pm CST).
+    // Metatrader automatically converts timestamps to the current timezone in exported CSV files.
+    if (timestampHour < 7 || timestampHour >= 16) {
+        // Track the current data point as the previous data point for the next tick.
+        this.previousDataPoint = null;
+        this.previousDataPoint = dataPoint;
+
+        return;
+    }
 
     if (this.previousDataPoint) {
         if (this.putNextTick) {
@@ -133,12 +144,6 @@ Reversals.prototype.backtest = function(dataPoint, investment, profitability) {
             this.putNextTick = false;
             this.callNextTick = false;
         }
-    }
-
-    // Determine if there is a significant gap (> 60 seconds) between the current timestamp and the previous timestamp.
-    if ((this.putNextTick || this.callNextTick) && (!this.previousDataPoint || (dataPoint.timestamp - this.previousDataPoint.timestamp) > 60 * 1000)) {
-        this.putNextTick = false;
-        this.callNextTick = false;
     }
 
     // Track the current data point as the previous data point for the next tick.

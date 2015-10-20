@@ -91,7 +91,6 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
     var regressionLowerBoundBreached = false;
     // var longRegressionDowntrending = false;
     // var longRegressionUptrending = false;
-    var timeGapPresent = false;
     var previousDataPoint;
     var previousBalance = 0;
 
@@ -135,16 +134,13 @@ Reversals.prototype.backtest = function(data, investment, profitability) {
         // longRegressionUptrending = previousDataPoint && dataPoint.trendPrChannel && previousDataPoint.trendPrChannel && dataPoint.trendPrChannel > previousDataPoint.trendPrChannel;
         // longRegressionDowntrending = previousDataPoint && dataPoint.trendPrChannel && previousDataPoint.trendPrChannel && dataPoint.trendPrChannel < previousDataPoint.trendPrChannel;
 
-        // Determine if there is a significant gap (> 60 seconds) between the current timestamp and the previous timestamp.
-        timeGapPresent = previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 60 * 1000;
-
         // Determine whether to buy (CALL).
-        if (rsiOversold && regressionLowerBoundBreached && !timeGapPresent) {
+        if (rsiOversold && regressionLowerBoundBreached) {
             callNextTick = true;
         }
 
         // Determine whether to buy (PUT).
-        if (rsiOverbought && regressionUpperBoundBreached && !timeGapPresent) {
+        if (rsiOverbought && regressionUpperBoundBreached) {
             putNextTick = true;
         }
 

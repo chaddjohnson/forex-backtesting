@@ -1,3 +1,5 @@
+// Data source: http://www.fxdd.com/us/en/forex-resources/forex-trading-tools/metatrader-1-minute-data/
+
 var fs = require('fs');
 var es = require('event-stream');
 var Q = require('q');

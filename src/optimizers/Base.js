@@ -40,6 +40,7 @@ Base.prototype.prepareStudyData = function(data, callback) {
         }
 
         var cumulativeData = [];
+        var previousDataPoint = null;
 
         var prepareDataPoint = function(dataPoint, index, taskCallback) {
             var completedDataPoints = [];
@@ -47,6 +48,12 @@ Base.prototype.prepareStudyData = function(data, callback) {
             percentage = ((index / dataPointCount) * 100).toFixed(5);
             process.stdout.cursorTo(29);
             process.stdout.write(percentage + '%');
+
+            // If there is a significant gap (> 2 minutes), save the current data points, and start over with recording.
+            if (previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 2 * 60 * 1000) {
+                self.saveDataPoints(cumulativeData.slice());
+                cumulativeData = [];
+            }
 
             // Add the data point (cloned) to the cumulative data.
             cumulativeData.push(dataPoint);
@@ -75,6 +82,8 @@ Base.prototype.prepareStudyData = function(data, callback) {
                 // Ensure memory is freed.
                 studyTickValues = null;
             });
+
+            previousDataPoint = dataPoint;
 
             // Periodically free up memory.
             if (cumulativeData.length >= 2000) {
@@ -127,6 +136,13 @@ Base.prototype.prepareStudyData = function(data, callback) {
 
 Base.prototype.saveDataPoints = function(data, callback) {
     var self = this;
+    callback = callback || function() {};
+
+    if (!data || !data.length) {
+        callback();
+        return;
+    }
+
     var dataPoints = _(data).map(function(dataPoint) {
         return {
             symbol: self.symbol,

@@ -277,7 +277,7 @@ gulp.task('combine', function(done) {
 
             // Do a final backtest using the optimal configuration combination.
             strategy = new strategyFn(argv.symbol, optimalConfigurations);
-            srategy.setShowTrades(true);
+            strategy.setShowTrades(true);
             strategy.backtest(data, investment, profitability);
 
             // Save the results.

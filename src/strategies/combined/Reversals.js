@@ -25,22 +25,33 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
     // For every data point...
     data.forEach(function(dataPoint, index) {
         var position;
+        var timestampHour = new Date(dataPoint.timestamp).getHours();
 
         // Simulate the next tick.
         self.tick(dataPoint);
+
+        // Only trade when the profitability is highest (8am - 6pm CST).
+        // Metatrader automatically converts timestamps to the current timezone in exported CSV files.
+        if (timestampHour < 7 || timestampHour >= 16) {
+            // Track the current data point as the previous data point for the next tick.
+            previousDataPoint = null;
+            previousDataPoint = dataPoint;
+
+            return;
+        }
 
         if (previousDataPoint && index < dataPointCount - 1) {
             if (putNextTick) {
                 // Create a new position.
                 position = new Put(self.getSymbol(), (dataPoint.timestamp - 1000), previousDataPoint.close, investment, profitability, expirationMinutes);
-                position.setShowTrades(this.getShowTrades());
+                position.setShowTrades(self.getShowTrades());
                 self.addPosition(position);
             }
 
             if (callNextTick) {
                 // Create a new position.
                 position = new Call(self.getSymbol(), (dataPoint.timestamp - 1000), previousDataPoint.close, investment, profitability, expirationMinutes)
-                position.setShowTrades(this.getShowTrades());
+                position.setShowTrades(self.getShowTrades());
                 self.addPosition(position);
             }
         }
@@ -151,12 +162,6 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
                     putThisConfiguration = false;
                     callThisConfiguration = false;
                 }
-            }
-
-            // Determine if there is a significant gap (> 60 seconds) between the current timestamp and the previous timestamp.
-            if ((putThisConfiguration || callThisConfiguration) && (!previousDataPoint || (dataPoint.timestamp - previousDataPoint.timestamp) > 60 * 1000)) {
-                putThisConfiguration = false;
-                callThisConfiguration = false;
             }
 
             // Determine whether to trade next tick.

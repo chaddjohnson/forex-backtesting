@@ -94,7 +94,6 @@ TrendFollow.prototype.backtest = function(data, investment, profitability) {
     var movingAveragesDowntrending = false;
     var regressionUpperBoundBreached = false;
     var regressionLowerBoundBreached = false;
-    var timeGapPresent = false;
     var previousDataPoint;
     var previousBalance = 0;
 
@@ -131,16 +130,13 @@ TrendFollow.prototype.backtest = function(data, investment, profitability) {
         // Determine if the lower regression bound was breached by the low.
         regressionLowerBoundBreached = dataPoint.low <= dataPoint.prChannelLower200;
 
-        // Determine if there is a significant gap (> 60 seconds) between the current timestamp and the previous timestamp.
-        timeGapPresent = previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 60 * 1000;
-
         // Determine whether to buy (CALL).
-        if (movingAveragesUptrending && regressionLowerBoundBreached && dataPoint.close < dataPoint.ema50 && timeGapPresent) {
+        if (movingAveragesUptrending && regressionLowerBoundBreached && dataPoint.close < dataPoint.ema50) {
             callNextTick = true;
         }
 
         // Determine whether to buy (PUT).
-        if (movingAveragesDowntrending && regressionUpperBoundBreached && dataPoint.close > dataPoint.ema50 && !timeGapPresent) {
+        if (movingAveragesDowntrending && regressionUpperBoundBreached && dataPoint.close > dataPoint.ema50) {
             putNextTick = true;
         }
 

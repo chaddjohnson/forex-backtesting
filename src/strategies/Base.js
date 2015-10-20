@@ -75,8 +75,12 @@ Base.prototype.tick = function(dataPoint) {
         }
     });
 
-    // Simulate expiry of and profit/loss related to positions held.
-    self.closeExpiredPositions(dataPoint.open, dataPoint.timestamp);
+    if (self.previousDataPoint) {
+        // Simulate expiry of and profit/loss related to positions held.
+        self.closeExpiredPositions(self.previousDataPoint.close, dataPoint.timestamp);
+    }
+
+    self.previousDataPoint = dataPoint;
 
     // Remove unused data every so often.
     if (self.cumulativeDataCount >= 2000) {

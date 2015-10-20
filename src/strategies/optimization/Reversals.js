@@ -136,7 +136,7 @@ Reversals.prototype.backtest = function(dataPoint, investment, profitability) {
     }
 
     // Determine if there is a significant gap (> 60 seconds) between the current timestamp and the previous timestamp.
-    if ((this.putNextTick || this.callNextTick) && (!this.previousDataPoint || (dataPoint.timestamp - this.previousDataPoint.timestamp) !== 60 * 1000)) {
+    if ((this.putNextTick || this.callNextTick) && (!this.previousDataPoint || (dataPoint.timestamp - this.previousDataPoint.timestamp) > 60 * 1000)) {
         this.putNextTick = false;
         this.callNextTick = false;
     }

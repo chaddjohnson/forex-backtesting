@@ -154,7 +154,7 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
             }
 
             // Determine if there is a significant gap (> 60 seconds) between the current timestamp and the previous timestamp.
-            if ((putThisConfiguration || callThisConfiguration) && (!previousDataPoint || (dataPoint.timestamp - previousDataPoint.timestamp) !== 60 * 1000)) {
+            if ((putThisConfiguration || callThisConfiguration) && (!previousDataPoint || (dataPoint.timestamp - previousDataPoint.timestamp) > 60 * 1000)) {
                 putThisConfiguration = false;
                 callThisConfiguration = false;
             }
@@ -171,7 +171,7 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
             }
             previousBalance = self.getProfitLoss();
         }
-        
+
         // Track the current data point as the previous data point for the next tick.
         previousDataPoint = dataPoint;
     });

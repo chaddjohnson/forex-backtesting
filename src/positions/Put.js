@@ -18,7 +18,7 @@ Put.prototype.getProfitLoss = function() {
     }
 
     // Disregard transaction (set it to 0 profit/loss) if we don't have a good data point close to the expiry time available.
-    if (this.getCloseTimestamp() > this.getExpirationTimestamp() + 1000) {
+    if (this.getCloseTimestamp() > this.getExpirationTimestamp()) {
         return this.getInvestment();
     }
 

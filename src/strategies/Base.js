@@ -77,7 +77,7 @@ Base.prototype.tick = function(dataPoint) {
 
     if (self.previousDataPoint) {
         // Simulate expiry of and profit/loss related to positions held.
-        self.closeExpiredPositions(self.previousDataPoint.close, dataPoint.timestamp);
+        self.closeExpiredPositions(self.previousDataPoint.close, dataPoint.timestamp - 1000);
     }
 
     self.previousDataPoint = dataPoint;

@@ -11,11 +11,11 @@ function Base(symbol, configuration) {
 Base.prototype = Object.create(StrategyBase.prototype);
 
 Base.prototype.tick = function(dataPoint) {
-    if (this.previousDataPoint) {
+    if (this.tickPreviousDataPoint) {
         // Simulate expiry of and profit/loss related to positions held.
-        this.closeExpiredPositions(this.previousDataPoint.close, dataPoint.timestamp - 1000);
+        this.closeExpiredPositions(this.tickPreviousDataPoint.close, dataPoint.timestamp - 1000);
     }
-    this.previousDataPoint = dataPoint;
+    this.tickPreviousDataPoint = dataPoint;
 };
 
 Base.prototype.getConfiguration = function() {

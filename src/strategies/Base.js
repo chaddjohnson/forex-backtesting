@@ -105,6 +105,7 @@ Base.prototype.getResults = function() {
         winCount: this.winCount,
         loseCount: this.loseCount,
         winRate: this.getWinRate(),
+        tradeCount: this.winCount + this.loseCount,
         maximumConsecutiveLosses: this.maximumConsecutiveLosses,
         minimumProfitLoss: this.minimumProfitLoss
     };

@@ -296,7 +296,7 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
                 profitLoss: results.profitLoss,
                 winCount: results.winCount,
                 loseCount: results.loseCount,
-                tradeCount: results.winCount + results.loseCount,
+                tradeCount: results.tradeCount,
                 winRate: results.winRate,
                 maximumConsecutiveLosses: results.maximumConsecutiveLosses,
                 minimumProfitLoss: results.minimumProfitLoss

@@ -1,5 +1,3 @@
-// Data source: http://www.fxdd.com/us/en/forex-resources/forex-trading-tools/metatrader-1-minute-data/
-
 var fs = require('fs');
 var es = require('event-stream');
 var Q = require('q');
@@ -10,7 +8,6 @@ module.exports.parse = function(filePath) {
 
     var transactionData = [];
     var formattedData = [];
-    var volume = 0.0;
 
     if (!filePath) {
         throw 'No filePath provided to dataParser.'
@@ -30,15 +27,14 @@ module.exports.parse = function(filePath) {
                 }
 
                 transactionData = line.split(',');
-                volume = parseFloat(transactionData[6]);
 
                 formattedData.push({
-                    timestamp: new Date(transactionData[0] + ' ' + transactionData[1] + ':00').getTime(),
-                    volume: volume,
-                    open: parseFloat(transactionData[2]),
-                    high: parseFloat(transactionData[3]),
-                    low: parseFloat(transactionData[4]),
-                    close: parseFloat(transactionData[5])
+                    timestamp: new Date(transactionData[0]).getTime(),
+                    volume: 0,
+                    open: parseFloat(transactionData[1]),
+                    high: parseFloat(transactionData[2]),
+                    low: parseFloat(transactionData[3]),
+                    close: parseFloat(transactionData[4])
                 });
 
                 // Resume the read stream.

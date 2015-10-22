@@ -21,9 +21,9 @@ Reversals.prototype.backtest = function(dataPoint, investment, profitability) {
     // Simulate the next tick.
     this.tick(dataPoint);
 
-    // Only trade when the profitability is highest (12am - 4pm CST).
+    // Only trade when the profitability is highest (11pm - 4pm CST).
     // Note that MetaTrader automatically converts timestamps to the current timezone in exported CSV files.
-    if (timestampHour >= 16) {
+    if (timestampHour >= 16 && timestampHour < 23) {
         // Track the current data point as the previous data point for the next tick.
         this.previousDataPoint = null;
         this.previousDataPoint = dataPoint;

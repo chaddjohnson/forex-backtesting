@@ -222,7 +222,7 @@ gulp.task('combine', function(done) {
             //strategyName: strategyFn.name,
             minimumProfitLoss: {'$gte': -10000},
             maximumConsecutiveLosses: {'$lte': 12},
-            winRate: {'$gte': 0.6}
+            winRate: {'$gte': 0.64}
         };
         var data = _(dataPoints).map(function(dataPoint) {
             return dataPoint.data;
@@ -267,7 +267,7 @@ gulp.task('combine', function(done) {
                 results = strategy.getResults();
 
                 // If including the configuration improved things, then include it in the list of optimal configurations.
-                if (results.profitLoss >= benchmarkProfitLoss + 1000 && results.winRate >= 0.6 && results.maximumConsecutiveLosses <= 12 && results.minimumProfitLoss >= -10000) {
+                if (results.profitLoss >= benchmarkProfitLoss + 1000 && results.winRate >= 0.64 && results.maximumConsecutiveLosses <= 12 && results.minimumProfitLoss >= -10000) {
                     optimalConfigurations.push(configuration);
 
                     // Update the benchmark.

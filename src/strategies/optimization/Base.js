@@ -48,7 +48,7 @@ Base.prototype.tick = function(dataPoint) {
         expiredPositions = null;
 
         // Periodically save the static buffer to the database.
-        if (expiredPositionsBuffer.length >= 5000) {
+        if (expiredPositionsBuffer.length >= 2500) {
             Base.saveExpiredPositionsBuffer();
         }
     }
@@ -71,7 +71,9 @@ Base.saveExpiredPositionsBuffer = function() {
     expiredPositionsBufferCopy = expiredPositionsBuffer.slice();
     expiredPositionsBuffer = [];
 
-    PositionModel.collection.insert(expiredPositionsBufferCopy);
+    PositionModel.collection.insert(expiredPositionsBufferCopy, function() {
+        expiredPositionsBufferCopy = null;
+    });
 };
 
 module.exports = Base;

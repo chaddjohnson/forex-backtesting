@@ -272,7 +272,7 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
             stream.resume();
         };
 
-        var stream = DataPoint.find({symbol: self.symbol}, {}, {timeout: true}).stream();
+        var stream = DataPoint.find({symbol: self.symbol}, {}, {timeout: true}).sort({'data.timestamp': 1}).stream();
 
         stream.on('data', streamer);
         stream.on('close', function() {

@@ -245,7 +245,7 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
     // Instantiate one strategy per configuration.
     tasks.push(function(taskCallback) {
         strategies = _(configurations).map(function(configuration) {
-            return new self.strategyFn(this.symbol, configuration);
+            return new self.strategyFn(self.symbol, configuration);
         });
         taskCallback();
     });

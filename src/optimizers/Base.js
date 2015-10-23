@@ -275,7 +275,12 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
         var stream = DataPoint.find({symbol: self.symbol}, {}, {timeout: true}).stream();
 
         stream.on('data', streamer);
-        stream.on('close', taskCallback);
+        stream.on('close', function() {
+            // Save any unsaved positions.
+            self.strategyFn.saveExpiredPositionsBuffer();
+
+            taskCallback();
+        });
     });
 
     // Record the results for each strategy.

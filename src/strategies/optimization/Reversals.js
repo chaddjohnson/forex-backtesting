@@ -1,3 +1,4 @@
+var _ = require('underscore');
 var Base = require('./Base');
 var Call = require('../../positions/Call');
 var Put = require('../../positions/Put');
@@ -13,6 +14,8 @@ function Reversals(symbol, configuration) {
 
 // Create a copy of the Base "class" prototype for use in this "class."
 Reversals.prototype = Object.create(Base.prototype);
+
+_.extend(Reversals, Base);
 
 Reversals.prototype.backtest = function(dataPoint, investment, profitability) {
     var expirationMinutes = 5;

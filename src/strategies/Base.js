@@ -125,6 +125,8 @@ Base.prototype.closeExpiredPositions = function(price, timestamp) {
     // Use a copy so that items can be removed from the original without messing up the loop.
     var openPositionsCopy = self.openPositions.slice();
 
+    var expiredPositions = [];
+
     // Iterate over open positions.
     openPositionsCopy.forEach(function(position, index) {
         var profitLoss = 0.0;
@@ -156,10 +158,14 @@ Base.prototype.closeExpiredPositions = function(price, timestamp) {
                 self.maximumConsecutiveLosses = self.consecutiveLosses;
             }
 
+            expiredPositions.push(position);
+
             // Remove the position from the list of open positions.
             self.openPositions.splice(index, 1);
         }
     });
+
+    return expiredPositions;
 };
 
 Base.prototype.setShowTrades = function(showTrades) {

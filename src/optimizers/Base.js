@@ -291,6 +291,7 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
 
             backtests.push({
                 symbol: self.symbol,
+                strategyUuid: strategy.getUuid(),
                 strategyName: strategy.constructor.name,
                 configuration: strategy.getConfiguration(),
                 profitLoss: results.profitLoss,

@@ -13,6 +13,10 @@ function Base(symbol, timestamp, price, investment, profitability, expirationMin
     this.expirationTimestamp = this.timestamp + (expirationMinutes * 1000 * 60);
 }
 
+Base.prototype.getSymbol = function() {
+    return this.symbol;
+};
+
 Base.prototype.getTimestamp = function() {
     return this.timestamp;
 };

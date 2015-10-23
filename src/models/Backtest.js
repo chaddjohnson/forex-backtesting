@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 
 var backtestSchema = mongoose.Schema({
     symbol: {type: String, required: true},
+    strategyUuid: {type: String, required: true},
     strategyName: {type: String, required: true},
     configuration: {type: mongoose.Schema.Types.Mixed, required: true},
     profitLoss: {type: Number, required: true},

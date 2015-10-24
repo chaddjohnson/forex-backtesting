@@ -49,7 +49,7 @@ Base.prototype.tick = function(dataPoint) {
 
         expiredPositionsCount = expiredPositions.length;
 
-        for (i = 0; i < count; i++) {
+        for (i = 0; i < expiredPositionsCount; i++) {
             expiredPositions[i] = null;
         }
         expiredPositions.length = 0;

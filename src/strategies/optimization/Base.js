@@ -24,6 +24,8 @@ Base.prototype.getUuid = function() {
 Base.prototype.tick = function(dataPoint) {
     var self = this;
     var expiredPositions = [];
+    var i = 0;
+    var expiredPositionsCount = 0;
 
     if (self.tickPreviousDataPoint) {
         // Simulate expiry of and profit/loss related to positions held.
@@ -45,11 +47,16 @@ Base.prototype.tick = function(dataPoint) {
             });
         });
 
-        expiredPositions = null;
+        expiredPositionsCount = expiredPositions.length;
+
+        for (i = 0; i < count; i++) {
+            expiredPositions[i] = null;
+        }
+        expiredPositions.length = 0;
 
         // Periodically save the static buffer to the database.
-        if (expiredPositionsBuffer.length >= 2500) {
-            Base.saveExpiredPositionsBuffer();
+        if (expiredPositionsBuffer.length >= 2000) {
+            Base.saveExpiredPositionsBuffer(expiredPositionsBuffer.slice(0, 1000));
         }
     }
 
@@ -61,18 +68,18 @@ Base.prototype.getConfiguration = function() {
 };
 
 // Static function.
-Base.saveExpiredPositionsBuffer = function() {
-    var expiredPositionsBufferCopy = [];
-
-    if (expiredPositionsBuffer.length === 0) {
+Base.saveExpiredPositionsBuffer = function(expiredPositions) {
+    if (expiredPositions.length === 0) {
         return;
     }
+    PositionModel.collection.insert(expiredPositions, function() {
+        var i = 0;
+        var count = expiredPositions.length;
 
-    expiredPositionsBufferCopy = expiredPositionsBuffer.slice();
-    expiredPositionsBuffer = [];
-
-    PositionModel.collection.insert(expiredPositionsBufferCopy, function() {
-        expiredPositionsBufferCopy = null;
+        for (i = 0; i < count; i++) {
+            expiredPositions[i] = null;
+        }
+        expiredPositions.length = 0;
     });
 };
 

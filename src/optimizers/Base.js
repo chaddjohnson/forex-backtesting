@@ -96,7 +96,7 @@ Base.prototype.prepareStudyData = function(data, callback) {
                     completedDataPoints.forEach(function(item, index) {
                         completedDataPoints[index] = null;
                     });
-                    completedDataPoints = null;
+                    completedDataPoints = [];
 
                     taskCallback();
                 });
@@ -120,9 +120,9 @@ Base.prototype.prepareStudyData = function(data, callback) {
 
             // Save the data just removed prior to derefrencing it.
             self.saveDataPoints(cumulativeData, function() {
-                data = null;
-                cumulativeData = null;
-                self.studies = null;
+                data = [];
+                cumulativeData = [];
+                self.studies = [];
 
                 process.stdout.cursorTo(29);
                 process.stdout.write((100).toFixed(5) + '%\n');
@@ -150,7 +150,7 @@ Base.prototype.saveDataPoints = function(data, callback) {
         }
     });
     DataPoint.collection.insert(dataPoints, function() {
-        dataPoints = null;
+        dataPoints = [];
         callback();
     });
 };
@@ -258,29 +258,28 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
             stream.pause();
 
             var dataPointDataCopy = _.clone(dataPoint.data);
+            var backtestTasks = [];
 
             // Backtest each strategy against the current data point.
             strategies.forEach(function(strategy) {
-                strategy.backtest(dataPointDataCopy, investment, profitability);
+                backtestTasks.push(function(backtestCallback) {
+                    strategy.backtest(dataPointDataCopy, investment, profitability, backtestCallback);
+                });
             });
+            async.series(backtestTasks, function() {
+                index++;
 
-            index++;
+                process.stdout.cursorTo(13);
+                process.stdout.write(index + ' of ' + dataPointCount + ' completed');
 
-            process.stdout.cursorTo(13);
-            process.stdout.write(index + ' of ' + dataPointCount + ' completed');
-
-            stream.resume();
+                stream.resume();
+            });
         };
 
         var stream = DataPoint.find({symbol: self.symbol}, {}, {timeout: true}).sort({'data.timestamp': 1}).stream();
 
         stream.on('data', streamer);
-        stream.on('close', function() {
-            // Save any unsaved positions.
-            self.strategyFn.saveExpiredPositionsBuffer();
-
-            taskCallback();
-        });
+        stream.on('close', taskCallback);
     });
 
     // Record the results for each strategy.

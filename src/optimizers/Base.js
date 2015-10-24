@@ -96,7 +96,7 @@ Base.prototype.prepareStudyData = function(data, callback) {
                     completedDataPoints.forEach(function(item, index) {
                         completedDataPoints[index] = null;
                     });
-                    completedDataPoints.length = 0;
+                    completedDataPoints = null;
 
                     taskCallback();
                 });

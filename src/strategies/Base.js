@@ -114,9 +114,6 @@ Base.prototype.getResults = function() {
 Base.prototype.addPosition = function(position) {
     // Also track this position in the list of open positions.
     this.openPositions.push(position);
-
-    // Deduct the investment amount from the profit/loss for this strategy.
-    this.profitLoss -= position.getInvestment();
 };
 
 Base.prototype.closeExpiredPositions = function(price, timestamp) {
@@ -134,6 +131,8 @@ Base.prototype.closeExpiredPositions = function(price, timestamp) {
         if (position.getHasExpired(timestamp)) {
             // Close the position since it is open and has expired.
             position.close(price, timestamp);
+
+            self.profitLoss -= position.getInvestment();
 
             // Add the profit/loss for this position to the profit/loss for this strategy.
             profitLoss = position.getProfitLoss();

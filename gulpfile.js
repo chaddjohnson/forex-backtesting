@@ -191,7 +191,7 @@ gulp.task('combine', function(done) {
         symbol: argv.symbol,
         //strategyName: argv.strategy,
         minimumProfitLoss: {'$gte': -10000},
-        maximumConsecutiveLosses: {'$lte': 12},
+        maximumConsecutiveLosses: {'$lte': 10},
         winRate: {'$gte': 0.64}
     };
 
@@ -260,7 +260,7 @@ gulp.task('combine', function(done) {
                     var testResults = positionTester.test(testPositions);
 
                     // See if the test resulted in an improvement.
-                    if (testResults.profitLoss >= benchmarkProfitLoss + 1000 && testResults.winRate >= 0.64 && testResults.maximumConsecutiveLosses <= 12 && testResults.minimumProfitLoss >= -10000) {
+                    if (testResults.profitLoss >= benchmarkProfitLoss + 1000 && testResults.winRate >= 0.64 && testResults.maximumConsecutiveLosses <= 10 && testResults.minimumProfitLoss >= -10000) {
                         // Use the positions in future tests.
                         optimalPositions = testPositions;
 

@@ -245,7 +245,7 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
     // Instantiate one strategy per configuration.
     tasks.push(function(taskCallback) {
         strategies = _(configurations).map(function(configuration) {
-            return new self.strategyFn(self.symbol, configuration);
+            return new self.strategyFn(self.symbol, configuration, dataPointCount);
         });
         taskCallback();
     });
@@ -263,7 +263,7 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
             // Backtest each strategy against the current data point.
             strategies.forEach(function(strategy) {
                 backtestTasks.push(function(backtestCallback) {
-                    strategy.backtest(dataPointDataCopy, investment, profitability, backtestCallback);
+                    strategy.backtest(dataPointDataCopy, index, investment, profitability, backtestCallback);
                 });
             });
             async.series(backtestTasks, function() {

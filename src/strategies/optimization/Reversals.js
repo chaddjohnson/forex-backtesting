@@ -2,9 +2,9 @@ var Base = require('./Base');
 var Call = require('../../positions/Call');
 var Put = require('../../positions/Put');
 
-function Reversals(symbol, configuration) {
+function Reversals(symbol, configuration, dataPointCount) {
     this.constructor = Reversals;
-    Base.call(this, symbol, configuration);
+    Base.call(this, symbol, configuration, dataPointCount);
 
     this.configuration = configuration;
     this.putNextTick = false;
@@ -14,13 +14,13 @@ function Reversals(symbol, configuration) {
 // Create a copy of the Base "class" prototype for use in this "class."
 Reversals.prototype = Object.create(Base.prototype);
 
-Reversals.prototype.backtest = function(dataPoint, investment, profitability, callback) {
+Reversals.prototype.backtest = function(dataPoint, index, investment, profitability, callback) {
     var self = this;
     var expirationMinutes = 5;
     var timestampHour = new Date(dataPoint.timestamp).getHours();
 
     // Simulate the next tick.
-    self.tick(dataPoint, function() {
+    self.tick(dataPoint, index, function() {
         // Only trade when the profitability is highest (11pm - 4pm CST).
         // Note that MetaTrader automatically converts timestamps to the current timezone in exported CSV files.
         if (timestampHour >= 16 && timestampHour < 23) {

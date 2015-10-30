@@ -3,12 +3,13 @@ var StrategyBase = require('../Base');
 var PositionModel = require('../../models/Position');
 var uuid = require('node-uuid');
 
-function Base(symbol, configuration) {
+function Base(symbol, configuration, dataPointCount) {
     this.constructor = Base;
     StrategyBase.call(this, symbol);
 
     this.uuid = uuid.v4();
     this.configuration = configuration;
+    this.dataPointCount = dataPointCount;
 }
 
 // Create a copy of the Base "class" prototype for use in this "class."
@@ -18,7 +19,7 @@ Base.prototype.getUuid = function() {
     return this.uuid;
 };
 
-Base.prototype.tick = function(dataPoint, callback) {
+Base.prototype.tick = function(dataPoint, index, callback) {
     var self = this;
     var expiredPositions = [];
     var expiredPositionsBuffer = [];
@@ -29,8 +30,10 @@ Base.prototype.tick = function(dataPoint, callback) {
 
         self.tickPreviousDataPoint = dataPoint;
 
-        if (expiredPositions.length > 0) {
-            expiredPositionsBuffer = _(expiredPositions).map(function(position) {
+        self.expiredPositions = self.expiredPositions || [];
+
+        if (self.expiredPositions.length > 150 || index >= self.dataPointCount - 1) {
+            expiredPositionsBuffer = _(self.expiredPositions).map(function(position) {
                 return {
                     symbol: position.getSymbol(),
                     strategyUuid: self.uuid,
@@ -46,7 +49,12 @@ Base.prototype.tick = function(dataPoint, callback) {
                 };
             });
 
-            expiredPositions = [];
+            self.expiredPositions = [];
+
+            if (expiredPositionsBuffer.length === 0) {
+                callback();
+                return;
+            }
 
             PositionModel.collection.insert(expiredPositionsBuffer, function() {
                 expiredPositionsBuffer = [];
@@ -54,6 +62,7 @@ Base.prototype.tick = function(dataPoint, callback) {
             });
         }
         else {
+            self.expiredPositions = self.expiredPositions.concat(expiredPositions);
             callback();
         }
     }

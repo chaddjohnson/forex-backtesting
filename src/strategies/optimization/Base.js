@@ -23,6 +23,7 @@ Base.prototype.tick = function(dataPoint, index, callback) {
     var self = this;
     var expiredPositions = [];
     var expiredPositionsBuffer = [];
+    var expiredPositionsLength = 0;
 
     if (self.tickPreviousDataPoint) {
         // Simulate expiry of and profit/loss related to positions held.
@@ -32,7 +33,7 @@ Base.prototype.tick = function(dataPoint, index, callback) {
 
         self.expiredPositions = self.expiredPositions || [];
 
-        if (self.expiredPositions.length > 50 || index >= self.dataPointCount - 1) {
+        if (self.expiredPositions.length > 100 || index >= self.dataPointCount - 1) {
             expiredPositionsBuffer = _(self.expiredPositions).map(function(position) {
                 return {
                     symbol: position.getSymbol(),
@@ -62,7 +63,12 @@ Base.prototype.tick = function(dataPoint, index, callback) {
             });
         }
         else {
-            self.expiredPositions = self.expiredPositions.concat(expiredPositions);
+            expiredPositionsLength = self.expiredPositions.length;
+
+            expiredPositions.forEach(function(position) {
+                self.expiredPositions[expiredPositionsLength++] = position;
+            });
+
             callback();
         }
     }

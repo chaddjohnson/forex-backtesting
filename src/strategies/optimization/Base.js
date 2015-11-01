@@ -50,6 +50,10 @@ Base.prototype.tick = function(dataPoint, index, callback) {
                 };
             });
 
+            self.expiredPositions.forEach(function(position, index) {
+                self.expiredPositions[index] = null;
+            });
+
             self.expiredPositions = [];
 
             if (expiredPositionsBuffer.length === 0) {

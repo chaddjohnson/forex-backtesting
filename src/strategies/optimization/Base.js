@@ -32,7 +32,7 @@ Base.prototype.tick = function(dataPoint, index, callback) {
 
         self.expiredPositions = self.expiredPositions || [];
 
-        if (self.expiredPositions.length > 150 || index >= self.dataPointCount - 1) {
+        if (self.expiredPositions.length > 50 || index >= self.dataPointCount - 1) {
             expiredPositionsBuffer = _(self.expiredPositions).map(function(position) {
                 return {
                     symbol: position.getSymbol(),

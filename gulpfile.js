@@ -308,6 +308,15 @@ gulp.task('generateMinuteData', function(done) {
         process.exit(1);
     }
 
+    function zeroPad(number, width) {
+        number = number + '';
+        return number.length >= width ? number : new Array(width - number.length + 1).join('0') + number;
+    }
+
+    function formatDate(date) {
+        return date.getFullYear() + '-' + zeroPad(date.getMonth() + 1, 2) + '-' + zeroPad(date.getDate(), 2) + ' ' + zeroPad(date.getHours(), 2) + ':' + zeroPad(date.getMinutes(), 2) + ':00';
+    }
+
     var minuteDataConverter = require('./src/converters/minuteData');
 
     // Find the data file based on the command line argument.
@@ -322,7 +331,37 @@ gulp.task('generateMinuteData', function(done) {
 
     try {
         minuteDataConverter.convert(argv.data).then(function(convertedData) {
+            var newData = [];
+            var previousDataPoint = null;
+            var timestamp = 0;
+            var previousTimestamp = 0;
+            var missingMinuteCount = 0;
+
             convertedData.forEach(function(dataPoint) {
+
+                previousDataPoint = previousDataPoint || dataPoint;
+
+                timestamp = new Date(dataPoint[0]).getTime();
+                previousTimestamp = new Date(previousDataPoint[0]).getTime();
+
+                while (previousTimestamp < timestamp && ++missingMinuteCount <= 3) {
+                    previousTimestamp += 60 * 1000;
+
+                    newData.push([
+                        formatDate(new Date(previousTimestamp)),
+                        previousDataPoint[4],
+                        previousDataPoint[4],
+                        previousDataPoint[4],
+                        previousDataPoint[4]
+                    ]);
+                }
+
+
+                newData.push(dataPoint);
+                previousDataPoint = dataPoint;
+            });
+
+            newData.forEach(function(dataPoint) {
                 console.log(dataPoint.join(','));
             });
             done();

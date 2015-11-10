@@ -292,6 +292,7 @@ gulp.task('combine', function(done) {
                 process.stdout.cursorTo(27);
                 process.stdout.write(configurationCount + ' of ' + configurationCount + ' completed\n');;
                 done();
+                process.exit();
             });
         });
     });

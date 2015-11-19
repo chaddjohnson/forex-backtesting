@@ -1,5 +1,5 @@
 var Base = require('./Base');
-var _ = require('underscore');
+var _ = require('lodash');
 
 function StochasticOscillator(inputs, outputMap) {
     this.constructor = StochasticOscillator;
@@ -32,7 +32,7 @@ StochasticOscillator.prototype.tick = function() {
     low = _.min(_.pluck(dataSegment, 'low'));
     high = _.max(_.pluck(dataSegment, 'high'));
     K = 100 * ((lastDataPoint.close - low) / (high - low));
-    D = _(averageLengthDataSegment).reduce(function(memo, dataPoint) {
+    D = _.reduce(averageLengthDataSegment, function(memo, dataPoint) {
         if (typeof dataPoint[self.getOutputMapping('K')] === 'number') {
             return memo + dataPoint[self.getOutputMapping('K')];
         }

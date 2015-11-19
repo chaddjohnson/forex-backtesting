@@ -1,7 +1,7 @@
 var fs = require('fs');
 var es = require('event-stream');
 var Q = require('q');
-var _ = require('underscore');
+var _ = require('lodash');
 
 function zeroPad(number, width) {
   number = number + '';
@@ -61,10 +61,10 @@ module.exports.convert = function(filePath) {
 
                 if (date.getMinutes() !== previousDate.getMinutes() && index > 0) {
                     convertedItem.date = formatDate(previousDate);
-                    convertedItem.open = _(intraMinuteTicks).first()[0];
-                    convertedItem.high = _(intraMinuteTicks).max(function(item) { return item[0]; })[0];
-                    convertedItem.low = _(intraMinuteTicks).min(function(item) { return item[0]; })[0];
-                    convertedItem.close = _(intraMinuteTicks).last()[0]
+                    convertedItem.open = _.first(intraMinuteTicks)[0];
+                    convertedItem.high = _.max(intraMinuteTicks, function(item) { return item[0]; })[0];
+                    convertedItem.low = _.min(intraMinuteTicks, function(item) { return item[0]; })[0];
+                    convertedItem.close = _.last(intraMinuteTicks)[0]
 
                     convertedData.push(_.values(convertedItem));
 

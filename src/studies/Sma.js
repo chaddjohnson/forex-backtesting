@@ -1,5 +1,5 @@
 var Base = require('./Base');
-var _ = require('underscore');
+var _ = require('lodash');
 
 function Sma(inputs, outputMap) {
     this.constructor = Sma;
@@ -23,7 +23,7 @@ Sma.prototype.tick = function() {
         return returnValue;
     }
 
-    sma = _(dataSegment).reduce(function(memo, dataPoint) {
+    sma = _.reduce(dataSegment, function(memo, dataPoint) {
         return memo + dataPoint.close;
     }, 0) / dataSegmentLength;
 

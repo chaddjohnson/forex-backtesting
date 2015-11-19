@@ -113,7 +113,7 @@ Base.prototype.getResults = function() {
 
 Base.prototype.addPosition = function(position) {
     // Also track this position in the list of open positions.
-    this.openPositions.push(position);
+    this.openPositions[this.openPositions.length] = position;
 };
 
 Base.prototype.closeExpiredPositions = function(price, timestamp) {
@@ -157,7 +157,7 @@ Base.prototype.closeExpiredPositions = function(price, timestamp) {
                 self.maximumConsecutiveLosses = self.consecutiveLosses;
             }
 
-            expiredPositions.push(position);
+            expiredPositions[expiredPositions.length] = position;
 
             // Remove the position from the list of open positions.
             self.openPositions.splice(index, 1);

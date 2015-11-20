@@ -29,7 +29,7 @@ module.exports.parse = function(filePath) {
                 transactionData = line.split(',');
 
                 formattedData.push({
-                    timestamp: parseInt(transactionData[0]),
+                    timestamp: new Date(transactionData[0]).getTime(),
                     volume: 0,
                     open: parseFloat(transactionData[1]),
                     high: parseFloat(transactionData[2]),

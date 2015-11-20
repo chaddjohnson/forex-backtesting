@@ -1,12 +1,88 @@
 var Base = require('./Base');
 var Call = require('../../positions/Call');
 var Put = require('../../positions/Put');
+var studies = require('../../studies');
+
+var studyDefinitions = [
+    {
+        study: studies.Ema,
+        inputs: {
+            length: 200
+        },
+        outputMap: {
+            ema: 'ema200'
+        }
+    },{
+        study: studies.Ema,
+        inputs: {
+            length: 100
+        },
+        outputMap: {
+            ema: 'ema100'
+        }
+    },{
+        study: studies.Ema,
+        inputs: {
+            length: 50
+        },
+        outputMap: {
+            ema: 'ema50'
+        }
+    },{
+        study: studies.Sma,
+        inputs: {
+            length: 13
+        },
+        outputMap: {
+            sma: 'sma13'
+        }
+    },{
+        study: studies.Rsi,
+        inputs: {
+            length: 5
+        },
+        outputMap: {
+            rsi: 'rsi5'
+        }
+    },{
+        study: studies.Rsi,
+        inputs: {
+            length: 7
+        },
+        outputMap: {
+            rsi: 'rsi7'
+        }
+    },
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 300, degree: 2}, outputMap: {regression: 'trendPrChannel300_2'}},
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 600, degree: 2}, outputMap: {regression: 'trendPrChannel600_2'}},
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 650, degree: 2}, outputMap: {regression: 'trendPrChannel650_2'}},
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 700, degree: 2}, outputMap: {regression: 'trendPrChannel700_2'}},
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 750, degree: 2}, outputMap: {regression: 'trendPrChannel750_2'}},
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 800, degree: 2}, outputMap: {regression: 'trendPrChannel800_2'}},
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 850, degree: 2}, outputMap: {regression: 'trendPrChannel850_2'}},
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 100, degree: 2, deviations: 1.95}, outputMap: {regression: 'prChannel100_2_195', upper: 'prChannelUpper100_2_195', lower: 'prChannelLower100_2_195'}},
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 100, degree: 2, deviations: 1.9}, outputMap: {regression: 'prChannel100_2_19', upper: 'prChannelUpper100_2_19', lower: 'prChannelLower100_2_19'}},
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 100, degree: 2, deviations: 2.15}, outputMap: {regression: 'prChannel100_2_215', upper: 'prChannelUpper100_2_215', lower: 'prChannelLower100_2_215'}},
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 100, degree: 3, deviations: 1.95}, outputMap: {regression: 'prChannel100_3_195', upper: 'prChannelUpper100_3_195', lower: 'prChannelLower100_3_195'}},
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 100, degree: 3, deviations: 1.9}, outputMap: {regression: 'prChannel100_3_19', upper: 'prChannelUpper100_3_19', lower: 'prChannelLower100_3_19'}},
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 100, degree: 3, deviations: 2.1}, outputMap: {regression: 'prChannel100_3_21', upper: 'prChannelUpper100_3_21', lower: 'prChannelLower100_3_21'}},
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 100, degree: 4, deviations: 1.95}, outputMap: {regression: 'prChannel100_4_195', upper: 'prChannelUpper100_4_195', lower: 'prChannelLower100_4_195'}},
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 100, degree: 4, deviations: 1.9}, outputMap: {regression: 'prChannel100_4_19', upper: 'prChannelUpper100_4_19', lower: 'prChannelLower100_4_19'}},
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 100, degree: 4, deviations: 2.0}, outputMap: {regression: 'prChannel100_4_20', upper: 'prChannelUpper100_4_20', lower: 'prChannelLower100_4_20'}},
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 3, deviations: 1.9}, outputMap: {regression: 'prChannel200_3_19', upper: 'prChannelUpper200_3_19', lower: 'prChannelLower200_3_19'}},
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 4, deviations: 1.95}, outputMap: {regression: 'prChannel200_4_195', upper: 'prChannelUpper200_4_195', lower: 'prChannelLower200_4_195'}},
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 4, deviations: 2.1}, outputMap: {regression: 'prChannel200_4_21', upper: 'prChannelUpper200_4_21', lower: 'prChannelLower200_4_21'}},
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 300, degree: 2, deviations: 1.9}, outputMap: {regression: 'prChannel300_2_19', upper: 'prChannelUpper300_2_19', lower: 'prChannelLower300_2_19'}},
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 300, degree: 2, deviations: 2.1}, outputMap: {regression: 'prChannel300_2_21', upper: 'prChannelUpper300_2_21', lower: 'prChannelLower300_2_21'}}
+];
 
 function ReversalsCombined(symbol, configurations) {
     this.constructor = ReversalsCombined;
     Base.call(this, symbol, configurations);
 
     this.configurations = configurations;
+
+    this.prepareStudies(studyDefinitions);
 }
 
 ReversalsCombined.prototype = Object.create(Base.prototype);
@@ -34,26 +110,8 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
         // Note that MetaTrader automatically converts timestamps to the current timezone in exported CSV files.
         if (timestampHour >= 16 && timestampHour < 23) {
             // Track the current data point as the previous data point for the next tick.
-            previousDataPoint = null;
             previousDataPoint = dataPoint;
-
             return;
-        }
-
-        if (previousDataPoint && index < dataPointCount - 1) {
-            if (putNextTick) {
-                // Create a new position.
-                position = new Put(self.getSymbol(), (dataPoint.timestamp - 1000), previousDataPoint.close, investment, profitability, expirationMinutes);
-                position.setShowTrades(self.getShowTrades());
-                self.addPosition(position);
-            }
-
-            if (callNextTick) {
-                // Create a new position.
-                position = new Call(self.getSymbol(), (dataPoint.timestamp - 1000), previousDataPoint.close, investment, profitability, expirationMinutes)
-                position.setShowTrades(self.getShowTrades());
-                self.addPosition(position);
-            }
         }
 
         putNextTick = false;
@@ -169,17 +227,19 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
             callNextTick = callNextTick || callThisConfiguration;
         });
 
-        if (self.getShowTrades()) {
-            if (self.getProfitLoss() !== previousBalance) {
-                console.log('BALANCE: $' + self.getProfitLoss());
-                console.log();
-            }
-            previousBalance = self.getProfitLoss();
-        }
-
         // Track the current data point as the previous data point for the next tick.
         previousDataPoint = dataPoint;
+
+        if (putNextTick) {
+            console.log('PUT at ' + new Date(dataPoint.timestamp + 1000));
+        }
+
+        if (callNextTick) {
+            console.log('CALL at ' + new Date(dataPoint.timestamp + 1000));
+        }
     });
+
+    console.log(self.getResults());
 };
 
 module.exports = ReversalsCombined;

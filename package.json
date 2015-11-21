@@ -4,11 +4,12 @@
     "async": "^1.4.2",
     "csv": "~0.4.1",
     "event-stream": "~3.2.1",
+    "lodash": "^3.10.1",
     "mongoose": "^4.1.8",
     "node-uuid": "^1.4.3",
     "q": "^1.4.1",
     "regression": "^1.2.1",
-    "underscore": "^1.8.3"
+    "sliced": "^1.0.1"
   },
   "devDependencies": {
     "gulp": "^3.9.0",

@@ -1,5 +1,5 @@
 var Base = require('./Base');
-var _ = require('underscore');
+var _ = require('lodash');
 var regression = require('regression');
 
 function PolynomialRegressionChannel(inputs, outputMap) {
@@ -17,11 +17,13 @@ PolynomialRegressionChannel.prototype = Object.create(Base.prototype);
 PolynomialRegressionChannel.prototype.calculateRegression = function(values, degree) {
     var data = [];
     var regressionOutput;
+    var valuesCount = values.length;
+    var i = 0;
 
     // Format the data in a way the regression library expects.
-    values.forEach(function(value, index) {
-        data.push([index, value]);
-    });
+    for (i = 0; i < valuesCount; i++) {
+        data[i] = [i, values[i]];
+    }
 
     // Use the library to calculate the regression.
     regressionOutput = regression('polynomial', data, degree);
@@ -30,21 +32,28 @@ PolynomialRegressionChannel.prototype.calculateRegression = function(values, deg
     return regressionOutput.points[regressionOutput.points.length - 1][1];
 };
 
+// Source: http://www.strchr.com/standard_deviation_in_one_pass
 PolynomialRegressionChannel.prototype.calculateStandardDeviation = function(values) {
     var valuesCount = values.length;
+    var sum = 0;
+    var squaredSum = 0;
+    var mean = 0.0;
+    var variance = 0.0;
+    var i = 0;
 
-    var average = _(values).reduce(function(total, value) {
-        return total + value;
-    }) / valuesCount;
+    if (valuesCount === 0) {
+        return 0.0;
+    }
 
-    var squaredDeviations = _(values).reduce(function(total, value) {
-        var deviation = value - average;
-        var deviationSquared = deviation * deviation;
+    for (i = 0; i < valuesCount; ++i) {
+       sum += values[i];
+       squaredSum += values[i] * values[i];
+    }
 
-        return total + deviationSquared;
-    }, 0);
+    mean = sum / valuesCount;
+    variance = squaredSum / valuesCount - mean * mean;
 
-    return Math.sqrt(squaredDeviations / valuesCount);
+    return Math.sqrt(variance);
 };
 
 PolynomialRegressionChannel.prototype.tick = function() {
@@ -58,25 +67,31 @@ PolynomialRegressionChannel.prototype.tick = function() {
     var pastPrices = [];
     var pastRegressions = [];
     var returnValue = {};
+    var dataPointRegression;
+    var i = 0;
+    var j = 0;
+    var regressionOutputName = self.getOutputMapping('regression');
 
     if (dataSegmentLength < self.getInput('length')) {
         return returnValue;
     }
 
     // Calculate the regression.
-    pastPrices = _(dataSegment).pluck('close');
+    pastPrices = _.map(dataSegment, function(dataPoint) {
+        return dataPoint.close;
+    });
     regressionValue = self.calculateRegression(pastPrices, self.getInput('degree'));
 
     // Calculate the standard deviations of the regression. If there is no regression data
     // available, then skip
-    if (self.getInput('deviations') && dataSegment[dataSegmentLength - 2][self.getOutputMapping('regression')]) {
+    if (self.getInput('deviations') && dataSegment[dataSegmentLength - 2][regressionOutputName]) {
         // Build an array of regression data using only points that actually have regression data.
-        dataSegment.forEach(function(dataPoint) {
-            var dataPointRegression = dataPoint[self.getOutputMapping('regression')];
+        for (i = 0; i < dataSegmentLength; i++) {
+            dataPointRegression = dataSegment[i][regressionOutputName];
             if (dataPointRegression) {
-                pastRegressions.push(dataPointRegression);
+                pastRegressions[j++] = dataPointRegression;
             }
-        });
+        }
 
         // Calculate the standard deviation from the regressions.
         regressionStandardDeviation = self.calculateStandardDeviation(pastRegressions);
@@ -91,7 +106,7 @@ PolynomialRegressionChannel.prototype.tick = function() {
         lowerValue = '';
     }
 
-    returnValue[self.getOutputMapping('regression')] = regressionValue;
+    returnValue[regressionOutputName] = regressionValue;
 
     if (self.getInput('deviations')) {
         returnValue[self.getOutputMapping('upper')] = upperValue;

@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var _ = require('lodash');
 var async = require('async');
 var Backtest = require('../models/Backtest');
 var DataPoint = require('../models/DataPoint');
@@ -143,7 +143,7 @@ Base.prototype.saveDataPoints = function(data, callback) {
         return;
     }
 
-    var dataPoints = _(data).map(function(dataPoint) {
+    var dataPoints = _.map(data, function(dataPoint) {
         return {
             symbol: self.symbol,
             data: dataPoint
@@ -194,7 +194,7 @@ Base.prototype.removeCompletedConfigurations = function(configurations, callback
         }
 
         // Get the configurations for completed backtests.
-        var completedConfigurations = _(backtests).map(function(backtest) {
+        var completedConfigurations = _.map(backtests, function(backtest) {
             return backtest.configuration;
         });
 
@@ -202,8 +202,8 @@ Base.prototype.removeCompletedConfigurations = function(configurations, callback
         completedConfigurations.forEach(function(completedConfiguration) {
             var foundIndex = -1;
 
-            _(configurations).find(function(configuration, index) {
-                var found = _(configuration).isEqual(completedConfiguration);
+            _.find(configurations, function(configuration, index) {
+                var found = _.isEqual(configuration, completedConfiguration);
                 if (found) {
                     foundIndex = index;
                 }
@@ -244,7 +244,7 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
 
     // Instantiate one strategy per configuration.
     tasks.push(function(taskCallback) {
-        strategies = _(configurations).map(function(configuration) {
+        strategies = _.map(configurations, function(configuration) {
             return new self.strategyFn(self.symbol, configuration, dataPointCount);
         });
         taskCallback();

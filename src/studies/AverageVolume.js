@@ -1,5 +1,5 @@
 var Base = require('./Base');
-var _ = require('underscore');
+var _ = require('lodash');
 
 function AverageVolume(inputs, outputMap) {
     this.constructor = AverageVolume;
@@ -23,7 +23,7 @@ AverageVolume.prototype.tick = function() {
         return returnValue;
     }
 
-    average = _(dataSegment).reduce(function(memo, dataPoint) {
+    average = _.reduce(dataSegment, function(memo, dataPoint) {
         return memo + dataPoint.volume;
     }, 0) / dataSegmentLength;
 

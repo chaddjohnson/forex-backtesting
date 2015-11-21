@@ -2,8 +2,9 @@ var gulp = require('gulp');
 var gutil = require('gulp-util');
 var argv = require('yargs').argv;
 var path = require('path');
-var _ = require('underscore');
+var _ = require('lodash');
 var async = require('async');
+var slice = require('sliced');
 
 var garbageCollectionTimeout = null;
 
@@ -22,6 +23,11 @@ function scheduleGarbageCollection() {
         scheduleGarbageCollection();
     }, 1 * 60 * 1000);
 }
+
+// Replace slice() with a more efficient version.
+Array.prototype.slice = function(begin, end) {
+    return slice(this, begin, end);
+};
 
 scheduleGarbageCollection();
 
@@ -226,7 +232,7 @@ gulp.task('combine', function(done) {
     // Find all backtests for the symbol.
     Backtest.find(backtestConstraints, function(error, backtests) {
         // Sort backtests descending by profitLoss.
-        backtests = _(backtests).sortBy('profitLoss').reverse();
+        backtests = _.sortBy(backtests, 'profitLoss').reverse();
 
         // Use the highest profit/loss figure as the benchmark.
         var benchmarkProfitLoss = 0;
@@ -250,12 +256,12 @@ gulp.task('combine', function(done) {
                     var testPositions = optimalPositions.concat(positions);
 
                     // Get the unique set of trades.
-                    var testPositions = _(testPositions).uniq(function(position) {
+                    var testPositions = _.uniq(testPositions, function(position) {
                         return position.timestamp;
                     });
 
                     // Sort positions by timestamp.
-                    testPositions = _(testPositions).sortBy('timestamp');
+                    testPositions = _.sortBy(testPositions, 'timestamp');
 
                     // Determine if all the trades combined results in an improvement.
                     var testResults = positionTester.test(testPositions);

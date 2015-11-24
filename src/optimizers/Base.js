@@ -294,10 +294,13 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
                         profitability: profitability
                     }
                 });
-                fork.on('message', function(message) {
+
+                function handler(message) {
                     if (message.type !== 'done') {
                         return;
                     }
+
+                    fork.removeListener('message', handler);
 
                     if (++completionCount === cpuCoreCount) {
                         index++;
@@ -307,7 +310,9 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
 
                         stream.resume();
                     }
-                });
+                }
+
+                fork.on('message', handler);
             });
         };
 

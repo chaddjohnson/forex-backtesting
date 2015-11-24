@@ -25,7 +25,7 @@ function backtest(dataPoint, index, investment, profitability) {
         });
     });
 
-    async.series(tasks, function() {
+    async.parallel(tasks, function() {
         strategyFn.saveExpiredPositionsPool(function() {
             process.send({type: 'done'});
         });

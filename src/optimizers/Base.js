@@ -3,6 +3,7 @@ var async = require('async');
 var forkFn = require('child_process').fork;
 var Backtest = require('../models/Backtest');
 var DataPoint = require('../models/DataPoint');
+var strategyFns = require('../strategies');
 
 require('events').EventEmitter.defaultMaxListeners = Infinity;
 
@@ -308,6 +309,12 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
                         process.stdout.cursorTo(13);
                         process.stdout.write(index + ' of ' + dataPointCount + ' completed');
 
+                        if (index === dataPointCount) {
+                            strategyFns.optimization[self.strategyName].saveExpiredPositionsPool(function() {
+                                taskCallback();
+                            });
+                        }
+
                         stream.resume();
                     }
                 }
@@ -319,7 +326,6 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
         var stream = DataPoint.find({symbol: self.symbol}, {}, {timeout: true}).sort({'data.timestamp': 1}).stream();
 
         stream.on('data', streamer);
-        stream.on('close', taskCallback);
     });
 
     // Record the results for each strategy.
@@ -345,6 +351,7 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
                 if (resultsCount === cpuCoreCount) {
                     Backtest.collection.insert(backtests, function(error) {
                         process.stdout.write('done\n');
+
                         taskCallback(error);
                     });
                 }

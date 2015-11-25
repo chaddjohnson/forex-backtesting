@@ -59,7 +59,7 @@ Base.saveExpiredPositionsPool = function(callback) {
     expiredPositionsBuffer = _.map(Base.expiredPositionsPool, function(position) {
         return {
             symbol: position.getSymbol(),
-            strategyUuid: self.uuid,
+            strategyUuid: position.getStrategyUuid(),
             transactionType: position.getTransactionType(),
             timestamp: position.getTimestamp(),
             price: position.getPrice(),

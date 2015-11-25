@@ -18,6 +18,12 @@ Reversals.prototype = Object.create(Base.prototype);
 // Inherit "static" methods and data from the base constructor function.
 _.extend(Reversals, Base);
 
+Reversals.prototype.addPosition = function(position) {
+    position.setStrategyUuid(this.getUuid());
+
+    Base.prototype.addPosition.call(this, position);
+};
+
 Reversals.prototype.backtest = function(dataPoint, index, investment, profitability, callback) {
     var self = this;
     var expirationMinutes = 5;

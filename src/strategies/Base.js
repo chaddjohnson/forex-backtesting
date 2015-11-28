@@ -159,6 +159,8 @@ Base.prototype.closeExpiredPositions = function(price, timestamp) {
 
             expiredPositions[expiredPositions.length] = position;
 
+            console.log('Closed ' + position.getSymbol() + ' at ' + position.getCloseTimestamp());
+
             // Remove the position from the list of open positions.
             self.openPositions.splice(index, 1);
         }

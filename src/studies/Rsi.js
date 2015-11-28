@@ -70,7 +70,7 @@ Rsi.prototype.tick = function() {
         averageLoss = this.previousAverageLoss = ((this.previousAverageLoss * (this.getInput('length') - 1)) + currentLoss) / this.getInput('length');
     }
 
-    RS = averageGain / averageLoss;
+    RS = averageLoss > 0 ? averageGain / averageLoss : 0;
 
     returnValue[this.getOutputMapping('rsi')] = 100 - (100 / (1 + RS));
 

@@ -4,7 +4,7 @@ var strategyFns = require('../strategies');
 var strategyFn = null;
 var strategies = [];
 
-db.initialize('forex-backtesting');
+db.initialize('forex-backtesting-forks-instrumenting');
 
 function init(strategyName, symbol, configuration, dataPointCount) {
     if (!strategyFn) {

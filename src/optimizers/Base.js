@@ -233,7 +233,7 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
     var forks = [];
     var cpuCoreCount = 1; // require('os').cpus().length;
 
-    process.stdout.write('Optimizing...');
+    // process.stdout.write('Optimizing...');
 
     // Create child processes for parallel processing.
     tasks.push(function(taskCallback) {
@@ -306,8 +306,8 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
                     if (++completionCount === cpuCoreCount) {
                         index++;
 
-                        process.stdout.cursorTo(13);
-                        process.stdout.write(index + ' of ' + dataPointCount + ' completed');
+                        // process.stdout.cursorTo(13);
+                        // process.stdout.write(index + ' of ' + dataPointCount + ' completed');
 
                         if (index === dataPointCount) {
                             strategyFns.optimization[self.strategyName].saveExpiredPositionsPool(function() {

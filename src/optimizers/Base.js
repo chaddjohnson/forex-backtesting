@@ -227,7 +227,7 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
     var dataPointCount = 0;
     var tasks = [];
 
-    process.stdout.write('Optimizing...');
+    // process.stdout.write('Optimizing...');
 
     // Exclude configurations that have already been backtested.
     tasks.push(function(taskCallback) {
@@ -269,8 +269,8 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
             async.series(backtestTasks, function() {
                 index++;
 
-                process.stdout.cursorTo(13);
-                process.stdout.write(index + ' of ' + dataPointCount + ' completed');
+                // process.stdout.cursorTo(13);
+                // process.stdout.write(index + ' of ' + dataPointCount + ' completed');
 
                 stream.resume();
             });

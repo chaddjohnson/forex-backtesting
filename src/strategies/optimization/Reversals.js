@@ -34,11 +34,15 @@ Reversals.prototype.backtest = function(dataPoint, index, investment, profitabil
 
         if (self.previousDataPoint) {
             if (self.putNextTick) {
+                console.log('PUT ' + self.getSymbol() + ' at ' + new Date(dataPoint.timestamp));
+
                 // Create a new position.
                 self.addPosition(new Put(self.getSymbol(), (dataPoint.timestamp - 1000), self.previousDataPoint.close, investment, profitability, expirationMinutes));
             }
 
             if (self.callNextTick) {
+                console.log('CALL ' + self.getSymbol() + ' at ' + new Date(dataPoint.timestamp));
+
                 // Create a new position.
                 self.addPosition(new Call(self.getSymbol(), (dataPoint.timestamp - 1000), self.previousDataPoint.close, investment, profitability, expirationMinutes));
             }

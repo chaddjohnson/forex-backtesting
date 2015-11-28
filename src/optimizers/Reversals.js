@@ -183,23 +183,7 @@ function Reversals(symbol) {
     this.prepareStudies(studyDefinitions);
 
     // Prepare all optimization configurations.
-    //this.configurations = this.buildConfigurations(configurationOptions);
-    this.configurations = [{
-        "trendPrChannel": null,
-        "prChannel": {
-            "lower": "prChannelLower250_3_19",
-            "upper": "prChannelUpper250_3_19"
-        },
-        "rsi": {
-            "oversold": 5,
-            "overbought": 95,
-            "rsi": "rsi2"
-        },
-        "sma13": false,
-        "ema50": false,
-        "ema100": true,
-        "ema200": true
-    }];
+    this.configurations = this.buildConfigurations(configurationOptions);
 }
 
 // Create a copy of the Base "class" prototype for use in this "class."

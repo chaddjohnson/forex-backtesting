@@ -122,6 +122,23 @@ Reversals.prototype.backtest = function(dataPoint, index, investment, profitabil
                 self.callNextTick = false;
             }
         }
+        if (self.configuration.stochastic) {
+            if (typeof dataPoint[self.configuration.stochastic.K] === 'number' && typeof dataPoint[self.configuration.stochastic.D] === 'number') {
+                // Determine if stochastic is not above the overbought line.
+                if (self.putNextTick && dataPoint[self.configuration.stochastic.D] <= self.configuration.stochastic.overbought) {
+                    self.putNextTick = false;
+                }
+
+                // Determine if stochastic is not below the oversold line.
+                if (self.callNextTick && dataPoint[self.configuration.stochastic.D] >= self.configuration.stochastic.oversold) {
+                    self.callNextTick = false;
+                }
+            }
+            else {
+                self.putNextTick = false;
+                self.callNextTick = false;
+            }
+        }
         if (self.configuration.prChannel) {
             if (dataPoint[self.configuration.prChannel.upper] && dataPoint[self.configuration.prChannel.lower]) {
                 // Determine if the upper regression bound was not breached by the high price.

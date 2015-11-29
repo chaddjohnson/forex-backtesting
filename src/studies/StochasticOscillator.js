@@ -31,7 +31,7 @@ StochasticOscillator.prototype.tick = function() {
 
     low = _.min(_.pluck(dataSegment, 'low'));
     high = _.max(_.pluck(dataSegment, 'high'));
-    K = 100 * ((lastDataPoint.close - low) / (high - low));
+    K = high - low > 0 ? 100 * ((lastDataPoint.close - low) / (high - low)) : 0;
     D = _.reduce(averageLengthDataSegment, function(memo, dataPoint) {
         if (typeof dataPoint[self.getOutputMapping('K')] === 'number') {
             return memo + dataPoint[self.getOutputMapping('K')];

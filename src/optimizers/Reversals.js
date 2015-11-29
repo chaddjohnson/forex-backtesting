@@ -9,6 +9,8 @@ var studyDefinitions = [
     {study: studies.Rsi, inputs: {length: 7}, outputMap: {rsi: 'rsi7'}},
     {study: studies.Rsi, inputs: {length: 5}, outputMap: {rsi: 'rsi5'}},
     {study: studies.Rsi, inputs: {length: 2}, outputMap: {rsi: 'rsi2'}},
+    {study: studies.StochasticOscillator, inputs: {length: 21, averageLength: 3}, outputMap: {K: 'stochastic21K', D: 'stochastic21D'}},
+    {study: studies.StochasticOscillator, inputs: {length: 14, averageLength: 3}, outputMap: {K: 'stochastic14K', D: 'stochastic14D'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 100, degree: 2, deviations: 1.9}, outputMap: {regression: 'prChannel100_2_19', upper: 'prChannelUpper100_2_19', lower: 'prChannelLower100_2_19'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 100, degree: 3, deviations: 1.9}, outputMap: {regression: 'prChannel100_3_19', upper: 'prChannelUpper100_3_19', lower: 'prChannelLower100_3_19'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 100, degree: 4, deviations: 1.9}, outputMap: {regression: 'prChannel100_4_19', upper: 'prChannelUpper100_4_19', lower: 'prChannelLower100_4_19'}},
@@ -94,6 +96,15 @@ var configurationOptions = {
         {rsi: 'rsi7', overbought: 80, oversold: 20},
         {rsi: 'rsi5', overbought: 80, oversold: 20},
         {rsi: 'rsi2', overbought: 95, oversold: 5}
+    ],
+    stochastic: [
+        null,
+        {K: 'stochastic21K', D: 'stochastic21D', overbought: 77, oversold: 23},
+        {K: 'stochastic21K', D: 'stochastic21D', overbought: 80, oversold: 20},
+        {K: 'stochastic21K', D: 'stochastic21D', overbought: 95, oversold: 5},
+        {K: 'stochastic14K', D: 'stochastic14D', overbought: 77, oversold: 23},
+        {K: 'stochastic14K', D: 'stochastic14D', overbought: 80, oversold: 20},
+        {K: 'stochastic14K', D: 'stochastic14D', overbought: 95, oversold: 5}
     ],
     prChannel: [
         null,

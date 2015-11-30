@@ -4,7 +4,7 @@ var strategyFns = require('../strategies');
 var strategyFn = null;
 var strategies = [];
 
-db.initialize('forex-backtesting-stochastic');
+db.initialize('forex-backtesting');
 
 function init(strategyName, symbol, configuration, dataPointCount) {
     if (!strategyFn) {

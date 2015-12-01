@@ -101,22 +101,14 @@ var configurationOptions = {
     ],
     stochastic: [
         null,
-        {K: 'stochastic5K', D: 'stochastic5D', overbought: 70, oversold: 30},
         {K: 'stochastic5K', D: 'stochastic5D', overbought: 77, oversold: 23},
         {K: 'stochastic5K', D: 'stochastic5D', overbought: 80, oversold: 20},
         {K: 'stochastic5K', D: 'stochastic5D', overbought: 95, oversold: 5},
-        {K: 'stochastic10K', D: 'stochastic10D', overbought: 70, oversold: 30},
         {K: 'stochastic10K', D: 'stochastic10D', overbought: 77, oversold: 23},
         {K: 'stochastic10K', D: 'stochastic10D', overbought: 80, oversold: 20},
-        {K: 'stochastic10K', D: 'stochastic10D', overbought: 95, oversold: 5},
         {K: 'stochastic14K', D: 'stochastic14D', overbought: 70, oversold: 30},
         {K: 'stochastic14K', D: 'stochastic14D', overbought: 77, oversold: 23},
-        {K: 'stochastic14K', D: 'stochastic14D', overbought: 80, oversold: 20},
-        {K: 'stochastic14K', D: 'stochastic14D', overbought: 95, oversold: 5},
-        {K: 'stochastic21K', D: 'stochastic21D', overbought: 70, oversold: 30},
-        {K: 'stochastic21K', D: 'stochastic21D', overbought: 77, oversold: 23},
-        {K: 'stochastic21K', D: 'stochastic21D', overbought: 80, oversold: 20},
-        {K: 'stochastic21K', D: 'stochastic21D', overbought: 95, oversold: 5}
+        {K: 'stochastic21K', D: 'stochastic21D', overbought: 70, oversold: 30}
     ],
     prChannel: [
         null,

@@ -53,8 +53,8 @@ Base.prototype.prepareStudyData = function(data, callback) {
             process.stdout.cursorTo(29);
             process.stdout.write(percentage + '%');
 
-            // If there is a significant gap (> 2 minutes), save the current data points, and start over with recording.
-            if (previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 2 * 60 * 1000) {
+            // If there is a significant gap, save the current data points, and start over with recording.
+            if (previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 65 * 1000) {
                 self.saveDataPoints(cumulativeData.slice());
                 cumulativeData = [];
             }

@@ -17,6 +17,14 @@ Base.prototype.getSymbol = function() {
     return this.symbol;
 };
 
+Base.prototype.getStrategyUuid = function() {
+    return this.strategyUuid;
+};
+
+Base.prototype.setStrategyUuid = function(strategyUuid) {
+    this.strategyUuid = strategyUuid;
+};
+
 Base.prototype.getTimestamp = function() {
     return this.timestamp;
 };

@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var Base = require('./Base');
 var Call = require('../../positions/Call');
 var Put = require('../../positions/Put');
@@ -13,6 +14,15 @@ function Reversals(symbol, configuration, dataPointCount) {
 
 // Create a copy of the Base "class" prototype for use in this "class."
 Reversals.prototype = Object.create(Base.prototype);
+
+// Inherit "static" methods and data from the base constructor function.
+_.extend(Reversals, Base);
+
+Reversals.prototype.addPosition = function(position) {
+    position.setStrategyUuid(this.getUuid());
+
+    Base.prototype.addPosition.call(this, position);
+};
 
 Reversals.prototype.backtest = function(dataPoint, index, investment, profitability, callback) {
     var self = this;

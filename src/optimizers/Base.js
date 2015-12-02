@@ -1,10 +1,14 @@
 var _ = require('lodash');
 var async = require('async');
+var forkFn = require('child_process').fork;
 var Backtest = require('../models/Backtest');
 var DataPoint = require('../models/DataPoint');
+var strategyFns = require('../strategies');
 
-function Base(strategyFn, symbol) {
-    this.strategyFn = strategyFn;
+require('events').EventEmitter.defaultMaxListeners = Infinity;
+
+function Base(strategyName, symbol) {
+    this.strategyName = strategyName;
     this.symbol = symbol;
     this.studies = [];
 }
@@ -226,8 +230,21 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
     var strategies = [];
     var dataPointCount = 0;
     var tasks = [];
+    var forks = [];
+    var cpuCoreCount = require('os').cpus().length;
 
     process.stdout.write('Optimizing...');
+
+    // Create child processes for parallel processing.
+    tasks.push(function(taskCallback) {
+        var index = 0;
+
+        for (index = 0; index < cpuCoreCount; index++) {
+            forks.push(forkFn(__dirname + '/worker.js'));
+        }
+
+        taskCallback();
+    });
 
     // Exclude configurations that have already been backtested.
     tasks.push(function(taskCallback) {
@@ -242,11 +259,20 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
         });
     });
 
-    // Instantiate one strategy per configuration.
+    // Assign configurations to forks.
     tasks.push(function(taskCallback) {
-        strategies = _.map(configurations, function(configuration) {
-            return new self.strategyFn(self.symbol, configuration, dataPointCount);
+        configurations.forEach(function(configuration, index) {
+            forks[index % cpuCoreCount].send({
+                type: 'init',
+                data: {
+                    strategyName: self.strategyName,
+                    symbol: self.symbol,
+                    configuration: configuration,
+                    dataPointCount: dataPointCount
+                }
+            });
         });
+
         taskCallback();
     });
 
@@ -257,29 +283,49 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
         var streamer = function(dataPoint) {
             stream.pause();
 
-            var dataPointDataCopy = _.clone(dataPoint.data);
-            var backtestTasks = [];
+            var completionCount = 0;
 
-            // Backtest each strategy against the current data point.
-            strategies.forEach(function(strategy) {
-                backtestTasks.push(function(backtestCallback) {
-                    strategy.backtest(dataPointDataCopy, index, investment, profitability, backtestCallback);
+            forks.forEach(function(fork) {
+                fork.send({
+                    type: 'backtest',
+                    data: {
+                        dataPoint: dataPoint.data,
+                        index: index,
+                        investment: investment,
+                        profitability: profitability
+                    }
                 });
-            });
-            async.series(backtestTasks, function() {
-                index++;
 
-                process.stdout.cursorTo(13);
-                process.stdout.write(index + ' of ' + dataPointCount + ' completed');
+                function handler(message) {
+                    if (message.type !== 'done') {
+                        return;
+                    }
 
-                stream.resume();
+                    fork.removeListener('message', handler);
+
+                    if (++completionCount === cpuCoreCount) {
+                        index++;
+
+                        process.stdout.cursorTo(13);
+                        process.stdout.write(index + ' of ' + dataPointCount + ' completed');
+
+                        if (index === dataPointCount) {
+                            strategyFns.optimization[self.strategyName].saveExpiredPositionsPool(function() {
+                                taskCallback();
+                            });
+                        }
+
+                        stream.resume();
+                    }
+                }
+
+                fork.on('message', handler);
             });
         };
 
         var stream = DataPoint.find({symbol: self.symbol}, {}, {timeout: true}).sort({'data.timestamp': 1}).stream();
 
         stream.on('data', streamer);
-        stream.on('close', taskCallback);
     });
 
     // Record the results for each strategy.
@@ -289,28 +335,27 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
         process.stdout.write('Saving results...');
 
         var backtests = [];
+        var resultsCount = 0;
 
-        strategies.forEach(function(strategy) {
-            var results = strategy.getResults();
+        forks.forEach(function(fork) {
+            fork.send({type: 'results'});
 
-            backtests.push({
-                symbol: self.symbol,
-                strategyUuid: strategy.getUuid(),
-                strategyName: strategy.constructor.name,
-                configuration: strategy.getConfiguration(),
-                profitLoss: results.profitLoss,
-                winCount: results.winCount,
-                loseCount: results.loseCount,
-                tradeCount: results.tradeCount,
-                winRate: results.winRate,
-                maximumConsecutiveLosses: results.maximumConsecutiveLosses,
-                minimumProfitLoss: results.minimumProfitLoss
+            fork.on('message', function(message) {
+                if (message.type !== 'results') {
+                    return;
+                }
+
+                resultsCount++;
+                backtests = backtests.concat(message.data);
+
+                if (resultsCount === cpuCoreCount) {
+                    Backtest.collection.insert(backtests, function(error) {
+                        process.stdout.write('done\n');
+
+                        taskCallback(error);
+                    });
+                }
             });
-        });
-
-        Backtest.collection.insert(backtests, function(error) {
-            process.stdout.write('done\n');
-            taskCallback(error);
         });
     });
 

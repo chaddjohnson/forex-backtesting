@@ -1,6 +1,5 @@
 var Base = require('./Base');
 var studies = require('../studies');
-var strategies = require('../strategies');
 
 var studyDefinitions = [
     {study: studies.Ema, inputs: {length: 200}, outputMap: {ema: 'ema200'}},
@@ -178,7 +177,7 @@ var configurationOptions = {
 
 function Reversals(symbol) {
     this.constructor = Reversals;
-    Base.call(this, strategies.optimization.Reversals, symbol);
+    Base.call(this, 'Reversals', symbol);
 
     // Prepare studies for use.
     this.prepareStudies(studyDefinitions);

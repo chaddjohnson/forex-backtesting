@@ -35,7 +35,6 @@ Reversals.prototype.backtest = function(dataPoint, index, investment, profitabil
         // Note that MetaTrader automatically converts timestamps to the current timezone in exported CSV files.
         if (timestampHour >= 0 && timestampHour < 7) {
             // Track the current data point as the previous data point for the next tick.
-            self.previousDataPoint = null;
             self.previousDataPoint = dataPoint;
 
             callback();
@@ -73,6 +72,11 @@ Reversals.prototype.backtest = function(dataPoint, index, investment, profitabil
                 self.callNextTick = false;
             }
         }
+        if (!self.putNextTick && !self.callNextTick) {
+            self.previousDataPoint = dataPoint;
+            callback();
+            return;
+        }
         if (self.configuration.ema100 && self.configuration.ema50) {
             if (!dataPoint.ema100 || !dataPoint.ema50) {
                 self.putNextTick = false;
@@ -89,6 +93,11 @@ Reversals.prototype.backtest = function(dataPoint, index, investment, profitabil
                 self.callNextTick = false;
             }
         }
+        if (!self.putNextTick && !self.callNextTick) {
+            self.previousDataPoint = dataPoint;
+            callback();
+            return;
+        }
         if (self.configuration.ema50 && self.configuration.sma13) {
             if (!dataPoint.ema50 || !dataPoint.sma13) {
                 self.putNextTick = false;
@@ -104,6 +113,11 @@ Reversals.prototype.backtest = function(dataPoint, index, investment, profitabil
             if (self.callNextTick && dataPoint.ema50 > dataPoint.sma13) {
                 self.callNextTick = false;
             }
+        }
+        if (!self.putNextTick && !self.callNextTick) {
+            self.previousDataPoint = dataPoint;
+            callback();
+            return;
         }
         if (self.configuration.rsi) {
             if (typeof dataPoint[self.configuration.rsi.rsi] === 'number') {
@@ -122,6 +136,11 @@ Reversals.prototype.backtest = function(dataPoint, index, investment, profitabil
                 self.callNextTick = false;
             }
         }
+        if (!self.putNextTick && !self.callNextTick) {
+            self.previousDataPoint = dataPoint;
+            callback();
+            return;
+        }
         if (self.configuration.prChannel) {
             if (dataPoint[self.configuration.prChannel.upper] && dataPoint[self.configuration.prChannel.lower]) {
                 // Determine if the upper regression bound was not breached by the high price.
@@ -138,6 +157,11 @@ Reversals.prototype.backtest = function(dataPoint, index, investment, profitabil
                 self.putNextTick = false;
                 self.callNextTick = false;
             }
+        }
+        if (!self.putNextTick && !self.callNextTick) {
+            self.previousDataPoint = dataPoint;
+            callback();
+            return;
         }
         if (self.configuration.trendPrChannel) {
             if (self.previousDataPoint && dataPoint[self.configuration.trendPrChannel.regression] && self.previousDataPoint[self.configuration.trendPrChannel.regression]) {
@@ -158,7 +182,6 @@ Reversals.prototype.backtest = function(dataPoint, index, investment, profitabil
         }
 
         // Track the current data point as the previous data point for the next tick.
-        self.previousDataPoint = null;
         self.previousDataPoint = dataPoint;
 
         callback();

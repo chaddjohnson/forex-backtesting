@@ -199,7 +199,7 @@ gulp.task('combine', function(done) {
         minimumProfitLoss: {'$gte': -10000},
         maximumConsecutiveLosses: {'$lte': 10},
         winRate: {'$gte': 0.65},
-        profitLoss: {'$gte': 20000}
+        profitLoss: {'$gte': 30000}
     };
 
     // Find the symbol based on the command line argument.
@@ -267,7 +267,7 @@ gulp.task('combine', function(done) {
                     var testResults = positionTester.test(testPositions);
 
                     // See if the test resulted in an improvement.
-                    if (testResults.profitLoss >= benchmarkProfitLoss + 1000 && testResults.winRate >= 0.65 && testResults.profitLoss >= 20000 && testResults.maximumConsecutiveLosses <= 10 && testResults.minimumProfitLoss >= -10000) {
+                    if (testResults.profitLoss >= benchmarkProfitLoss + 1000 && testResults.winRate >= 0.65 && testResults.profitLoss >= 30000 && testResults.maximumConsecutiveLosses <= 10 && testResults.minimumProfitLoss >= -10000) {
                         // Use the positions in future tests.
                         optimalPositions = testPositions;
 
@@ -302,42 +302,4 @@ gulp.task('combine', function(done) {
             });
         });
     });
-});
-
-gulp.task('generateMinuteData', function(done) {
-    function showUsageInfo() {
-        console.log('Example usage:\n');
-        console.log('gulp generateMinuteData --symbol EURCHF --data /path/to/tickdata.csv\n');
-    }
-
-    function handleInputError(message) {
-        gutil.log(gutil.colors.red(message));
-        showUsageInfo();
-        process.exit(1);
-    }
-
-    var minuteDataConverter = require('./src/converters/minuteData');
-
-    // Find the data file based on the command line argument.
-    if (!argv.data) {
-        handleInputError('No data file provided');
-    }
-
-    // Find the symbol based on the command line argument.
-    if (!argv.symbol) {
-        handleInputError('No symbol provided');
-    }
-
-    try {
-        minuteDataConverter.convert(argv.data).then(function(convertedData) {
-            convertedData.forEach(function(dataPoint) {
-                console.log(dataPoint.join(','));
-            });
-            done();
-        });
-    }
-    catch (error) {
-        console.error(error.message || error);
-        process.exit(1);
-    }
 });

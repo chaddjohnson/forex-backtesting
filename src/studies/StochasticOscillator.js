@@ -46,6 +46,7 @@ StochasticOscillator.prototype.tick = function() {
             return memo + dataPoint[KOutputName];
         }
         else {
+            // Use the current K value for the last data point.
             return memo + K;
         }
     }, 0) / averageLengthDataSegment.length;

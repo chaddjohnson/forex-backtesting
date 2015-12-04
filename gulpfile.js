@@ -199,8 +199,8 @@ gulp.task('combine', function(done) {
         minimumProfitLoss: {'$gte': -10000},
         maximumConsecutiveLosses: {'$lte': 10},
         winRate: {'$gte': 0.65},
-        profitLoss: {'$gte': 30000},
-        tradeCount: {'$gte': 425}
+        profitLoss: {'$gte': 40000},
+        tradeCount: {'$gte': 400}
     };
 
     // Find the symbol based on the command line argument.
@@ -268,7 +268,7 @@ gulp.task('combine', function(done) {
                     var testResults = positionTester.test(testPositions);
 
                     // See if the test resulted in an improvement.
-                    if (testResults.profitLoss >= benchmarkProfitLoss + 1000 && testResults.winRate >= 0.65 && testResults.profitLoss >= 30000 && testResults.tradeCount >= 425 && testResults.maximumConsecutiveLosses <= 10 && testResults.minimumProfitLoss >= -10000) {
+                    if (testResults.profitLoss >= benchmarkProfitLoss + 100 && testResults.winRate >= 0.65 && testResults.profitLoss >= 40000 && testResults.tradeCount >= 400 && testResults.maximumConsecutiveLosses <= 10 && testResults.minimumProfitLoss >= -10000) {
                         // Use the positions in future tests.
                         optimalPositions = testPositions;
 

@@ -144,12 +144,12 @@ Reversals.prototype.backtest = function(dataPoint, index, investment, profitabil
         if (self.configuration.stochastic) {
             if (typeof dataPoint[self.configuration.stochastic.K] === 'number' && typeof dataPoint[self.configuration.stochastic.D] === 'number') {
                 // Determine if stochastic is not above the overbought line.
-                if (self.putNextTick && dataPoint[self.configuration.stochastic.D] <= self.configuration.stochastic.overbought) {
+                if (self.putNextTick && (dataPoint[self.configuration.stochastic.K] <= self.configuration.stochastic.overbought || dataPoint[self.configuration.stochastic.D] <= self.configuration.stochastic.overbought)) {
                     self.putNextTick = false;
                 }
 
                 // Determine if stochastic is not below the oversold line.
-                if (self.callNextTick && dataPoint[self.configuration.stochastic.D] >= self.configuration.stochastic.oversold) {
+                if (self.callNextTick && (dataPoint[self.configuration.stochastic.K] >= self.configuration.stochastic.oversold || dataPoint[self.configuration.stochastic.D] >= self.configuration.stochastic.oversold)) {
                     self.callNextTick = false;
                 }
             }

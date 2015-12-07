@@ -32,30 +32,6 @@ PolynomialRegressionChannel.prototype.calculateRegression = function(values, deg
     return regressionOutput.points[regressionOutput.points.length - 1][1];
 };
 
-// Source: http://www.strchr.com/standard_deviation_in_one_pass
-PolynomialRegressionChannel.prototype.calculateStandardDeviation = function(values) {
-    var valuesCount = values.length;
-    var sum = 0;
-    var squaredSum = 0;
-    var mean = 0.0;
-    var variance = 0.0;
-    var i = 0;
-
-    if (valuesCount === 0) {
-        return 0.0;
-    }
-
-    for (i = 0; i < valuesCount; ++i) {
-       sum += values[i];
-       squaredSum += values[i] * values[i];
-    }
-
-    mean = sum / valuesCount;
-    variance = squaredSum / valuesCount - mean * mean;
-
-    return Math.sqrt(variance);
-};
-
 PolynomialRegressionChannel.prototype.tick = function() {
     var self = this;
     var dataSegment = self.getDataSegment(self.getInput('length'));

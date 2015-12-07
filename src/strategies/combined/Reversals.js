@@ -129,6 +129,23 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
                     callThisConfiguration = false;
                 }
             }
+            if (configuration.dynamicZoneRsi) {
+                if (typeof dataPoint[configuration.dynamicZoneRsi.upper] === 'number' && typeof dataPoint[configuration.dynamicZoneRsi.lower]) {
+                    // Determine if Dynamic Zone RSI is not above the overbought line.
+                    if (putThisConfiguration && dataPoint[configuration.dynamicZoneRsi.rsi] <= dataPoint[configuration.dynamicZoneRsi.upper]) {
+                        putThisConfiguration = false;
+                    }
+
+                    // Determine if Dynamic ZoneRSI is not below the oversold line.
+                    if (callThisConfiguration && dataPoint[configuration.dynamicZoneRsi.rsi] >= dataPoint[configuration.dynamicZoneRsi.lower]) {
+                        callThisConfiguration = false;
+                    }
+                }
+                else {
+                    putThisConfiguration = false;
+                    callThisConfiguration = false;
+                }
+            }
             if (configuration.prChannel) {
                 if (dataPoint[configuration.prChannel.upper] && dataPoint[configuration.prChannel.lower]) {
                     // Determine if the upper regression bound was not breached by the high price.

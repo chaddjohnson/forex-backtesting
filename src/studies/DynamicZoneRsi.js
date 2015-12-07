@@ -80,7 +80,7 @@ DynamicZoneRsi.prototype.tick = function() {
         return returnValue;
     }
 
-    // Calculate the normal RSI for 5 (input variable) periods.
+    // Calculate the normal RSI.
     rsi = self.calculateRsi();
     returnValue[self.getOutputMapping('rsi')] = rsi;
 
@@ -96,7 +96,7 @@ DynamicZoneRsi.prototype.tick = function() {
         return returnValue;
     }
 
-    // Calculate a moving average of the RSI for 30 (input variable) periods.
+    // Calculate a moving average of the RSI.
     rsiMovingAverage = _.reduce(self.previousRsiValues, function(memo, previousRsi) {
         return memo + previousRsi;
     }, 0) / self.getInput('bandsLength');
@@ -107,10 +107,10 @@ DynamicZoneRsi.prototype.tick = function() {
     // Calculate the standard deviation of the moving average.
     rsiMovingAverageStandardDeviation = self.calculateStandardDeviation(self.previousRsiMovingAverageValues);
 
-    // Calculate the upper band using the deviation factor of 1.3185 (input variable).
+    // Calculate the upper band using the deviation factor.
     returnValue[self.getOutputMapping('upper')] = rsiMovingAverage + (self.getInput('deviations') * rsiMovingAverageStandardDeviation);
 
-    // Calculate the lower band using the deviation factor of 1.3185 (input variable).
+    // Calculate the lower band using the deviation factor.
     returnValue[self.getOutputMapping('lower')] = rsiMovingAverage - (self.getInput('deviations') * rsiMovingAverageStandardDeviation);
 
     return returnValue;

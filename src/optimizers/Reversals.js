@@ -8,6 +8,8 @@ var studyDefinitions = [
     {study: studies.Sma, inputs: {length: 13}, outputMap: {sma: 'sma13'}},
     {study: studies.Rsi, inputs: {length: 7}, outputMap: {rsi: 'rsi7'}},
     {study: studies.Rsi, inputs: {length: 5}, outputMap: {rsi: 'rsi5'}},
+    {study: studies.DynamicZoneRsi, inputs: {length: 5, bandsLength: 30, deviations: 1.3185}, outputMap: {rsi: 'dynamicZoneRsi_13185', upper: 'dynamicZoneRsiUpper_13185', lower: 'dynamicZoneRsiLower_13185'}},
+    {study: studies.DynamicZoneRsi, inputs: {length: 5, bandsLength: 30, deviations: 2.0}, outputMap: {rsi: 'dynamicZoneRsi_20', upper: 'dynamicZoneRsiUpper_20', lower: 'dynamicZoneRsiLower_20'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 100, degree: 3, deviations: 1.95}, outputMap: {regression: 'prChannel100_3_195', upper: 'prChannelUpper100_3_195', lower: 'prChannelLower100_3_195'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 100, degree: 4, deviations: 2.0}, outputMap: {regression: 'prChannel100_4_20', upper: 'prChannelUpper100_4_20', lower: 'prChannelLower100_4_20'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 100, degree: 3, deviations: 2.1}, outputMap: {regression: 'prChannel100_3_21', upper: 'prChannelUpper100_3_21', lower: 'prChannelLower100_3_21'}},
@@ -71,6 +73,10 @@ var configurationOptions = {
         {rsi: 'rsi7', overbought: 77, oversold: 23},
         {rsi: 'rsi7', overbought: 80, oversold: 20},
         {rsi: 'rsi5', overbought: 80, oversold: 20}
+    ],
+    dynamicZoneRsi: [
+        {rsi: 'dynamicZoneRsi_13185', upper: 'dynamicZoneRsiUpper_13185', lower: 'dynamicZoneRsiLower_13185'},
+        {rsi: 'dynamicZoneRsi_20', upper: 'dynamicZoneRsiUpper_20', lower: 'dynamicZoneRsiLower_20'}
     ],
     prChannel: [
         null,

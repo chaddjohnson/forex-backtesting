@@ -83,14 +83,14 @@ Base.prototype.tick = function(dataPoint) {
     self.previousDataPoint = dataPoint;
 
     // Remove unused data every so often.
-    if (self.cumulativeDataCount >= 2000) {
+    if (self.cumulativeDataCount >= 1500) {
         // Manually free memory for old data points in the array.
-        for (i = 0; i < 1000; i++) {
+        for (i = 0; i < 500; i++) {
             self.cumulativeData[i] = null;
         }
 
         // Remove the excess data points from the array.
-        self.cumulativeData.splice(0, 1000);
+        self.cumulativeData.splice(0, 500);
         self.cumulativeDataCount = 1000;
     }
 };

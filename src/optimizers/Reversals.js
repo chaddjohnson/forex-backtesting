@@ -75,6 +75,7 @@ var configurationOptions = {
         {rsi: 'rsi5', overbought: 80, oversold: 20}
     ],
     dynamicZoneRsi: [
+        null,
         {rsi: 'dynamicZoneRsi_13185', upper: 'dynamicZoneRsiUpper_13185', lower: 'dynamicZoneRsiLower_13185'},
         {rsi: 'dynamicZoneRsi_20', upper: 'dynamicZoneRsiUpper_20', lower: 'dynamicZoneRsiLower_20'}
     ],

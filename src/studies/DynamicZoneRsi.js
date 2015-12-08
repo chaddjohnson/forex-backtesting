@@ -18,7 +18,9 @@ function DynamicZoneRsi(inputs, outputMap) {
 // Create a copy of the Base "class" prototype for use in this "class."
 DynamicZoneRsi.prototype = Object.create(Base.prototype);
 
-DynamicZoneRsi.prototype.calculateInitialAverageGain = function(previousDataPoint) {
+DynamicZoneRsi.prototype.calculateInitialAverageGain = function(initialDataPoint) {
+    var previousDataPoint = initialDataPoint;
+
     return _.reduce(this.dataSegment, function(memo, dataPoint) {
         var gain = dataPoint.close > previousDataPoint.close ? dataPoint.close - previousDataPoint.close : 0;
 
@@ -28,7 +30,9 @@ DynamicZoneRsi.prototype.calculateInitialAverageGain = function(previousDataPoin
     }, 0) / this.dataSegmentLength;
 };
 
-DynamicZoneRsi.prototype.calculateInitialAverageLoss = function(previousDataPoint) {
+DynamicZoneRsi.prototype.calculateInitialAverageLoss = function(initialDataPoint) {
+    var previousDataPoint = initialDataPoint;
+
     return _.reduce(this.dataSegment, function(memo, dataPoint) {
         var loss = dataPoint.close < previousDataPoint.close ? previousDataPoint.close - dataPoint.close : 0;
 

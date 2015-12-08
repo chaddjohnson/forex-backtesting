@@ -16,7 +16,9 @@ function Rsi(inputs, outputMap) {
 // Create a copy of the Base "class" prototype for use in this "class."
 Rsi.prototype = Object.create(Base.prototype);
 
-Rsi.prototype.calculateInitialAverageGain = function(previousDataPoint, dataSegment) {
+Rsi.prototype.calculateInitialAverageGain = function(initialDataPoint, dataSegment) {
+    var previousDataPoint = initialDataPoint;
+
     return _.reduce(dataSegment, function(memo, dataPoint) {
         var gain = dataPoint.close > previousDataPoint.close ? dataPoint.close - previousDataPoint.close : 0;
 
@@ -26,7 +28,9 @@ Rsi.prototype.calculateInitialAverageGain = function(previousDataPoint, dataSegm
     }, 0) / this.dataSegmentLength;
 };
 
-Rsi.prototype.calculateInitialAverageLoss = function(previousDataPoint, dataSegment) {
+Rsi.prototype.calculateInitialAverageLoss = function(initialDataPoint, dataSegment) {
+    var previousDataPoint = initialDataPoint;
+
     return _.reduce(dataSegment, function(memo, dataPoint) {
         var loss = dataPoint.close < previousDataPoint.close ? previousDataPoint.close - dataPoint.close : 0;
 

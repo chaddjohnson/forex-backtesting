@@ -52,8 +52,8 @@ DynamicZoneRsi.prototype.calculateRsi = function() {
     currentLoss = lastDataPoint.close < previousDataPoint.close ? previousDataPoint.close - lastDataPoint.close : 0;
 
     if (!this.previousAverageGain || !this.previousAverageLoss) {
-        averageGain = this.previousAverageGain = this.calculateInitialAverageGain(previousDataPoint);
-        averageLoss = this.previousAverageLoss = this.calculateInitialAverageLoss(previousDataPoint);
+        averageGain = this.previousAverageGain = this.calculateInitialAverageGain(lastDataPoint);
+        averageLoss = this.previousAverageLoss = this.calculateInitialAverageLoss(lastDataPoint);
     }
     else {
         averageGain = this.previousAverageGain = ((this.previousAverageGain * (this.getInput('length') - 1)) + currentGain) / this.getInput('length');

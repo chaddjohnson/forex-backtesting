@@ -83,11 +83,19 @@ PolynomialRegressionChannel.prototype.tick = function() {
     regressionValue = self.calculateRegression(pastPrices, self.getInput('degree'));
 
     // Calculate the standard deviations of the regression. If there is no regression data
-    // available, then skip
+    // available, then skip.
     if (self.getInput('deviations') && dataSegment[dataSegmentLength - 2][regressionOutputName]) {
         // Build an array of regression data using only points that actually have regression data.
         for (i = 0; i < dataSegmentLength; i++) {
-            dataPointRegression = dataSegment[i][regressionOutputName];
+            if (i === dataSegmentLength - 1) {
+                // Current regression.
+                dataPointRegression = regressionValue;
+            }
+            else {
+                // A previous regression.
+                dataPointRegression = dataSegment[i][regressionOutputName];
+            }
+
             if (dataPointRegression) {
                 pastRegressions[j++] = dataPointRegression;
             }
@@ -96,8 +104,7 @@ PolynomialRegressionChannel.prototype.tick = function() {
         // Calculate the standard deviation from the regressions.
         regressionStandardDeviation = self.calculateStandardDeviation(pastRegressions);
 
-        // Calculate the upper and lower values. These should be 1.618 standard deviations
-        // in distance from the regression line.
+        // Calculate the upper and lower values.
         upperValue = regressionValue + (regressionStandardDeviation * self.getInput('deviations'));
         lowerValue = regressionValue - (regressionStandardDeviation * self.getInput('deviations'));
     }

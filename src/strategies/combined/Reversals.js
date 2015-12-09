@@ -130,7 +130,7 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
                 }
             }
             if (configuration.dynamicZoneRsi) {
-                if (typeof dataPoint[configuration.dynamicZoneRsi.upper] === 'number' && typeof dataPoint[configuration.dynamicZoneRsi.lower]) {
+                if (typeof dataPoint[configuration.dynamicZoneRsi.upper] === 'number' && typeof dataPoint[configuration.dynamicZoneRsi.lower] === 'number') {
                     // Determine if Dynamic Zone RSI is not above the overbought line.
                     if (putThisConfiguration && dataPoint[configuration.dynamicZoneRsi.rsi] <= dataPoint[configuration.dynamicZoneRsi.upper]) {
                         putThisConfiguration = false;

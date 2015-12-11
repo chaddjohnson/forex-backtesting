@@ -80,8 +80,7 @@ PolynomialRegressionChannel.prototype.tick = function() {
         // Calculate the standard deviation from the regressions.
         regressionStandardDeviation = self.calculateStandardDeviation(pastRegressions);
 
-        // Calculate the upper and lower values. These should be 1.618 standard deviations
-        // in distance from the regression line.
+        // Calculate the upper and lower values.
         upperValue = regressionValue + (regressionStandardDeviation * self.getInput('deviations'));
         lowerValue = regressionValue - (regressionStandardDeviation * self.getInput('deviations'));
     }

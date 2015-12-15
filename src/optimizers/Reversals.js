@@ -13,6 +13,8 @@ var studyDefinitions = [
     {study: studies.PolynomialRegressionChannel, inputs: {length: 100, degree: 3, deviations: 1.9}, outputMap: {regression: 'prChannel100_3_19', upper: 'prChannelUpper100_3_19', lower: 'prChannelLower100_3_19'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 100, degree: 4, deviations: 1.9}, outputMap: {regression: 'prChannel100_4_19', upper: 'prChannelUpper100_4_19', lower: 'prChannelLower100_4_19'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 100, degree: 2, deviations: 1.95}, outputMap: {regression: 'prChannel100_2_195', upper: 'prChannelUpper100_2_195', lower: 'prChannelLower100_2_195'}},
+    {study: studies.DynamicZoneRsi, inputs: {length: 5, bandsLength: 30, deviations: 1.3185}, outputMap: {rsi: 'dynamicZoneRsi_13185', upper: 'dynamicZoneRsiUpper_13185', lower: 'dynamicZoneRsiLower_13185'}},
+    {study: studies.DynamicZoneRsi, inputs: {length: 5, bandsLength: 30, deviations: 2.0}, outputMap: {rsi: 'dynamicZoneRsi_20', upper: 'dynamicZoneRsiUpper_20', lower: 'dynamicZoneRsiLower_20'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 100, degree: 3, deviations: 1.95}, outputMap: {regression: 'prChannel100_3_195', upper: 'prChannelUpper100_3_195', lower: 'prChannelLower100_3_195'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 100, degree: 4, deviations: 1.95}, outputMap: {regression: 'prChannel100_4_195', upper: 'prChannelUpper100_4_195', lower: 'prChannelLower100_4_195'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 100, degree: 2, deviations: 2.0}, outputMap: {regression: 'prChannel100_2_20', upper: 'prChannelUpper100_2_20', lower: 'prChannelLower100_2_20'}},
@@ -94,6 +96,11 @@ var configurationOptions = {
         {rsi: 'rsi7', overbought: 80, oversold: 20},
         {rsi: 'rsi5', overbought: 80, oversold: 20},
         {rsi: 'rsi2', overbought: 95, oversold: 5}
+    ],
+    dynamicZoneRsi: [
+        null,
+        {rsi: 'dynamicZoneRsi_13185', upper: 'dynamicZoneRsiUpper_13185', lower: 'dynamicZoneRsiLower_13185'},
+        {rsi: 'dynamicZoneRsi_20', upper: 'dynamicZoneRsiUpper_20', lower: 'dynamicZoneRsiLower_20'}
     ],
     prChannel: [
         null,

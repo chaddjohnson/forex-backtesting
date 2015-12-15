@@ -61,7 +61,7 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
         callNextTick = false;
 
         // For every configuration...
-        self.configurations.forEach(function(configuration) {
+        configurations.forEach(function(configuration) {
             putThisConfiguration = true;
             callThisConfiguration = true;
 
@@ -139,6 +139,23 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
 
                     // Determine if Dynamic ZoneRSI is not below the oversold line.
                     if (callThisConfiguration && dataPoint[configuration.dynamicZoneRsi.rsi] >= dataPoint[configuration.dynamicZoneRsi.lower]) {
+                        callThisConfiguration = false;
+                    }
+                }
+                else {
+                    putThisConfiguration = false;
+                    callThisConfiguration = false;
+                }
+            }
+            if (configuration.stochastic) {
+                if (typeof dataPoint[configuration.stochastic.K] === 'number' && typeof dataPoint[configuration.stochastic.D] === 'number') {
+                    // Determine if stochastic is not above the overbought line.
+                    if (putThisConfiguration && (dataPoint[configuration.stochastic.K] <= configuration.stochastic.overbought || dataPoint[configuration.stochastic.D] <= configuration.stochastic.overbought)) {
+                        putThisConfiguration = false;
+                    }
+
+                    // Determine if stochastic is not below the oversold line.
+                    if (callThisConfiguration && (dataPoint[configuration.stochastic.K] >= configuration.stochastic.oversold || dataPoint[configuration.stochastic.D] >= configuration.stochastic.oversold)) {
                         callThisConfiguration = false;
                     }
                 }

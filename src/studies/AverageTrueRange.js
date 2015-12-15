@@ -22,8 +22,13 @@ AverageTrueRange.prototype.tick = function() {
     var dataSegmentLength = dataSegment.length;
     var previousDataPoint = self.getPrevious();
     var lastDataPoint = self.getLast();
+    var tr = 0.0;
     var atr = 0.0;
     var returnValue = {};
+
+    if (dataSegmentLength < self.getInput('length')) {
+        return returnValue;
+    }
 
     if (self.previousAtr) {
         // Calculate TR and ATR.
@@ -34,9 +39,10 @@ AverageTrueRange.prototype.tick = function() {
         );
         atr = ((self.previousAtr * (self.getInput('length') - 1)) + tr) / self.getInput('length');
 
-        // Track the TR along with the previous ones.
-        self.previousTrValues.push(tr);
-        self.previousTrValuesCount++;
+        if (self.previousTrValues) {
+            self.previousTrValues = [];
+            self.previousTrValuesCount = 0;
+        }
     }
     else {
         // Calculate and track the TR along with the previous ones.
@@ -50,18 +56,15 @@ AverageTrueRange.prototype.tick = function() {
         }
 
         // Calculate the initial ATR if there are enough previous TR values.
-        if (self.previousTrValues === self.getInput('length')) {
+        if (self.previousTrValuesCount === self.getInput('length')) {
             atr = _.reduce(self.previousTrValues, function(memo, previousTr) {
                 return memo + previousTr;
-            }, 0) / self.getInput('length');
-        }
-        else {
-            atr = '';
+            }, 0) / self.previousTrValuesCount;
         }
     }
 
     self.previousAtr = atr;
-    returnValue[self.getOutputMapping('atr')] = atr;
+    returnValue[self.getOutputMapping('atr')] = self.previousAtr ? self.previousAtr : '';
 
     return returnValue;
 };

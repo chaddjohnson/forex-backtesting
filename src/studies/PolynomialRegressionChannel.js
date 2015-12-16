@@ -124,8 +124,8 @@ PolynomialRegressionChannel.prototype.tick = function() {
     if (self.getInput('deviations')) {
         returnValue[self.getOutputMapping('upper')] = upperValue;
         returnValue[self.getOutputMapping('lower')] = lowerValue;
-        returnValue[self.getOutputMapping('upper') + '2'] = upperValue2;
-        returnValue[self.getOutputMapping('lower') + '2'] = lowerValue2;
+        returnValue[self.getOutputMapping('upper2')] = upperValue2;
+        returnValue[self.getOutputMapping('lower2')] = lowerValue2;
     }
 
     return returnValue;

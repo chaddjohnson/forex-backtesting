@@ -145,12 +145,12 @@ Reversals.prototype.backtest = function(dataPoint, index, investment, profitabil
         if (self.configuration.prChannel) {
             if (dataPoint[self.configuration.prChannel.upper] && dataPoint[self.configuration.prChannel.lower]) {
                 // Determine if the upper regression bound was not breached by the high price.
-                if (self.putNextTick && (!dataPoint[self.configuration.prChannel.upper] || dataPoint.high <= dataPoint[self.configuration.prChannel.upper] || dataPoint.close > dataPoint[self.configuration.prChannel.upper + '2'])) {
+                if (self.putNextTick && (!dataPoint[self.configuration.prChannel.upper] || dataPoint.high <= dataPoint[self.configuration.prChannel.upper] || dataPoint.close > dataPoint[self.configuration.prChannel.upper2])) {
                     self.putNextTick = false;
                 }
 
                 // Determine if the lower regression bound was not breached by the low price.
-                if (self.callNextTick && (!dataPoint[self.configuration.prChannel.lower] || dataPoint.low >= dataPoint[self.configuration.prChannel.lower] || dataPoint.close < dataPoint[self.configuration.prChannel.lower + '2'])) {
+                if (self.callNextTick && (!dataPoint[self.configuration.prChannel.lower] || dataPoint.low >= dataPoint[self.configuration.prChannel.lower] || dataPoint.close < dataPoint[self.configuration.prChannel.lower2])) {
                     self.callNextTick = false;
                 }
             }

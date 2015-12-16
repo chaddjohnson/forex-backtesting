@@ -64,6 +64,8 @@ PolynomialRegressionChannel.prototype.tick = function() {
     var regressionStandardDeviation = 0.0;
     var upperValue = 0.0;
     var lowerValue = 0.0;
+    var upperValue2 = 0.0;
+    var lowerValue2 = 0.0;
     var pastPrices = [];
     var pastRegressions = [];
     var returnValue = {};
@@ -107,10 +109,14 @@ PolynomialRegressionChannel.prototype.tick = function() {
         // Calculate the upper and lower values.
         upperValue = regressionValue + (regressionStandardDeviation * self.getInput('deviations'));
         lowerValue = regressionValue - (regressionStandardDeviation * self.getInput('deviations'));
+        upperValue2 = regressionValue + (regressionStandardDeviation * (self.getInput('deviations') + 0.382));
+        lowerValue2 = regressionValue - (regressionStandardDeviation * (self.getInput('deviations') + 0.382));
     }
     else {
         upperValue = '';
         lowerValue = '';
+        upperValue2 = '';
+        lowerValue2 = '';
     }
 
     returnValue[regressionOutputName] = regressionValue;
@@ -118,6 +124,8 @@ PolynomialRegressionChannel.prototype.tick = function() {
     if (self.getInput('deviations')) {
         returnValue[self.getOutputMapping('upper')] = upperValue;
         returnValue[self.getOutputMapping('lower')] = lowerValue;
+        returnValue[self.getOutputMapping('upper') + '2'] = upperValue2;
+        returnValue[self.getOutputMapping('lower') + '2'] = lowerValue2;
     }
 
     return returnValue;

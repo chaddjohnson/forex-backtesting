@@ -296,7 +296,7 @@ gulp.task('combine', function(done) {
                 positions: optimalPositions
             }, function() {
                 process.stdout.cursorTo(27);
-                process.stdout.write(backtestCount + ' of ' + backtestCount + ' completed\n');;
+                process.stdout.write(backtestCount + ' of ' + backtestCount + ' completed\n');
                 done();
                 process.exit();
             });

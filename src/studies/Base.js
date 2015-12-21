@@ -49,28 +49,4 @@ Base.prototype.tick = function() {
     throw 'tick() not implemented.';
 };
 
-// Source: http://www.strchr.com/standard_deviation_in_one_pass
-Base.prototype.calculateStandardDeviation = function(values) {
-    var valuesCount = values.length;
-    var sum = 0;
-    var squaredSum = 0;
-    var mean = 0.0;
-    var variance = 0.0;
-    var i = 0;
-
-    if (valuesCount === 0) {
-        return 0.0;
-    }
-
-    for (i = 0; i < valuesCount; ++i) {
-       sum += values[i];
-       squaredSum += values[i] * values[i];
-    }
-
-    mean = sum / valuesCount;
-    variance = squaredSum / valuesCount - mean * mean;
-
-    return Math.sqrt(variance);
-};
-
 module.exports = Base;

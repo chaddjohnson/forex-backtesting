@@ -28,12 +28,13 @@ Reversals.prototype.backtest = function(dataPoint, index, investment, profitabil
     var self = this;
     var expirationMinutes = 5;
     var timestampHour = new Date(dataPoint.timestamp).getHours();
+    var timestampMinute = new Date(dataPoint.timestamp).getMinutes();
 
     // Simulate the next tick.
     self.tick(dataPoint, index, function() {
         // Only trade when the profitability is highest (11pm - 4pm CST).
         // Note that MetaTrader automatically converts timestamps to the current timezone in exported CSV files.
-        if (timestampHour >= 0 && timestampHour < 7) {
+        if (timestampHour >= 23 || timestampHour < 6 || (timestampHour === 6 && timestampMinute < 30)) {
             // Track the current data point as the previous data point for the next tick.
             self.previousDataPoint = dataPoint;
 
@@ -144,12 +145,12 @@ Reversals.prototype.backtest = function(dataPoint, index, investment, profitabil
         if (self.configuration.prChannel) {
             if (dataPoint[self.configuration.prChannel.upper] && dataPoint[self.configuration.prChannel.lower]) {
                 // Determine if the upper regression bound was not breached by the high price.
-                if (self.putNextTick && (!dataPoint[self.configuration.prChannel.upper] || dataPoint.high <= dataPoint[self.configuration.prChannel.upper] || dataPoint.close > dataPoint[self.configuration.prChannel.upper2])) {
+                if (self.putNextTick && (!dataPoint[self.configuration.prChannel.upper] || dataPoint.high <= dataPoint[self.configuration.prChannel.upper])) {
                     self.putNextTick = false;
                 }
 
                 // Determine if the lower regression bound was not breached by the low price.
-                if (self.callNextTick && (!dataPoint[self.configuration.prChannel.lower] || dataPoint.low >= dataPoint[self.configuration.prChannel.lower] || dataPoint.close < dataPoint[self.configuration.prChannel.lower2])) {
+                if (self.callNextTick && (!dataPoint[self.configuration.prChannel.lower] || dataPoint.low >= dataPoint[self.configuration.prChannel.lower])) {
                     self.callNextTick = false;
                 }
             }

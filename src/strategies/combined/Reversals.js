@@ -26,13 +26,14 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
     data.forEach(function(dataPoint, index) {
         var position;
         var timestampHour = new Date(dataPoint.timestamp).getHours();
+        var timestampMinute = new Date(dataPoint.timestamp).getMinutes();
 
         // Simulate the next tick.
         self.tick(dataPoint);
 
         // Only trade when the profitability is highest (11pm - 4pm CST).
         // Note that MetaTrader automatically converts timestamps to the current timezone in exported CSV files.
-        if (timestampHour >= 0 && timestampHour < 7) {
+        if (timestampHour >= 23 || timestampHour < 6 || (timestampHour === 6 && timestampMinute < 30)) {
             // Track the current data point as the previous data point for the next tick.
             previousDataPoint = null;
             previousDataPoint = dataPoint;
@@ -132,12 +133,12 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
             if (configuration.prChannel) {
                 if (dataPoint[configuration.prChannel.upper] && dataPoint[configuration.prChannel.lower]) {
                     // Determine if the upper regression bound was not breached by the high price.
-                    if (putThisConfiguration && (!dataPoint[configuration.prChannel.upper] || dataPoint.high <= dataPoint[configuration.prChannel.upper] || dataPoint.close > dataPoint[configuration.prChannel.upper2])) {
+                    if (putThisConfiguration && (!dataPoint[configuration.prChannel.upper] || dataPoint.high <= dataPoint[configuration.prChannel.upper])) {
                         putThisConfiguration = false;
                     }
 
                     // Determine if the lower regression bound was not breached by the low price.
-                    if (callThisConfiguration && (!dataPoint[configuration.prChannel.lower] || dataPoint.low >= dataPoint[configuration.prChannel.lower] || dataPoint.close < dataPoint[configuration.prChannel.lower2])) {
+                    if (callThisConfiguration && (!dataPoint[configuration.prChannel.lower] || dataPoint.low >= dataPoint[configuration.prChannel.lower])) {
                         callThisConfiguration = false;
                     }
                 }

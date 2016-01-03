@@ -142,13 +142,13 @@ Reversals.prototype.backtest = function(dataPoint, index, investment, profitabil
             callback();
             return;
         }
-        if (self.configuration.prChannel) {
+        if (self.configuration.bollingerBands) {
             if (self.previousDataPoint && dataPoint[self.configuration.bollingerBands.upper] && dataPoint[self.configuration.bollingerBands.lower]) {
-                if (self.putNextTick && (!dataPoint[self.configuration.bollingerBands.upper] || dataPoint.open <= self.previousDataPoint[self.configuration.bollingerBands.upper] || dataPoint.close <= dataPoint[self.configuration.bollingerBands.upper])) {
+                if (self.putNextTick && (!dataPoint[self.configuration.bollingerBands.upper] || dataPoint.close <= dataPoint[self.configuration.bollingerBands.upper])) {
                     self.putNextTick = false;
                 }
 
-                if (self.callNextTick && (!dataPoint[self.configuration.bollingerBands.lower] || dataPoint.open >= self.previousDataPoint[self.configuration.bollingerBands.lower] || dataPoint.close >= dataPoint[self.configuration.bollingerBands.lower])) {
+                if (self.callNextTick && (!dataPoint[self.configuration.bollingerBands.lower] || dataPoint.close >= dataPoint[self.configuration.bollingerBands.lower])) {
                     self.callNextTick = false;
                 }
             }

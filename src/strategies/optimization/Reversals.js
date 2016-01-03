@@ -143,36 +143,12 @@ Reversals.prototype.backtest = function(dataPoint, index, investment, profitabil
             return;
         }
         if (self.configuration.prChannel) {
-            if (dataPoint[self.configuration.prChannel.upper] && dataPoint[self.configuration.prChannel.lower]) {
-                // Determine if the upper regression bound was not breached by the high price.
-                if (self.putNextTick && (!dataPoint[self.configuration.prChannel.upper] || dataPoint.high <= dataPoint[self.configuration.prChannel.upper])) {
+            if (self.previousDataPoint && dataPoint[self.configuration.bollingerBands.upper] && dataPoint[self.configuration.bollingerBands.lower]) {
+                if (self.putNextTick && (!dataPoint[self.configuration.bollingerBands.upper] || dataPoint.open <= self.previousDataPoint[self.configuration.bollingerBands.upper] || dataPoint.close <= dataPoint[self.configuration.bollingerBands.upper])) {
                     self.putNextTick = false;
                 }
 
-                // Determine if the lower regression bound was not breached by the low price.
-                if (self.callNextTick && (!dataPoint[self.configuration.prChannel.lower] || dataPoint.low >= dataPoint[self.configuration.prChannel.lower])) {
-                    self.callNextTick = false;
-                }
-            }
-            else {
-                self.putNextTick = false;
-                self.callNextTick = false;
-            }
-        }
-        if (!self.putNextTick && !self.callNextTick) {
-            self.previousDataPoint = dataPoint;
-            callback();
-            return;
-        }
-        if (self.configuration.trendPrChannel) {
-            if (self.previousDataPoint && dataPoint[self.configuration.trendPrChannel.regression] && self.previousDataPoint[self.configuration.trendPrChannel.regression]) {
-                // Determine if a long-term downtrend is not occurring.
-                if (self.putNextTick && dataPoint[self.configuration.trendPrChannel.regression] > self.previousDataPoint[self.configuration.trendPrChannel.regression]) {
-                    self.putNextTick = false;
-                }
-
-                // Determine if a long-term uptrend is not occurring.
-                if (self.callNextTick && dataPoint[self.configuration.trendPrChannel.regression] < self.previousDataPoint[self.configuration.trendPrChannel.regression]) {
+                if (self.callNextTick && (!dataPoint[self.configuration.bollingerBands.lower] || dataPoint.open >= self.previousDataPoint[self.configuration.bollingerBands.lower] || dataPoint.close >= dataPoint[self.configuration.bollingerBands.lower])) {
                     self.callNextTick = false;
                 }
             }

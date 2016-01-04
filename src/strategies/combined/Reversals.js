@@ -130,6 +130,21 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
                     callThisConfiguration = false;
                 }
             }
+            if (configuration.bollingerBands) {
+                if (self.previousDataPoint && dataPoint[configuration.bollingerBands.upper] && dataPoint[configuration.bollingerBands.lower]) {
+                    if (putThisConfiguration && (!dataPoint[configuration.bollingerBands.upper] || dataPoint.close <= dataPoint[configuration.bollingerBands.upper])) {
+                        putThisConfiguration = false;
+                    }
+
+                    if (callThisConfiguration && (!dataPoint[configuration.bollingerBands.lower] || dataPoint.close >= dataPoint[configuration.bollingerBands.lower])) {
+                        callThisConfiguration = false;
+                    }
+                }
+                else {
+                    putThisConfiguration = false;
+                    callThisConfiguration = false;
+                }
+            }
             if (configuration.prChannel) {
                 if (dataPoint[configuration.prChannel.upper] && dataPoint[configuration.prChannel.lower]) {
                     // Determine if the upper regression bound was not breached by the high price.

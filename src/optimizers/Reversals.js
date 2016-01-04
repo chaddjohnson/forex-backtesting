@@ -9,6 +9,7 @@ var studyDefinitions = [
     {study: studies.Rsi, inputs: {length: 7}, outputMap: {rsi: 'rsi7'}},
     {study: studies.Rsi, inputs: {length: 5}, outputMap: {rsi: 'rsi5'}},
     {study: studies.Rsi, inputs: {length: 2}, outputMap: {rsi: 'rsi2'}},
+    {study: studies.BollingerBands, inputs: {length: 20, deviations: 3.0}, outputMap: {middle: 'bollingerBandMiddle', upper: 'bollingerBandUpper', lower: 'bollingerBandLower'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 100, degree: 2, deviations: 1.9}, outputMap: {regression: 'prChannel100_2_19', upper: 'prChannelUpper100_2_19', lower: 'prChannelLower100_2_19'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 100, degree: 3, deviations: 1.9}, outputMap: {regression: 'prChannel100_3_19', upper: 'prChannelUpper100_3_19', lower: 'prChannelLower100_3_19'}},
     // {study: studies.PolynomialRegressionChannel, inputs: {length: 100, degree: 4, deviations: 1.9}, outputMap: {regression: 'prChannel100_4_19', upper: 'prChannelUpper100_4_19', lower: 'prChannelLower100_4_19'}},
@@ -94,6 +95,10 @@ var configurationOptions = {
         {rsi: 'rsi7', overbought: 80, oversold: 20},
         {rsi: 'rsi5', overbought: 80, oversold: 20},
         {rsi: 'rsi2', overbought: 95, oversold: 5}
+    ],
+    bollingerBands: [
+        null,
+        {upper: 'bollingerBandUpper', lower: 'bollingerBandLower'}
     ],
     prChannel: [
         null,

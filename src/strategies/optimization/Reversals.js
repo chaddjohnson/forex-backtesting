@@ -142,6 +142,26 @@ Reversals.prototype.backtest = function(dataPoint, index, investment, profitabil
             callback();
             return;
         }
+        if (self.configuration.bollingerBands) {
+            if (self.previousDataPoint && dataPoint[self.configuration.bollingerBands.upper] && dataPoint[self.configuration.bollingerBands.lower]) {
+                if (self.putNextTick && (!dataPoint[self.configuration.bollingerBands.upper] || dataPoint.close <= dataPoint[self.configuration.bollingerBands.upper])) {
+                    self.putNextTick = false;
+                }
+
+                if (self.callNextTick && (!dataPoint[self.configuration.bollingerBands.lower] || dataPoint.close >= dataPoint[self.configuration.bollingerBands.lower])) {
+                    self.callNextTick = false;
+                }
+            }
+            else {
+                self.putNextTick = false;
+                self.callNextTick = false;
+            }
+        }
+        if (!self.putNextTick && !self.callNextTick) {
+            self.previousDataPoint = dataPoint;
+            callback();
+            return;
+        }
         if (self.configuration.prChannel) {
             if (dataPoint[self.configuration.prChannel.upper] && dataPoint[self.configuration.prChannel.lower]) {
                 // Determine if the upper regression bound was not breached by the high price.

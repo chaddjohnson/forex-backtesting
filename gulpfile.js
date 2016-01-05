@@ -196,10 +196,10 @@ gulp.task('combine', function(done) {
     var backtestConstraints = {
         symbol: argv.symbol,
         //strategyName: argv.strategy,
-        minimumProfitLoss: {'$gte': -10000},
-        maximumConsecutiveLosses: {'$lte': 10},
-        winRate: {'$gte': 0.64},
-        tradeCount: {'$gte': 10000},
+        minimumProfitLoss: {'$gte': -20000},
+        maximumConsecutiveLosses: {'$lte': 20},
+        winRate: {'$gte': 0.62},
+        tradeCount: {'$gte': 15000},
     };
 
     // Find the symbol based on the command line argument.
@@ -267,7 +267,7 @@ gulp.task('combine', function(done) {
                     var testResults = positionTester.test(testPositions);
 
                     // See if the test resulted in an improvement.
-                    if (testResults.profitLoss >= benchmarkProfitLoss + 100 && testResults.winRate >= 0.64 && testResults.tradeCount >= 10000 && testResults.maximumConsecutiveLosses <= 10 && testResults.minimumProfitLoss >= -10000) {
+                    if (testResults.profitLoss >= benchmarkProfitLoss + 100 && testResults.winRate >= 0.62 && testResults.tradeCount >= 15000 && testResults.maximumConsecutiveLosses <= 20 && testResults.minimumProfitLoss >= -20000) {
                         // Use the positions in future tests.
                         optimalPositions = testPositions;
 

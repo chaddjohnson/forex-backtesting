@@ -159,28 +159,6 @@ Reversals.prototype.backtest = function(dataPoint, index, investment, profitabil
                 self.callNextTick = false;
             }
         }
-        if (!self.putNextTick && !self.callNextTick) {
-            self.previousDataPoint = dataPoint;
-            callback();
-            return;
-        }
-        if (self.configuration.trendPrChannel) {
-            if (self.previousDataPoint && dataPoint[self.configuration.trendPrChannel.regression] && self.previousDataPoint[self.configuration.trendPrChannel.regression]) {
-                // Determine if a long-term downtrend is not occurring.
-                if (self.putNextTick && dataPoint[self.configuration.trendPrChannel.regression] > self.previousDataPoint[self.configuration.trendPrChannel.regression]) {
-                    self.putNextTick = false;
-                }
-
-                // Determine if a long-term uptrend is not occurring.
-                if (self.callNextTick && dataPoint[self.configuration.trendPrChannel.regression] < self.previousDataPoint[self.configuration.trendPrChannel.regression]) {
-                    self.callNextTick = false;
-                }
-            }
-            else {
-                self.putNextTick = false;
-                self.callNextTick = false;
-            }
-        }
 
         // Track the current data point as the previous data point for the next tick.
         self.previousDataPoint = dataPoint;

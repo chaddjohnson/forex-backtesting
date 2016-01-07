@@ -147,23 +147,6 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
                     callThisConfiguration = false;
                 }
             }
-            if (configuration.trendPrChannel) {
-                if (previousDataPoint && dataPoint[configuration.trendPrChannel.regression] && previousDataPoint[configuration.trendPrChannel.regression]) {
-                    // Determine if a long-term downtrend is not occurring.
-                    if (putThisConfiguration && dataPoint[configuration.trendPrChannel.regression] > previousDataPoint[configuration.trendPrChannel.regression]) {
-                        putThisConfiguration = false;
-                    }
-
-                    // Determine if a long-term uptrend is not occurring.
-                    if (callThisConfiguration && dataPoint[configuration.trendPrChannel.regression] < previousDataPoint[configuration.trendPrChannel.regression]) {
-                        callThisConfiguration = false;
-                    }
-                }
-                else {
-                    putThisConfiguration = false;
-                    callThisConfiguration = false;
-                }
-            }
 
             // Determine whether to trade next tick.
             putNextTick = putNextTick || putThisConfiguration;

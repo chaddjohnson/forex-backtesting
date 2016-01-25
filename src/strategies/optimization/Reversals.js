@@ -160,6 +160,14 @@ Reversals.prototype.backtest = function(dataPoint, index, investment, profitabil
             }
         }
 
+        if (self.putNextTick && (dataPoint.high - Math.max(dataPoint.close, dataPoint.open)) / dataPoint.close >= 0.00018) {
+            self.putNextTick = false;
+        }
+
+        if (self.callNextTick && (Math.min(dataPoint.close, dataPoint.open) - dataPoint.low) / dataPoint.close >= 0.00018) {
+            self.callNextTick = false;
+        }
+
         // Track the current data point as the previous data point for the next tick.
         self.previousDataPoint = dataPoint;
 

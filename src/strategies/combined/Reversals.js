@@ -148,6 +148,14 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
                 }
             }
 
+            if (putThisConfiguration && (dataPoint.high - Math.max(dataPoint.close, dataPoint.open)) / dataPoint.close >= 0.00018) {
+                putThisConfiguration = false;
+            }
+
+            if (callThisConfiguration && (Math.min(dataPoint.close, dataPoint.open) - dataPoint.low) / dataPoint.close >= 0.00018) {
+                callThisConfiguration = false;
+            }
+
             // Determine whether to trade next tick.
             putNextTick = putNextTick || putThisConfiguration;
             callNextTick = callNextTick || callThisConfiguration;

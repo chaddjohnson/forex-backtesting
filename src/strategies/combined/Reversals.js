@@ -288,6 +288,13 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
                 }
             }
 
+            // if (putThisConfiguration && Math.abs(dataPoint.high - dataPoint.low) > 0 && (dataPoint.high - Math.max(dataPoint.close, dataPoint.open)) / Math.abs(dataPoint.high - dataPoint.low) < 0.25) {
+            //     putThisConfiguration = false;
+            // }
+
+            // if (callThisConfiguration && Math.abs(dataPoint.high - dataPoint.low) > 0 && (Math.min(dataPoint.close, dataPoint.open) - dataPoint.low) / Math.abs(dataPoint.high - dataPoint.low) < 0.25) {
+            //     callThisConfiguration = false;
+            // }
             if (putThisConfiguration && (dataPoint.high - Math.max(dataPoint.close, dataPoint.open)) / dataPoint.close >= 0.00018) {
                 putThisConfiguration = false;
             }

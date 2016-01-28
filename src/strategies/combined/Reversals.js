@@ -219,11 +219,11 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
         previousDataPoint = dataPoint;
 
         if (putNextTick) {
-            console.log('PUT at ' + new Date(dataPoint.timestamp + (60 * 60 * 8 * 1000) + 1000));
+            console.log('PUT at ' + new Date(dataPoint.timestamp + 1000));
         }
 
         if (callNextTick) {
-            console.log('CALL at ' + new Date(dataPoint.timestamp + (60 * 60 * 8 * 1000) + 1000));
+            console.log('CALL at ' + new Date(dataPoint.timestamp + 1000));
         }
     });
 

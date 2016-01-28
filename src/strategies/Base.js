@@ -49,10 +49,10 @@ Base.prototype.tick = function(dataPoint) {
     var i = 0;
 
     // If there is a gap in the data, reset the cumulative data.
-    // if (self.previousDataPoint && (dataPoint.timestamp - self.previousDataPoint.timestamp) > 65000) {
-    //     self.cumulativeData = [];
-    //     self.cumulativeDataCount = 0;
-    // }
+    if (self.previousDataPoint && (dataPoint.timestamp - self.previousDataPoint.timestamp) > 600000) {
+        self.cumulativeData = [];
+        self.cumulativeDataCount = 0;
+    }
 
     // Add the data point to the cumulative data.
     self.cumulativeData.push(dataPoint);

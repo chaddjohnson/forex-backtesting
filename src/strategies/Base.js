@@ -45,54 +45,7 @@ Base.prototype.getWinRate = function() {
 };
 
 Base.prototype.tick = function(dataPoint) {
-    var self = this;
-    var i = 0;
-
-    // Add the data point to the cumulative data.
-    self.cumulativeData.push(dataPoint);
-    self.cumulativeDataCount++;
-
-    // Iterate over each study...
-    self.getStudies().forEach(function(study) {
-        var studyProperty = '';
-        var studyTickValue = 0.0;
-        var studyOutputs = study.getOutputMappings();
-
-        // Update the data for the study.
-        study.setData(self.cumulativeData);
-
-        var studyTickValues = study.tick();
-
-        // Augment the last data point with the data the study generates.
-        for (studyProperty in studyOutputs) {
-            if (studyTickValues && typeof studyTickValues[studyOutputs[studyProperty]] === 'number') {
-                // Include output in main output, and limit decimal precision without rounding.
-                dataPoint[studyOutputs[studyProperty]] = studyTickValues[studyOutputs[studyProperty]];
-            }
-            else {
-                dataPoint[studyOutputs[studyProperty]] = '';
-            }
-        }
-    });
-
-    if (self.previousDataPoint) {
-        // Simulate expiry of and profit/loss related to positions held.
-        self.closeExpiredPositions(self.previousDataPoint.close, dataPoint.timestamp - 1000);
-    }
-
-    self.previousDataPoint = dataPoint;
-
-    // Remove unused data every so often.
-    if (self.cumulativeDataCount >= 1500) {
-        // Manually free memory for old data points in the array.
-        for (i = 0; i < 500; i++) {
-            self.cumulativeData[i] = null;
-        }
-
-        // Remove the excess data points from the array.
-        self.cumulativeData.splice(0, 500);
-        self.cumulativeDataCount = 1000;
-    }
+    throw 'tick() not implemented.'
 };
 
 Base.prototype.backtest = function(data, investment, profitability) {

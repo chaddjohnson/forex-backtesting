@@ -175,7 +175,7 @@ gulp.task('forwardtest', function(done) {
             var studies = [];
             var cumulativeData = [];
             var previousDataPoint = null;
-            var dataCount = parseData.length - 1;
+            var dataCount = parsedData.length - 1;
 
             process.stdout.write('Preparing study data...');
 
@@ -242,7 +242,7 @@ gulp.task('forwardtest', function(done) {
                         var strategy = new strategyFn(argv.symbol, [backtest.configuration]);
 
                         // Backtest (forward test).
-                        var results = strategy.backtest(parseData, investment, profitability);
+                        var results = strategy.backtest(parsedData, investment, profitability);
 
                         // Save results.
                         Forwardtest.create(_.extend(results, {

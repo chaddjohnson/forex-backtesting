@@ -175,7 +175,7 @@ gulp.task('forwardtest', function(done) {
             var studies = [];
             var cumulativeData = [];
             var previousDataPoint = null;
-            var dataCount = parsedData.length - 1;
+            var dataCount = parsedData.length;
 
             process.stdout.write('Preparing study data...');
 
@@ -230,7 +230,7 @@ gulp.task('forwardtest', function(done) {
             process.stdout.write(dataCount + ' of ' + dataCount + ' completed\n');
 
             Backtest.find(backtestConstraints, function(error, backtests) {
-                var backtestCount = backtests.length - 1;
+                var backtestCount = backtests.length;
                 var backtestTasks = [];
 
                 // Iterate through the remaining backtests.
@@ -341,7 +341,7 @@ gulp.task('combine', function(done) {
         var optimalConfigurations = [];
         var optimalPositions = [];
         var percentage = 0.0;
-        var backtestCount = backtests.length - 1;
+        var backtestCount = backtests.length;
         var tasks = [];
 
         // Iterate through the remaining backtests.

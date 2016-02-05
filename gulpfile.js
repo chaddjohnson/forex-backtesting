@@ -259,7 +259,7 @@ gulp.task('forwardtest', function(done) {
                     });
                 });
 
-                async.series(tasks, function(error) {
+                async.series(backtestTasks, function(error) {
                     process.stdout.cursorTo(18);
                     process.stdout.write(backtestCount + ' of ' + backtestCount + ' completed\n');
 

@@ -41,14 +41,14 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
         if (previousDataPoint && index < dataPointCount - 1) {
             if (putNextTick) {
                 // Create a new position.
-                position = new Put(self.getSymbol(), (dataPoint.timestamp - 1000), previousDataPoint.close, investment, profitability, expirationMinutes);
+                position = new Put(self.getSymbol(), previousDataPoint.timestamp, previousDataPoint.close, investment, profitability, expirationMinutes);
                 position.setShowTrades(self.getShowTrades());
                 self.addPosition(position);
             }
 
             if (callNextTick) {
                 // Create a new position.
-                position = new Call(self.getSymbol(), (dataPoint.timestamp - 1000), previousDataPoint.close, investment, profitability, expirationMinutes)
+                position = new Call(self.getSymbol(), previousDataPoint.timestamp, previousDataPoint.close, investment, profitability, expirationMinutes)
                 position.setShowTrades(self.getShowTrades());
                 self.addPosition(position);
             }

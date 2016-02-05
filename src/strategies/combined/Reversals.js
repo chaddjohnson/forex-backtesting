@@ -23,7 +23,7 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
 
     // For every data point...
     data.forEach(function(dataPoint, index) {
-        var position;
+        var position = null;
         var timestampHour = new Date(dataPoint.timestamp).getHours();
         var timestampMinute = new Date(dataPoint.timestamp).getMinutes();
 
@@ -34,9 +34,7 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
         // Note that MetaTrader automatically converts timestamps to the current timezone in exported CSV files.
         if (timestampHour >= 16 && (timestampHour < 23 || (timestampHour === 23 && timestampMinute < 30))) {
             // Track the current data point as the previous data point for the next tick.
-            previousDataPoint = null;
             previousDataPoint = dataPoint;
-
             return;
         }
 
@@ -164,13 +162,13 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
                 }
             }
 
-            if (putThisConfiguration && (dataPoint.high - Math.max(dataPoint.close, dataPoint.open)) / dataPoint.close >= 0.00018) {
-                putThisConfiguration = false;
-            }
+            // if (putThisConfiguration && (dataPoint.high - Math.max(dataPoint.close, dataPoint.open)) / dataPoint.close >= 0.00018) {
+            //     putThisConfiguration = false;
+            // }
 
-            if (callThisConfiguration && (Math.min(dataPoint.close, dataPoint.open) - dataPoint.low) / dataPoint.close >= 0.00018) {
-                callThisConfiguration = false;
-            }
+            // if (callThisConfiguration && (Math.min(dataPoint.close, dataPoint.open) - dataPoint.low) / dataPoint.close >= 0.00018) {
+            //     callThisConfiguration = false;
+            // }
 
             // Determine whether to trade next tick.
             putNextTick = putNextTick || putThisConfiguration;

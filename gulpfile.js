@@ -186,9 +186,8 @@ gulp.task('forwardtest', function(done) {
 
             // Parepare study data.
             parsedData.forEach(function(dataPoint) {
-                // If there is a significant gap, save the current data points, and start over with recording.
+                // If there is a significant gap, start over.
                 if (previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 600000) {
-                    self.saveDataPoints(cumulativeData.slice());
                     cumulativeData = [];
                 }
 

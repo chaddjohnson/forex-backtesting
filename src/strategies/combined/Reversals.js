@@ -20,7 +20,6 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
     var callThisConfiguration = false;
     var previousDataPoint;
     var dataPointCount = data.length;
-    var previousBalance = 0;
 
     // For every data point...
     data.forEach(function(dataPoint, index) {
@@ -178,17 +177,11 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
             callNextTick = callNextTick || callThisConfiguration;
         });
 
-        if (self.getShowTrades()) {
-            if (self.getProfitLoss() !== previousBalance) {
-                console.log('BALANCE: $' + self.getProfitLoss());
-                console.log();
-            }
-            previousBalance = self.getProfitLoss();
-        }
-
         // Track the current data point as the previous data point for the next tick.
         previousDataPoint = dataPoint;
     });
+
+    return self.getResults();
 };
 
 module.exports = ReversalsCombined;

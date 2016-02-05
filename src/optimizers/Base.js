@@ -65,7 +65,7 @@ Base.prototype.prepareStudyData = function(data, callback) {
             // Iterate over each study...
             self.studies.forEach(function(study) {
                 var studyProperty = '';
-                var studyTickValue = 0.0;
+                var studyTickValues = {};
                 var studyOutputs = study.getOutputMappings();
 
                 // Update the data for the study.

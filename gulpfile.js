@@ -34,76 +34,7 @@ scheduleGarbageCollection();
 gulp.task('backtest', function(done) {
     function showUsageInfo() {
         console.log('Example usage:\n');
-        console.log('gulp backtest --symbol EURCHF --parser metatrader --data ./data/metatrader/three-year/EURCHF.csv --strategy Reversals --investment 1000 --profitability 0.7\n');
-    }
-
-    function handleInputError(message) {
-        gutil.log(gutil.colors.red(message));
-        showUsageInfo();
-        process.exit(1);
-    }
-
-    var dataParsers = require('./src/dataParsers');
-    var strategies = require('./src/strategies');
-
-    var strategyFn;
-    var dataParser;
-    var profitability = 0.0;
-
-    // Find the data file based on the command line argument.
-    if (!argv.data) {
-        handleInputError('No data file provided');
-    }
-
-    // Find the symbol based on the command line argument.
-    if (!argv.symbol) {
-        handleInputError('No symbol provided');
-    }
-
-    // Find the strategy based on the command line argument.
-    strategyFn = strategies[argv.strategy]
-    if (!strategyFn) {
-        handleInputError('Invalid strategy');
-    }
-
-    // Find the raw data parser based on command line argument.
-    dataParser = dataParsers[argv.parser]
-    if (!dataParser) {
-        handleInputError('Invalid data parser');
-    }
-
-    investment = parseFloat(argv.investment)
-    if (!investment) {
-        handleInputError('Invalid investment');
-    }
-
-    profitability = parseFloat(argv.profitability)
-    if (!profitability) {
-        handleInputError('No profitability provided');
-    }
-
-    try {
-        // Parse the raw data file.
-        dataParser.parse(argv.data).then(function(parsedData) {
-            // Prepare the strategy.
-            var strategy = new strategyFn(argv.symbol);
-
-            // Backtest the strategy against the parsed data.
-            strategy.backtest(parsedData, investment, profitability);
-
-            done();
-        });
-    }
-    catch (error) {
-        console.error(error.message || error);
-        process.exit(1);
-    }
-});
-
-gulp.task('optimize', function(done) {
-    function showUsageInfo() {
-        console.log('Example usage:\n');
-        console.log('gulp optimize --symbol EURCHF --parser metatrader --data ./data/metatrader/three-year/EURCHF.csv --optimizer Reversals --investment 1000 --profitability 0.7 --database forex-backtesting\n');
+        console.log('gulp backtest --symbol AUDJPY --parser metatrader --data ./data/metatrader/three-year/AUDJPY.csv --optimizer Reversals --investment 1000 --profitability 0.7 --database forex-backtesting\n');
     }
 
     function handleInputError(message) {
@@ -118,6 +49,7 @@ gulp.task('optimize', function(done) {
 
     var optimizerFn;
     var dataParser;
+    var investment = 0.0;
     var profitability = 0.0;
 
     // Find the symbol based on the command line argument.
@@ -173,10 +105,174 @@ gulp.task('optimize', function(done) {
     }
 });
 
+gulp.task('forwardtest', function(done) {
+    function showUsageInfo() {
+        console.log('Example usage:\n');
+        console.log('gulp forwardtest --symbol AUDJPY --parser ctoption --data ./data/ctoption/AUDJPY.csv --investment 1000 --profitability 0.7 --database forex-backtesting\n');
+    }
+
+    function handleInputError(message) {
+        gutil.log(gutil.colors.red(message));
+        showUsageInfo();
+        process.exit(1);
+    }
+
+    var db = require('./db');
+    var dataParsers = require('./src/dataParsers');
+    var Backtest = require('./src/models/Backtest');
+    var Forwardtest = require('./src/models/Forwardtest');
+    var optimizerFn = require('./src/optimizers/Reversals');
+    var strategyFn = require('./src/strategies/combined/Reversals');
+    var dataParser;
+    var investment = 0.0;
+    var profitability = 0.0;
+
+    var backtestConstraints = {
+        symbol: argv.symbol,
+        //strategyName: argv.strategy,
+        minimumProfitLoss: {'$gte': -20000},
+        maximumConsecutiveLosses: {'$lte': 20},
+        winRate: {'$gte': 0.62},
+        tradeCount: {'$gte': 3000},
+    };
+
+    // Find the symbol based on the command line argument.
+    if (!argv.symbol) {
+        handleInputError('No symbol provided');
+    }
+
+    // Find the raw data parser based on command line argument.
+    dataParser = dataParsers[argv.parser]
+    if (!dataParser) {
+        handleInputError('Invalid data parser');
+    }
+
+    investment = parseFloat(argv.investment)
+    if (!investment) {
+        handleInputError('Invalid investment');
+    }
+
+    profitability = parseFloat(argv.profitability)
+    if (!profitability) {
+        handleInputError('No profitability provided');
+    }
+
+    // Find the data file based on the command line argument.
+    if (!argv.data) {
+        handleInputError('No data file provided');
+    }
+
+    if (!argv.database) {
+        handleInputError('No database provided');
+    }
+
+    // Set up database connection.
+    db.initialize(argv.database);
+
+    try {
+        dataParser.parse(argv.data).then(function(parsedData) {
+            var studyDefinitions = optimizerFn.studyDefinitions;
+            var studies = [];
+            var cumulativeData = [];
+            var previousDataPoint = null;
+
+            process.stdout.write('Preparing study data...\n');
+
+            // Prepare studies.
+            studyDefinitions.forEach(function(studyDefinition) {
+                // Instantiate the study, and add it to the list of studies for this strategy.
+                studies.push(new studyDefinition.study(studyDefinition.inputs, studyDefinition.outputMap));
+            });
+
+            // Parepare study data.
+            parsedData.forEach(function(dataPoint) {
+                // If there is a significant gap, save the current data points, and start over with recording.
+                if (previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 600000) {
+                    self.saveDataPoints(cumulativeData.slice());
+                    cumulativeData = [];
+                }
+
+                // Add the data point to the cumulative data.
+                cumulativeData.push(dataPoint);
+
+                // Iterate over each study...
+                studies.forEach(function(study) {
+                    var studyProperty = '';
+                    var studyTickValues = {};
+                    var studyOutputs = study.getOutputMappings();
+
+                    // Update the data for the study.
+                    study.setData(cumulativeData);
+
+                    studyTickValues = study.tick();
+
+                    // Augment the last data point with the data the study generates.
+                    for (studyProperty in studyOutputs) {
+                        if (studyTickValues && typeof studyTickValues[studyOutputs[studyProperty]] === 'number') {
+                            dataPoint[studyOutputs[studyProperty]] = studyTickValues[studyOutputs[studyProperty]];
+                        }
+                        else {
+                            dataPoint[studyOutputs[studyProperty]] = '';
+                        }
+                    }
+
+                    // Ensure memory is freed.
+                    studyTickValues = null;
+                });
+
+                previousDataPoint = dataPoint;
+            });
+
+            Backtest.find(backtestConstraints, function(error, backtests) {
+                var backtestCount = backtests.length - 1;
+                var backtestTasks = [];
+
+                // Iterate through the remaining backtests.
+                process.stdout.write('Forward testing...\n');
+
+                backtests.forEach(function(backtest, index) {
+                    backtestTasks.push(function(taskCallback) {
+                        // Set up a new strategy instance.
+                        var strategy = new strategyFn(argv.symbol, [backtest.configuration]);
+
+                        // Backtest (forward test).
+                        var results = strategy.backtest(parseData, investment, profitability);
+
+                        // Save results.
+                        Forwardtest.create(_.extend(results, {
+                            symbol: argv.symbol,
+                            strategyUuid: backtest.strategyUuid,
+                            configuration: backtest.configuration
+                        }), function() {
+                            process.stdout.cursorTo(18);
+                            process.stdout.write(index + ' of ' + backtestCount + ' completed');
+
+                            // Forward test the next backtest.
+                            taskCallback();
+                        });
+                    });
+                });
+
+                async.series(tasks, function(error) {
+                    process.stdout.cursorTo(18);
+                    process.stdout.write(backtestCount + ' of ' + backtestCount + ' completed\n');
+
+                    db.disconnect();
+                    done();
+                });
+            });
+        });
+    }
+    catch (error) {
+        cosole.error(error.message || error);
+        process.exit(1);
+    }
+});
+
 gulp.task('combine', function(done) {
     function showUsageInfo() {
         console.log('Example usage:\n');
-        console.log('gulp combine --symbol EURCHF --strategy Reversals --investment 1000 --profitability 0.7 --database forex-backtesting\n');
+        console.log('gulp combine --symbol AUDJPY --strategy Reversals --investment 1000 --profitability 0.7 --database forex-backtesting\n');
     }
 
     function handleInputError(message) {

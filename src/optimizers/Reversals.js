@@ -310,4 +310,7 @@ Reversals.prototype.optimize = function(data, investment, profitability, done) {
     });
 };
 
+// Make study definitions publically and statically available.
+Reversals.studyDefinitions = studyDefinitions;
+
 module.exports = Reversals;

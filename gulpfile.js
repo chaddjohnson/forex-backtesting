@@ -298,10 +298,10 @@ gulp.task('combine', function(done) {
     var forwardtestConstraints = {
         symbol: argv.symbol,
         //strategyName: argv.strategy,
-        minimumProfitLoss: {'$gte': -20000},
-        maximumConsecutiveLosses: {'$lte': 20},
+        minimumProfitLoss: {'$gte': -1000},
+        maximumConsecutiveLosses: {'$lte': 5},
         winRate: {'$gte': 0.62},
-        tradeCount: {'$gte': 3000},
+        tradeCount: {'$gte': 75},
     };
 
     // Find the symbol based on the command line argument.

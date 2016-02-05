@@ -288,14 +288,14 @@ gulp.task('combine', function(done) {
     }
 
     var db = require('./db');
-    var Backtest = require('./src/models/Backtest');
+    var Forwardtest = require('./src/models/Forwardtest');
     var Position = require('./src/models/Position');
     var Combination = require('./src/models/Combination');
     var positionTester = require('./src/positionTester');
 
     var profitability = 0.0;
 
-    var backtestConstraints = {
+    var forwardtestConstraints = {
         symbol: argv.symbol,
         //strategyName: argv.strategy,
         minimumProfitLoss: {'$gte': -20000},
@@ -331,29 +331,29 @@ gulp.task('combine', function(done) {
     // Set up database connection.
     db.initialize(argv.database);
 
-    // Find all backtests for the symbol.
-    Backtest.find(backtestConstraints, function(error, backtests) {
-        // Sort backtests descending by profitLoss.
-        backtests = _.sortBy(backtests, 'profitLoss').reverse();
+    // Find all forward tests for the symbol.
+    Forwardtest.find(forwardtestConstraints, function(error, forwardtests) {
+        // Sort forward tests descending by profitLoss.
+        forwardtests = _.sortBy(forwardtests, 'winRate').reverse();
 
         // Use the highest profit/loss figure as the benchmark.
         var benchmarkProfitLoss = 0;
         var optimalConfigurations = [];
         var optimalPositions = [];
         var percentage = 0.0;
-        var backtestCount = backtests.length;
+        var forwardtestCount = forwardtests.length;
         var tasks = [];
 
-        // Iterate through the remaining backtests.
+        // Iterate through the remaining forward tests.
         process.stdout.write('Combining configurations...');
 
-        backtests.forEach(function(backtest, index) {
+        forwardtests.forEach(function(forwardtest, index) {
             tasks.push(function(taskCallback) {
                 process.stdout.cursorTo(27);
-                process.stdout.write(index + ' of ' + backtestCount + ' completed (' + optimalConfigurations.length + ' / $' + benchmarkProfitLoss + ')');
+                process.stdout.write(index + ' of ' + forwardtestCount + ' completed (' + optimalConfigurations.length + ' / $' + benchmarkProfitLoss + ')');
 
-                // Find all positions for each backtest.
-                Position.find({strategyUuid: backtest.strategyUuid}, function(error, positions) {
+                // Find all positions for each forward test.
+                Position.find({strategyUuid: forwardtest.strategyUuid}, function(error, positions) {
                     // Test with the optimal positions combined with the current positions.
                     var testPositions = optimalPositions.concat(positions);
 
@@ -373,8 +373,8 @@ gulp.task('combine', function(done) {
                         // Use the positions in future tests.
                         optimalPositions = testPositions;
 
-                        // Include the backtest configuration in the list of optimal configurations.
-                        optimalConfigurations.push(backtest.configuration);
+                        // Include the forward test configuration in the list of optimal configurations.
+                        optimalConfigurations.push(forwardtest.configuration);
 
                         // Update the benchmark.
                         benchmarkProfitLoss = testResults.profitLoss;
@@ -398,7 +398,7 @@ gulp.task('combine', function(done) {
                 positions: optimalPositions
             }, function() {
                 process.stdout.cursorTo(27);
-                process.stdout.write(backtestCount + ' of ' + backtestCount + ' completed\n');
+                process.stdout.write(forwardtestCount + ' of ' + forwardtestCount + ' completed\n');
                 done();
                 process.exit();
             });

@@ -175,8 +175,9 @@ gulp.task('forwardtest', function(done) {
             var studies = [];
             var cumulativeData = [];
             var previousDataPoint = null;
+            var dataCount = parseData.length - 1;
 
-            process.stdout.write('Preparing study data...\n');
+            process.stdout.write('Preparing study data...');
 
             // Prepare studies.
             studyDefinitions.forEach(function(studyDefinition) {
@@ -185,7 +186,7 @@ gulp.task('forwardtest', function(done) {
             });
 
             // Parepare study data.
-            parsedData.forEach(function(dataPoint) {
+            parsedData.forEach(function(dataPoint, index) {
                 // If there is a significant gap, start over.
                 if (previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 600000) {
                     cumulativeData = [];
@@ -220,7 +221,13 @@ gulp.task('forwardtest', function(done) {
                 });
 
                 previousDataPoint = dataPoint;
+
+                process.stdout.cursorTo(23);
+                process.stdout.write(index + ' of ' + dataCount + ' completed');
             });
+
+            process.stdout.cursorTo(23);
+            process.stdout.write(dataCount + ' of ' + dataCount + ' completed\n');
 
             Backtest.find(backtestConstraints, function(error, backtests) {
                 var backtestCount = backtests.length - 1;

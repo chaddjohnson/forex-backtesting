@@ -33,7 +33,7 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
 
         // Only trade when the profitability is highest (11:30pm - 4pm CST).
         // Note that MetaTrader automatically converts timestamps to the current timezone in exported CSV files.
-        if (timestampHour >= 0 && (timestampHour < 7 || (timestampHour === 7 && timestampMinute < 30))) {
+        if (timestampHour >= 16 && (timestampHour < 23 || (timestampHour === 23 && timestampMinute < 30))) {
             // Track the current data point as the previous data point for the next tick.
             previousDataPoint = null;
             previousDataPoint = dataPoint;
@@ -163,14 +163,6 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
                     putThisConfiguration = false;
                     callThisConfiguration = false;
                 }
-            }
-
-            if (putThisConfiguration && (dataPoint.high - Math.max(dataPoint.close, dataPoint.open)) / dataPoint.close >= 0.00018) {
-                putThisConfiguration = false;
-            }
-
-            if (callThisConfiguration && (Math.min(dataPoint.close, dataPoint.open) - dataPoint.low) / dataPoint.close >= 0.00018) {
-                callThisConfiguration = false;
             }
 
             // Determine whether to trade next tick.

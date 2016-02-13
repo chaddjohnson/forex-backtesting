@@ -159,11 +159,6 @@ Reversals.prototype.backtest = function(dataPoint, index, investment, profitabil
                 self.callNextTick = false;
             }
         }
-        if (!self.putNextTick && !self.callNextTick) {
-            self.previousDataPoint = dataPoint;
-            callback();
-            return;
-        }
         if (self.configuration.prChannel) {
             if (dataPoint[self.configuration.prChannel.upper] && dataPoint[self.configuration.prChannel.lower]) {
                 // Determine if the upper regression bound was not breached by the high price.
@@ -180,14 +175,6 @@ Reversals.prototype.backtest = function(dataPoint, index, investment, profitabil
                 self.putNextTick = false;
                 self.callNextTick = false;
             }
-        }
-
-        if (self.putNextTick && (dataPoint.high - Math.max(dataPoint.close, dataPoint.open)) / dataPoint.close >= 0.00018) {
-            self.putNextTick = false;
-        }
-
-        if (self.callNextTick && (Math.min(dataPoint.close, dataPoint.open) - dataPoint.low) / dataPoint.close >= 0.00018) {
-            self.callNextTick = false;
         }
 
         // Track the current data point as the previous data point for the next tick.

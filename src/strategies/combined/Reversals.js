@@ -4,32 +4,14 @@ var Put = require('../../positions/Put');
 var studies = require('../../studies');
 
 var studyDefinitions = [
-    {study: studies.Ema, inputs: {length: 200}, outputMap: {ema: 'ema200'}},
-    {study: studies.Ema, inputs: {length: 100}, outputMap: {ema: 'ema100'}},
     {study: studies.Ema, inputs: {length: 50}, outputMap: {ema: 'ema50'}},
-    {study: studies.Sma, inputs: {length: 13}, outputMap: {sma: 'sma13'}},
+    {study: studies.Ema, inputs: {length: 100}, outputMap: {ema: 'ema100'}},
+    {study: studies.Ema, inputs: {length: 200}, outputMap: {ema: 'ema200'}},
     {study: studies.Rsi, inputs: {length: 7}, outputMap: {rsi: 'rsi7'}},
-    {study: studies.Rsi, inputs: {length: 5}, outputMap: {rsi: 'rsi5'}},
-    {study: studies.StochasticOscillator, inputs: {length: 5, averageLength: 3}, outputMap: {K: 'stochastic5K', D: 'stochastic5D'}},
-    {study: studies.StochasticOscillator, inputs: {length: 10, averageLength: 3}, outputMap: {K: 'stochastic10K', D: 'stochastic10D'}},
-    {study: studies.StochasticOscillator, inputs: {length: 14, averageLength: 3}, outputMap: {K: 'stochastic14K', D: 'stochastic14D'}},
-    {study: studies.StochasticOscillator, inputs: {length: 21, averageLength: 3}, outputMap: {K: 'stochastic21K', D: 'stochastic21D'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 2, deviations: 1.9}, outputMap: {regression: 'prChannel200_2_19', upper: 'prChannelUpper200_2_19', lower: 'prChannelLower200_2_19'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 4, deviations: 1.95}, outputMap: {regression: 'prChannel200_4_195', upper: 'prChannelUpper200_4_195', lower: 'prChannelLower200_4_195'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 2, deviations: 2.0}, outputMap: {regression: 'prChannel200_2_20', upper: 'prChannelUpper200_2_20', lower: 'prChannelLower200_2_20'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 4, deviations: 2.0}, outputMap: {regression: 'prChannel200_4_20', upper: 'prChannelUpper200_4_20', lower: 'prChannelLower200_4_20'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 250, degree: 4, deviations: 1.9}, outputMap: {regression: 'prChannel250_4_19', upper: 'prChannelUpper250_4_19', lower: 'prChannelLower250_4_19'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 250, degree: 4, deviations: 1.95}, outputMap: {regression: 'prChannel250_4_195', upper: 'prChannelUpper250_4_195', lower: 'prChannelLower250_4_195'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 250, degree: 3, deviations: 2.0}, outputMap: {regression: 'prChannel250_3_20', upper: 'prChannelUpper250_3_20', lower: 'prChannelLower250_3_20'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 250, degree: 2, deviations: 2.15}, outputMap: {regression: 'prChannel250_2_215', upper: 'prChannelUpper250_2_215', lower: 'prChannelLower250_2_215'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 300, degree: 3, deviations: 2.15}, outputMap: {regression: 'prChannel300_3_215', upper: 'prChannelUpper300_3_215', lower: 'prChannelLower300_3_215'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 300, degree: 3, deviations: 1.9}, outputMap: {regression: 'prChannel300_3_19', upper: 'prChannelUpper300_3_19', lower: 'prChannelLower300_3_19'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 300, degree: 4, deviations: 2.0}, outputMap: {regression: 'prChannel300_4_20', upper: 'prChannelUpper300_4_20', lower: 'prChannelLower300_4_20'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 300, degree: 2, deviations: 2.1}, outputMap: {regression: 'prChannel300_2_21', upper: 'prChannelUpper300_2_21', lower: 'prChannelLower300_2_21'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 300, degree: 3, deviations: 2.1}, outputMap: {regression: 'prChannel300_3_21', upper: 'prChannelUpper300_3_21', lower: 'prChannelLower300_3_21'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 300, degree: 4, deviations: 2.1}, outputMap: {regression: 'prChannel300_4_21', upper: 'prChannelUpper300_4_21', lower: 'prChannelLower300_4_21'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 350, degree: 4, deviations: 1.95}, outputMap: {regression: 'prChannel350_4_195', upper: 'prChannelUpper350_4_195', lower: 'prChannelLower350_4_195'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 350, degree: 3, deviations: 2.1}, outputMap: {regression: 'prChannel350_3_21', upper: 'prChannelUpper350_3_21', lower: 'prChannelLower350_3_21'}}
+    {study: studies.Rsi, inputs: {length: 9}, outputMap: {rsi: 'rsi9'}},
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 2, deviations: 1.85}, outputMap: {regression: 'prChannel200_2_185', upper: 'prChannelUpper200_2_185', lower: 'prChannelLower200_2_185'}},
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 2, deviations: 1.95}, outputMap: {regression: 'prChannel200_2_195', upper: 'prChannelUpper200_2_195', lower: 'prChannelLower200_2_195'}},
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 2, deviations: 2.05}, outputMap: {regression: 'prChannel200_2_205', upper: 'prChannelUpper200_2_205', lower: 'prChannelLower200_2_205'}},
 ];
 
 function ReversalsCombined(symbol, configurations) {
@@ -194,20 +176,6 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
                     putThisConfiguration = false;
                     callThisConfiguration = false;
                 }
-            }
-
-            // if (putThisConfiguration && Math.abs(dataPoint.high - dataPoint.low) > 0 && (dataPoint.high - Math.max(dataPoint.close, dataPoint.open)) / Math.abs(dataPoint.high - dataPoint.low) < 0.25) {
-            //     putThisConfiguration = false;
-            // }
-            // if (callThisConfiguration && Math.abs(dataPoint.high - dataPoint.low) > 0 && (Math.min(dataPoint.close, dataPoint.open) - dataPoint.low) / Math.abs(dataPoint.high - dataPoint.low) < 0.25) {
-            //     callThisConfiguration = false;
-            // }
-
-            if (putThisConfiguration && (dataPoint.high - Math.max(dataPoint.close, dataPoint.open)) / dataPoint.close >= 0.00018) {
-                putThisConfiguration = false;
-            }
-            if (callThisConfiguration && (Math.min(dataPoint.close, dataPoint.open) - dataPoint.low) / dataPoint.close >= 0.00018) {
-                callThisConfiguration = false;
             }
 
             // Determine whether to trade next tick.

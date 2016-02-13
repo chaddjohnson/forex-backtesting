@@ -13,6 +13,9 @@ function Base(symbol) {
     this.consecutiveLosses = 0;
     this.maximumConsecutiveLosses = 0;
     this.minimumProfitLoss = 99999;
+
+    this.dayBalance = 0;
+    this.previousDay = -1;
 }
 
 Base.prototype.getSymbol = function() {
@@ -130,6 +133,15 @@ Base.prototype.closeExpiredPositions = function(price, timestamp) {
 
     var expiredPositions = [];
 
+    var currentDay = new Date(timestamp).getDay();
+
+    if (currentDay !== self.previousDay && self.previousDay > 0) {
+        console.log('\t' + self.dayBalance);
+        self.dayBalance = 0;
+    }
+
+    self.previousDay = currentDay;
+
     // Iterate over open positions.
     openPositionsCopy.forEach(function(position, index) {
         var profitLoss = 0.0;
@@ -139,10 +151,12 @@ Base.prototype.closeExpiredPositions = function(price, timestamp) {
             position.close(price, timestamp);
 
             self.profitLoss -= position.getInvestment();
+            self.dayBalance -= position.getInvestment();
 
             // Add the profit/loss for this position to the profit/loss for this strategy.
             profitLoss = position.getProfitLoss();
             self.profitLoss += profitLoss;
+            self.dayBalance += profitLoss;
 
             if (profitLoss > position.getInvestment()) {
                 self.winCount++;

@@ -36,6 +36,10 @@ Base.prototype.getStudies = function() {
     return this.studies;
 };
 
+Base.prototype.setProfitLoss = function(profitLoss) {
+    this.profitLoss = profitLoss;
+};
+
 Base.prototype.getProfitLoss = function() {
     return this.profitLoss;
 };

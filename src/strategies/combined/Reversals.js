@@ -38,12 +38,22 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
     var position = null;
     var nextPutInvestment = 0;
     var nextCallInvestment = 0;
+    var previousDay = -1;
+    var currentDay = -1;
 
     // For every data point...
     data.forEach(function(dataPoint, index) {
         var position;
         var timestampHour = new Date(dataPoint.timestamp).getHours();
         var timestampMinute = new Date(dataPoint.timestamp).getMinutes();
+
+        currentDay = new Date(dataPoint.timestamp).getDay();
+
+        if (currentDay !== previousDay) {
+            investment = self.profitLoss * 0.01;
+        }
+
+        previousDay = currentDay;
 
         // Simulate the next tick.
         self.tick(dataPoint);
@@ -199,11 +209,11 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
         previousDataPoint = dataPoint;
 
         if (putNextTick) {
-            console.log('PUT at ' + new Date(dataPoint.timestamp + 1000));
+            console.log('PUT for $' + nextPutInvestment + ' at ' + new Date(dataPoint.timestamp + 1000));
         }
 
         if (callNextTick) {
-            console.log('CALL at ' + new Date(dataPoint.timestamp + 1000));
+            console.log('CALL for $' + nextCallInvestment + ' at ' + new Date(dataPoint.timestamp + 1000));
         }
     });
 

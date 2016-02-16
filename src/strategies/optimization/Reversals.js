@@ -57,72 +57,6 @@ Reversals.prototype.backtest = function(dataPoint, index, investment, profitabil
         self.putNextTick = true;
         self.callNextTick = true;
 
-        if (self.configuration.prChannel) {
-            if (dataPoint[self.configuration.prChannel.upper] && dataPoint[self.configuration.prChannel.lower]) {
-                // Determine if the upper regression bound was not breached by the high price.
-                if (self.putNextTick && (!dataPoint[self.configuration.prChannel.upper] || dataPoint.high <= dataPoint[self.configuration.prChannel.upper])) {
-                    self.putNextTick = false;
-                }
-
-                // Determine if the lower regression bound was not breached by the low price.
-                if (self.callNextTick && (!dataPoint[self.configuration.prChannel.lower] || dataPoint.low >= dataPoint[self.configuration.prChannel.lower])) {
-                    self.callNextTick = false;
-                }
-            }
-            else {
-                self.putNextTick = false;
-                self.callNextTick = false;
-            }
-        }
-        if (!self.putNextTick && !self.callNextTick) {
-            self.previousDataPoint = dataPoint;
-            callback();
-            return;
-        }
-        if (self.configuration.stochastic) {
-            if (typeof dataPoint[self.configuration.stochastic.K] === 'number' && typeof dataPoint[self.configuration.stochastic.D] === 'number') {
-                // Determine if stochastic is not above the overbought line.
-                if (self.putNextTick && (dataPoint[self.configuration.stochastic.K] <= self.configuration.stochastic.overbought || dataPoint[self.configuration.stochastic.D] <= self.configuration.stochastic.overbought)) {
-                    self.putNextTick = false;
-                }
-
-                // Determine if stochastic is not below the oversold line.
-                if (self.callNextTick && (dataPoint[self.configuration.stochastic.K] >= self.configuration.stochastic.oversold || dataPoint[self.configuration.stochastic.D] >= self.configuration.stochastic.oversold)) {
-                    self.callNextTick = false;
-                }
-            }
-            else {
-                self.putNextTick = false;
-                self.callNextTick = false;
-            }
-        }
-        if (!self.putNextTick && !self.callNextTick) {
-            self.previousDataPoint = dataPoint;
-            callback();
-            return;
-        }
-        if (self.configuration.rsi) {
-            if (typeof dataPoint[self.configuration.rsi.rsi] === 'number') {
-                // Determine if RSI is not above the overbought line.
-                if (self.putNextTick && dataPoint[self.configuration.rsi.rsi] <= self.configuration.rsi.overbought) {
-                    self.putNextTick = false;
-                }
-
-                // Determine if RSI is not below the oversold line.
-                if (self.callNextTick && dataPoint[self.configuration.rsi.rsi] >= self.configuration.rsi.oversold) {
-                    self.callNextTick = false;
-                }
-            }
-            else {
-                self.putNextTick = false;
-                self.callNextTick = false;
-            }
-        }
-        if (!self.putNextTick && !self.callNextTick) {
-            self.previousDataPoint = dataPoint;
-            callback();
-            return;
-        }
         if (self.configuration.ema200 && self.configuration.ema100) {
             if (!dataPoint.ema200 || !dataPoint.ema100) {
                 self.putNextTick = false;
@@ -178,6 +112,67 @@ Reversals.prototype.backtest = function(dataPoint, index, investment, profitabil
 
             // Determine if an uptrend is not occurring.
             if (self.callNextTick && dataPoint.ema50 > dataPoint.sma13) {
+                self.callNextTick = false;
+            }
+        }
+        if (!self.putNextTick && !self.callNextTick) {
+            self.previousDataPoint = dataPoint;
+            callback();
+            return;
+        }
+        if (self.configuration.rsi) {
+            if (typeof dataPoint[self.configuration.rsi.rsi] === 'number') {
+                // Determine if RSI is not above the overbought line.
+                if (self.putNextTick && dataPoint[self.configuration.rsi.rsi] <= self.configuration.rsi.overbought) {
+                    self.putNextTick = false;
+                }
+
+                // Determine if RSI is not below the oversold line.
+                if (self.callNextTick && dataPoint[self.configuration.rsi.rsi] >= self.configuration.rsi.oversold) {
+                    self.callNextTick = false;
+                }
+            }
+            else {
+                self.putNextTick = false;
+                self.callNextTick = false;
+            }
+        }
+        if (!self.putNextTick && !self.callNextTick) {
+            self.previousDataPoint = dataPoint;
+            callback();
+            return;
+        }
+        if (self.configuration.stochastic) {
+            if (typeof dataPoint[self.configuration.stochastic.K] === 'number' && typeof dataPoint[self.configuration.stochastic.D] === 'number') {
+                // Determine if stochastic is not above the overbought line.
+                if (self.putNextTick && (dataPoint[self.configuration.stochastic.K] <= self.configuration.stochastic.overbought || dataPoint[self.configuration.stochastic.D] <= self.configuration.stochastic.overbought)) {
+                    self.putNextTick = false;
+                }
+
+                // Determine if stochastic is not below the oversold line.
+                if (self.callNextTick && (dataPoint[self.configuration.stochastic.K] >= self.configuration.stochastic.oversold || dataPoint[self.configuration.stochastic.D] >= self.configuration.stochastic.oversold)) {
+                    self.callNextTick = false;
+                }
+            }
+            else {
+                self.putNextTick = false;
+                self.callNextTick = false;
+            }
+        }
+        if (self.configuration.prChannel) {
+            if (dataPoint[self.configuration.prChannel.upper] && dataPoint[self.configuration.prChannel.lower]) {
+                // Determine if the upper regression bound was not breached by the high price.
+                if (self.putNextTick && (!dataPoint[self.configuration.prChannel.upper] || dataPoint.high <= dataPoint[self.configuration.prChannel.upper])) {
+                    self.putNextTick = false;
+                }
+
+                // Determine if the lower regression bound was not breached by the low price.
+                if (self.callNextTick && (!dataPoint[self.configuration.prChannel.lower] || dataPoint.low >= dataPoint[self.configuration.prChannel.lower])) {
+                    self.callNextTick = false;
+                }
+            }
+            else {
+                self.putNextTick = false;
                 self.callNextTick = false;
             }
         }

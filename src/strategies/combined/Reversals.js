@@ -20,12 +20,22 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
     var callThisConfiguration = false;
     var previousDataPoint;
     var dataPointCount = data.length;
+    var previousDay = -1;
+    var currentDay = -1;
 
     // For every data point...
     data.forEach(function(dataPoint, index) {
         var position = null;
         var timestampHour = new Date(dataPoint.timestamp).getHours();
         var timestampMinute = new Date(dataPoint.timestamp).getMinutes();
+
+        currentDay = new Date(dataPoint.timestamp).getDay();
+
+        if (currentDay !== previousDay) {
+            investment = self.profitLoss * 0.01;
+        }
+
+        previousDay = currentDay;
 
         // Simulate the next tick.
         self.tick(dataPoint);

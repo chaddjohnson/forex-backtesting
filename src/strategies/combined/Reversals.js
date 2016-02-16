@@ -22,6 +22,8 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
     var dataPointCount = data.length;
     var previousDay = -1;
     var currentDay = -1;
+    var nextPutInvestment = 0;
+    var nextCallInvestment = 0;
 
     // For every data point...
     data.forEach(function(dataPoint, index) {
@@ -51,14 +53,14 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
         if (previousDataPoint && index < dataPointCount - 1) {
             if (putNextTick) {
                 // Create a new position.
-                position = new Put(self.getSymbol(), previousDataPoint.timestamp, previousDataPoint.close, investment, profitability, expirationMinutes);
+                position = new Put(self.getSymbol(), previousDataPoint.timestamp, previousDataPoint.close, nextPutInvestment, profitability, expirationMinutes);
                 position.setShowTrades(self.getShowTrades());
                 self.addPosition(position);
             }
 
             if (callNextTick) {
                 // Create a new position.
-                position = new Call(self.getSymbol(), previousDataPoint.timestamp, previousDataPoint.close, investment, profitability, expirationMinutes)
+                position = new Call(self.getSymbol(), previousDataPoint.timestamp, previousDataPoint.close, nextCallInvestment, profitability, expirationMinutes)
                 position.setShowTrades(self.getShowTrades());
                 self.addPosition(position);
             }
@@ -66,6 +68,9 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
 
         putNextTick = false;
         callNextTick = false;
+
+        nextPutInvestment = 0;
+        nextCallInvestment = 0;
 
         // For every configuration...
         self.configurations.forEach(function(configuration) {
@@ -170,6 +175,13 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
                     putThisConfiguration = false;
                     callThisConfiguration = false;
                 }
+            }
+
+            if (putThisConfiguration) {
+                nextPutInvestment += investment;
+            }
+            if (callThisConfiguration) {
+                nextCallInvestment += investment;
             }
 
             // Determine whether to trade next tick.

@@ -21,7 +21,7 @@ Base.prototype.getUuid = function() {
     return this.uuid;
 };
 
-Base.prototype.tick = function(dataPoint) {
+Base.prototype.tick = function(dataPoint, index, callback) {
     var self = this;
     var expiredPositions = [];
 
@@ -34,9 +34,12 @@ Base.prototype.tick = function(dataPoint) {
         });
 
         self.tickPreviousDataPoint = dataPoint;
+
+        callback();
     }
     else {
         self.tickPreviousDataPoint = dataPoint;
+        callback();
     }
 };
 

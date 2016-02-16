@@ -290,6 +290,7 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
                     type: 'backtest',
                     data: {
                         dataPoint: dataPoint.data,
+                        index: index,
                         investment: investment,
                         profitability: profitability
                     }

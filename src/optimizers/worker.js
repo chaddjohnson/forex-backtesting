@@ -14,14 +14,13 @@ function init(strategyName, symbol, configuration, dataPointCount) {
     strategies.push(new strategyFns.optimization[strategyName](symbol, configuration, dataPointCount));
 };
 
-function backtest(dataPoint, index, investment, profitability) {
+function backtest(dataPoint, investment, profitability) {
     var tasks = [];
 
     strategies.forEach(function(strategy) {
         tasks.push(function(taskCallback) {
-            strategy.backtest(dataPoint, index, investment, profitability, function() {
-                taskCallback();
-            });
+            strategy.backtest(dataPoint, investment, profitability);
+            taskCallback();
         });
     });
 

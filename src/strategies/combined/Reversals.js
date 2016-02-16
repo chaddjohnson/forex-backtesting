@@ -63,6 +63,13 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
         if (timestampHour >= 16 && (timestampHour < 23 || (timestampHour === 23 && timestampMinute < 30))) {
             // Track the current data point as the previous data point for the next tick.
             previousDataPoint = dataPoint;
+
+            putNextTick = false;
+            callNextTick = false;
+
+            nextPutInvestment = 0;
+            nextCallInvestment = 0;
+
             return;
         }
 
@@ -81,12 +88,6 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
                 self.addPosition(position);
             }
         }
-
-        putNextTick = false;
-        callNextTick = false;
-
-        nextPutInvestment = 0;
-        nextCallInvestment = 0;
 
         // For every configuration...
         self.configurations.forEach(function(configuration) {

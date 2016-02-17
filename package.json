@@ -8,7 +8,7 @@
     "mongoose": "^4.1.8",
     "node-uuid": "^1.4.3",
     "q": "^1.4.1",
-    "regression": "git+https://github.com/chaddjohnson/regression-js.git",
+    "regression": "^1.2.1",
     "sliced": "^1.0.1"
   },
   "devDependencies": {

@@ -361,9 +361,9 @@ gulp.task('combine', function(done) {
                     var testPositions = optimalPositions.concat(positions);
 
                     // Get the unique set of trades.
-                    var testPositions = _.uniq(testPositions, function(position) {
-                        return position.timestamp;
-                    });
+                    // var testPositions = _.uniq(testPositions, function(position) {
+                    //     return position.timestamp;
+                    // });
 
                     // Sort positions by timestamp.
                     testPositions = _.sortBy(testPositions, 'timestamp');

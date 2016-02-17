@@ -215,7 +215,6 @@ var configurationOptions = {
         {rsi: 'rsi7', overbought: 80, oversold: 20},
         {rsi: 'rsi9', overbought: 70, oversold: 30},
         {rsi: 'rsi9', overbought: 77, oversold: 23}
-
     ],
     stochastic: [
         null,

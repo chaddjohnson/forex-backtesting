@@ -38,9 +38,6 @@ Reversals.prototype.backtest = function(dataPoint, index, investment, profitabil
             // Track the current data point as the previous data point for the next tick.
             self.previousDataPoint = dataPoint;
 
-            self.putNextTick = false;
-            self.callNextTick = false;
-
             callback();
             return;
         }

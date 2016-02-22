@@ -51,6 +51,10 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
         if (timestampHour >= 16 && (timestampHour < 23 || (timestampHour === 23 && timestampMinute < 30))) {
             // Track the current data point as the previous data point for the next tick.
             previousDataPoint = dataPoint;
+
+            putNextTick = false;
+            callNextTick = false;
+
             return;
         }
 

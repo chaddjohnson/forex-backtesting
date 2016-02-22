@@ -8,7 +8,6 @@ var strategy = new strategyFn(process.argv[2], combinations);
 try {
     // Parse the raw data file.
     dataParsers.ctoption.parse('./data/ctoption/' + process.argv[2] + '.csv').then(function(parsedData) {
-        strategy.setProfitLoss(6000);
         strategy.backtest(parsedData, 120, 0.76);
     });
 }

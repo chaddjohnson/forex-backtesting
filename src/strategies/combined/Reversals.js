@@ -36,24 +36,12 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
     var dataPointCount = data.length;
     var previousBalance = 0;
     var position = null;
-    var nextPutInvestment = 0;
-    var nextCallInvestment = 0;
-    var previousDay = -1;
-    var currentDay = -1;
 
     // For every data point...
     data.forEach(function(dataPoint, index) {
         var position;
         var timestampHour = new Date(dataPoint.timestamp).getHours();
         var timestampMinute = new Date(dataPoint.timestamp).getMinutes();
-
-        currentDay = new Date(dataPoint.timestamp).getDay();
-
-        if (currentDay !== previousDay) {
-            investment = self.profitLoss * 0.01;
-        }
-
-        previousDay = currentDay;
 
         // Simulate the next tick.
         self.tick(dataPoint);
@@ -63,27 +51,20 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
         if (timestampHour >= 16 && (timestampHour < 23 || (timestampHour === 23 && timestampMinute < 30))) {
             // Track the current data point as the previous data point for the next tick.
             previousDataPoint = dataPoint;
-
-            putNextTick = false;
-            callNextTick = false;
-
-            nextPutInvestment = 0;
-            nextCallInvestment = 0;
-
             return;
         }
 
         if (previousDataPoint && index < dataPointCount - 1) {
             if (putNextTick) {
                 // Create a new position.
-                position = new Put(self.getSymbol(), (dataPoint.timestamp - 1000), previousDataPoint.close, nextPutInvestment, profitability, expirationMinutes);
+                position = new Put(self.getSymbol(), (dataPoint.timestamp - 1000), previousDataPoint.close, investment, profitability, expirationMinutes);
                 position.setShowTrades(self.getShowTrades());
                 self.addPosition(position);
             }
 
             if (callNextTick) {
                 // Create a new position.
-                position = new Call(self.getSymbol(), (dataPoint.timestamp - 1000), previousDataPoint.close, nextCallInvestment, profitability, expirationMinutes)
+                position = new Call(self.getSymbol(), (dataPoint.timestamp - 1000), previousDataPoint.close, investment, profitability, expirationMinutes)
                 position.setShowTrades(self.getShowTrades());
                 self.addPosition(position);
             }
@@ -91,9 +72,6 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
 
         putNextTick = false;
         callNextTick = false;
-
-        nextPutInvestment = 0;
-        nextCallInvestment = 0;
 
         // For every configuration...
         self.configurations.forEach(function(configuration) {
@@ -200,13 +178,6 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
                 }
             }
 
-            if (putThisConfiguration) {
-                nextPutInvestment += investment;
-            }
-            if (callThisConfiguration) {
-                nextCallInvestment += investment;
-            }
-
             // Determine whether to trade next tick.
             putNextTick = putNextTick || putThisConfiguration;
             callNextTick = callNextTick || callThisConfiguration;
@@ -216,11 +187,11 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
         previousDataPoint = dataPoint;
 
         if (putNextTick) {
-            console.log('PUT for $' + nextPutInvestment + ' at ' + new Date(dataPoint.timestamp + 1000));
+            console.log('PUT at ' + new Date(dataPoint.timestamp + 1000));
         }
 
         if (callNextTick) {
-            console.log('CALL for $' + nextCallInvestment + ' at ' + new Date(dataPoint.timestamp + 1000));
+            console.log('CALL at ' + new Date(dataPoint.timestamp + 1000));
         }
     });
 

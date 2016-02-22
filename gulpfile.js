@@ -241,6 +241,8 @@ gulp.task('forwardtest', function(done) {
                         // Set up a new strategy instance.
                         var strategy = new strategyFn(argv.symbol, [backtest.configuration]);
 
+                        strategy.setProfitLoss(10000);
+
                         // Backtest (forward test).
                         var results = strategy.backtest(parsedData, investment, profitability);
 
@@ -298,7 +300,7 @@ gulp.task('combine', function(done) {
     var forwardtestConstraints = {
         symbol: argv.symbol,
         //strategyName: argv.strategy,
-        minimumProfitLoss: {'$gte': -1000},
+        minimumProfitLoss: {'$gte': 7500},
         maximumConsecutiveLosses: {'$lte': 5},
         winRate: {'$gte': 0.62},
         tradeCount: {'$gte': 75},

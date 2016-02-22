@@ -32,7 +32,7 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
         currentDay = new Date(dataPoint.timestamp).getDay();
 
         if (currentDay !== previousDay) {
-            investment = self.profitLoss * 0.01;
+            investment = self.profitLoss * 0.02;
         }
 
         previousDay = currentDay;

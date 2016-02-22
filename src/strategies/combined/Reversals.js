@@ -150,7 +150,7 @@ var studyDefinitions = [
     // {study: studies.PolynomialRegressionChannel, inputs: {length: 400, degree: 4, deviations: 1.95}, outputMap: {regression: 'prChannel400_4_195', upper: 'prChannelUpper400_4_195', lower: 'prChannelLower400_4_195'}},
     // {study: studies.PolynomialRegressionChannel, inputs: {length: 400, degree: 4, deviations: 1.9}, outputMap: {regression: 'prChannel400_4_19', upper: 'prChannelUpper400_4_19', lower: 'prChannelLower400_4_19'}},
     // {study: studies.PolynomialRegressionChannel, inputs: {length: 400, degree: 4, deviations: 2.05}, outputMap: {regression: 'prChannel400_4_205', upper: 'prChannelUpper400_4_205', lower: 'prChannelLower400_4_205'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 400, degree: 4, deviations: 2.0}, outputMap: {regression: 'prChannel400_4_20', upper: 'prChannelUpper400_4_20', lower: 'prChannelLower400_4_20'}},
+    // {study: studies.PolynomialRegressionChannel, inputs: {length: 400, degree: 4, deviations: 2.0}, outputMap: {regression: 'prChannel400_4_20', upper: 'prChannelUpper400_4_20', lower: 'prChannelLower400_4_20'}},
     // {study: studies.PolynomialRegressionChannel, inputs: {length: 400, degree: 4, deviations: 2.15}, outputMap: {regression: 'prChannel400_4_215', upper: 'prChannelUpper400_4_215', lower: 'prChannelLower400_4_215'}},
     // {study: studies.PolynomialRegressionChannel, inputs: {length: 400, degree: 4, deviations: 2.1}, outputMap: {regression: 'prChannel400_4_21', upper: 'prChannelUpper400_4_21', lower: 'prChannelLower400_4_21'}},
     // {study: studies.PolynomialRegressionChannel, inputs: {length: 400, degree: 5, deviations: 1.85}, outputMap: {regression: 'prChannel400_5_185', upper: 'prChannelUpper400_5_185', lower: 'prChannelLower400_5_185'}},
@@ -237,6 +237,10 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
 
         if (currentDay !== previousDay) {
             investment = self.profitLoss * 0.02;
+
+            if (investment > 10000) {
+                investment = 10000;
+            }
         }
 
         previousDay = currentDay;

@@ -300,7 +300,7 @@ gulp.task('combine', function(done) {
     var forwardtestConstraints = {
         symbol: argv.symbol,
         //strategyName: argv.strategy,
-        minimumProfitLoss: {'$gte': 7500},
+        minimumProfitLoss: {'$gte': 0},
         maximumConsecutiveLosses: {'$lte': 5},
         winRate: {'$gte': 0.62},
         tradeCount: {'$gte': 75},

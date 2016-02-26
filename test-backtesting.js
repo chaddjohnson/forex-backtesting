@@ -9,7 +9,7 @@ try {
     // Parse the raw data file.
     dataParsers.ctoption.parse('./data/ctoption/' + process.argv[2] + '.csv').then(function(parsedData) {
         strategy.setProfitLoss(5000);
-        strategy.backtest(parsedData, 120, 0.76);
+        strategy.backtest(parsedData, 100, 0.76);
     });
 }
 catch (error) {

@@ -277,133 +277,133 @@ gulp.task('forwardtest', function(done) {
     }
 });
 
-gulp.task('combine', function(done) {
-    function showUsageInfo() {
-        console.log('Example usage:\n');
-        console.log('gulp combine --symbol AUDJPY --strategy Reversals --investment 1000 --profitability 0.7 --database forex-backtesting\n');
-    }
+// gulp.task('combine', function(done) {
+//     function showUsageInfo() {
+//         console.log('Example usage:\n');
+//         console.log('gulp combine --symbol AUDJPY --strategy Reversals --investment 1000 --profitability 0.7 --database forex-backtesting\n');
+//     }
 
-    function handleInputError(message) {
-        gutil.log(gutil.colors.red(message));
-        showUsageInfo();
-        process.exit(1);
-    }
+//     function handleInputError(message) {
+//         gutil.log(gutil.colors.red(message));
+//         showUsageInfo();
+//         process.exit(1);
+//     }
 
-    var db = require('./db');
-    var Forwardtest = require('./src/models/Forwardtest');
-    var Position = require('./src/models/Position');
-    var Combination = require('./src/models/Combination');
-    var positionTester = require('./src/positionTester');
+//     var db = require('./db');
+//     var Forwardtest = require('./src/models/Forwardtest');
+//     var Position = require('./src/models/Position');
+//     var Combination = require('./src/models/Combination');
+//     var positionTester = require('./src/positionTester');
 
-    var profitability = 0.0;
+//     var profitability = 0.0;
 
-    var forwardtestConstraints = {
-        symbol: argv.symbol,
-        //strategyName: argv.strategy,
-        minimumProfitLoss: {'$gte': 0},
-        maximumConsecutiveLosses: {'$lte': 5},
-        winRate: {'$gte': 0.62},
-        tradeCount: {'$gte': 75},
-    };
+//     var forwardtestConstraints = {
+//         symbol: argv.symbol,
+//         //strategyName: argv.strategy,
+//         minimumProfitLoss: {'$gte': 0},
+//         maximumConsecutiveLosses: {'$lte': 5},
+//         winRate: {'$gte': 0.62},
+//         tradeCount: {'$gte': 75},
+//     };
 
-    // Find the symbol based on the command line argument.
-    if (!argv.symbol) {
-        handleInputError('No symbol provided');
-    }
+//     // Find the symbol based on the command line argument.
+//     if (!argv.symbol) {
+//         handleInputError('No symbol provided');
+//     }
 
-    // Find the strategy based on the command line argument.
-    if (!argv.strategy) {
-        handleInputError('Invalid strategy');
-    }
+//     // Find the strategy based on the command line argument.
+//     if (!argv.strategy) {
+//         handleInputError('Invalid strategy');
+//     }
 
-    investment = parseFloat(argv.investment)
-    if (!investment) {
-        handleInputError('Invalid investment');
-    }
+//     investment = parseFloat(argv.investment)
+//     if (!investment) {
+//         handleInputError('Invalid investment');
+//     }
 
-    profitability = parseFloat(argv.profitability)
-    if (!profitability) {
-        handleInputError('No profitability provided');
-    }
+//     profitability = parseFloat(argv.profitability)
+//     if (!profitability) {
+//         handleInputError('No profitability provided');
+//     }
 
-    if (!argv.database) {
-        handleInputError('No database provided');
-    }
+//     if (!argv.database) {
+//         handleInputError('No database provided');
+//     }
 
-    // Set up database connection.
-    db.initialize(argv.database);
+//     // Set up database connection.
+//     db.initialize(argv.database);
 
-    // Find all forward tests for the symbol.
-    Forwardtest.find(forwardtestConstraints, function(error, forwardtests) {
-        // Sort forward tests descending by profitLoss.
-        forwardtests = _.sortBy(forwardtests, 'winRate').reverse();
+//     // Find all forward tests for the symbol.
+//     Forwardtest.find(forwardtestConstraints, function(error, forwardtests) {
+//         // Sort forward tests descending by profitLoss.
+//         forwardtests = _.sortBy(forwardtests, 'winRate').reverse();
 
-        // Use the highest profit/loss figure as the benchmark.
-        var benchmarkProfitLoss = 0;
-        var optimalConfigurations = [];
-        var optimalPositions = [];
-        var percentage = 0.0;
-        var forwardtestCount = forwardtests.length;
-        var tasks = [];
+//         // Use the highest profit/loss figure as the benchmark.
+//         var benchmarkProfitLoss = 0;
+//         var optimalConfigurations = [];
+//         var optimalPositions = [];
+//         var percentage = 0.0;
+//         var forwardtestCount = forwardtests.length;
+//         var tasks = [];
 
-        // Iterate through the remaining forward tests.
-        process.stdout.write('Combining configurations...');
+//         // Iterate through the remaining forward tests.
+//         process.stdout.write('Combining configurations...');
 
-        forwardtests.forEach(function(forwardtest, index) {
-            tasks.push(function(taskCallback) {
-                process.stdout.cursorTo(27);
-                process.stdout.write(index + ' of ' + forwardtestCount + ' completed (' + optimalConfigurations.length + ' / $' + benchmarkProfitLoss + ')');
+//         forwardtests.forEach(function(forwardtest, index) {
+//             tasks.push(function(taskCallback) {
+//                 process.stdout.cursorTo(27);
+//                 process.stdout.write(index + ' of ' + forwardtestCount + ' completed (' + optimalConfigurations.length + ' / $' + benchmarkProfitLoss + ')');
 
-                // Find all positions for each forward test.
-                Position.find({strategyUuid: forwardtest.strategyUuid}, function(error, positions) {
-                    // Test with the optimal positions combined with the current positions.
-                    var testPositions = optimalPositions.concat(positions);
+//                 // Find all positions for each forward test.
+//                 Position.find({strategyUuid: forwardtest.strategyUuid}, function(error, positions) {
+//                     // Test with the optimal positions combined with the current positions.
+//                     var testPositions = optimalPositions.concat(positions);
 
-                    // Get the unique set of trades.
-                    var testPositions = _.uniq(testPositions, function(position) {
-                        return position.timestamp;
-                    });
+//                     // Get the unique set of trades.
+//                     var testPositions = _.uniq(testPositions, function(position) {
+//                         return position.timestamp;
+//                     });
 
-                    // Sort positions by timestamp.
-                    testPositions = _.sortBy(testPositions, 'timestamp');
+//                     // Sort positions by timestamp.
+//                     testPositions = _.sortBy(testPositions, 'timestamp');
 
-                    // Determine if all the trades combined results in an improvement.
-                    var testResults = positionTester.test(testPositions);
+//                     // Determine if all the trades combined results in an improvement.
+//                     var testResults = positionTester.test(testPositions);
 
-                    // See if the test resulted in an improvement.
-                    if (testResults.profitLoss >= benchmarkProfitLoss + 1000 && testResults.winRate >= 0.62 && testResults.tradeCount >= 3000 && testResults.maximumConsecutiveLosses <= 20 && testResults.minimumProfitLoss >= -20000) {
-                        // Use the positions in future tests.
-                        optimalPositions = testPositions;
+//                     // See if the test resulted in an improvement.
+//                     if (testResults.profitLoss >= benchmarkProfitLoss + 1000 && testResults.winRate >= 0.62 && testResults.tradeCount >= 3000 && testResults.maximumConsecutiveLosses <= 20 && testResults.minimumProfitLoss >= -20000) {
+//                         // Use the positions in future tests.
+//                         optimalPositions = testPositions;
 
-                        // Include the forward test configuration in the list of optimal configurations.
-                        optimalConfigurations.push(forwardtest.configuration);
+//                         // Include the forward test configuration in the list of optimal configurations.
+//                         optimalConfigurations.push(forwardtest.configuration);
 
-                        // Update the benchmark.
-                        benchmarkProfitLoss = testResults.profitLoss;
-                    }
+//                         // Update the benchmark.
+//                         benchmarkProfitLoss = testResults.profitLoss;
+//                     }
 
-                    taskCallback(error);
-                });
-            });
-        });
+//                     taskCallback(error);
+//                 });
+//             });
+//         });
 
-        // Execute the tasks, in order.
-        async.series(tasks, function(error) {
-            var optimalResults = positionTester.test(optimalPositions);
+//         // Execute the tasks, in order.
+//         async.series(tasks, function(error) {
+//             var optimalResults = positionTester.test(optimalPositions);
 
-            // Save the results.
-            Combination.create({
-                symbol: argv.symbol,
-                strategyName: argv.strategy,
-                results: optimalResults,
-                configurations: optimalConfigurations,
-                positions: optimalPositions
-            }, function() {
-                process.stdout.cursorTo(27);
-                process.stdout.write(forwardtestCount + ' of ' + forwardtestCount + ' completed\n');
-                done();
-                process.exit();
-            });
-        });
-    });
-});
+//             // Save the results.
+//             Combination.create({
+//                 symbol: argv.symbol,
+//                 strategyName: argv.strategy,
+//                 results: optimalResults,
+//                 configurations: optimalConfigurations,
+//                 positions: optimalPositions
+//             }, function() {
+//                 process.stdout.cursorTo(27);
+//                 process.stdout.write(forwardtestCount + ' of ' + forwardtestCount + ' completed\n');
+//                 done();
+//                 process.exit();
+//             });
+//         });
+//     });
+// });

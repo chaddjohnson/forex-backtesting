@@ -46,6 +46,8 @@ gulp.task('backtest', function(done) {
     var db = require('./db');
     var dataParsers = require('./src/dataParsers');
     var optimizers = require('./src/optimizers');
+    var Backtest = require('./src/models/Backtest');
+    var Forwardtest = require('./src/models/Forwardtest');
 
     var optimizerFn;
     var dataParser;
@@ -94,8 +96,32 @@ gulp.task('backtest', function(done) {
 
             // Backtest the strategy against the parsed data.
             optimizer.optimize(parsedData, investment, profitability, function() {
-                db.disconnect();
-                done();
+                var backtestConstraints = {
+                    symbol: argv.symbol,
+                    winRate: {'$gte': 0.62}
+                };
+
+                // Find all backtests that meet a certain criteria.
+                Backtest.find(backtestConstraints, function(error, backtests) {
+                    backtests.forEach(function(backtest) {
+                        Forwardtest.create({
+                            symbol: argv.symbol,
+                            round: 1,
+                            strategyUuid: backtest.strategyUuid,
+                            configuration: backtest.configuration,
+                            profitLoss: backtest.profitLoss,
+                            winCount: backtest.winCount,
+                            loseCount: backtest.loseCount
+                            tradeCount: backtest.tradeCount,
+                            winRate: backtest.winRate,
+                            maximumConsecutiveLosses: backtest.maximumConsecutiveLosses,
+                            minimumProfitLoss: backtest.minimumProfitLoss
+                        }, function() {
+                            db.disconnect();
+                            done();
+                        });
+                    });
+                });
             });
         });
     }
@@ -119,26 +145,29 @@ gulp.task('forwardtest', function(done) {
 
     var db = require('./db');
     var dataParsers = require('./src/dataParsers');
-    var Backtest = require('./src/models/Backtest');
     var Forwardtest = require('./src/models/Forwardtest');
+    var Validation = require('./src/models/Validation');
     var optimizerFn = require('./src/optimizers/Reversals');
     var strategyFn = require('./src/strategies/combined/Reversals');
     var dataParser;
+    var round = 0;
     var investment = 0.0;
     var profitability = 0.0;
-
-    var backtestConstraints = {
-        symbol: argv.symbol,
-        //strategyName: argv.strategy,
-        minimumProfitLoss: {'$gte': -20000},
-        maximumConsecutiveLosses: {'$lte': 20},
-        winRate: {'$gte': 0.62},
-        tradeCount: {'$gte': 3000},
-    };
+    var forwardtestConstraints;
+    var ResultsModel;
 
     // Find the symbol based on the command line argument.
     if (!argv.symbol) {
         handleInputError('No symbol provided');
+    }
+
+    if (!argv.type) {
+        handleInputError('No type provided');
+    }
+
+    round = parseInt(argv.round);
+    if (!round) {
+        handleInputError('No round provided');
     }
 
     // Find the raw data parser based on command line argument.
@@ -166,6 +195,14 @@ gulp.task('forwardtest', function(done) {
         handleInputError('No database provided');
     }
 
+    forwardtestConstraints = {
+        symbol: argv.symbol,
+        round: argv.type === 'forwardtest' ? round - 1 : round,
+        winRate: {'$gte': 0.62}
+    };
+
+    ResultsModel = argv.type === 'forwardtest' ? Forwardtest : Validation;
+
     // Set up database connection.
     db.initialize(argv.database);
 
@@ -188,7 +225,7 @@ gulp.task('forwardtest', function(done) {
             // Parepare study data.
             parsedData.forEach(function(dataPoint, index) {
                 // If there is a significant gap, start over.
-                if (previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 600000) {
+                if (previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 60 * 1000) {
                     cumulativeData = [];
                 }
 
@@ -229,41 +266,42 @@ gulp.task('forwardtest', function(done) {
             process.stdout.cursorTo(23);
             process.stdout.write(dataCount + ' of ' + dataCount + ' completed\n');
 
-            Backtest.find(backtestConstraints, function(error, backtests) {
-                var backtestCount = backtests.length;
-                var backtestTasks = [];
+            Forwardtest.find(forwardtestConstraints, function(error, forwardtests) {
+                var forwardtestCount = forwardtests.length;
+                var forwardtestTasks = [];
 
-                // Iterate through the remaining backtests.
+                // Iterate through the remaining forward tests.
                 process.stdout.write('Forward testing...\n');
 
-                backtests.forEach(function(backtest, index) {
-                    backtestTasks.push(function(taskCallback) {
+                forwardtests.forEach(function(forwardtest, index) {
+                    forwardtestTasks.push(function(taskCallback) {
                         // Set up a new strategy instance.
-                        var strategy = new strategyFn(argv.symbol, [backtest.configuration]);
+                        var strategy = new strategyFn(argv.symbol, [forwardtest.configuration]);
 
                         strategy.setProfitLoss(10000);
 
-                        // Backtest (forward test).
+                        // Forward test (backtest).
                         var results = strategy.backtest(parsedData, investment, profitability);
 
                         // Save results.
-                        Forwardtest.create(_.extend(results, {
+                        ResultsModel.create(_.extend(results, {
                             symbol: argv.symbol,
-                            strategyUuid: backtest.strategyUuid,
-                            configuration: backtest.configuration
+                            round: round,
+                            strategyUuid: forwardtest.strategyUuid,
+                            configuration: forwardtest.configuration
                         }), function() {
                             process.stdout.cursorTo(18);
-                            process.stdout.write(index + ' of ' + backtestCount + ' completed');
+                            process.stdout.write(index + ' of ' + forwardtestCount + ' completed');
 
-                            // Forward test the next backtest.
+                            // Forward test the next forward test.
                             taskCallback();
                         });
                     });
                 });
 
-                async.series(backtestTasks, function(error) {
+                async.series(forwardtestTasks, function(error) {
                     process.stdout.cursorTo(18);
-                    process.stdout.write(backtestCount + ' of ' + backtestCount + ' completed\n');
+                    process.stdout.write(forwardtestCount + ' of ' + forwardtestCount + ' completed\n');
 
                     db.disconnect();
                     done();

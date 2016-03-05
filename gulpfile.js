@@ -111,7 +111,7 @@ gulp.task('backtest', function(done) {
                             configuration: backtest.configuration,
                             profitLoss: backtest.profitLoss,
                             winCount: backtest.winCount,
-                            loseCount: backtest.loseCount
+                            loseCount: backtest.loseCount,
                             tradeCount: backtest.tradeCount,
                             winRate: backtest.winRate,
                             maximumConsecutiveLosses: backtest.maximumConsecutiveLosses,

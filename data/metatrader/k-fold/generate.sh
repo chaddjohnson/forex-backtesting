@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Remove existing CSV files.
-rm -rf ./*.csv ./part*/**/$1.csv ./final/$1.csv ./all/$1.csv
+rm -rf ./*.csv ./part*/**/$1.csv ./final ./combined
 
 # Generate new CSV files.
 node generate $1
@@ -18,6 +18,9 @@ ls ./*.csv | wc -l
 # Wait for input (or rejection via ctrl+c).
 read
 
+mkdir final
+mkdir combined
+
 # Group CSV files for final validation data.
 for f in `ls ./*.csv | sort | tail -n 14`
 do
@@ -25,32 +28,44 @@ do
     rm $f
 done
 
-# Group 1 testing data.
-for f in `ls ./*.csv | sort | tail -n 135`
-do
-    cat $f >> ./part1/testing/$1.csv
-done
-
-# Group 1 validation data.
-for f in `ls ./*.csv | sort | head -n 15`
-do
-    cat $f >> ./part1/validation/$1.csv
-done
-
 # Remaining groups.
-for i in {2..10}
+for i in {1..10}
 do
+    testing_groups=''
+    validation_groups=''
+
+    # Groups before validation (exclusion) group.
+    if [ $i -ne 1 ]; then
+        for j in $(seq 1 $((i-1)))
+        do
+            testing_groups="$testing_groups,$j"
+        done
+    fi
+
+    # Groups after validation (exclusion) group except the last one.
+    if [ $i -ne 10 ]; then
+        for j in $(seq $((i+1)) 10)
+        do
+            testing_groups="$testing_groups,$j"
+        done
+    fi
+
+    validation_groups="$validation_groups,$i"
+
+    # Trim leading comma from strings.
+    testing_groups=`echo $testing_groups | sed 's/^,//'`
+    validation_groups=`echo $validation_groups | sed 's/^,//'`
+
     # Testing data.
-    for f in `{ ls ./*.csv | sort | head -n $(((i-1)*15)); ls ./*.csv | sort | tail -n $((150-(i*15))); }`
+    for f in `ls ./*.csv | awk -v start=$((((i-1)*15)+1)) -v end=$((i*15)) 'NR >= start && NR <= end'`
     do
-        cat $f >> ./part${i}/testing/$1.csv
+        cat $f >> ./combined/$1-temp.csv
     done
 
-    # Validation data.
-    for f in `{ ls ./*.csv | sort | sed -n $((((i-1)*15)+1)),$((i*15))p; }`
-    do
-        cat $f >> ./part${i}/validation/$1.csv
-    done
+    # Add testing and validation group lists to each line.
+    ./add-prefix.sh ./combined/$1-temp.csv "[$testing_groups],[$validation_groups]" >> ./combined/$1.csv
+
+    rm ./combined/$1-temp.csv
 done
 
 rm ./*.csv

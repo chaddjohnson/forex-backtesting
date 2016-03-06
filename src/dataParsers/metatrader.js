@@ -33,12 +33,16 @@ module.exports.parse = function(filePath) {
                 volume = parseFloat(transactionData[6]);
 
                 formattedData.push({
-                    timestamp: new Date(transactionData[0] + ' ' + transactionData[1] + ':00').getTime(),
+                    groups: {
+                        testing: JSON.parse(transactionData[0]),
+                        validation: JSON.parse(transactionData[1])
+                    },
+                    timestamp: new Date(transactionData[2] + ' ' + transactionData[3] + ':00').getTime(),
                     volume: volume,
-                    open: parseFloat(transactionData[2]),
-                    high: parseFloat(transactionData[3]),
-                    low: parseFloat(transactionData[4]),
-                    close: parseFloat(transactionData[5])
+                    open: parseFloat(transactionData[4]),
+                    high: parseFloat(transactionData[5]),
+                    low: parseFloat(transactionData[6]),
+                    close: parseFloat(transactionData[7])
                 });
 
                 // Resume the read stream.

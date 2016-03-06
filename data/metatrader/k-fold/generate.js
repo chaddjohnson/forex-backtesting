@@ -9,7 +9,7 @@ var previousDay = -1;
 var week = 1;
 var buffer = [];
 
-stream = fs.createReadStream('./data/' + process.argv[2] + '.csv')
+stream = fs.createReadStream('./original/' + process.argv[2] + '.csv')
     .pipe(es.split())
     .pipe(es.mapSync(function(line) {
         // Pause the read stream.

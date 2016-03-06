@@ -106,7 +106,6 @@ gulp.task('backtest', function(done) {
                     backtests.forEach(function(backtest) {
                         Forwardtest.create({
                             symbol: argv.symbol,
-                            round: 1,
                             strategyUuid: backtest.strategyUuid,
                             configuration: backtest.configuration,
                             profitLoss: backtest.profitLoss,
@@ -134,7 +133,7 @@ gulp.task('backtest', function(done) {
 gulp.task('forwardtest', function(done) {
     function showUsageInfo() {
         console.log('Example usage:\n');
-        console.log('gulp forwardtest --symbol AUDJPY --parser ctoption --data ./data/ctoption/AUDJPY.csv --investment 1000 --profitability 0.7 --database forex-backtesting\n');
+        console.log('gulp forwardtest --symbol AUDJPY --group 4 --type testing --investment 1000 --profitability 0.7 --database forex-backtesting\n');
     }
 
     function handleInputError(message) {
@@ -144,15 +143,14 @@ gulp.task('forwardtest', function(done) {
     }
 
     var db = require('./db');
-    var dataParsers = require('./src/dataParsers');
     var Forwardtest = require('./src/models/Forwardtest');
     var Validation = require('./src/models/Validation');
     var optimizerFn = require('./src/optimizers/Reversals');
     var strategyFn = require('./src/strategies/combined/Reversals');
-    var dataParser;
-    var round = 0;
+    var group = 0;
     var investment = 0.0;
     var profitability = 0.0;
+    var dataConstraints;
     var forwardtestConstraints;
     var ResultsModel;
 
@@ -165,15 +163,9 @@ gulp.task('forwardtest', function(done) {
         handleInputError('No type provided');
     }
 
-    round = parseInt(argv.round);
-    if (!round) {
-        handleInputError('No round provided');
-    }
-
-    // Find the raw data parser based on command line argument.
-    dataParser = dataParsers[argv.parser]
-    if (!dataParser) {
-        handleInputError('Invalid data parser');
+    group = parseInt(argv.group);
+    if (!group) {
+        handleInputError('No group provided');
     }
 
     investment = parseFloat(argv.investment)
@@ -186,18 +178,18 @@ gulp.task('forwardtest', function(done) {
         handleInputError('No profitability provided');
     }
 
-    // Find the data file based on the command line argument.
-    if (!argv.data) {
-        handleInputError('No data file provided');
-    }
-
     if (!argv.database) {
         handleInputError('No database provided');
     }
 
+    dataConstraints = {
+        symbol: argv.symbol,
+        'data.groups.' + argv.type: group
+    }
+
     forwardtestConstraints = {
         symbol: argv.symbol,
-        round: argv.type === 'forwardtest' ? round - 1 : round,
+        group: group - 1,
         winRate: {'$gte': 0.62}
     };
 
@@ -207,65 +199,7 @@ gulp.task('forwardtest', function(done) {
     db.initialize(argv.database);
 
     try {
-        dataParser.parse(argv.data).then(function(parsedData) {
-            var studyDefinitions = optimizerFn.studyDefinitions;
-            var studies = [];
-            var cumulativeData = [];
-            var previousDataPoint = null;
-            var dataCount = parsedData.length;
-
-            process.stdout.write('Preparing study data...');
-
-            // Prepare studies.
-            studyDefinitions.forEach(function(studyDefinition) {
-                // Instantiate the study, and add it to the list of studies for this strategy.
-                studies.push(new studyDefinition.study(studyDefinition.inputs, studyDefinition.outputMap));
-            });
-
-            // Parepare study data.
-            parsedData.forEach(function(dataPoint, index) {
-                // If there is a significant gap, start over.
-                if (previousDataPoint && (dataPoint.timestamp - previousDataPoint.timestamp) > 60 * 1000) {
-                    cumulativeData = [];
-                }
-
-                // Add the data point to the cumulative data.
-                cumulativeData.push(dataPoint);
-
-                // Iterate over each study...
-                studies.forEach(function(study) {
-                    var studyProperty = '';
-                    var studyTickValues = {};
-                    var studyOutputs = study.getOutputMappings();
-
-                    // Update the data for the study.
-                    study.setData(cumulativeData);
-
-                    studyTickValues = study.tick();
-
-                    // Augment the last data point with the data the study generates.
-                    for (studyProperty in studyOutputs) {
-                        if (studyTickValues && typeof studyTickValues[studyOutputs[studyProperty]] === 'number') {
-                            dataPoint[studyOutputs[studyProperty]] = studyTickValues[studyOutputs[studyProperty]];
-                        }
-                        else {
-                            dataPoint[studyOutputs[studyProperty]] = '';
-                        }
-                    }
-
-                    // Ensure memory is freed.
-                    studyTickValues = null;
-                });
-
-                previousDataPoint = dataPoint;
-
-                process.stdout.cursorTo(23);
-                process.stdout.write(index + ' of ' + dataCount + ' completed');
-            });
-
-            process.stdout.cursorTo(23);
-            process.stdout.write(dataCount + ' of ' + dataCount + ' completed\n');
-
+        DataPoint.find(dataConstraints, function(error, data) {
             Forwardtest.find(forwardtestConstraints, function(error, forwardtests) {
                 var forwardtestCount = forwardtests.length;
                 var forwardtestTasks = [];
@@ -281,12 +215,12 @@ gulp.task('forwardtest', function(done) {
                         strategy.setProfitLoss(10000);
 
                         // Forward test (backtest).
-                        var results = strategy.backtest(parsedData, investment, profitability);
+                        var results = strategy.backtest(data, investment, profitability);
 
                         // Save results.
                         ResultsModel.create(_.extend(results, {
                             symbol: argv.symbol,
-                            round: round,
+                            group: group,
                             strategyUuid: forwardtest.strategyUuid,
                             configuration: forwardtest.configuration
                         }), function() {
@@ -314,134 +248,3 @@ gulp.task('forwardtest', function(done) {
         process.exit(1);
     }
 });
-
-// gulp.task('combine', function(done) {
-//     function showUsageInfo() {
-//         console.log('Example usage:\n');
-//         console.log('gulp combine --symbol AUDJPY --strategy Reversals --investment 1000 --profitability 0.7 --database forex-backtesting\n');
-//     }
-
-//     function handleInputError(message) {
-//         gutil.log(gutil.colors.red(message));
-//         showUsageInfo();
-//         process.exit(1);
-//     }
-
-//     var db = require('./db');
-//     var Forwardtest = require('./src/models/Forwardtest');
-//     var Position = require('./src/models/Position');
-//     var Combination = require('./src/models/Combination');
-//     var positionTester = require('./src/positionTester');
-
-//     var profitability = 0.0;
-
-//     var forwardtestConstraints = {
-//         symbol: argv.symbol,
-//         //strategyName: argv.strategy,
-//         minimumProfitLoss: {'$gte': 0},
-//         maximumConsecutiveLosses: {'$lte': 5},
-//         winRate: {'$gte': 0.62},
-//         tradeCount: {'$gte': 75},
-//     };
-
-//     // Find the symbol based on the command line argument.
-//     if (!argv.symbol) {
-//         handleInputError('No symbol provided');
-//     }
-
-//     // Find the strategy based on the command line argument.
-//     if (!argv.strategy) {
-//         handleInputError('Invalid strategy');
-//     }
-
-//     investment = parseFloat(argv.investment)
-//     if (!investment) {
-//         handleInputError('Invalid investment');
-//     }
-
-//     profitability = parseFloat(argv.profitability)
-//     if (!profitability) {
-//         handleInputError('No profitability provided');
-//     }
-
-//     if (!argv.database) {
-//         handleInputError('No database provided');
-//     }
-
-//     // Set up database connection.
-//     db.initialize(argv.database);
-
-//     // Find all forward tests for the symbol.
-//     Forwardtest.find(forwardtestConstraints, function(error, forwardtests) {
-//         // Sort forward tests descending by profitLoss.
-//         forwardtests = _.sortBy(forwardtests, 'winRate').reverse();
-
-//         // Use the highest profit/loss figure as the benchmark.
-//         var benchmarkProfitLoss = 0;
-//         var optimalConfigurations = [];
-//         var optimalPositions = [];
-//         var percentage = 0.0;
-//         var forwardtestCount = forwardtests.length;
-//         var tasks = [];
-
-//         // Iterate through the remaining forward tests.
-//         process.stdout.write('Combining configurations...');
-
-//         forwardtests.forEach(function(forwardtest, index) {
-//             tasks.push(function(taskCallback) {
-//                 process.stdout.cursorTo(27);
-//                 process.stdout.write(index + ' of ' + forwardtestCount + ' completed (' + optimalConfigurations.length + ' / $' + benchmarkProfitLoss + ')');
-
-//                 // Find all positions for each forward test.
-//                 Position.find({strategyUuid: forwardtest.strategyUuid}, function(error, positions) {
-//                     // Test with the optimal positions combined with the current positions.
-//                     var testPositions = optimalPositions.concat(positions);
-
-//                     // Get the unique set of trades.
-//                     var testPositions = _.uniq(testPositions, function(position) {
-//                         return position.timestamp;
-//                     });
-
-//                     // Sort positions by timestamp.
-//                     testPositions = _.sortBy(testPositions, 'timestamp');
-
-//                     // Determine if all the trades combined results in an improvement.
-//                     var testResults = positionTester.test(testPositions);
-
-//                     // See if the test resulted in an improvement.
-//                     if (testResults.profitLoss >= benchmarkProfitLoss + 1000 && testResults.winRate >= 0.62 && testResults.tradeCount >= 3000 && testResults.maximumConsecutiveLosses <= 20 && testResults.minimumProfitLoss >= -20000) {
-//                         // Use the positions in future tests.
-//                         optimalPositions = testPositions;
-
-//                         // Include the forward test configuration in the list of optimal configurations.
-//                         optimalConfigurations.push(forwardtest.configuration);
-
-//                         // Update the benchmark.
-//                         benchmarkProfitLoss = testResults.profitLoss;
-//                     }
-
-//                     taskCallback(error);
-//                 });
-//             });
-//         });
-
-//         // Execute the tasks, in order.
-//         async.series(tasks, function(error) {
-//             var optimalResults = positionTester.test(optimalPositions);
-
-//             // Save the results.
-//             Combination.create({
-//                 symbol: argv.symbol,
-//                 strategyName: argv.strategy,
-//                 results: optimalResults,
-//                 configurations: optimalConfigurations,
-//                 positions: optimalPositions
-//             }, function() {
-//                 process.stdout.cursorTo(27);
-//                 process.stdout.write(forwardtestCount + ' of ' + forwardtestCount + ' completed\n');
-//                 done();
-//                 process.exit();
-//             });
-//         });
-//     });
-// });

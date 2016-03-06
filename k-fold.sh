@@ -1,8 +1,13 @@
 #!/bin/bash
 
 # Group 1
-echo; echo "K-Fold Group 1..."
+echo; echo "Preparing K-Fold data..."
 node --nouse-idle-notification --max-old-space-size=31000 --expose-gc `which gulp` backtest --symbol $1 --parser metatrader --data ./data/metatrader/k-fold/combined/$1.csv --optimizer Reversals --investment 1000 --profitability 0.76 --database forex-backtesting
+
+# Group 1
+echo; echo "K-Fold Group 1..."
+node --nouse-idle-notification --max-old-space-size=31000 --expose-gc `which gulp` forwardtest --type testing --group 1 --symbol $1 --investment 1000 --profitability 0.76 --database forex-backtesting
+node --nouse-idle-notification --max-old-space-size=31000 --expose-gc `which gulp` forwardtest --type validation --group 1 --symbol $1 --investment 1000 --profitability 0.76 --database forex-backtesting
 
 # Group 2
 echo; echo "K-Fold Group 2..."

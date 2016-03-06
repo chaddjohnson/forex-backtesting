@@ -38,7 +38,7 @@ do
     if [ $i -ne 1 ]; then
         for j in $(seq 1 $((i-1)))
         do
-            testing_groups="$testing_groups,$j"
+            testing_groups="$testing_groups;$j"
         done
     fi
 
@@ -46,15 +46,15 @@ do
     if [ $i -ne 10 ]; then
         for j in $(seq $((i+1)) 10)
         do
-            testing_groups="$testing_groups,$j"
+            testing_groups="$testing_groups;$j"
         done
     fi
 
-    validation_groups="$validation_groups,$i"
+    validation_groups="$validation_groups;$i"
 
     # Trim leading comma from strings.
-    testing_groups=`echo $testing_groups | sed 's/^,//'`
-    validation_groups=`echo $validation_groups | sed 's/^,//'`
+    testing_groups=`echo $testing_groups | sed 's/^;//'`
+    validation_groups=`echo $validation_groups | sed 's/^;//'`
 
     # Testing data.
     for f in `ls ./*.csv | awk -v start=$((((i-1)*15)+1)) -v end=$((i*15)) 'NR >= start && NR <= end'`

@@ -148,6 +148,7 @@ gulp.task('forwardtest', function(done) {
     var optimizerFn = require('./src/optimizers/Reversals');
     var strategyFn = require('./src/strategies/combined/Reversals');
     var group = 0;
+    var typeKey = '';
     var investment = 0.0;
     var profitability = 0.0;
     var dataConstraints;
@@ -182,9 +183,11 @@ gulp.task('forwardtest', function(done) {
         handleInputError('No database provided');
     }
 
+    typeKey = 'data.groups.' + argv.type;
+
     dataConstraints = {
         symbol: argv.symbol,
-        'data.groups.' + argv.type: group
+        typeKey: group
     }
 
     forwardtestConstraints = {

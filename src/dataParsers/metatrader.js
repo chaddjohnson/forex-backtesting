@@ -10,7 +10,6 @@ module.exports.parse = function(filePath) {
 
     var transactionData = [];
     var formattedData = [];
-    var volume = 0.0;
 
     if (!filePath) {
         throw 'No filePath provided to dataParser.'
@@ -30,15 +29,12 @@ module.exports.parse = function(filePath) {
                 }
 
                 transactionData = line.split(',');
-                volume = parseFloat(transactionData[6]);
-
                 formattedData.push({
                     groups: {
-                        testing: JSON.parse(transactionData[0]),
-                        validation: JSON.parse(transactionData[1])
+                        testing: JSON.parse(transactionData[0].replace(/;/g, ',')),
+                        validation: JSON.parse(transactionData[1].replace(/;/g, ','))
                     },
                     timestamp: new Date(transactionData[2] + ' ' + transactionData[3] + ':00').getTime(),
-                    volume: volume,
                     open: parseFloat(transactionData[4]),
                     high: parseFloat(transactionData[5]),
                     low: parseFloat(transactionData[6]),

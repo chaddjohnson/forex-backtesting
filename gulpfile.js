@@ -117,7 +117,7 @@ gulp.task('test', function(done) {
     var typeKey = '';
     var investment = 0.0;
     var profitability = 0.0;
-    var dataConstraints;
+    var dataConstraints = {};
     var forwardtestConstraints;
     var ResultsModel;
     var data = [];
@@ -154,10 +154,8 @@ gulp.task('test', function(done) {
 
     typeKey = 'data.groups.' + argv.type;
 
-    dataConstraints = {
-        symbol: argv.symbol,
-        typeKey: group
-    };
+    dataConstraints.symbol = argv.symbol;
+    dataConstraints[typeKey] = group;
 
     forwardtestConstraints = {
         symbol: argv.symbol,
@@ -174,8 +172,8 @@ gulp.task('test', function(done) {
     try {
         // Get data.
         tasks.push(function(taskCallback) {
-            DataPoint.find(dataConstraints, function(error, documents) {
-                data = documents;
+            DataPoint.find(dataConstraints, function(error, dataPoints) {
+                data = _.pluck(dataPoints, 'data');
                 taskCallback()
             });
         });

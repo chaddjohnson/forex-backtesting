@@ -116,6 +116,8 @@ gulp.task('test', function(done) {
     var group = 0;
     var investment = 0.0;
     var profitability = 0.0;
+    var typeKey = '';
+    var dataConstraints = {};
     var forwardtestConstraints;
     var ResultsModel;
     var tasks = [];
@@ -154,6 +156,10 @@ gulp.task('test', function(done) {
         winRate: {'$gte': 0.62}
     };
 
+    typeKey = 'data.groups.' + argv.type;
+    dataConstraints.symbol = argv.symbol;
+    dataConstraints[typeKey] = group;
+
     ResultsModel = argv.type === 'testing' ? Forwardtest : Validation;
     optimizer = new optimizerFn(argv.symbol, group);
 
@@ -163,12 +169,13 @@ gulp.task('test', function(done) {
     // Get configurations.
     tasks.push(function(taskCallback) {
         if (group === 1) {
-            configurations = optimizer.configurations;
+            // Just let optimizer use its own configurations.
             taskCallback();
         }
         else {
             Forwardtest.find(forwardtestConstraints, function(error, forwardtests) {
-                configurations = _.pluck(forwardtests, 'configuration');
+                // Override configurations used by optimizer.
+                optimizer.configurations = _.pluck(forwardtests, 'configuration');
                 taskCallback();
             });
         }
@@ -176,7 +183,11 @@ gulp.task('test', function(done) {
 
     tasks.push(function(taskCallback) {
         try {
-            optimizer.optimize(configurations, investment, profitability, function() {
+            // Override the data query for the optimizer.
+            optimizer.setQuery(dataConstraints);
+
+            // Run optimization.
+            optimizer.optimize([], investment, profitability, function() {
                 taskCallback();
             });
         }

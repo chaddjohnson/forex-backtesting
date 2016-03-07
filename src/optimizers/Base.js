@@ -13,7 +13,12 @@ function Base(strategyName, symbol, group) {
     this.symbol = symbol;
     this.group = group;
     this.studies = [];
+    this.query = {symbol: this.symbol};
 }
+
+Base.prototype.setQuery = function(query) {
+    this.query = query;
+};
 
 Base.prototype.prepareStudies = function(studyDefinitions) {
     var self = this;
@@ -35,7 +40,7 @@ Base.prototype.prepareStudyData = function(data, callback) {
     process.stdout.write('Preparing data for studies...');
 
     // Find cached data points, if any.
-    DataPoint.count({symbol: self.symbol}, function(error, count) {
+    DataPoint.count(self.query, function(error, count) {
         if (error) {
             console.error(error.message || error);
         }
@@ -255,7 +260,7 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
 
     // Get a count of all data points.
     tasks.push(function(taskCallback) {
-        DataPoint.count({symbol: self.symbol}, function(error, count) {
+        DataPoint.count(self.query, function(error, count) {
             dataPointCount = count;
             taskCallback(error);
         });
@@ -326,7 +331,7 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
             });
         };
 
-        var stream = DataPoint.find({symbol: self.symbol}, {}, {timeout: true}).sort({'data.timestamp': 1}).stream();
+        var stream = DataPoint.find(self.query, {}, {timeout: true}).sort({'data.timestamp': 1}).stream();
 
         stream.on('data', streamer);
     });

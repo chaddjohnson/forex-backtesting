@@ -157,7 +157,7 @@ gulp.task('test', function(done) {
     dataConstraints = {
         symbol: argv.symbol,
         typeKey: group
-    }
+    };
 
     forwardtestConstraints = {
         symbol: argv.symbol,

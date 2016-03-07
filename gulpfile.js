@@ -84,6 +84,7 @@ gulp.task('preparedata', function(done) {
             optimizer.prepareStudyData(parsedData, function() {
                 db.disconnect();
                 done();
+                process.exit(0);
             });
         });
     }
@@ -238,6 +239,7 @@ gulp.task('test', function(done) {
             }
             db.disconnect();
             done();
+            process.exit(0);
         });
     }
     catch (error) {

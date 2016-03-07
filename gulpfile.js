@@ -31,10 +31,10 @@ Array.prototype.slice = function(begin, end) {
 
 scheduleGarbageCollection();
 
-gulp.task('backtest', function(done) {
+gulp.task('preparedata', function(done) {
     function showUsageInfo() {
         console.log('Example usage:\n');
-        console.log('gulp backtest --symbol AUDJPY --parser metatrader --data ./data/metatrader/three-year/AUDJPY.csv --optimizer Reversals --investment 1000 --profitability 0.7 --database forex-backtesting\n');
+        console.log('gulp data --symbol AUDJPY --parser metatrader --data ./data/metatrader/three-year/AUDJPY.csv --optimizer Reversals --database forex-backtesting\n');
     }
 
     function handleInputError(message) {
@@ -46,13 +46,9 @@ gulp.task('backtest', function(done) {
     var db = require('./db');
     var dataParsers = require('./src/dataParsers');
     var optimizers = require('./src/optimizers');
-    var Backtest = require('./src/models/Backtest');
-    var Forwardtest = require('./src/models/Forwardtest');
 
     var optimizerFn;
     var dataParser;
-    var investment = 0.0;
-    var profitability = 0.0;
 
     // Find the symbol based on the command line argument.
     if (!argv.symbol) {
@@ -71,16 +67,6 @@ gulp.task('backtest', function(done) {
         handleInputError('Invalid strategy optimizer');
     }
 
-    investment = parseFloat(argv.investment)
-    if (!investment) {
-        handleInputError('Invalid investment');
-    }
-
-    profitability = parseFloat(argv.profitability)
-    if (!profitability) {
-        handleInputError('No profitability provided');
-    }
-
     if (!argv.database) {
         handleInputError('No database provided');
     }
@@ -95,32 +81,9 @@ gulp.task('backtest', function(done) {
             var optimizer = new optimizerFn(argv.symbol);
 
             // Backtest the strategy against the parsed data.
-            optimizer.optimize(parsedData, investment, profitability, function() {
-                var backtestConstraints = {
-                    symbol: argv.symbol,
-                    winRate: {'$gte': 0.62}
-                };
-
-                // Find all backtests that meet a certain criteria.
-                Backtest.find(backtestConstraints, function(error, backtests) {
-                    backtests.forEach(function(backtest) {
-                        Forwardtest.create({
-                            symbol: argv.symbol,
-                            strategyUuid: backtest.strategyUuid,
-                            configuration: backtest.configuration,
-                            profitLoss: backtest.profitLoss,
-                            winCount: backtest.winCount,
-                            loseCount: backtest.loseCount,
-                            tradeCount: backtest.tradeCount,
-                            winRate: backtest.winRate,
-                            maximumConsecutiveLosses: backtest.maximumConsecutiveLosses,
-                            minimumProfitLoss: backtest.minimumProfitLoss
-                        }, function() {
-                            db.disconnect();
-                            done();
-                        });
-                    });
-                });
+            optimizer.prepareStudyData(parsedData, function() {
+                db.disconnect();
+                done();
             });
         });
     }
@@ -130,10 +93,10 @@ gulp.task('backtest', function(done) {
     }
 });
 
-gulp.task('forwardtest', function(done) {
+gulp.task('test', function(done) {
     function showUsageInfo() {
         console.log('Example usage:\n');
-        console.log('gulp forwardtest --symbol AUDJPY --group 4 --type testing --investment 1000 --profitability 0.7 --database forex-backtesting\n');
+        console.log('gulp test --symbol AUDJPY --group 4 --type testing --investment 1000 --profitability 0.7 --database forex-backtesting\n');
     }
 
     function handleInputError(message) {
@@ -147,6 +110,7 @@ gulp.task('forwardtest', function(done) {
     var Validation = require('./src/models/Validation');
     var optimizerFn = require('./src/optimizers/Reversals');
     var strategyFn = require('./src/strategies/combined/Reversals');
+    var optimizer;
     var group = 0;
     var typeKey = '';
     var investment = 0.0;
@@ -154,6 +118,9 @@ gulp.task('forwardtest', function(done) {
     var dataConstraints;
     var forwardtestConstraints;
     var ResultsModel;
+    var data = [];
+    var configurations = [];
+    var tasks = [];
 
     // Find the symbol based on the command line argument.
     if (!argv.symbol) {
@@ -197,53 +164,80 @@ gulp.task('forwardtest', function(done) {
     };
 
     ResultsModel = argv.type === 'forwardtest' ? Forwardtest : Validation;
+    optimizer = new optimizerFn(argv.symbol);
 
     // Set up database connection.
     db.initialize(argv.database);
 
     try {
-        DataPoint.find(dataConstraints, function(error, data) {
-            Forwardtest.find(forwardtestConstraints, function(error, forwardtests) {
-                var forwardtestCount = forwardtests.length;
-                var forwardtestTasks = [];
+        // Get data.
+        tasks.push(function(taskCallback) {
+            DataPoint.find(dataConstraints, function(error, documents) {
+                data = documents;
+                taskCallback()
+            });
+        });
 
-                // Iterate through the remaining forward tests.
-                process.stdout.write('Forward testing...\n');
+        // Get configurations.
+        tasks.push(function(taskCallback) {
+            if (group === 1) {
+                configurations = optimizer.configurations;
+                taskCallback();
+            }
+            else {
+                Forwardtest.find(forwardtestConstraints, function(error, forwardtests) {
+                    configurations = _.pluck(forwardtests, 'configuration');
+                    taskCallback();
+                });
+            }
+        });
 
-                forwardtests.forEach(function(forwardtest, index) {
-                    forwardtestTasks.push(function(taskCallback) {
-                        // Set up a new strategy instance.
-                        var strategy = new strategyFn(argv.symbol, [forwardtest.configuration]);
+        tasks.push(function(taskCallback) {
+            var configurationCount = configurations.length;
+            var testTasks = [];
 
-                        strategy.setProfitLoss(10000);
+            // Iterate through the remaining forward tests.
+            process.stdout.write('Forward testing...\n');
 
-                        // Forward test (backtest).
-                        var results = strategy.backtest(data, investment, profitability);
+            configurations.forEach(function(configuration, index) {
+                testTasks.push(function(testTaskCallback) {
+                    // Set up a new strategy instance.
+                    var strategy = new strategyFn(argv.symbol, [configuration]);
 
-                        // Save results.
-                        ResultsModel.create(_.extend(results, {
-                            symbol: argv.symbol,
-                            group: group,
-                            strategyUuid: forwardtest.strategyUuid,
-                            configuration: forwardtest.configuration
-                        }), function() {
-                            process.stdout.cursorTo(18);
-                            process.stdout.write(index + ' of ' + forwardtestCount + ' completed');
+                    strategy.setProfitLoss(10000);
 
-                            // Forward test the next forward test.
-                            taskCallback();
-                        });
+                    // Forward test (backtest).
+                    var results = strategy.backtest(data, investment, profitability);
+
+                    // Save results.
+                    ResultsModel.create(_.extend(results, {
+                        symbol: argv.symbol,
+                        group: group,
+                        configuration: configuration
+                    }), function() {
+                        process.stdout.cursorTo(18);
+                        process.stdout.write(index + ' of ' + configurationCount + ' completed');
+
+                        // Forward test the next forward test.
+                        testTaskCallback();
                     });
                 });
-
-                async.series(forwardtestTasks, function(error) {
-                    process.stdout.cursorTo(18);
-                    process.stdout.write(forwardtestCount + ' of ' + forwardtestCount + ' completed\n');
-
-                    db.disconnect();
-                    done();
-                });
             });
+
+            async.series(testTasks, function(error) {
+                process.stdout.cursorTo(18);
+                process.stdout.write(configurationCount + ' of ' + configurationCount + ' completed\n');
+
+                taskCallback()
+            });
+        });
+
+        async.series(tasks, function(error) {
+            if (error) {
+                console.error(error.message || error);
+            }
+            db.disconnect();
+            done();
         });
     }
     catch (error) {

@@ -131,9 +131,9 @@ gulp.task('forwardtest', function(done) {
         symbol: argv.symbol,
         //strategyName: argv.strategy,
         minimumProfitLoss: {'$gte': -20000},
-        maximumConsecutiveLosses: {'$lte': 20},
+        maximumConsecutiveLosses: {'$lte': 10},
         winRate: {'$gte': 0.62},
-        tradeCount: {'$gte': 3000},
+        tradeCount: {'$gte': 1000},
     };
 
     // Find the symbol based on the command line argument.

@@ -165,7 +165,7 @@ gulp.task('test', function(done) {
         winRate: {'$gte': 0.62}
     };
 
-    ResultsModel = argv.type === 'forwardtest' ? Forwardtest : Validation;
+    ResultsModel = argv.type === 'testing' ? Forwardtest : Validation;
     optimizer = new optimizerFn(argv.symbol);
 
     // Set up database connection.

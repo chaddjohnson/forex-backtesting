@@ -107,6 +107,7 @@ gulp.task('test', function(done) {
     }
 
     var db = require('./db');
+    var DataPoint = require('./src/models/DataPoint');
     var Forwardtest = require('./src/models/Forwardtest');
     var Validation = require('./src/models/Validation');
     var optimizerFn = require('./src/optimizers/Reversals');
@@ -243,7 +244,7 @@ gulp.task('test', function(done) {
         });
     }
     catch (error) {
-        cosole.error(error.message || error);
+        console.error(error.message || error);
         process.exit(1);
     }
 });

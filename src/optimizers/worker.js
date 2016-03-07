@@ -6,12 +6,12 @@ var strategies = [];
 
 db.initialize('forex-backtesting');
 
-function init(strategyName, symbol, configuration, dataPointCount) {
+function init(strategyName, symbol, group, configuration, dataPointCount) {
     if (!strategyFn) {
         strategyFn = strategyFns.optimization[strategyName];
     }
 
-    strategies.push(new strategyFns.optimization[strategyName](symbol, configuration, dataPointCount));
+    strategies.push(new strategyFns.optimization[strategyName](symbol, group, configuration, dataPointCount));
 };
 
 function backtest(dataPoint, index, investment, profitability) {
@@ -40,8 +40,7 @@ function getResults() {
 
         allResults.push({
             symbol: strategy.getSymbol(),
-            strategyUuid: strategy.getUuid(),
-            strategyName: strategy.constructor.name,
+            group: strategy.getGroup(),
             configuration: strategy.getConfiguration(),
             profitLoss: results.profitLoss,
             winCount: results.winCount,
@@ -60,7 +59,7 @@ function getResults() {
 process.on('message', function(message) {
     switch (message.type) {
         case 'init':
-            init(message.data.strategyName, message.data.symbol, message.data.configuration, message.data.dataPointCount);
+            init(message.data.strategyName, message.data.symbol, message.data.group, message.data.configuration, message.data.dataPointCount);
             break;
 
         case 'backtest':

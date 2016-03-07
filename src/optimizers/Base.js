@@ -2,14 +2,16 @@ var _ = require('lodash');
 var async = require('async');
 var forkFn = require('child_process').fork;
 var Backtest = require('../models/Backtest');
+var Forwardtest = require('../models/Forwardtest');
 var DataPoint = require('../models/DataPoint');
 var strategyFns = require('../strategies');
 
 require('events').EventEmitter.defaultMaxListeners = Infinity;
 
-function Base(strategyName, symbol) {
+function Base(strategyName, symbol, group) {
     this.strategyName = strategyName;
     this.symbol = symbol;
+    this.group = group;
     this.studies = [];
 }
 
@@ -267,6 +269,7 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
                 data: {
                     strategyName: self.strategyName,
                     symbol: self.symbol,
+                    group: self.group,
                     configuration: configuration,
                     dataPointCount: dataPointCount
                 }
@@ -349,7 +352,7 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
                 backtests = backtests.concat(message.data);
 
                 if (resultsCount === cpuCoreCount) {
-                    Backtest.collection.insert(backtests, function(error) {
+                    Forwardtest.collection.insert(backtests, function(error) {
                         process.stdout.write('done\n');
 
                         taskCallback(error);

@@ -3,10 +3,11 @@ var StrategyBase = require('../Base');
 var PositionModel = require('../../models/Position');
 var uuid = require('node-uuid');
 
-function Base(symbol, configuration, dataPointCount) {
+function Base(symbol, group, configuration, dataPointCount) {
     this.constructor = Base;
     StrategyBase.call(this, symbol);
 
+    this.group = group;
     this.uuid = uuid.v4();
     this.configuration = configuration;
     this.dataPointCount = dataPointCount;
@@ -16,6 +17,10 @@ function Base(symbol, configuration, dataPointCount) {
 Base.prototype = Object.create(StrategyBase.prototype);
 
 Base.expiredPositionsPool = [];
+
+Base.prototype.getGroup = function() {
+    return this.group;
+};
 
 Base.prototype.getUuid = function() {
     return this.uuid;

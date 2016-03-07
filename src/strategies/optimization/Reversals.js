@@ -3,9 +3,9 @@ var Base = require('./Base');
 var Call = require('../../positions/Call');
 var Put = require('../../positions/Put');
 
-function Reversals(symbol, configuration, dataPointCount) {
+function Reversals(symbol, group, configuration, dataPointCount) {
     this.constructor = Reversals;
-    Base.call(this, symbol, configuration, dataPointCount);
+    Base.call(this, symbol, group, configuration, dataPointCount);
 
     this.configuration = configuration;
     this.putNextTick = false;

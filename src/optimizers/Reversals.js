@@ -417,9 +417,9 @@ var configurationOptions = {
     ]
 };
 
-function Reversals(symbol) {
+function Reversals(symbol, group) {
     this.constructor = Reversals;
-    Base.call(this, 'Reversals', symbol);
+    Base.call(this, 'Reversals', symbol, group);
 
     // Prepare studies for use.
     this.prepareStudies(studyDefinitions);

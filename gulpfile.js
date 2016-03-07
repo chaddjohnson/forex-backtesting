@@ -114,14 +114,10 @@ gulp.task('test', function(done) {
     var strategyFn = require('./src/strategies/combined/Reversals');
     var optimizer;
     var group = 0;
-    var typeKey = '';
     var investment = 0.0;
     var profitability = 0.0;
-    var dataConstraints = {};
     var forwardtestConstraints;
     var ResultsModel;
-    var data = [];
-    var configurations = [];
     var tasks = [];
 
     // Find the symbol based on the command line argument.
@@ -152,11 +148,6 @@ gulp.task('test', function(done) {
         handleInputError('No database provided');
     }
 
-    typeKey = 'data.groups.' + argv.type;
-
-    dataConstraints.symbol = argv.symbol;
-    dataConstraints[typeKey] = group;
-
     forwardtestConstraints = {
         symbol: argv.symbol,
         group: group - 1,
@@ -164,85 +155,69 @@ gulp.task('test', function(done) {
     };
 
     ResultsModel = argv.type === 'testing' ? Forwardtest : Validation;
-    optimizer = new optimizerFn(argv.symbol);
+    optimizer = new optimizerFn(argv.symbol, group);
 
     // Set up database connection.
     db.initialize(argv.database);
 
-    try {
-        // Get data.
-        tasks.push(function(taskCallback) {
-            DataPoint.find(dataConstraints, function(error, dataPoints) {
-                data = _.pluck(dataPoints, 'data');
-                taskCallback()
-            });
-        });
-
-        // Get configurations.
-        tasks.push(function(taskCallback) {
-            if (group === 1) {
-                configurations = optimizer.configurations;
+    // Get configurations.
+    tasks.push(function(taskCallback) {
+        if (group === 1) {
+            configurations = optimizer.configurations;
+            taskCallback();
+        }
+        else {
+            Forwardtest.find(forwardtestConstraints, function(error, forwardtests) {
+                configurations = _.pluck(forwardtests, 'configuration');
                 taskCallback();
-            }
-            else {
-                Forwardtest.find(forwardtestConstraints, function(error, forwardtests) {
-                    configurations = _.pluck(forwardtests, 'configuration');
-                    taskCallback();
-                });
-            }
-        });
-
-        tasks.push(function(taskCallback) {
-            var configurationCount = configurations.length;
-            var testTasks = [];
-
-            // Iterate through the remaining forward tests.
-            process.stdout.write('Forward testing...\n');
-
-            configurations.forEach(function(configuration, index) {
-                testTasks.push(function(testTaskCallback) {
-                    // Set up a new strategy instance.
-                    var strategy = new strategyFn(argv.symbol, [configuration]);
-
-                    strategy.setProfitLoss(10000);
-
-                    // Forward test (backtest).
-                    var results = strategy.backtest(data, investment, profitability);
-
-                    // Save results.
-                    ResultsModel.create(_.extend(results, {
-                        symbol: argv.symbol,
-                        group: group,
-                        configuration: configuration
-                    }), function() {
-                        process.stdout.cursorTo(18);
-                        process.stdout.write(index + ' of ' + configurationCount + ' completed');
-
-                        // Forward test the next forward test.
-                        testTaskCallback();
-                    });
-                });
             });
+        }
+    });
 
-            async.series(testTasks, function(error) {
-                process.stdout.cursorTo(18);
-                process.stdout.write(configurationCount + ' of ' + configurationCount + ' completed\n');
-
-                taskCallback()
+    tasks.push(function(taskCallback) {
+        try {
+            optimizer.optimize(configurations, investment, profitability, function() {
+                taskCallback();
             });
-        });
+        }
+        catch (error) {
+            console.error(error.message || error);
+            process.exit(1);
+        }
+    });
 
-        async.series(tasks, function(error) {
-            if (error) {
-                console.error(error.message || error);
-            }
-            db.disconnect();
-            done();
-            process.exit(0);
-        });
-    }
-    catch (error) {
-        console.error(error.message || error);
-        process.exit(1);
-    }
+    async.series(tasks, function() {
+        db.disconnect();
+        done();
+        process.exit(0);
+    });
+});
+
+gulp.task('average', function(done) {
+    // var Forwardtest = require('./src/models/Forwardtest');
+    // var ValidationAverage = require('./src/models/ValidationAverage');
+
+    // // Find the forward tests for group 10.
+    // Forwardtest.find({...}, function(error, forwardtests) {
+    //     // For each forward test, find the validation results for each round given the forward test's configuration.
+    //     Validation.find({...}, function(error, validations) {
+    //         // Calculate averages for all properties.
+    //         var averageProfitLoss = _.reduce(...);
+    //         var averageTradeCount = _.reduce(...);
+    //         var averageWinRate = _.reduce(...);
+    //         var averageMaximumConsecutiveLosses = _.reduce(...);
+    //         var averageMinimumProfitLoss = _.reduce(...);
+
+    //         // Save averages.
+    //         ValidationAverage.create({
+    //             symbol: argv.symbol,
+    //             configuration: forwardtest.configuration,
+    //             profitLoss: averageProfitLoss,
+    //             tradeCount: averageTradeCount,
+    //             winRate: averageWinRate,
+    //             maximumConsecutiveLosses: averageMaximumConsecutiveLosses,
+    //             minimumProfitLoss: averageMinimumProfitLoss
+    //         });
+    //     });
+    // });
 });

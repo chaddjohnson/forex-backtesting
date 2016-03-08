@@ -1,16 +1,11 @@
 var db = require('../../db');
 var async = require('async');
 var strategyFns = require('../strategies');
-var strategyFn = null;
 var strategies = [];
 
 db.initialize('forex-backtesting');
 
 function init(strategyName, symbol, group, configuration, dataPointCount) {
-    if (!strategyFn) {
-        strategyFn = strategyFns.optimization[strategyName];
-    }
-
     strategies.push(new strategyFns.optimization[strategyName](symbol, group, configuration, dataPointCount));
 };
 
@@ -26,9 +21,7 @@ function backtest(dataPoint, index, investment, profitability) {
     });
 
     async.parallel(tasks, function() {
-        strategyFn.saveExpiredPositionsPool(function() {
-            process.send({type: 'done'});
-        });
+        process.send({type: 'done'});
     });
 };
 

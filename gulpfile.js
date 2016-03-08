@@ -185,6 +185,7 @@ gulp.task('test', function(done) {
         try {
             // Override the data query for the optimizer.
             optimizer.setQuery(dataConstraints);
+            optimizer.setType(argv.type);
 
             // Run optimization.
             optimizer.optimize([], investment, profitability, function() {

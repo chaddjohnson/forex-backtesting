@@ -3,6 +3,7 @@ var async = require('async');
 var forkFn = require('child_process').fork;
 var Backtest = require('../models/Backtest');
 var Forwardtest = require('../models/Forwardtest');
+var Validation = require('../models/Validation');
 var DataPoint = require('../models/DataPoint');
 var strategyFns = require('../strategies');
 
@@ -14,10 +15,24 @@ function Base(strategyName, symbol, group) {
     this.group = group;
     this.studies = [];
     this.query = {symbol: this.symbol};
+    this.type = 'testing';
 }
 
 Base.prototype.setQuery = function(query) {
     this.query = query;
+};
+
+Base.prototype.setType = function(type) {
+    this.type = type;
+};
+
+Base.prototype.getTypeModel = function() {
+    if (this.type === 'testing') {
+        return Forwardtest;
+    }
+    else {
+        return Validation;
+    }
 };
 
 Base.prototype.prepareStudies = function(studyDefinitions) {
@@ -318,9 +333,7 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
                         process.stdout.write(index + ' of ' + dataPointCount + ' completed');
 
                         if (index === dataPointCount) {
-                            strategyFns.optimization[self.strategyName].saveExpiredPositionsPool(function() {
-                                taskCallback();
-                            });
+                            taskCallback();
                         }
 
                         stream.resume();
@@ -357,7 +370,7 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
                 backtests = backtests.concat(message.data);
 
                 if (resultsCount === cpuCoreCount) {
-                    Forwardtest.collection.insert(backtests, function(error) {
+                    self.getTypeModel().collection.insert(backtests, function(error) {
                         process.stdout.write('done\n');
 
                         taskCallback(error);

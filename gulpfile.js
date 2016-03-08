@@ -153,7 +153,7 @@ gulp.task('test', function(done) {
     forwardtestConstraints = {
         symbol: argv.symbol,
         group: group - 1,
-        winRate: {'$gte': 0.62}
+        winRate: {'$gte': 0.59}
     };
 
     typeKey = 'data.groups.' + argv.type;

@@ -9,7 +9,7 @@ node generate $1
 # Put CSV files in a random order.
 for f in ./*.csv
 do
-    mv $f $RANDOM.csv
+    mv $f $RANDOM$RANDOM.csv
 done
 
 # Display the number of CSV files.

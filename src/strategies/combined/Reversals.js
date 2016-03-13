@@ -217,8 +217,6 @@ ReversalsCombined.prototype = Object.create(Base.prototype);
 ReversalsCombined.prototype.backtest = function(data, profitability) {
     var self = this;
     var expirationMinutes = 5;
-    var putNextTick = false;
-    var callNextTick = false;
     var putThisConfiguration = false;
     var callThisConfiguration = false;
     var previousDataPoint;
@@ -258,30 +256,24 @@ ReversalsCombined.prototype.backtest = function(data, profitability) {
             // Track the current data point as the previous data point for the next tick.
             previousDataPoint = dataPoint;
 
-            putNextTick = false;
-            callNextTick = false;
-
             return;
         }
 
         if (previousDataPoint && index < dataPointCount - 1) {
-            if (putNextTick) {
+            if (putCount > 0) {
                 // Create a new position.
                 position = new Put(self.getSymbol(), (dataPoint.timestamp - 1000), previousDataPoint.close, self.getInvestment() * putCount, profitability, expirationMinutes);
                 position.setShowTrades(self.getShowTrades());
                 self.addPosition(position);
             }
 
-            if (callNextTick) {
+            if (callCount > 0) {
                 // Create a new position.
                 position = new Call(self.getSymbol(), (dataPoint.timestamp - 1000), previousDataPoint.close, self.getInvestment() * callCount, profitability, expirationMinutes)
                 position.setShowTrades(self.getShowTrades());
                 self.addPosition(position);
             }
         }
-
-        putNextTick = false;
-        callNextTick = false;
 
         putCount = 0;
         callCount = 0;
@@ -397,20 +389,16 @@ ReversalsCombined.prototype.backtest = function(data, profitability) {
             if (callThisConfiguration) {
                 callCount++;
             }
-
-            // Determine whether to trade next tick.
-            putNextTick = putNextTick || putThisConfiguration;
-            callNextTick = callNextTick || callThisConfiguration;
         });
 
         // Track the current data point as the previous data point for the next tick.
         previousDataPoint = dataPoint;
 
-        if (putNextTick) {
+        if (putCount > 0) {
             console.log('PUT for $' + self.getInvestment() + ' at ' + new Date(dataPoint.timestamp + 1000));
         }
 
-        if (callNextTick) {
+        if (callCount > 0) {
             console.log('CALL for $' + self.getInvestment() + ' at ' + new Date(dataPoint.timestamp + 1000));
         }
     });

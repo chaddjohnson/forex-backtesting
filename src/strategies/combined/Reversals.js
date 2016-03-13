@@ -203,9 +203,9 @@ var studyDefinitions = [
     // {study: studies.PolynomialRegressionChannel, inputs: {length: 500, degree: 5, deviations: 2.05}, outputMap: {regression: 'prChannel500_5_205', upper: 'prChannelUpper500_5_205', lower: 'prChannelLower500_5_205'}}
 ];
 
-function ReversalsCombined(symbol, configurations) {
+function ReversalsCombined(symbol, initialInvestment, configurations) {
     this.constructor = ReversalsCombined;
-    Base.call(this, symbol, configurations);
+    Base.call(this, symbol, initialInvestment, configurations);
 
     this.configurations = configurations;
 
@@ -214,7 +214,7 @@ function ReversalsCombined(symbol, configurations) {
 
 ReversalsCombined.prototype = Object.create(Base.prototype);
 
-ReversalsCombined.prototype.backtest = function(data, investment, profitability) {
+ReversalsCombined.prototype.backtest = function(data, profitability) {
     var self = this;
     var expirationMinutes = 5;
     var putNextTick = false;
@@ -242,6 +242,11 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
         dataPoint.close = dataPoint.close * 0.9997805329;
 
         currentDay = new Date(dataPoint.timestamp).getDay();
+
+        if (currentDay !== previousDay) {
+            self.setInvestment(Math.round(self.profitLoss * 0.005));
+        }
+
         previousDay = currentDay;
 
         // Simulate the next tick.
@@ -262,14 +267,14 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
         if (previousDataPoint && index < dataPointCount - 1) {
             if (putNextTick) {
                 // Create a new position.
-                position = new Put(self.getSymbol(), (dataPoint.timestamp - 1000), previousDataPoint.close, investment * putCount, profitability, expirationMinutes);
+                position = new Put(self.getSymbol(), (dataPoint.timestamp - 1000), previousDataPoint.close, self.getInvestment() * putCount, profitability, expirationMinutes);
                 position.setShowTrades(self.getShowTrades());
                 self.addPosition(position);
             }
 
             if (callNextTick) {
                 // Create a new position.
-                position = new Call(self.getSymbol(), (dataPoint.timestamp - 1000), previousDataPoint.close, investment * callCount, profitability, expirationMinutes)
+                position = new Call(self.getSymbol(), (dataPoint.timestamp - 1000), previousDataPoint.close, self.getInvestment() * callCount, profitability, expirationMinutes)
                 position.setShowTrades(self.getShowTrades());
                 self.addPosition(position);
             }
@@ -402,11 +407,11 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
         previousDataPoint = dataPoint;
 
         if (putNextTick) {
-            console.log('PUT for $' + investment + ' at ' + new Date(dataPoint.timestamp + 1000));
+            console.log('PUT for $' + self.getInvestment() + ' at ' + new Date(dataPoint.timestamp + 1000));
         }
 
         if (callNextTick) {
-            console.log('CALL for $' + investment + ' at ' + new Date(dataPoint.timestamp + 1000));
+            console.log('CALL for $' + self.getInvestment() + ' at ' + new Date(dataPoint.timestamp + 1000));
         }
     });
 

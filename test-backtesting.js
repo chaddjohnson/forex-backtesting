@@ -9,7 +9,7 @@ var combinations = [
     { "ema200" : false, "ema100" : false, "ema50" : true, "sma13" : true, "rsi" : { "rsi" : "rsi9", "overbought" : 77, "oversold" : 23 }, "stochastic" : null, "prChannel" : { "upper" : "prChannelUpper200_3_185", "lower" : "prChannelLower200_3_185" } }
 ];
 var dataParsers = require('./src/dataParsers');
-var strategy = new strategyFn(process.argv[2], combinations);
+var strategy = new strategyFn(process.argv[2], 25, combinations);
 
 // strategy.setShowTrades(true);
 
@@ -17,7 +17,7 @@ try {
     // Parse the raw data file.
     dataParsers.ctoption.parse('./data/ctoption/' + process.argv[2] + '.csv').then(function(parsedData) {
         strategy.setProfitLoss(5000);
-        strategy.backtest(parsedData, 25, 0.76);
+        strategy.backtest(parsedData, 0.76);
     });
 }
 catch (error) {

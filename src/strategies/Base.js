@@ -1,7 +1,8 @@
 var fs = require('fs');
 
-function Base(symbol) {
+function Base(symbol, initialInvestment) {
     this.symbol = symbol;
+    this.investment = initialInvestment;
     this.studies = [];
     this.openPositions = [];
     this.profitLoss = 0.0;
@@ -112,6 +113,14 @@ Base.prototype.backtest = function(data, investment, profitability) {
     throw 'backtest() not implemented.';
 };
 
+Base.prototype.getInvestment = function() {
+    return this.investment;
+};
+
+Base.prototype.setInvestment = function(investment) {
+    this.investment = investment;
+};
+
 Base.prototype.getResults = function() {
     return {
         profitLoss: this.profitLoss,
@@ -163,11 +172,11 @@ Base.prototype.closeExpiredPositions = function(price, timestamp) {
             self.dayBalance += profitLoss;
 
             if (profitLoss > position.getInvestment()) {
-                self.winCount += (position.getInvestment() / 25);
+                self.winCount += (position.getInvestment() / self.getInvestment());
                 self.consecutiveLosses = 0;
             }
             if (profitLoss === 0) {
-                self.loseCount += (position.getInvestment() / 25);
+                self.loseCount += (position.getInvestment() / self.getInvestment());
                 self.consecutiveLosses++;
             }
 

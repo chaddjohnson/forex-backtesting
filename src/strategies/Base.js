@@ -56,7 +56,7 @@ Base.prototype.tick = function(dataPoint) {
     var i = 0;
 
     // If there is a gap in the data, reset the cumulative data.
-    if (self.previousDataPoint && (dataPoint.timestamp - self.previousDataPoint.timestamp) > 600000) {
+    if (self.previousDataPoint && (dataPoint.timestamp - self.previousDataPoint.timestamp) > 1000 * 60) {
         self.cumulativeData = [];
         self.cumulativeDataCount = 0;
     }
@@ -172,8 +172,8 @@ Base.prototype.closeExpiredPositions = function(price, timestamp) {
             }
 
             // Track minimum profit/loss.
-            if (profitLoss < self.minimumProfitLoss) {
-                self.minimumProfitLoss = profitLoss;
+            if (self.profitLoss < self.minimumProfitLoss) {
+                self.minimumProfitLoss = self.profitLoss;
             }
 
             // Track the maximum consecutive losses.

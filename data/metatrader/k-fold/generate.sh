@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Remove existing CSV files.
-rm -rf ./*.csv ./part*/**/$1.csv ./final ./combined
+rm -rf ./*.csv ./part*/**/$1.csv ./final/$1.csv ./combined/$1.csv
 
 # Generate new CSV files.
 node generate $1
@@ -11,12 +11,6 @@ for f in ./*.csv
 do
     mv $f $RANDOM$RANDOM.csv
 done
-
-# Display the number of CSV files.
-ls ./*.csv | wc -l
-
-# Wait for input (or rejection via ctrl+c).
-read
 
 mkdir final
 mkdir combined

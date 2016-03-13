@@ -235,6 +235,12 @@ ReversalsCombined.prototype.backtest = function(data, investment, profitability)
         var timestampHour = new Date(dataPoint.timestamp).getHours();
         var timestampMinute = new Date(dataPoint.timestamp).getMinutes();
 
+        // Adjust CTOption data to be like MetaTrader data.
+        dataPoint.open = dataPoint.open * 0.9997805329;
+        dataPoint.high = dataPoint.open * 0.9997805329;
+        dataPoint.low = dataPoint.low * 0.9997805329;
+        dataPoint.close = dataPoint.close * 0.9997805329;
+
         currentDay = new Date(dataPoint.timestamp).getDay();
         previousDay = currentDay;
 

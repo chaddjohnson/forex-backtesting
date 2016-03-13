@@ -163,11 +163,11 @@ Base.prototype.closeExpiredPositions = function(price, timestamp) {
             self.dayBalance += profitLoss;
 
             if (profitLoss > position.getInvestment()) {
-                self.winCount++;
+                self.winCount += (position.getInvestment() / 25);
                 self.consecutiveLosses = 0;
             }
             if (profitLoss === 0) {
-                self.loseCount++;
+                self.loseCount += (position.getInvestment() / 25);
                 self.consecutiveLosses++;
             }
 

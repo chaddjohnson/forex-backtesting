@@ -119,7 +119,6 @@ gulp.task('test', function(done) {
     var typeKey = '';
     var dataConstraints = {};
     var forwardtestConstraints;
-    var ResultsModel;
     var tasks = [];
 
     // Find the symbol based on the command line argument.
@@ -160,7 +159,6 @@ gulp.task('test', function(done) {
     dataConstraints.symbol = argv.symbol;
     dataConstraints[typeKey] = group;
 
-    ResultsModel = argv.type === 'testing' ? Forwardtest : Validation;
     optimizer = new optimizerFn(argv.symbol, group);
 
     // Set up database connection.

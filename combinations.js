@@ -10,7 +10,8 @@ var configurations = [
     { "ema200" : false, "ema100" : false, "ema50" : true, "sma13" : true, "rsi" : { "rsi" : "rsi9", "overbought" : 77, "oversold" : 23 }, "stochastic" : null, "prChannel" : { "upper" : "prChannelUpper200_3_185", "lower" : "prChannelLower200_3_185" } },
     { "ema200" : false, "ema100" : true, "ema50" : true, "sma13" : false, "rsi" : null, "stochastic" : { "K" : "stochastic10K", "D" : "stochastic10D", "overbought" : 77, "oversold" : 23 }, "prChannel" : { "upper" : "prChannelUpper200_4_225", "lower" : "prChannelLower200_4_225" } },
     { "ema200" : false, "ema100" : true, "ema50" : true, "sma13" : false, "rsi" : null, "stochastic" : { "K" : "stochastic14K", "D" : "stochastic14D", "overbought" : 77, "oversold" : 23 }, "prChannel" : { "upper" : "prChannelUpper200_4_220", "lower" : "prChannelLower200_4_220" } },
-    { "ema200" : false, "ema100" : true, "ema50" : true, "sma13" : false, "rsi" : null, "stochastic" : { "K" : "stochastic14K", "D" : "stochastic14D", "overbought" : 70, "oversold" : 30 }, "prChannel" : { "upper" : "prChannelUpper200_4_230", "lower" : "prChannelLower200_4_230" } }
+    { "ema200" : false, "ema100" : true, "ema50" : true, "sma13" : false, "rsi" : null, "stochastic" : { "K" : "stochastic14K", "D" : "stochastic14D", "overbought" : 70, "oversold" : 30 }, "prChannel" : { "upper" : "prChannelUpper200_4_230", "lower" : "prChannelLower200_4_230" } },
+    { "ema200" : false, "ema100" : true, "ema50" : true, "sma13" : false, "rsi" : null, "stochastic" : { "K" : "stochastic10K", "D" : "stochastic10D", "overbought" : 77, "oversold" : 23 }, "prChannel" : { "upper" : "prChannelUpper200_4_235", "lower" : "prChannelLower200_4_235" } }
 ];
 var trendPrChannels = [];
 var prChannels = [];

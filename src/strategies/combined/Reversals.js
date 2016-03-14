@@ -64,6 +64,7 @@ var studyDefinitions = [
     {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 4, deviations: 2.20}, outputMap: {regression: 'prChannel200_4_220', upper: 'prChannelUpper200_4_220', lower: 'prChannelLower200_4_220'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 4, deviations: 2.25}, outputMap: {regression: 'prChannel200_4_225', upper: 'prChannelUpper200_4_225', lower: 'prChannelLower200_4_225'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 4, deviations: 2.30}, outputMap: {regression: 'prChannel200_4_230', upper: 'prChannelUpper200_4_230', lower: 'prChannelLower200_4_230'}},
+    {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 4, deviations: 2.35}, outputMap: {regression: 'prChannel200_4_235', upper: 'prChannelUpper200_4_235', lower: 'prChannelLower200_4_235'}},
     // {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 5, deviations: 1.85}, outputMap: {regression: 'prChannel200_5_185', upper: 'prChannelUpper200_5_185', lower: 'prChannelLower200_5_185'}},
     // {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 5, deviations: 2.05}, outputMap: {regression: 'prChannel200_5_205', upper: 'prChannelUpper200_5_205', lower: 'prChannelLower200_5_205'}},
     // {study: studies.PolynomialRegressionChannel, inputs: {length: 250, degree: 2, deviations: 1.85}, outputMap: {regression: 'prChannel250_2_185', upper: 'prChannelUpper250_2_185', lower: 'prChannelLower250_2_185'}},

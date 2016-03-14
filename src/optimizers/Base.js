@@ -344,7 +344,7 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
             });
         };
 
-        var stream = DataPoint.find(self.query, {}, {timeout: true}).sort({'data.timestamp': 1}).stream();
+        var stream = DataPoint.find(self.query, {}, {timeout: true}).hint({'data.timestamp': 1}).sort({'data.timestamp': 1}).stream();
 
         stream.on('data', streamer);
     });

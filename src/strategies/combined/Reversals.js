@@ -231,6 +231,9 @@ ReversalsCombined.prototype.backtest = function(data, profitability) {
     var putCount = 0;
     var callCount = 0;
 
+    //var priceAdjustmentFactor = 0.9997805329;  // AUDJPY
+    var priceAdjustmentFactor = 0.9998435476;  // NZDUSD
+
     // For every data point...
     data.forEach(function(dataPoint, index) {
         var position = null;
@@ -238,10 +241,10 @@ ReversalsCombined.prototype.backtest = function(data, profitability) {
         var timestampMinute = new Date(dataPoint.timestamp).getMinutes();
 
         // Adjust CTOption data to be like MetaTrader data.
-        dataPoint.open = dataPoint.open * 0.9997805329;
-        dataPoint.high = dataPoint.open * 0.9997805329;
-        dataPoint.low = dataPoint.low * 0.9997805329;
-        dataPoint.close = dataPoint.close * 0.9997805329;
+        dataPoint.open = dataPoint.open * priceAdjustmentFactor;
+        dataPoint.high = dataPoint.open * priceAdjustmentFactor;
+        dataPoint.low = dataPoint.low * priceAdjustmentFactor;
+        dataPoint.close = dataPoint.close * priceAdjustmentFactor;
 
         currentDay = new Date(dataPoint.timestamp).getDay();
 

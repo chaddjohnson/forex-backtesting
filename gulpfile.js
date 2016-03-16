@@ -248,7 +248,7 @@ gulp.task('average', function(done) {
                     var validationCount = validations.length;
 
                     if (validationCount < 8) {
-                        return;
+                        taskCallback();
                     }
 
                     // Calculate averages for all properties.

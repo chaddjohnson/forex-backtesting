@@ -231,8 +231,8 @@ ReversalsCombined.prototype.backtest = function(data, profitability) {
     var putCount = 0;
     var callCount = 0;
 
-    //var priceAdjustmentFactor = 0.9997805329;  // AUDJPY
-    var priceAdjustmentFactor = 0.9998435476;  // NZDUSD
+    var priceAdjustmentFactor = 0.9997805329;  // AUDJPY
+    // var priceAdjustmentFactor = 0.9998435476;  // NZDUSD
 
     // For every data point...
     data.forEach(function(dataPoint, index) {

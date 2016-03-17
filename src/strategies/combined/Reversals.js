@@ -58,13 +58,13 @@ var studyDefinitions = [
     // {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 4, deviations: 1.95}, outputMap: {regression: 'prChannel200_4_195', upper: 'prChannelUpper200_4_195', lower: 'prChannelLower200_4_195'}},
     // {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 4, deviations: 1.9}, outputMap: {regression: 'prChannel200_4_19', upper: 'prChannelUpper200_4_19', lower: 'prChannelLower200_4_19'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 4, deviations: 2.05}, outputMap: {regression: 'prChannel200_4_205', upper: 'prChannelUpper200_4_205', lower: 'prChannelLower200_4_205'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 4, deviations: 2.0}, outputMap: {regression: 'prChannel200_4_2', upper: 'prChannelUpper200_4_2', lower: 'prChannelLower200_4_2'}},
+    // {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 4, deviations: 2.0}, outputMap: {regression: 'prChannel200_4_2', upper: 'prChannelUpper200_4_2', lower: 'prChannelLower200_4_2'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 4, deviations: 2.15}, outputMap: {regression: 'prChannel200_4_215', upper: 'prChannelUpper200_4_215', lower: 'prChannelLower200_4_215'}},
     {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 4, deviations: 2.1}, outputMap: {regression: 'prChannel200_4_21', upper: 'prChannelUpper200_4_21', lower: 'prChannelLower200_4_21'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 4, deviations: 2.20}, outputMap: {regression: 'prChannel200_4_220', upper: 'prChannelUpper200_4_220', lower: 'prChannelLower200_4_220'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 4, deviations: 2.25}, outputMap: {regression: 'prChannel200_4_225', upper: 'prChannelUpper200_4_225', lower: 'prChannelLower200_4_225'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 4, deviations: 2.30}, outputMap: {regression: 'prChannel200_4_230', upper: 'prChannelUpper200_4_230', lower: 'prChannelLower200_4_230'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 4, deviations: 2.35}, outputMap: {regression: 'prChannel200_4_235', upper: 'prChannelUpper200_4_235', lower: 'prChannelLower200_4_235'}},
+    // {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 4, deviations: 2.20}, outputMap: {regression: 'prChannel200_4_220', upper: 'prChannelUpper200_4_220', lower: 'prChannelLower200_4_220'}},
+    // {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 4, deviations: 2.25}, outputMap: {regression: 'prChannel200_4_225', upper: 'prChannelUpper200_4_225', lower: 'prChannelLower200_4_225'}},
+    // {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 4, deviations: 2.30}, outputMap: {regression: 'prChannel200_4_230', upper: 'prChannelUpper200_4_230', lower: 'prChannelLower200_4_230'}},
+    // {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 4, deviations: 2.35}, outputMap: {regression: 'prChannel200_4_235', upper: 'prChannelUpper200_4_235', lower: 'prChannelLower200_4_235'}},
     // {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 5, deviations: 1.85}, outputMap: {regression: 'prChannel200_5_185', upper: 'prChannelUpper200_5_185', lower: 'prChannelLower200_5_185'}},
     // {study: studies.PolynomialRegressionChannel, inputs: {length: 200, degree: 5, deviations: 2.05}, outputMap: {regression: 'prChannel200_5_205', upper: 'prChannelUpper200_5_205', lower: 'prChannelLower200_5_205'}},
     // {study: studies.PolynomialRegressionChannel, inputs: {length: 250, degree: 2, deviations: 1.85}, outputMap: {regression: 'prChannel250_2_185', upper: 'prChannelUpper250_2_185', lower: 'prChannelLower250_2_185'}},
@@ -87,7 +87,7 @@ var studyDefinitions = [
     // {study: studies.PolynomialRegressionChannel, inputs: {length: 250, degree: 4, deviations: 2.05}, outputMap: {regression: 'prChannel250_4_205', upper: 'prChannelUpper250_4_205', lower: 'prChannelLower250_4_205'}},
     // {study: studies.PolynomialRegressionChannel, inputs: {length: 250, degree: 4, deviations: 2.0}, outputMap: {regression: 'prChannel250_4_2', upper: 'prChannelUpper250_4_2', lower: 'prChannelLower250_4_2'}},
     // {study: studies.PolynomialRegressionChannel, inputs: {length: 250, degree: 4, deviations: 2.15}, outputMap: {regression: 'prChannel250_4_215', upper: 'prChannelUpper250_4_215', lower: 'prChannelLower250_4_215'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 250, degree: 4, deviations: 2.1}, outputMap: {regression: 'prChannel250_4_21', upper: 'prChannelUpper250_4_21', lower: 'prChannelLower250_4_21'}},
+    // {study: studies.PolynomialRegressionChannel, inputs: {length: 250, degree: 4, deviations: 2.1}, outputMap: {regression: 'prChannel250_4_21', upper: 'prChannelUpper250_4_21', lower: 'prChannelLower250_4_21'}},
     // {study: studies.PolynomialRegressionChannel, inputs: {length: 250, degree: 5, deviations: 1.85}, outputMap: {regression: 'prChannel250_5_185', upper: 'prChannelUpper250_5_185', lower: 'prChannelLower250_5_185'}},
     // {study: studies.PolynomialRegressionChannel, inputs: {length: 250, degree: 5, deviations: 2.05}, outputMap: {regression: 'prChannel250_5_205', upper: 'prChannelUpper250_5_205', lower: 'prChannelLower250_5_205'}},
     // {study: studies.PolynomialRegressionChannel, inputs: {length: 300, degree: 2, deviations: 1.85}, outputMap: {regression: 'prChannel300_2_185', upper: 'prChannelUpper300_2_185', lower: 'prChannelLower300_2_185'}},
@@ -150,7 +150,7 @@ var studyDefinitions = [
     // {study: studies.PolynomialRegressionChannel, inputs: {length: 400, degree: 3, deviations: 2.0}, outputMap: {regression: 'prChannel400_3_2', upper: 'prChannelUpper400_3_2', lower: 'prChannelLower400_3_2'}},
     // {study: studies.PolynomialRegressionChannel, inputs: {length: 400, degree: 3, deviations: 2.15}, outputMap: {regression: 'prChannel400_3_215', upper: 'prChannelUpper400_3_215', lower: 'prChannelLower400_3_215'}},
     // {study: studies.PolynomialRegressionChannel, inputs: {length: 400, degree: 3, deviations: 2.1}, outputMap: {regression: 'prChannel400_3_21', upper: 'prChannelUpper400_3_21', lower: 'prChannelLower400_3_21'}},
-    {study: studies.PolynomialRegressionChannel, inputs: {length: 400, degree: 4, deviations: 1.85}, outputMap: {regression: 'prChannel400_4_185', upper: 'prChannelUpper400_4_185', lower: 'prChannelLower400_4_185'}},
+    // {study: studies.PolynomialRegressionChannel, inputs: {length: 400, degree: 4, deviations: 1.85}, outputMap: {regression: 'prChannel400_4_185', upper: 'prChannelUpper400_4_185', lower: 'prChannelLower400_4_185'}},
     // {study: studies.PolynomialRegressionChannel, inputs: {length: 400, degree: 4, deviations: 1.95}, outputMap: {regression: 'prChannel400_4_195', upper: 'prChannelUpper400_4_195', lower: 'prChannelLower400_4_195'}},
     // {study: studies.PolynomialRegressionChannel, inputs: {length: 400, degree: 4, deviations: 1.9}, outputMap: {regression: 'prChannel400_4_19', upper: 'prChannelUpper400_4_19', lower: 'prChannelLower400_4_19'}},
     // {study: studies.PolynomialRegressionChannel, inputs: {length: 400, degree: 4, deviations: 2.05}, outputMap: {regression: 'prChannel400_4_205', upper: 'prChannelUpper400_4_205', lower: 'prChannelLower400_4_205'}},
@@ -231,7 +231,7 @@ ReversalsCombined.prototype.backtest = function(data, profitability) {
     var putCount = 0;
     var callCount = 0;
 
-    var priceAdjustmentFactor = 0.9997805329;  // AUDJPY
+    // var priceAdjustmentFactor = 0.9997805329;  // AUDJPY
     // var priceAdjustmentFactor = 0.9998435476;  // NZDUSD
 
     // For every data point...
@@ -241,10 +241,10 @@ ReversalsCombined.prototype.backtest = function(data, profitability) {
         var timestampMinute = new Date(dataPoint.timestamp).getMinutes();
 
         // Adjust CTOption data to be like MetaTrader data.
-        dataPoint.open = dataPoint.open * priceAdjustmentFactor;
-        dataPoint.high = dataPoint.open * priceAdjustmentFactor;
-        dataPoint.low = dataPoint.low * priceAdjustmentFactor;
-        dataPoint.close = dataPoint.close * priceAdjustmentFactor;
+        // dataPoint.open = dataPoint.open * priceAdjustmentFactor;
+        // dataPoint.high = dataPoint.open * priceAdjustmentFactor;
+        // dataPoint.low = dataPoint.low * priceAdjustmentFactor;
+        // dataPoint.close = dataPoint.close * priceAdjustmentFactor;
 
         currentDay = new Date(dataPoint.timestamp).getDay();
 
@@ -259,7 +259,7 @@ ReversalsCombined.prototype.backtest = function(data, profitability) {
 
         // Only trade when the profitability is highest (11:30pm - 4pm CST).
         // Note that MetaTrader automatically converts timestamps to the current timezone in exported CSV files.
-        if (timestampHour >= 16 && (timestampHour < 23 || (timestampHour === 23 && timestampMinute < 30))) {
+        if (timestampHour >= 0 && (timestampHour < 7 || (timestampHour === 7 && timestampMinute < 30))) {
             // Track the current data point as the previous data point for the next tick.
             previousDataPoint = dataPoint;
             return;

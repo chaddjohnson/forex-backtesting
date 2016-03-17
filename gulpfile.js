@@ -244,7 +244,7 @@ gulp.task('average', function(done) {
         forwardtests.forEach(function(forwardtest, index) {
             tasks.push(function(taskCallback) {
                 // For each forward test, find the validation results for each round given the forward test's configuration.
-                Validation.find({configuration: forwardtest.configuration}, function(error, validations) {
+                Validation.find({symbol: argv.symbol, configuration: forwardtest.configuration}, function(error, validations) {
                     var validationCount = validations.length;
 
                     // Calculate averages for all properties.

@@ -247,6 +247,10 @@ gulp.task('average', function(done) {
                 Validation.find({configuration: forwardtest.configuration}, function(error, validations) {
                     var validationCount = validations.length;
 
+                    if (validationCount < 8) {
+                        return taskCallback();
+                    }
+
                     // Calculate averages for all properties.
                     var averageProfitLoss = _.reduce(validations, function(memo, validation) {
                         return memo + validation.profitLoss;

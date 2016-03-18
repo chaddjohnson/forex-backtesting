@@ -242,7 +242,7 @@ ReversalsCombined.prototype.backtest = function(data, profitability) {
 
         // Adjust CTOption data to be like MetaTrader data.
         // dataPoint.open = dataPoint.open * priceAdjustmentFactor;
-        // dataPoint.high = dataPoint.open * priceAdjustmentFactor;
+        // dataPoint.high = dataPoint.high * priceAdjustmentFactor;
         // dataPoint.low = dataPoint.low * priceAdjustmentFactor;
         // dataPoint.close = dataPoint.close * priceAdjustmentFactor;
 

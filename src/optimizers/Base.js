@@ -231,7 +231,7 @@ Base.prototype.optimize = function(configurations, investment, profitability, ca
     var dataPointCount = 0;
     var tasks = [];
     var forks = [];
-    var cpuCoreCount = require('os').cpus().length;
+    var cpuCoreCount = 1;  //require('os').cpus().length;
 
     process.stdout.write('Optimizing...');
 

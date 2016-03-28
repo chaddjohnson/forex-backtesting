@@ -7,3 +7,4 @@ module.exports.PolynomialRegressionChannel = require('./PolynomialRegressionChan
 module.exports.AverageVolume = require('./AverageVolume');
 module.exports.StochasticOscillator = require('./StochasticOscillator');
 module.exports.BollingerBands = require('./BollingerBands');
+module.exports.AverageDirectionalIndex = require('./AverageDirectionalIndex');

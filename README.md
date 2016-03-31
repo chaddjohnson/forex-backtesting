@@ -13,7 +13,7 @@ Small Node.js-based framework for backtesting Forex trading strategies. Allows c
 6. Put the data into ./data/:
     1. mkdir ./data/metatrader
     1. mv AUDJPY.csv ./data/metatrader
-7. Create database indexes:
+7. Create database `forex-backtesting` with indexes:
 ```javascript
 db.positions.createIndex({symbol: 1});
 db.positions.createIndex({strategyUuid: 1});

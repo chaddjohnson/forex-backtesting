@@ -149,11 +149,19 @@ gulp.task('test', function(done) {
         handleInputError('No database provided');
     }
 
-    forwardtestConstraints = {
-        symbol: argv.symbol,
-        group: group - 1,
-        winRate: {'$gte': 0.58}
-    };
+    if (argv.type === 'testing') {
+        forwardtestConstraints = {
+            symbol: argv.symbol,
+            group: group - 1,
+            winRate: {'$gte': 0.57}
+        };
+    }
+    else {
+        forwardtestConstraints = {
+            symbol: argv.symbol,
+            group: group
+        };
+    }
 
     typeKey = 'data.groups.' + argv.type;
     dataConstraints.symbol = argv.symbol;

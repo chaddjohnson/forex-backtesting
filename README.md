@@ -28,4 +28,5 @@ db.validations.createIndex({symbol: 1});
 db.validations.createIndex({winRate: 1});
 db.validations.createIndex({symbol: 1, configuration: 1});
 ```
-8. Run `./backtest.sh AUDJPY`.
+
+Now run `./backtest.sh AUDJPY`.

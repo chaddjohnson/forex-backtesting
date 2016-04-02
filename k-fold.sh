@@ -2,7 +2,7 @@
 
 # Data
 echo; echo "Preparing K-Fold data..."
-node --nouse-idle-notification --max-old-space-size=31000 --expose-gc `which gulp` preparedata --symbol $1 --parser metatrader --data ./data/metatrader/k-fold/combined/$1.csv --optimizer Reversals --database forex-backtesting
+node --nouse-idle-notification --max-old-space-size=31000 --expose-gc `which gulp` preparedata --symbol $1 --parser oanda --data ./data/oanda/k-fold/combined/$1.csv --optimizer Reversals --database forex-backtesting
 
 # Group 1
 echo; echo "K-Fold Group 1..."

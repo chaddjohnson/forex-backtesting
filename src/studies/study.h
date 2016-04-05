@@ -3,13 +3,20 @@
 
 #include <map>
 #include <vector>
+#include <string>
 #include "../types/tick.h"
 
 class Study {
-    Study(std::map<std::string, double>, std::map<std::string, std::string>);
-    std::vector<Tick *> &getData();
-    void setData(Tick ticks[]);
-    double getInput(std::string key);
+    private:
+        std::vector<Tick *> data;
+        std::map<std::string, double> inputs;
+        std::map<std::string, std::string> outputMap;
+
+    public:
+        Study(std::map<std::string, double> &inputs, std::map<std::string, std::string> &outputMap);
+        void setData(std::vector<Tick *> &data);
+        double getInput(std::string key);
+        virtual std::map<std::string, double> tick() = 0;
 };
 
 #endif

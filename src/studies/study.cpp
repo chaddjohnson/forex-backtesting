@@ -1,19 +1,14 @@
 #include "study.h"
 
-Study(std::map<std::string, double>, std::map<std::string, std::string>) {
-
+Study::Study(std::map<std::string, double> &inputs, std::map<std::string, std::string> &outputMap) {
+    this->inputs = inputs;
+    this->outputMap = outputMap;
 }
 
-std::vector<Tick *> &getData() {
-    Tick[100] ticks;
-
-    return ticks;
+void Study::setData(std::vector<Tick *> &data) {
+    this->data = data;
 }
 
-void setData(Tick &ticks[]) {
-
-}
-
-double getInput(std::string key) {
-    return 0.0;
+double Study::getInput(std::string key) {
+    return this->inputs[key];
 }

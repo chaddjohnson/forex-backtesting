@@ -1,11 +1,25 @@
 #include "smaStudy.h"
 
-SmaStudy::SmaStudy(std::map<std::string, double> &inputs, std::map<std::string, std::string> &outputMap)
-    : Study(inputs, outputMap) {
-}
-
 std::map<std::string, double> SmaStudy::tick() {
-    std::map<std::string, double> valueMap = {{"sma13", 47.71}};
+    std::map<std::string, double> valueMap;
+    std::vector<Tick> dataSegment;
+    int dataSegmentCount = 0;
+    double sum = 0.0;
+    double sma = 0.0;
+
+    dataSegment = getDataSegment(getInput("length"));
+    dataSegmentCount = dataSegment.size();
+
+    if (dataSegmentCount < getInput("length")) {
+        return valueMap;
+    }
+
+    for (std::vector<Tick>::iterator iterator = dataSegment.begin(); iterator != dataSegment.end(); ++iterator) {
+        sum += iterator->close;
+    }
+    sma = sum / dataSegmentCount;
+
+    valueMap[getOutputMapping("sma")] = sma;
 
     return valueMap;
 }

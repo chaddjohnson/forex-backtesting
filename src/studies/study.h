@@ -1,5 +1,5 @@
-#ifndef BASESTUDY_H
-#define BASESTUDY_H
+#ifndef STUDY_H
+#define STUDY_H
 
 #include <map>
 #include <vector>

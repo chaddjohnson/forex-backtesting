@@ -7,7 +7,7 @@ Study::Study(std::map<std::string, double> &inputs, std::map<std::string, std::s
 
 void Study::setData(std::vector<Tick> &data) {
     this->data = data;
-    this->dataCount = data.size();
+    this->dataLength = data.size();
 }
 
 double Study::getInput(std::string key) {
@@ -23,9 +23,9 @@ std::string Study::getOutputMapping(std::string key) {
 }
 
 std::vector<Tick> Study::getDataSegment(int length) {
-    int dataSegmentLength = std::min(length, dataCount);
+    int dataSegmentLength = std::min(length, dataLength);
 
-    return std::vector<Tick>(data.begin() + (dataCount - dataSegmentLength), data.begin() + dataCount);
+    return std::vector<Tick>(data.begin() + (dataLength - dataSegmentLength), data.begin() + dataLength);
 }
 
 Tick Study::getPrevious() {

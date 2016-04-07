@@ -3,14 +3,14 @@
 std::map<std::string, double> SmaStudy::tick() {
     std::map<std::string, double> valueMap;
     std::vector<Tick> dataSegment;
-    int dataSegmentCount = 0;
+    int dataSegmentLength = 0;
     double sum = 0.0;
     double sma = 0.0;
 
     dataSegment = getDataSegment(getInput("length"));
-    dataSegmentCount = dataSegment.size();
+    dataSegmentLength = dataSegment.size();
 
-    if (dataSegmentCount < getInput("length")) {
+    if (dataSegmentLength < getInput("length")) {
         return valueMap;
     }
 
@@ -18,7 +18,7 @@ std::map<std::string, double> SmaStudy::tick() {
     for (std::vector<Tick>::iterator iterator = dataSegment.begin(); iterator != dataSegment.end(); ++iterator) {
         sum += iterator->close;
     }
-    sma = sum / dataSegmentCount;
+    sma = sum / dataSegmentLength;
 
     valueMap[getOutputMapping("sma")] = sma;
 

@@ -10,7 +10,7 @@
 class Study {
     private:
         std::vector<Tick> data;
-        int dataCount;
+        int dataLength;
         std::map<std::string, double> inputs;
         std::map<std::string, std::string> outputMap;
 

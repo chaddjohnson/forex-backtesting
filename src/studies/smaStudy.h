@@ -1,6 +1,7 @@
 #ifndef SMASTUDY_H
 #define SMASTUDY_H
 
+#include <vector>
 #include <map>
 #include <string>
 #include "../types/tick.h"

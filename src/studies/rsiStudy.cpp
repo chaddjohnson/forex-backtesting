@@ -13,8 +13,8 @@ double RsiStudy::calculateInitialAverageGain(Tick initialTick, std::vector<Tick>
     double average = 0.0;
 
     for (std::vector<Tick>::iterator iterator = dataSegment.begin(); iterator != dataSegment.end(); ++iterator) {
-        sum += iterator.close > previousTick.close ? iterator.close - previousTick.close : 0;
-        previousTick = iterator;
+        sum += (*iterator).at("close") > previousTick.at("close") ? (*iterator).at("close") - previousTick.at("close") : 0;
+        previousTick = *iterator;
     }
 
     average = sum / dataSegmentLength;
@@ -28,8 +28,8 @@ double RsiStudy::calculateInitialAverageLoss(Tick initialTick, std::vector<Tick>
     double average = 0.0;
 
     for (std::vector<Tick>::iterator iterator = dataSegment.begin(); iterator != dataSegment.end(); ++iterator) {
-        sum += iterator.close < previousTick.close ? previousTick.close - iterator.close : 0;
-        previousTick = iterator;
+        sum += (*iterator).at("close") < previousTick.at("close") ? previousTick.at("close") - (*iterator).at("close") : 0;
+        previousTick = *iterator;
     }
 
     average = sum / dataSegmentLength;
@@ -40,8 +40,8 @@ double RsiStudy::calculateInitialAverageLoss(Tick initialTick, std::vector<Tick>
 std::map<std::string, double> RsiStudy::tick() {
     std::map<std::string, double> valueMap;
     std::vector<Tick> dataSegment;
-    Tick lastTick = getLast();
-    Tick previousTick = getPrevious();
+    Tick lastTick = getLastTick();
+    Tick previousTick = getPreviousTick();
     double currentGain = 0.0;
     double currentLoss = 0.0;
     double averageGain = 0.0;
@@ -57,8 +57,8 @@ std::map<std::string, double> RsiStudy::tick() {
     }
 
     // Calculate the current gain and the current loss.
-    currentGain = lastTick.close > previousTick.close ? lastTick.close - previousTick.close : 0;
-    currentLoss = lastTick.close < previousTick.close ? previousTick.close - lastTick.close : 0;
+    currentGain = lastTick.at("close") > previousTick.at("close") ? lastTick.at("close") - previousTick.at("close") : 0;
+    currentLoss = lastTick.at("close") < previousTick.at("close") ? previousTick.at("close") - lastTick.at("close") : 0;
 
     // Calculate the average gain and the average loss.
     if (previousAverageGain == -1.0 || previousAverageLoss == -1.0) {
@@ -66,8 +66,8 @@ std::map<std::string, double> RsiStudy::tick() {
         averageLoss = previousAverageLoss = calculateInitialAverageLoss(lastTick, dataSegment);
     }
     else {
-        averageGain = previousAverageGain = ((previousAverageGain * (getInput("length") - 1)) + currentGain) / this.getInput("length");
-        averageLoss = previousAverageLoss = ((previousAverageLoss * (getInput("length") - 1)) + currentLoss) / this.getInput("length");
+        averageGain = previousAverageGain = ((previousAverageGain * (getInput("length") - 1)) + currentGain) / getInput("length");
+        averageLoss = previousAverageLoss = ((previousAverageLoss * (getInput("length") - 1)) + currentLoss) / getInput("length");
     }
 
     // Calculate RS.

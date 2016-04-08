@@ -28,10 +28,10 @@ std::vector<Tick> Study::getDataSegment(int length) {
     return std::vector<Tick>(data.begin() + (dataLength - dataSegmentLength), data.begin() + dataLength);
 }
 
-Tick Study::getPrevious() {
+Tick Study::getPreviousTick() {
     return data.end()[-2];
 }
 
-Tick Study::getLast() {
+Tick Study::getLastTick() {
     return data.back();
 }

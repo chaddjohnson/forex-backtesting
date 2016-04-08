@@ -16,7 +16,7 @@ std::map<std::string, double> SmaStudy::tick() {
 
     // Calculate the SMA.
     for (std::vector<Tick>::iterator iterator = dataSegment.begin(); iterator != dataSegment.end(); ++iterator) {
-        sum += iterator->close;
+        sum += (*iterator).at("close");
     }
     sma = sum / dataSegmentLength;
 

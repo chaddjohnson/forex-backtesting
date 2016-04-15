@@ -12,8 +12,8 @@ all: prepareData
 prepareData: src/prepareData.cpp study.o smaStudy.o emaStudy.o rsiStudy.o stochasticOscillator.o polynomialRegressionChannelStudy.o
 	$(CC) $(CFLAGS) $(LFLAGS) $(INCLUDES) $(LIBS) -o $(BIN)/$@ src/prepareData.cpp $(BUILD)/study.o $(BUILD)/smaStudy.o $(BUILD)/emaStudy.o $(BUILD)/rsiStudy.o $(BUILD)/stochasticOscillator.o $(BUILD)/polynomialRegressionChannelStudy.o
 
-# optimize:
-# 	$(NVCC) $(CFLAGS) $(LFLAGS) $(INCLUDES) $(LIBS) -o $(BIN)/optimize
+optimize:
+	$(NVCC) $(LIBS) $(INCLUDES) -o $(BIN)/optimize
 
 study.o: ./lib/studies/study.cpp
 	@mkdir -p $(BUILD)

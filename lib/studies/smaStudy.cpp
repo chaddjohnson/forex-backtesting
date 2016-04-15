@@ -1,4 +1,4 @@
-#include "smaStudy.h"
+#include "studies/smaStudy.h"
 
 std::map<std::string, double> SmaStudy::tick() {
     std::map<std::string, double> valueMap;

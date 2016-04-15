@@ -6,7 +6,7 @@
 #include <string>
 #include <gsl/gsl_multifit.h>
 #include <math.h>
-#include "../types/tick.h"
+#include "types/tick.h"
 #include "study.h"
 
 class PolynomialRegressionChannelStudy : public Study {

@@ -1,4 +1,4 @@
-#include "polynomialRegressionChannelStudy.h"
+#include "studies/polynomialRegressionChannelStudy.h"
 
 // Sources: https://rosettacode.org/wiki/Polynomial_regression#C, http://stackoverflow.com/a/36524956/83897
 double PolynomialRegressionChannelStudy::calculateRegression(std::vector<double> &values, int degree) {

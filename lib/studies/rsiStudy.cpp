@@ -1,4 +1,4 @@
-#include "rsiStudy.h"
+#include "studies/rsiStudy.h"
 
 RsiStudy::RsiStudy(std::map<std::string, double> &inputs, std::map<std::string, std::string> &outputMap)
         : Study(inputs, outputMap) {

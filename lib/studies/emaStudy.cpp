@@ -1,4 +1,4 @@
-#include "emaStudy.h"
+#include "studies/emaStudy.h"
 
 EmaStudy::EmaStudy(std::map<std::string, double> &inputs, std::map<std::string, std::string> &outputMap)
         : Study(inputs, outputMap) {

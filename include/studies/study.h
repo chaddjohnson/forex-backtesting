@@ -5,7 +5,7 @@
 #include <map>
 #include <string>
 #include <algorithm>
-#include "../types/tick.h"
+#include "types/tick.h"
 
 class Study {
     private:

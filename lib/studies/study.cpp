@@ -1,4 +1,4 @@
-#include "study.h"
+#include "studies/study.h"
 
 Study::Study(std::map<std::string, double> &inputs, std::map<std::string, std::string> &outputMap) {
     this->inputs = inputs;

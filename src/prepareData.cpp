@@ -2,8 +2,8 @@
 #include <vector>
 #include <map>
 #include <string>
-#include "../types/tick.h"
-#include "../studies/smaStudy.cpp"
+#include "types/tick.h"
+#include "studies/smaStudy.h"
 
 int main() {
     // Connect to the database.
@@ -19,6 +19,8 @@ int main() {
 
     study.setData(data);
     std::map<std::string, double> valueMap = study.tick();
+
+    std::cout << "Hello";
 
     return 0;
 }

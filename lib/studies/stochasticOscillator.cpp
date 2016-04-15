@@ -1,4 +1,4 @@
-#include "stochasticOscillator.h"
+#include "studies/stochasticOscillator.h"
 
 std::map<std::string, double> StochasticOscillatorStudy::tick() {
     std::map<std::string, double> valueMap;

@@ -3,4 +3,5 @@
 *.txt
 *.csv.*
 bin/
-a.out
+*.o
+build/

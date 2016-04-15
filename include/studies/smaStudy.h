@@ -4,7 +4,7 @@
 #include <vector>
 #include <map>
 #include <string>
-#include "../types/tick.h"
+#include "types/tick.h"
 #include "study.h"
 
 class SmaStudy : public Study {

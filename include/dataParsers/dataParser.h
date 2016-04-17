@@ -8,7 +8,7 @@
 class DataParser {
     public:
         virtual ~DataParser() {}
-        virtual std::vector<std::map<std::string, double>> parse(std::string filePath) = 0;
+        virtual std::vector<std::map<std::string, double>> parse() = 0;
 };
 
 #endif

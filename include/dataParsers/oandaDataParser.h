@@ -2,6 +2,10 @@
 #define OANDADATAPARSER_H
 
 #include <fstream>
+#include <iterator>
+#include <vector>
+#include <sstream>
+#include <iostream>
 #include "dataParsers/dataParser.h"
 
 class OandaDataParser : public DataParser {
@@ -10,7 +14,7 @@ class OandaDataParser : public DataParser {
 
     public:
         OandaDataParser(std::string filePath);
-        virtual std::vector<std::map<std::string, double>> parse(std::string filePath) = 0;
+        std::vector<std::map<std::string, double>> parse();
 };
 
 #endif

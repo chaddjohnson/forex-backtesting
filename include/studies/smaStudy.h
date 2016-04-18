@@ -9,7 +9,7 @@
 
 class SmaStudy : public Study {
     public:
-        SmaStudy(std::map<std::string, double> &inputs, std::map<std::string, std::string> &outputMap)
+        SmaStudy(std::map<std::string, double> inputs, std::map<std::string, std::string> outputMap)
             : Study(inputs, outputMap) {}
         std::map<std::string, double> tick();
 };

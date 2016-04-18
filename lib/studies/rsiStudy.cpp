@@ -1,6 +1,6 @@
 #include "studies/rsiStudy.h"
 
-RsiStudy::RsiStudy(std::map<std::string, double> &inputs, std::map<std::string, std::string> &outputMap)
+RsiStudy::RsiStudy(std::map<std::string, double> inputs, std::map<std::string, std::string> outputMap)
         : Study(inputs, outputMap) {
     dataSegmentLength = 0;
     previousAverageGain = -1.0;

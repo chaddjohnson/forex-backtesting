@@ -1,5 +1,5 @@
-#ifndef SMASTUDY_H
-#define SMASTUDY_H
+#ifndef POLYNOMIALREGRESSIONCHANNELSTUDY_H
+#define POLYNOMIALREGRESSIONCHANNELSTUDY_H
 
 #include <vector>
 #include <map>
@@ -11,7 +11,7 @@
 
 class PolynomialRegressionChannelStudy : public Study {
     public:
-        PolynomialRegressionChannelStudy(std::map<std::string, double> &inputs, std::map<std::string, std::string> &outputMap)
+        PolynomialRegressionChannelStudy(std::map<std::string, double> inputs, std::map<std::string, std::string> outputMap)
             : Study(inputs, outputMap) {}
         double calculateRegression(std::vector<double> &values, int degree);
         double calculateStandardDeviation(std::vector<double> &values);

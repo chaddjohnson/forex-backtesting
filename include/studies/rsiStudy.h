@@ -14,7 +14,7 @@ class RsiStudy : public Study {
         double previousAverageLoss;
 
     public:
-        RsiStudy(std::map<std::string, double> &inputs, std::map<std::string, std::string> &outputMap);
+        RsiStudy(std::map<std::string, double> inputs, std::map<std::string, std::string> outputMap);
         double calculateInitialAverageGain(Tick initialTick, std::vector<Tick> &dataSegment);
         double calculateInitialAverageLoss(Tick initialTick, std::vector<Tick> &dataSegment);
         std::map<std::string, double> tick();

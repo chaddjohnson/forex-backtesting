@@ -11,7 +11,7 @@ class EmaStudy : public Study {
         double previousEma;
 
     public:
-        EmaStudy(std::map<std::string, double> &inputs, std::map<std::string, std::string> &outputMap);
+        EmaStudy(std::map<std::string, double> inputs, std::map<std::string, std::string> outputMap);
         std::map<std::string, double> tick();
 };
 

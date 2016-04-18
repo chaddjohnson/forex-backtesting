@@ -1,6 +1,6 @@
 #include "studies/emaStudy.h"
 
-EmaStudy::EmaStudy(std::map<std::string, double> &inputs, std::map<std::string, std::string> &outputMap)
+EmaStudy::EmaStudy(std::map<std::string, double> inputs, std::map<std::string, std::string> outputMap)
         : Study(inputs, outputMap) {
     previousEma = 0.0;
 }

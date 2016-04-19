@@ -2,11 +2,12 @@
 #include <map>
 #include <iterator>
 #include <iostream>
-#include "dataParsers/oandaDataParser.h"
+#include "dataParsers/dataParser.h"
+#include "dataParsers/dataParserFactory.h"
 
 int main(int argc, char *argv[]) {
-    OandaDataParser dataParser("/Users/chad/development/desktop/forex-backtesting/data/oanda/k-fold/combined/AUDJPY.csv");
-    std::vector<std::map<std::string, double>> parsedData = dataParser.parse();
+    DataParser *dataParser = DataParserFactory::create("oanda", "/Users/chad/development/desktop/forex-backtesting/data/oanda/k-fold/combined/AUDJPY.csv");
+    std::vector<std::map<std::string, double>> parsedData = dataParser->parse();
 
     // Output the data.
     for (std::vector<std::map<std::string, double>>::iterator iterator = parsedData.begin(); iterator != parsedData.end(); ++iterator) {

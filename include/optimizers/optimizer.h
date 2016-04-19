@@ -17,13 +17,13 @@ class Optimizer {
 
     protected:
         std::vector<Study*> studies;
+        virtual void prepareStudies() = 0;
 
     public:
         Optimizer(std::string strategyName, std::string symbol, int group);
-        virtual void prepareStudies() = 0;
         void prepareData(std::vector<Tick*> data);
-        void optimize(std::vector<Configuration>, double investment, double profitability);
         std::vector<Configuration> buildConfigurations();
+        void optimize(std::vector<Configuration>, double investment, double profitability);
 };
 
 #endif

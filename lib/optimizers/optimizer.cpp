@@ -26,7 +26,7 @@ void Optimizer::prepareData(std::vector<Tick*> data) {
     // Go through the data and run studies for each data item.
     for (std::vector<Tick*>::iterator dataIterator = data.begin(); dataIterator != data.end(); ++dataIterator) {
         percentage = (++i / (double)dataCount) * 100.0;
-        printf("\rPreparing data...%0.3f%%", percentage);
+        printf("\rPreparing data...%0.4f%%", percentage);
 
         // Append to the cumulative data.
         cumulativeData->push_back(*dataIterator);

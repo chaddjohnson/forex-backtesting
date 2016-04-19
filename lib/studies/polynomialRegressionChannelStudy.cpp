@@ -10,7 +10,8 @@ double PolynomialRegressionChannelStudy::calculateRegression(std::vector<double>
     std::vector<double> coefficients;
     double point;
 
-    int i, j;
+    int i = 0;
+    int j = 0;
 
     obs = values.size();
 
@@ -56,7 +57,7 @@ double PolynomialRegressionChannelStudy::calculateStandardDeviation(std::vector<
     double mean;
     double variance;
     int valueCount = values.size();
-    int i;
+    int i = 0;
 
     if (valueCount == 0) {
         return 0.0;
@@ -75,8 +76,72 @@ double PolynomialRegressionChannelStudy::calculateStandardDeviation(std::vector<
 
 std::map<std::string, double> PolynomialRegressionChannelStudy::tick() {
     std::map<std::string, double> valueMap;
+    std::vector<Tick*> *dataSegment = new std::vector<Tick*>();
+    int dataSegmentLength = 0;
+    Tick *previousTick = getPreviousTick();
+    std::string regressionOutputName = getOutputMapping("regression");
+    std::vector<double> pastPrices;
+    std::vector<double> pastRegressions;
+    double regression;
+    double tickRegression;
+    double regressionStandardDeviation;
+    double upperValue;
+    double lowerValue;
+    int i = 0;
+    int j = 0;
 
-    // ...
+    dataSegment = getDataSegment(getInput("length"));
+    dataSegmentLength = dataSegment->size();
+
+    if (dataSegmentLength < getInput("length")) {
+        return valueMap;
+    }
+
+    // Calculate the regression.
+    for (std::vector<Tick*>::iterator iterator = dataSegment->begin(); iterator != dataSegment->end(); ++iterator) {
+        pastPrices.push_back((*iterator)->at("close"));
+    }
+    regression = calculateRegression(pastPrices, getInput("degree"));
+
+    // Calculate the standard deviations of the regression. If there is no regression data
+    // available, then don't calculate upper and lower values.
+    if (previousTick->find(regressionOutputName) != previousTick->end()) {
+        for (i=0; i<dataSegmentLength; i++) {
+            tickRegression = 0.0;
+
+            if (i == dataSegmentLength - 1) {
+                // Use curent regression.
+                tickRegression = regression;
+            }
+            else {
+                // Use a previous regression.
+                tickRegression = dataSegment->at(i)->at(regressionOutputName);
+            }
+
+            if (tickRegression > 0) {
+                pastRegressions[j++] = tickRegression;
+            }
+        }
+
+        // Calculate the standard deviation from the regressions.
+        regressionStandardDeviation = calculateStandardDeviation(pastRegressions);
+
+        // Calculate the upper and lower values.
+        upperValue = regression + (regressionStandardDeviation * getInput("deviations"));
+        lowerValue = regression - (regressionStandardDeviation * getInput("deviations"));
+    }
+    else {
+        // Not enough regression data available.
+        upperValue = 0.0;
+        lowerValue = 0.0;
+    }
+
+    valueMap[regressionOutputName] = regression;
+
+    if (upperValue > 0 && lowerValue > 0) {
+        valueMap[getOutputMapping("upper")] = upperValue;
+        valueMap[getOutputMapping("lower")] = lowerValue;
+    }
 
     return valueMap;
 }

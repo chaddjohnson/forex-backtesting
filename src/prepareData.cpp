@@ -4,23 +4,31 @@
 #include <iterator>
 #include <iostream>
 #include "dataParsers/dataParser.h"
+#include "optimizers/optimizer.h"
 #include "factories/dataParserFactory.h"
+#include "factories/optimizerFactory.h"
 
 int main(int argc, char *argv[]) {
+    // Data parser settings and objects.
     std::string dataParserName = "oanda";
     std::string dataFilePath = "/Users/chad/development/desktop/forex-backtesting/data/oanda/k-fold/combined/AUDJPY.csv";
-    DataParser *dataParser = DataParserFactory::create(dataParserName, dataFilePath);
-    std::vector<std::map<std::string, double>> parsedData = dataParser->parse();
+    DataParser *dataParser;
+    std::vector<std::map<std::string, double>> parsedData;
 
-    // Output the data.
-    for (std::vector<std::map<std::string, double>>::iterator iterator = parsedData.begin(); iterator != parsedData.end(); ++iterator) {
-        std::cout << "timestamp: " << (*iterator).at("timestamp") << std::endl;
-        std::cout << "open: " << (*iterator).at("open") << "    " << ((*iterator).at("open") + 1) << std::endl;
-        std::cout << "high: " << (*iterator).at("high") << std::endl;
-        std::cout << "low: " << (*iterator).at("low") << std::endl;
-        std::cout << "close: " << (*iterator).at("close") << std::endl;
-        std::cout << std::endl;
-    }
+    // Optimizer settings.
+    std::string optimizerName = "reversals";
+    std::string symbol = "AUDJPY";
+    int group = 1;
+
+    // Parse the data file.
+    dataParser = DataParserFactory::create(dataParserName, dataFilePath);
+    parsedData = dataParser->parse();
+
+    // Initialize the optimizer.
+    Optimizer *optimizer = OptimizerFactory::create(optimizerName, symbol, group);
+
+    // Prepare the data.
+    optimizer->prepareData(parsedData);
 
     return 0;
 }

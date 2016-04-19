@@ -1,9 +1,10 @@
 #ifndef OPTIMIZER_H
 #define OPTIMIZER_H
 
-#include <vector>
 #include <string>
+#include <vector>
 #include <studies/study.h>
+#include "types/configuration.h"
 
 class Optimizer {
     private:
@@ -15,10 +16,11 @@ class Optimizer {
         std::vector<Study*> studies;
 
     public:
-        Optimizer(std::string strategyName, std::string symbol, int group) {}
+        Optimizer(std::string strategyName, std::string symbol, int group);
         virtual void prepareStudies() = 0;
-        void optimize(std::string strategyName, std::string symbol, int group);
-        void buildConfigurations();
+        void prepareData(std::vector<std::map<std::string, double>> data);
+        void optimize(std::vector<Configuration>, double investment, double profitability);
+        std::vector<Configuration> buildConfigurations();
 };
 
 #endif

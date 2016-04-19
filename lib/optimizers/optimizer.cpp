@@ -12,10 +12,10 @@ void Optimizer::prepareData(std::vector<Tick*> *data) {
     std::string studyProperty;
     std::map<std::string, double> studyTickValues;
     std::map<std::string, std::string> studyOutputMap;
-    std::vector<Tick*> cumulativeData;
+    std::vector<Tick*> *cumulativeData = new std::vector<Tick*>();
     int i = 0;
 
-    cumulativeData.reserve(dataCount);
+    cumulativeData->reserve(dataCount);
 
     // Prepare studies for use.
     this->prepareStudies();
@@ -27,7 +27,7 @@ void Optimizer::prepareData(std::vector<Tick*> *data) {
         printf("\rPreparing data...%i", ++i);
 
         // Append to the cumulative data.
-        cumulativeData.push_back(*dataIterator);
+        cumulativeData->push_back(*dataIterator);
 
         for (std::vector<Study*>::iterator studyIterator = this->studies.begin(); studyIterator != this->studies.end(); ++studyIterator) {
             // Update the data for the study.

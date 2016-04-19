@@ -3,7 +3,7 @@
 #include <iterator>
 #include <iostream>
 #include "dataParsers/dataParser.h"
-#include "dataParsers/dataParserFactory.h"
+#include "factories/dataParserFactory.h"
 
 int main(int argc, char *argv[]) {
     DataParser *dataParser = DataParserFactory::create("oanda", "/Users/chad/development/desktop/forex-backtesting/data/oanda/k-fold/combined/AUDJPY.csv");

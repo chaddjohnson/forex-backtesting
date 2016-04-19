@@ -1,6 +1,6 @@
 #include <string>
 #include "optimizers/optimizer.h"
-#include "optimizers/optimizerFactory.h"
+#include "factories/optimizerFactory.h"
 
 int main(int argc, char *argv[]) {
     std::string symbol = "AUDJPY";

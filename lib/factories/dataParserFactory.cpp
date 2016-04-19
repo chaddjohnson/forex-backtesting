@@ -1,4 +1,4 @@
-#include "dataParsers/dataParserFactory.h"
+#include "factories/dataParserFactory.h"
 
 DataParser *DataParserFactory::create(std::string name, std::string filePath) {
     //if (name == "oanda") {

@@ -1,4 +1,4 @@
-#include "optimizers/optimizerFactory.h"
+#include "factories/optimizerFactory.h"
 
 Optimizer *OptimizerFactory::create(std::string name, std::string symbol, int group) {
     //if (name == "reversals") {

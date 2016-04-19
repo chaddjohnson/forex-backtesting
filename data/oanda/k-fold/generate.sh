@@ -54,6 +54,9 @@ do
     for f in `ls ./*.csv | awk -v start=$((((i-1)*15)+1)) -v end=$((i*15)) 'NR >= start && NR <= end'`
     do
         cat $f >> ./combined/$1-temp.csv
+
+        # Add a newline.
+        echo >> ./combined/$1-temp.csv
     done
 
     # Add testing and validation group lists to each line.

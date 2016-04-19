@@ -4,9 +4,9 @@ OandaDataParser::OandaDataParser(std::string filePath) {
     this->filePath = filePath;
 }
 
-std::vector<Tick*> *OandaDataParser::parse() {
+std::vector<Tick*> OandaDataParser::parse() {
     std::vector<std::string> lines;
-    std::vector<Tick*> *translatedLines = new std::vector<Tick*>();
+    std::vector<Tick*> translatedLines;
     Tick *translatedLine = new Tick();
     std::ifstream dataFile(this->filePath);
 
@@ -35,7 +35,7 @@ std::vector<Tick*> *OandaDataParser::parse() {
         (*translatedLine)["close"] = std::atof(items.at(6).c_str());
 
         // Add the translated line to the list of translated lines.
-        translatedLines->push_back(translatedLine);
+        translatedLines.push_back(translatedLine);
     }
 
     return translatedLines;

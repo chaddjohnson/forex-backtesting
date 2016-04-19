@@ -6,9 +6,9 @@ Optimizer::Optimizer(std::string strategyName, std::string symbol, int group) {
     this->group = group;
 }
 
-void Optimizer::prepareData(std::vector<Tick*> *data) {
+void Optimizer::prepareData(std::vector<Tick*> data) {
     double percentage = 0;
-    int dataCount = data->size();
+    int dataCount = data.size();
     std::string studyProperty;
     std::map<std::string, double> studyTickValues;
     std::map<std::string, std::string> studyOutputMap;
@@ -24,13 +24,13 @@ void Optimizer::prepareData(std::vector<Tick*> *data) {
     printf("Preparing data...");
 
     // Go through the data and run studies for each data item.
-    for (std::vector<Tick*>::iterator dataIterator = data->begin(); dataIterator != data->end(); ++dataIterator) {
+    for (std::vector<Tick*>::iterator dataIterator = data.begin(); dataIterator != data.end(); ++dataIterator) {
         printf("\rPreparing data...%i", ++i);
 
         // Append to the cumulative data.
         cumulativeData->push_back(*dataIterator);
 
-        for (std::vector<Study*>::iterator studyIterator = this->studies.begin(); studyIterator != this->studies.end(); ++studyIterator) {
+        for (std::vector<Study*>::iterator studyIterator = studies.begin(); studyIterator != studies.end(); ++studyIterator) {
             // Update the data for the study.
             (*studyIterator)->setData(cumulativeData);
 

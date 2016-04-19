@@ -15,6 +15,7 @@ void Optimizer::prepareData(std::vector<Tick*> *data) {
     std::vector<Tick*> *cumulativeData = new std::vector<Tick*>();
     int i = 0;
 
+    // Reserve space in advance for better performance
     cumulativeData->reserve(dataCount);
 
     // Prepare studies for use.

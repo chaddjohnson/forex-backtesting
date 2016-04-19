@@ -24,7 +24,7 @@ std::string Study::getOutputMapping(std::string key) {
 
 std::vector<Tick*> *Study::getDataSegment(int length) {
     int dataSegmentLength = std::min(length, dataLength);
-    std::vector<Tick*> *dataSegment = new std::vector<Tick*>(data->begin() + (dataLength - dataSegmentLength), data->begin() + dataLength);
+    std::vector<Tick*> *dataSegment = new std::vector<Tick*>(data->begin() + (dataLength - dataSegmentLength), data->end());
 
     return dataSegment;
 }

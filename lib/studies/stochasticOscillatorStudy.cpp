@@ -2,7 +2,7 @@
 
 std::map<std::string, double> StochasticOscillatorStudy::tick() {
     std::map<std::string, double> valueMap;
-    std::vector<Tick*> dataSegment;
+    std::vector<Tick*> *dataSegment = new std::vector<Tick*>();
     int dataSegmentLength = 0;
     std::vector<Tick*> averageLengthDataSegment;
     Tick *lastTick = getLastTick();
@@ -15,13 +15,13 @@ std::map<std::string, double> StochasticOscillatorStudy::tick() {
     std::string KOutputName = getOutputMapping("K");
 
     dataSegment = getDataSegment(getInput("length"));
-    dataSegmentLength = dataSegment.size();
+    dataSegmentLength = dataSegment->size();
 
     if (dataSegmentLength < getInput("length")) {
         return valueMap;
     }
 
-    averageLengthDataSegment = std::vector<Tick*>(dataSegment.begin() + (dataSegmentLength - getInput("averageLength")), dataSegment.begin() + dataSegmentLength);
+    averageLengthDataSegment = std::vector<Tick*>(dataSegment->begin() + (dataSegmentLength - getInput("averageLength")), dataSegment->begin() + dataSegmentLength);
 
     //low = ...
     //high = ...

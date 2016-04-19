@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <iostream>
 #include "studies/study.h"
 #include "types/tick.h"
 #include "types/configuration.h"

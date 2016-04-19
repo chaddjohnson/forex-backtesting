@@ -20,7 +20,7 @@ class Study {
         double getInput(std::string key);
         std::map<std::string, std::string> &getOutputMap();
         std::string getOutputMapping(std::string key);
-        std::vector<Tick*> getDataSegment(int length);
+        std::vector<Tick*> *getDataSegment(int length);
         Tick *getPreviousTick();
         Tick *getLastTick();
         virtual std::map<std::string, double> tick() = 0;

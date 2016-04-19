@@ -34,7 +34,7 @@ void Optimizer::prepareData(std::vector<Tick*> *data) {
             (*studyIterator)->setData(cumulativeData);
 
             // Process the latest data for the study.
-            // studyTickValues = (*studyIterator)->tick();
+            studyTickValues = (*studyIterator)->tick();
         }
     }
 }

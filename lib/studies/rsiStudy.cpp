@@ -7,12 +7,12 @@ RsiStudy::RsiStudy(std::map<std::string, double> inputs, std::map<std::string, s
     previousAverageLoss = -1.0;
 }
 
-double RsiStudy::calculateInitialAverageGain(Tick *initialTick, std::vector<Tick*> dataSegment) {
+double RsiStudy::calculateInitialAverageGain(Tick *initialTick, std::vector<Tick*> *dataSegment) {
     Tick *previousTick = initialTick;
     double sum = 0.0;
     double average = 0.0;
 
-    for (std::vector<Tick*>::iterator iterator = dataSegment.begin(); iterator != dataSegment.end(); ++iterator) {
+    for (std::vector<Tick*>::iterator iterator = dataSegment->begin(); iterator != dataSegment->end(); ++iterator) {
         sum += (*iterator)->at("close") > previousTick->at("close") ? (*iterator)->at("close") - previousTick->at("close") : 0;
         previousTick = *iterator;
     }
@@ -22,12 +22,12 @@ double RsiStudy::calculateInitialAverageGain(Tick *initialTick, std::vector<Tick
     return average;
 }
 
-double RsiStudy::calculateInitialAverageLoss(Tick *initialTick, std::vector<Tick*> dataSegment) {
+double RsiStudy::calculateInitialAverageLoss(Tick *initialTick, std::vector<Tick*> *dataSegment) {
     Tick *previousTick = initialTick;
     double sum = 0.0;
     double average = 0.0;
 
-    for (std::vector<Tick*>::iterator iterator = dataSegment.begin(); iterator != dataSegment.end(); ++iterator) {
+    for (std::vector<Tick*>::iterator iterator = dataSegment->begin(); iterator != dataSegment->end(); ++iterator) {
         sum += (*iterator)->at("close") < previousTick->at("close") ? previousTick->at("close") - (*iterator)->at("close") : 0;
         previousTick = *iterator;
     }
@@ -39,7 +39,7 @@ double RsiStudy::calculateInitialAverageLoss(Tick *initialTick, std::vector<Tick
 
 std::map<std::string, double> RsiStudy::tick() {
     std::map<std::string, double> valueMap;
-    std::vector<Tick*> dataSegment;
+    std::vector<Tick*> *dataSegment = new std::vector<Tick*>();
     Tick *lastTick = getLastTick();
     Tick *previousTick = getPreviousTick();
     double currentGain = 0.0;
@@ -50,7 +50,7 @@ std::map<std::string, double> RsiStudy::tick() {
     double rsi = 0.0;
 
     dataSegment = getDataSegment(getInput("length"));
-    dataSegmentLength = dataSegment.size();
+    dataSegmentLength = dataSegment->size();
 
     if (dataSegmentLength < getInput("length")) {
         return valueMap;

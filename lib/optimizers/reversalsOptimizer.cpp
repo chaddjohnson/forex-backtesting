@@ -151,5 +151,5 @@ void ReversalsOptimizer::prepareStudies() {
     this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 4.0}, {"deviations", 2.05}}, {{"regression", "prChannel500_4_2.05"}, {"upper", "prChannelUpper500_4_2.05"}, {"lower", "prChannelLower500_4_2.05"}}));
     this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 4.0}, {"deviations", 2.10}}, {{"regression", "prChannel500_4_2.10"}, {"upper", "prChannelUpper500_4_2.10"}, {"lower", "prChannelLower500_4_2.10"}}));
     this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 4.0}, {"deviations", 2.15}}, {{"regression", "prChannel500_4_2.15"}, {"upper", "prChannelUpper500_4_2.15"}, {"lower", "prChannelLower500_4_2.15"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 5.0}, {"deviations", 2.05}}, {{"regression", "prChannel500_5_2.05"}, {"upper", "prChannelUpper500_5_2.05"}, {"lower", "prChannelLower500_5_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 5.0}, {"deviations", 2.05}}, {{"regression", "prChannel500_5_2.05"}, {"upper", "prChannelUpper500_5_2.05"}, {"lower", "prChannelLower500_5_2.05"}}));
 }

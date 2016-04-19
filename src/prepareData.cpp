@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
     std::string dataParserName = "oanda";
     std::string dataFilePath = "/Users/chad/development/desktop/forex-backtesting/data/oanda/k-fold/combined/AUDJPY.csv";
     DataParser *dataParser;
-    std::vector<std::map<std::string, double>> parsedData;
+    std::vector<Tick*> parsedData;
 
     // Optimizer settings.
     std::string optimizerName = "reversals";

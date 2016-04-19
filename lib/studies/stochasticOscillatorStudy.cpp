@@ -2,10 +2,10 @@
 
 std::map<std::string, double> StochasticOscillatorStudy::tick() {
     std::map<std::string, double> valueMap;
-    std::vector<Tick> dataSegment;
+    std::vector<Tick*> dataSegment;
     int dataSegmentLength = 0;
-    std::vector<Tick> averageLengthDataSegment;
-    Tick lastTick = getLastTick();
+    std::vector<Tick*> averageLengthDataSegment;
+    Tick *lastTick = getLastTick();
     double low = 0.0;
     double high = 0.0;
     double highLowDifference = 0.0;
@@ -21,17 +21,17 @@ std::map<std::string, double> StochasticOscillatorStudy::tick() {
         return valueMap;
     }
 
-    averageLengthDataSegment = std::vector<Tick>(dataSegment.begin() + (dataSegmentLength - getInput("averageLength")), dataSegment.begin() + dataSegmentLength);
+    averageLengthDataSegment = std::vector<Tick*>(dataSegment.begin() + (dataSegmentLength - getInput("averageLength")), dataSegment.begin() + dataSegmentLength);
 
     //low = ...
     //high = ...
     highLowDifference = high - low;
-    K = highLowDifference > 0 ? 100 * ((lastTick.at("close") - low) / highLowDifference) : 0;
+    K = highLowDifference > 0 ? 100 * ((lastTick->at("close") - low) / highLowDifference) : 0;
 
     // Calculate D.
-    for (std::vector<Tick>::iterator iterator = averageLengthDataSegment.begin(); iterator != averageLengthDataSegment.end(); ++iterator) {
-        if ((*iterator)[KOutputName] != 0) {
-            DSum += (*iterator)[KOutputName];
+    for (std::vector<Tick*>::iterator iterator = averageLengthDataSegment.begin(); iterator != averageLengthDataSegment.end(); ++iterator) {
+        if ((*iterator)->at(KOutputName) != 0) {
+            DSum += (*iterator)->at(KOutputName);
         }
         else {
             DSum += K;

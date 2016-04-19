@@ -4,11 +4,12 @@
 #include <vector>
 #include <map>
 #include <string>
+#include "types/tick.h"
 
 class DataParser {
     public:
         virtual ~DataParser() {}
-        virtual std::vector<std::map<std::string, double>> parse() = 0;
+        virtual std::vector<Tick*> parse() = 0;
 };
 
 #endif

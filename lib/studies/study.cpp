@@ -5,7 +5,7 @@ Study::Study(std::map<std::string, double> inputs, std::map<std::string, std::st
     this->outputMap = outputMap;
 }
 
-void Study::setData(std::vector<Tick> &data) {
+void Study::setData(std::vector<Tick*> data) {
     this->data = data;
     this->dataLength = data.size();
 }
@@ -22,16 +22,16 @@ std::string Study::getOutputMapping(std::string key) {
     return this->outputMap[key];
 }
 
-std::vector<Tick> Study::getDataSegment(int length) {
+std::vector<Tick*> Study::getDataSegment(int length) {
     int dataSegmentLength = std::min(length, dataLength);
 
-    return std::vector<Tick>(data.begin() + (dataLength - dataSegmentLength), data.begin() + dataLength);
+    return std::vector<Tick*>(data.begin() + (dataLength - dataSegmentLength), data.begin() + dataLength);
 }
 
-Tick Study::getPreviousTick() {
+Tick *Study::getPreviousTick() {
     return data.end()[-2];
 }
 
-Tick Study::getLastTick() {
+Tick *Study::getLastTick() {
     return data.back();
 }

@@ -4,10 +4,10 @@ OandaDataParser::OandaDataParser(std::string filePath) {
     this->filePath = filePath;
 }
 
-std::vector<std::map<std::string, double>> OandaDataParser::parse() {
+std::vector<Tick*> OandaDataParser::parse() {
     std::vector<std::string> lines;
-    std::vector<std::map<std::string, double>> translatedLines;
-    std::map<std::string, double> translatedLine;
+    std::vector<Tick*> translatedLines;
+    Tick *translatedLine = new Tick();
     std::ifstream dataFile(this->filePath);
 
     // Read lines from the file into the vector.
@@ -28,11 +28,11 @@ std::vector<std::map<std::string, double>> OandaDataParser::parse() {
         }
 
         // Translate the data items.
-        translatedLine["timestamp"] = 1234567890.0;  // items.at(2);  // TODO
-        translatedLine["open"] = std::atof(items.at(3).c_str());
-        translatedLine["high"] = std::atof(items.at(4).c_str());
-        translatedLine["low"] = std::atof(items.at(5).c_str());
-        translatedLine["close"] = std::atof(items.at(6).c_str());
+        (*translatedLine)["timestamp"] = 1234567890.0;  // items.at(2);  // TODO
+        (*translatedLine)["open"] = std::atof(items.at(3).c_str());
+        (*translatedLine)["high"] = std::atof(items.at(4).c_str());
+        (*translatedLine)["low"] = std::atof(items.at(5).c_str());
+        (*translatedLine)["close"] = std::atof(items.at(6).c_str());
 
         // Add the translated line to the list of translated lines.
         translatedLines.push_back(translatedLine);

@@ -6,7 +6,9 @@
 #include <vector>
 #include <sstream>
 #include <iostream>
+#include <stdlib.h>
 #include "dataParsers/dataParser.h"
+#include "types/tick.h"
 
 class OandaDataParser : public DataParser {
     private:
@@ -14,7 +16,7 @@ class OandaDataParser : public DataParser {
 
     public:
         OandaDataParser(std::string filePath);
-        std::vector<std::map<std::string, double>> parse();
+        std::vector<Tick*> parse();
 };
 
 #endif

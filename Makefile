@@ -10,9 +10,11 @@ BUILD = ./build
 all: prepareData optimize
 
 prepareData: src/prepareData.cpp optimizerFactory.o reversalsOptimizer.o optimizer.o dataParserFactory.o oandaDataParser.o study.o smaStudy.o emaStudy.o rsiStudy.o stochasticOscillatorStudy.o polynomialRegressionChannelStudy.o
+	@mkdir -p $(BIN)
 	$(CC) $(CFLAGS) $(LFLAGS) $(INCLUDES) $(LIBS) -o $(BIN)/$@ src/prepareData.cpp $(BUILD)/optimizerFactory.o $(BUILD)/reversalsOptimizer.o $(BUILD)/optimizer.o $(BUILD)/dataParserFactory.o $(BUILD)/oandaDataParser.o $(BUILD)/study.o $(BUILD)/smaStudy.o $(BUILD)/emaStudy.o $(BUILD)/rsiStudy.o $(BUILD)/stochasticOscillatorStudy.o $(BUILD)/polynomialRegressionChannelStudy.o
 
 optimize: src/optimize.cpp optimizerFactory.o reversalsOptimizer.o optimizer.o dataParserFactory.o oandaDataParser.o study.o smaStudy.o emaStudy.o rsiStudy.o stochasticOscillatorStudy.o polynomialRegressionChannelStudy.o
+	@mkdir -p $(BIN)
 	$(CC) $(CFLAGS) $(LFLAGS) $(INCLUDES) $(LIBS) -o $(BIN)/$@ src/optimize.cpp $(BUILD)/optimizerFactory.o $(BUILD)/reversalsOptimizer.o $(BUILD)/optimizer.o $(BUILD)/dataParserFactory.o $(BUILD)/oandaDataParser.o $(BUILD)/study.o $(BUILD)/smaStudy.o $(BUILD)/emaStudy.o $(BUILD)/rsiStudy.o $(BUILD)/stochasticOscillatorStudy.o $(BUILD)/polynomialRegressionChannelStudy.o
 
 optimizerFactory.o: lib/factories/optimizerFactory.cpp

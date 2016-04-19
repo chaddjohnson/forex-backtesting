@@ -9,7 +9,7 @@
 class DataParser {
     public:
         virtual ~DataParser() {}
-        virtual std::vector<Tick*> parse() = 0;
+        virtual std::vector<Tick*> *parse() = 0;
 };
 
 #endif

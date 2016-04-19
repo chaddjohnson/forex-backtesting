@@ -1,3 +1,5 @@
+#include "optimizers/optimizer.h"
+
 void Optimizer::optimize(std::string strategyName, std::string symbol, int group) {
     this->strategyName = strategyName;
     this->symbol = symbol;

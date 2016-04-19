@@ -7,45 +7,53 @@ LIBS = -lgsl -lcblas
 BIN = ./bin
 BUILD = ./build
 
-all: prepareData
+all: prepareData optimize
 
-prepareData: src/prepareData.cpp reversalsOptimizer.o oandaDataParser.o study.o smaStudy.o emaStudy.o rsiStudy.o stochasticOscillatorStudy.o polynomialRegressionChannelStudy.o
-	$(CC) $(CFLAGS) $(LFLAGS) $(INCLUDES) $(LIBS) -o $(BIN)/$@ src/prepareData.cpp $(BUILD)/reversalsOptimizer.o $(BUILD)/oandaDataParser.o $(BUILD)/study.o $(BUILD)/smaStudy.o $(BUILD)/emaStudy.o $(BUILD)/rsiStudy.o $(BUILD)/stochasticOscillatorStudy.o $(BUILD)/polynomialRegressionChannelStudy.o
+prepareData: src/prepareData.cpp optimizerFactory.o reversalsOptimizer.o optimizer.o oandaDataParser.o study.o smaStudy.o emaStudy.o rsiStudy.o stochasticOscillatorStudy.o polynomialRegressionChannelStudy.o
+	$(CC) $(CFLAGS) $(LFLAGS) $(INCLUDES) $(LIBS) -o $(BIN)/$@ src/prepareData.cpp $(BUILD)/optimizerFactory.o $(BUILD)/reversalsOptimizer.o $(BUILD)/optimizer.o $(BUILD)/oandaDataParser.o $(BUILD)/study.o $(BUILD)/smaStudy.o $(BUILD)/emaStudy.o $(BUILD)/rsiStudy.o $(BUILD)/stochasticOscillatorStudy.o $(BUILD)/polynomialRegressionChannelStudy.o
 
-optimize:
-	$(NVCC) $(LIBS) $(INCLUDES) -o $(BIN)/optimize
+optimize: src/optimize.cpp optimizerFactory.o reversalsOptimizer.o optimizer.o oandaDataParser.o study.o smaStudy.o emaStudy.o rsiStudy.o stochasticOscillatorStudy.o polynomialRegressionChannelStudy.o
+	$(CC) $(CFLAGS) $(LFLAGS) $(INCLUDES) $(LIBS) -o $(BIN)/$@ src/optimize.cpp $(BUILD)/optimizerFactory.o $(BUILD)/reversalsOptimizer.o $(BUILD)/optimizer.o $(BUILD)/oandaDataParser.o $(BUILD)/study.o $(BUILD)/smaStudy.o $(BUILD)/emaStudy.o $(BUILD)/rsiStudy.o $(BUILD)/stochasticOscillatorStudy.o $(BUILD)/polynomialRegressionChannelStudy.o
 
-reversalsOptimizer.o: ./lib/optimizers/reversalsOptimizer.cpp
+optimizerFactory.o: lib/optimizers/optimizerFactory.cpp
 	@mkdir -p $(BUILD)
-	$(CC) $(CFLAGS) $(INCLUDES) -c -o $(BUILD)/$@ ./lib/optimizers/reversalsOptimizer.cpp
+	$(CC) $(CFLAGS) $(INCLUDES) -c -o $(BUILD)/$@ lib/optimizers/optimizerFactory.cpp
 
-oandaDataParser.o: ./lib/dataParsers/oandaDataParser.cpp
+optimizer.o: lib/optimizers/optimizer.cpp
 	@mkdir -p $(BUILD)
-	$(CC) $(CFLAGS) $(INCLUDES) -c -o $(BUILD)/$@ ./lib/dataParsers/oandaDataParser.cpp
+	$(CC) $(CFLAGS) $(INCLUDES) -c -o $(BUILD)/$@ lib/optimizers/optimizer.cpp
 
-study.o: ./lib/studies/study.cpp
+reversalsOptimizer.o: lib/optimizers/reversalsOptimizer.cpp
 	@mkdir -p $(BUILD)
-	$(CC) $(CFLAGS) $(INCLUDES) -c -o $(BUILD)/$@ ./lib/studies/study.cpp
+	$(CC) $(CFLAGS) $(INCLUDES) -c -o $(BUILD)/$@ lib/optimizers/reversalsOptimizer.cpp
 
-smaStudy.o: ./lib/studies/smaStudy.cpp
+oandaDataParser.o: lib/dataParsers/oandaDataParser.cpp
 	@mkdir -p $(BUILD)
-	$(CC) $(CFLAGS) $(INCLUDES) -c -o $(BUILD)/$@ ./lib/studies/smaStudy.cpp
+	$(CC) $(CFLAGS) $(INCLUDES) -c -o $(BUILD)/$@ lib/dataParsers/oandaDataParser.cpp
 
-emaStudy.o: ./lib/studies/emaStudy.cpp
+study.o: lib/studies/study.cpp
 	@mkdir -p $(BUILD)
-	$(CC) $(CFLAGS) $(INCLUDES) -c -o $(BUILD)/$@ ./lib/studies/emaStudy.cpp
+	$(CC) $(CFLAGS) $(INCLUDES) -c -o $(BUILD)/$@ lib/studies/study.cpp
 
-rsiStudy.o: ./lib/studies/rsiStudy.cpp
+smaStudy.o: lib/studies/smaStudy.cpp
 	@mkdir -p $(BUILD)
-	$(CC) $(CFLAGS) $(INCLUDES) -c -o $(BUILD)/$@ ./lib/studies/rsiStudy.cpp
+	$(CC) $(CFLAGS) $(INCLUDES) -c -o $(BUILD)/$@ lib/studies/smaStudy.cpp
 
-stochasticOscillatorStudy.o: ./lib/studies/stochasticOscillatorStudy.cpp
+emaStudy.o: lib/studies/emaStudy.cpp
 	@mkdir -p $(BUILD)
-	$(CC) $(CFLAGS) $(INCLUDES) -c -o $(BUILD)/$@ ./lib/studies/stochasticOscillatorStudy.cpp
+	$(CC) $(CFLAGS) $(INCLUDES) -c -o $(BUILD)/$@ lib/studies/emaStudy.cpp
 
-polynomialRegressionChannelStudy.o: ./lib/studies/polynomialRegressionChannelStudy.cpp
+rsiStudy.o: lib/studies/rsiStudy.cpp
 	@mkdir -p $(BUILD)
-	$(CC) $(CFLAGS) $(INCLUDES) -c -o $(BUILD)/$@ ./lib/studies/polynomialRegressionChannelStudy.cpp
+	$(CC) $(CFLAGS) $(INCLUDES) -c -o $(BUILD)/$@ lib/studies/rsiStudy.cpp
+
+stochasticOscillatorStudy.o: lib/studies/stochasticOscillatorStudy.cpp
+	@mkdir -p $(BUILD)
+	$(CC) $(CFLAGS) $(INCLUDES) -c -o $(BUILD)/$@ lib/studies/stochasticOscillatorStudy.cpp
+
+polynomialRegressionChannelStudy.o: lib/studies/polynomialRegressionChannelStudy.cpp
+	@mkdir -p $(BUILD)
+	$(CC) $(CFLAGS) $(INCLUDES) -c -o $(BUILD)/$@ lib/studies/polynomialRegressionChannelStudy.cpp
 
 clean:
 	rm -f $(BIN)/* $(BUILD)/*.o

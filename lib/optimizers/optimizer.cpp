@@ -6,22 +6,35 @@ Optimizer::Optimizer(std::string strategyName, std::string symbol, int group) {
     this->group = group;
 }
 
-void Optimizer::optimize(std::vector<Configuration>, double investment, double profitability) {
-}
-
 void Optimizer::prepareData(std::vector<std::map<std::string, double>> data) {
+    // double percentage = 0;
+    // int dataCount = data.size();
+    std::string studyProperty;
+    std::map<std::string, double> studyTickValues;
+    std::map<std::string, std::string> studyOutputMap;
+    std::vector<std::map<std::string, double>> cumulativeData;
+    int i = 0;
+
+    // Prepare studies for use.
     this->prepareStudies();
 
-    // for (std::vector<std::map<std::string, double>>::iterator iterator = parsedData.begin(); iterator != parsedData.end(); ++iterator) {
-    //     std::cout << "timestamp: " << (*iterator).at("timestamp") << std::endl;
-    //     std::cout << "open: " << (*iterator).at("open") << "    " << ((*iterator).at("open") + 1) << std::endl;
-    //     std::cout << "high: " << (*iterator).at("high") << std::endl;
-    //     std::cout << "low: " << (*iterator).at("low") << std::endl;
-    //     std::cout << "close: " << (*iterator).at("close") << std::endl;
-    //     std::cout << std::endl;
-    // }
+    printf("Preparing data...");
 
-    // ...
+    // Go through the data and run studies for each data item.
+    for (std::vector<std::map<std::string, double>>::iterator dataIterator = data.begin(); dataIterator != data.end(); ++dataIterator) {
+        printf("\rPreparing data...%i", ++i);
+
+        // Append to the cumulative data.
+        cumulativeData.push_back(*dataIterator);
+
+        for (std::vector<Study*>::iterator studyIterator = this->studies.begin(); studyIterator != this->studies.end(); ++studyIterator) {
+            // Update the data for the study.
+            (*studyIterator)->setData(cumulativeData);
+
+            // Process the latest data for the study.
+            // studyTickValues = (*studyIterator)->tick();
+        }
+    }
 }
 
 std::vector<Configuration> Optimizer::buildConfigurations() {
@@ -30,4 +43,7 @@ std::vector<Configuration> Optimizer::buildConfigurations() {
     // ...
 
     return configurations;
+}
+
+void Optimizer::optimize(std::vector<Configuration>, double investment, double profitability) {
 }

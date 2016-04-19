@@ -1,9 +1,12 @@
 #ifndef OPTIMIZER_H
 #define OPTIMIZER_H
 
+#include <stdio.h>
 #include <string>
 #include <vector>
-#include <studies/study.h>
+#include <map>
+#include <iostream>
+#include "studies/study.h"
 #include "types/configuration.h"
 
 class Optimizer {

@@ -1,3 +1,4 @@
+#include <string>
 #include <vector>
 #include <map>
 #include <iterator>
@@ -6,7 +7,9 @@
 #include "factories/dataParserFactory.h"
 
 int main(int argc, char *argv[]) {
-    DataParser *dataParser = DataParserFactory::create("oanda", "/Users/chad/development/desktop/forex-backtesting/data/oanda/k-fold/combined/AUDJPY.csv");
+    std::string dataParserName = "oanda";
+    std::string dataFilePath = "/Users/chad/development/desktop/forex-backtesting/data/oanda/k-fold/combined/AUDJPY.csv";
+    DataParser *dataParser = DataParserFactory::create(dataParserName, dataFilePath);
     std::vector<std::map<std::string, double>> parsedData = dataParser->parse();
 
     // Output the data.

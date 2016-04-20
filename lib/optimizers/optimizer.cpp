@@ -13,6 +13,7 @@ void Optimizer::prepareData(std::vector<Tick*> data) {
     std::vector<Tick*> tempCumulativeData;
     int i = 0;
     int j = 0;
+    maginatics::ThreadPool pool(1, 8, 5000);
 
     // If there is a significant gap, save the current data points, and start over with recording.
     // TODO
@@ -37,9 +38,17 @@ void Optimizer::prepareData(std::vector<Tick*> data) {
             // Update the data for the study.
             (*studyIterator)->setData(&cumulativeData);
 
-            // Process the latest data for the study.
-            (*studyIterator)->tick();
+            pool.execute([&]() {
+                // Source: http://stackoverflow.com/a/7854596/83897
+                auto functor = [=]()
+                {
+                    // Process the latest data for the study.
+                    (*studyIterator)->tick();
+                };
+            });
         }
+
+        pool.drain();
 
         // Periodically free up memory.
         if (cumulativeData.size() >= 2000) {

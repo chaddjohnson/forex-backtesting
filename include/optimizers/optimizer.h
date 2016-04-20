@@ -8,6 +8,7 @@
 #include "studies/study.h"
 #include "types/tick.h"
 #include "types/configuration.h"
+#include "maginatics/threadpool/threadpool.h"
 
 class Optimizer {
     private:

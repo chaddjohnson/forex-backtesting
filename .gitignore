@@ -4,5 +4,5 @@
 *.csv.*
 bin/
 *.o
-build/
+obj/
 node_modules/

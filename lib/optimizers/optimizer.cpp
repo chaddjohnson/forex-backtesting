@@ -10,7 +10,9 @@ void Optimizer::prepareData(std::vector<Tick*> data) {
     double percentage;
     int dataCount = data.size();
     std::vector<Tick*> cumulativeData;
+    std::vector<Tick*> tempCumulativeData;
     int i = 0;
+    int j = 0;
 
     // If there is a significant gap, save the current data points, and start over with recording.
     // TODO
@@ -40,24 +42,21 @@ void Optimizer::prepareData(std::vector<Tick*> data) {
         }
 
         // Periodically free up memory.
-        // if (cumulativeData.size() >= 2000) {
-        //     // for (std::vector<Tick*>::iterator dataIterator2 = cumulativeData->begin(); dataIterator2 != cumulativeData->begin() + 1000; ++dataIterator2) {
-        //     for (j=0; j<1000; j++) {
-        //         // delete *dataIterator2;
-        //         delete cumulativeData[j];
-        //     }
-        //     // }
+        if (cumulativeData.size() >= 2000) {
+            for (j=0; j<1000; j++) {
+                delete cumulativeData[j];
+            }
 
-        //     // Extract the last 1000 elements into a new vector.
-        //     std::vector<Tick*> cumulativeDataTemp(cumulativeData.begin() + (cumulativeData.size() - 1000), cumulativeData.end());
+            // Extract the last 1000 elements into a new vector.
+            std::vector<Tick*> tempCumulativeData(cumulativeData.begin() + (cumulativeData.size() - 1000), cumulativeData.end());
 
-        //     // Release memory for the old vector.
-        //     std::vector<Tick*>().swap(cumulativeData);
-        //     //cumulativeData.shrink_to_fit();
+            // Release memory for the old vector.
+            std::vector<Tick*>().swap(cumulativeData);
+            //cumulativeData.shrink_to_fit();
 
-        //     // Set the original to be the new vector.
-        //     cumulativeData = cumulativeDataTemp;
-        // }
+            // Set the original to be the new vector.
+            cumulativeData = tempCumulativeData;
+        }
     }
 
     printf("\n");

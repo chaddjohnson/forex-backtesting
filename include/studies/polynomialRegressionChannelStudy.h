@@ -10,6 +10,10 @@
 #include "study.h"
 
 class PolynomialRegressionChannelStudy : public Study {
+    private:
+        std::vector<double> pastPrices;
+        std::vector<double> pastRegressions;
+
     public:
         PolynomialRegressionChannelStudy(std::map<std::string, double> inputs, std::map<std::string, std::string> outputMap)
             : Study(inputs, outputMap) {}

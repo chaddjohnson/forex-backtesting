@@ -76,17 +76,11 @@ double PolynomialRegressionChannelStudy::calculateStandardDeviation(std::vector<
 
 void PolynomialRegressionChannelStudy::tick() {
     Tick *lastTick = getLastTick();
-    Tick *previousTick = getPreviousTick();
     std::vector<Tick*> *dataSegment = new std::vector<Tick*>();
     int dataSegmentLength = 0;
     std::string regressionOutputName = getOutputMapping("regression");
-    std::vector<double> pastPrices;
-    std::vector<double> pastRegressions;
     double regression;
-    double tickRegression;
     double regressionStandardDeviation;
-    bool regressionFound = false;
-    int i = 0;
 
     dataSegment = getDataSegment(getInput("length"));
     dataSegmentLength = dataSegment->size();
@@ -95,45 +89,36 @@ void PolynomialRegressionChannelStudy::tick() {
         return;
     }
 
-    // Calculate the regression.
-    for (std::vector<Tick*>::iterator iterator = dataSegment->begin(); iterator != dataSegment->end(); ++iterator) {
-        pastPrices.push_back((*iterator)->at("close"));
+    // Record another past price.
+    pastPrices.push_back(lastTick->at("close"));
+
+    // Keep the correct number of past prices.
+    while (pastPrices.size() > getInput("length")) {
+        pastPrices.erase(pastPrices.begin());
     }
+
+    // Not sure why this is necessary. gsl yields an error without this..
+    if (pastPrices.size() < 5) {
+        return;
+    }
+
+    // Calculate the regression.
     regression = calculateRegression(pastPrices, getInput("degree"));
 
-    // Calculate the standard deviations of the regression. If there is no regression data
-    // available, then don't calculate upper and lower values.
-    if (previousTick->find(regressionOutputName) != previousTick->end()) {
-        i = 0;
+    // Record another past regression.
+    pastRegressions.push_back(regression);
 
-        for (std::vector<Tick*>::iterator iterator = dataSegment->begin(); iterator != dataSegment->end(); ++iterator) {
-            regressionFound = false;
-
-            if (i == dataSegmentLength - 1) {
-                // Use curent regression.
-                tickRegression = regression;
-                regressionFound = true;
-            }
-            else if ((*iterator)->find(regressionOutputName) != (*iterator)->end()) {
-                // Use a previous regression.
-                tickRegression = (*iterator)->at(regressionOutputName);
-                regressionFound = true;
-            }
-
-            if (regressionFound) {
-                pastRegressions.push_back(tickRegression);
-            }
-
-            i++;
-        }
-
-        // Calculate the standard deviation from the regressions.
-        regressionStandardDeviation = calculateStandardDeviation(pastRegressions);
-
-        // Calculate the upper and lower values.
-        (*lastTick)[getOutputMapping("upper")] = regression + (regressionStandardDeviation * getInput("deviations"));
-        (*lastTick)[getOutputMapping("lower")] = regression - (regressionStandardDeviation * getInput("deviations"));
+    // Keep the correct number of past regressions.
+    while (pastRegressions.size() > getInput("length")) {
+        pastRegressions.erase(pastRegressions.begin());
     }
+
+    // Calculate the standard deviation from the regressions.
+    regressionStandardDeviation = calculateStandardDeviation(pastRegressions);
+
+    // Calculate the upper and lower values.
+    (*lastTick)[getOutputMapping("upper")] = regression + (regressionStandardDeviation * getInput("deviations"));
+    (*lastTick)[getOutputMapping("lower")] = regression - (regressionStandardDeviation * getInput("deviations"));
 
     (*lastTick)[regressionOutputName] = regression;
 

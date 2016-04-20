@@ -40,8 +40,7 @@ void Optimizer::prepareData(std::vector<Tick*> data) {
 
             pool.execute([&]() {
                 // Source: http://stackoverflow.com/a/7854596/83897
-                auto functor = [=]()
-                {
+                auto functor = [=]() {
                     // Process the latest data for the study.
                     (*studyIterator)->tick();
                 };

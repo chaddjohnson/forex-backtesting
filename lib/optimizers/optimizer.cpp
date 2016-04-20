@@ -32,8 +32,6 @@ void Optimizer::prepareData(std::vector<Tick*> data) {
         cumulativeData.push_back(*dataIterator);
 
         for (std::vector<Study*>::iterator studyIterator = studies.begin(); studyIterator != studies.end(); ++studyIterator) {
-            studyOutputMap = (*studyIterator)->getOutputMap();
-
             // Update the data for the study.
             (*studyIterator)->setData(&cumulativeData);
 

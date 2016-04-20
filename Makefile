@@ -1,6 +1,6 @@
 CC = g++
 NVCC = nvcc
-CFLAGS = -std=c++11 -Wall -pedantic
+CFLAGS = -O3 -std=c++11 -Wall -pedantic
 LFLAGS = -L/usr/local/lib -Llib
 INCLUDES = -I/usr/local/include -Iinclude
 LIBS = -lgsl -lcblas

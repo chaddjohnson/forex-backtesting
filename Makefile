@@ -15,11 +15,11 @@ all: prepareData optimize
 
 prepareData: src/prepareData.cpp $(OBJ)
 	@mkdir -p $(BIN)
-	$(CC) $(CFLAGS) $(LFLAGS) $(INCLUDES) $(LIBS) -o $(BIN)/$@ src/prepareData.cpp $(addprefix $(OBJDIR)/,$(OBJ))
+	$(CC) $(CFLAGS) $(LFLAGS) $(INCLUDES) -o $(BIN)/$@ src/prepareData.cpp $(addprefix $(OBJDIR)/,$(OBJ)) $(LIBS)
 
 optimize: src/optimize.cpp $(OBJ)
 	@mkdir -p $(BIN)
-	$(CC) $(CFLAGS) $(LFLAGS) $(INCLUDES) $(LIBS) -o $(BIN)/$@ src/optimize.cpp $(addprefix $(OBJDIR)/,$(OBJ))
+	$(CC) $(CFLAGS) $(LFLAGS) $(INCLUDES) -o $(BIN)/$@ src/optimize.cpp $(addprefix $(OBJDIR)/,$(OBJ)) $(LIBS)
 
 %.o: %.cpp
 	@mkdir -p $(OBJDIR)/lib/factories $(OBJDIR)/lib/optimizers $(OBJDIR)/lib/dataParsers $(OBJDIR)/lib/studies

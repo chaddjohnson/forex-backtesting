@@ -9,11 +9,7 @@ Optimizer::Optimizer(std::string strategyName, std::string symbol, int group) {
 void Optimizer::prepareData(std::vector<Tick*> data) {
     double percentage;
     int dataCount = data.size();
-    std::string studyProperty;
-    std::map<std::string, double> studyTickValues;
-    std::map<std::string, std::string> studyOutputMap;
     std::vector<Tick*> cumulativeData;
-    std::vector<Tick*> cumulativeDataTemp;
     int i = 0;
 
     // If there is a significant gap, save the current data points, and start over with recording.

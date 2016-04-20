@@ -12,7 +12,7 @@ class EmaStudy : public Study {
 
     public:
         EmaStudy(std::map<std::string, double> inputs, std::map<std::string, std::string> outputMap);
-        std::map<std::string, double> tick();
+        void tick();
 };
 
 #endif

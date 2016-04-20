@@ -5,8 +5,7 @@ EmaStudy::EmaStudy(std::map<std::string, double> inputs, std::map<std::string, s
     previousEma = 0.0;
 }
 
-std::map<std::string, double> EmaStudy::tick() {
-    std::map<std::string, double> valueMap;
+void EmaStudy::tick() {
     Tick *lastTick = getLastTick();
     double K = 0.0;
     double ema = 0.0;
@@ -23,7 +22,5 @@ std::map<std::string, double> EmaStudy::tick() {
     // Set the new EMA just calculated as the previous EMA.
     previousEma = ema;
 
-    valueMap[getOutputMapping("ema")] = ema;
-
-    return valueMap;
+    (*lastTick)[getOutputMapping("ema")] = ema;
 }

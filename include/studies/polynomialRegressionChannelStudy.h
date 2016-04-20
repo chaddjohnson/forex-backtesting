@@ -15,7 +15,7 @@ class PolynomialRegressionChannelStudy : public Study {
             : Study(inputs, outputMap) {}
         double calculateRegression(std::vector<double> &values, int degree);
         double calculateStandardDeviation(std::vector<double> &values);
-        std::map<std::string, double> tick();
+        void tick();
 };
 
 #endif

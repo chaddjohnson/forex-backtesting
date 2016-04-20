@@ -11,7 +11,7 @@ class StochasticOscillatorStudy : public Study {
     public:
         StochasticOscillatorStudy(std::map<std::string, double> inputs, std::map<std::string, std::string> outputMap)
             : Study(inputs, outputMap) {}
-        std::map<std::string, double> tick();
+        void tick();
 };
 
 #endif

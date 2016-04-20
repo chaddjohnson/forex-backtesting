@@ -25,7 +25,7 @@ class Study {
         Study(std::map<std::string, double> inputs, std::map<std::string, std::string> outputMap);
         void setData(std::vector<Tick*> *data);
         std::map<std::string, std::string> &getOutputMap();
-        virtual std::map<std::string, double> tick() = 0;
+        virtual void tick() = 0;
 };
 
 #endif

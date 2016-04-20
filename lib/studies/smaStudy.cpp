@@ -1,7 +1,7 @@
 #include "studies/smaStudy.h"
 
-std::map<std::string, double> SmaStudy::tick() {
-    std::map<std::string, double> valueMap;
+void SmaStudy::tick() {
+    Tick *lastTick = getLastTick();
     std::vector<Tick*> *dataSegment = new std::vector<Tick*>();
     int dataSegmentLength = 0;
     double sum = 0.0;
@@ -11,7 +11,7 @@ std::map<std::string, double> SmaStudy::tick() {
     dataSegmentLength = dataSegment->size();
 
     if (dataSegmentLength < getInput("length")) {
-        return valueMap;
+        return;
     }
 
     // Calculate the SMA.
@@ -20,7 +20,8 @@ std::map<std::string, double> SmaStudy::tick() {
     }
     sma = sum / dataSegmentLength;
 
-    valueMap[getOutputMapping("sma")] = sma;
+    (*lastTick)[getOutputMapping("sma")] = sma;
 
-    return valueMap;
+    // Free memory.
+    delete dataSegment;
 }

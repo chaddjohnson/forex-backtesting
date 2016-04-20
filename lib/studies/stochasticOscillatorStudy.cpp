@@ -1,11 +1,10 @@
 #include "studies/stochasticOscillatorStudy.h"
 
-std::map<std::string, double> StochasticOscillatorStudy::tick() {
-    std::map<std::string, double> valueMap;
+void StochasticOscillatorStudy::tick() {
+    Tick *lastTick = getLastTick();
     std::vector<Tick*> *dataSegment = new std::vector<Tick*>();
     int dataSegmentLength = 0;
     std::vector<Tick*> averageLengthDataSegment;
-    Tick *lastTick = getLastTick();
     double low = 0.0;
     double high = 0.0;
     double highLowDifference = 0.0;
@@ -18,13 +17,13 @@ std::map<std::string, double> StochasticOscillatorStudy::tick() {
     dataSegmentLength = dataSegment->size();
 
     if (dataSegmentLength < getInput("length")) {
-        return valueMap;
+        return;
     }
 
     averageLengthDataSegment = std::vector<Tick*>(dataSegment->begin() + (dataSegmentLength - getInput("averageLength")), dataSegment->begin() + dataSegmentLength);
 
-    //low = ...
-    //high = ...
+    //low = ...  // TODO
+    //high = ...  // TODO
     highLowDifference = high - low;
     K = highLowDifference > 0 ? 100 * ((lastTick->at("close") - low) / highLowDifference) : 0;
 
@@ -39,8 +38,9 @@ std::map<std::string, double> StochasticOscillatorStudy::tick() {
     }
     D = DSum / averageLengthDataSegment.size();
 
-    valueMap[KOutputName] = K;
-    valueMap[getOutputMapping("D")] = D;
+    (*lastTick)[KOutputName] = K;
+    (*lastTick)[getOutputMapping("D")] = D;
 
-    return valueMap;
+    // Free memory.
+    delete dataSegment;
 }

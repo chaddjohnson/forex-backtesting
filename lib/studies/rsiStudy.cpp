@@ -37,10 +37,9 @@ double RsiStudy::calculateInitialAverageLoss(Tick *initialTick, std::vector<Tick
     return average;
 }
 
-std::map<std::string, double> RsiStudy::tick() {
-    std::map<std::string, double> valueMap;
-    std::vector<Tick*> *dataSegment = new std::vector<Tick*>();
+void RsiStudy::tick() {
     Tick *lastTick = getLastTick();
+    std::vector<Tick*> *dataSegment = new std::vector<Tick*>();
     Tick *previousTick = getPreviousTick();
     double currentGain = 0.0;
     double currentLoss = 0.0;
@@ -53,7 +52,7 @@ std::map<std::string, double> RsiStudy::tick() {
     dataSegmentLength = dataSegment->size();
 
     if (dataSegmentLength < getInput("length")) {
-        return valueMap;
+        return;
     }
 
     // Calculate the current gain and the current loss.
@@ -76,7 +75,8 @@ std::map<std::string, double> RsiStudy::tick() {
     // Calculate RSI.
     rsi = 100 - (100 / (1 + RS));
 
-    valueMap[getOutputMapping("rsi")] = rsi;
+    (*lastTick)[getOutputMapping("rsi")] = rsi;
 
-    return valueMap;
+    // Free memory.
+    delete dataSegment;
 }

@@ -31,7 +31,7 @@ std::vector<Tick*> OandaDataParser::parse() {
         translatedLine = new Tick();
 
         // Translate the data items.
-        (*translatedLine)["timestamp"] = 1234567890.0;  // items.at(2);  // TODO
+        (*translatedLine)["timestamp"] = 1234567890.0;  // TODO
         (*translatedLine)["open"] = std::atof(items.at(3).c_str());
         (*translatedLine)["high"] = std::atof(items.at(4).c_str());
         (*translatedLine)["low"] = std::atof(items.at(5).c_str());

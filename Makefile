@@ -6,7 +6,10 @@ INCLUDES = -I/usr/include -I/usr/local/include -Iinclude
 LIBS = -lgsl -lcblas
 BIN = ./bin
 OBJDIR = ./obj
-OBJ = lib/factories/optimizerFactory.o lib/optimizers/reversalsOptimizer.o lib/optimizers/optimizer.o lib/factories/dataParserFactory.o lib/dataParsers/oandaDataParser.o lib/studies/study.o lib/studies/smaStudy.o lib/studies/emaStudy.o lib/studies/rsiStudy.o lib/studies/stochasticOscillatorStudy.o lib/studies/polynomialRegressionChannelStudy.o
+OBJ = lib/factories/optimizerFactory.o lib/optimizers/reversalsOptimizer.o lib/optimizers/optimizer.o \
+      lib/factories/dataParserFactory.o lib/dataParsers/oandaDataParser.o lib/studies/study.o \
+      lib/studies/smaStudy.o lib/studies/emaStudy.o lib/studies/rsiStudy.o lib/studies/stochasticOscillatorStudy.o \
+      lib/studies/polynomialRegressionChannelStudy.o
 
 all: prepareData optimize
 

@@ -85,21 +85,16 @@ void PolynomialRegressionChannelStudy::tick() {
     dataSegment = getDataSegment(getInput("length"));
     dataSegmentLength = dataSegment->size();
 
+    // Record another past price.
+    pastPrices.push_back(lastTick->at("close"));
+
     if (dataSegmentLength < getInput("length")) {
         return;
     }
 
-    // Record another past price.
-    pastPrices.push_back(lastTick->at("close"));
-
     // Keep the correct number of past prices.
     while (pastPrices.size() > getInput("length")) {
         pastPrices.erase(pastPrices.begin());
-    }
-
-    // Not sure why this is necessary. gsl yields an error without this..
-    if (pastPrices.size() < 5) {
-        return;
     }
 
     // Calculate the regression.

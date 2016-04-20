@@ -1,4 +1,4 @@
-#include "dataParsers/OandaDataParser.h"
+#include "dataParsers/oandaDataParser.h"
 
 OandaDataParser::OandaDataParser(std::string filePath) {
     this->filePath = filePath;

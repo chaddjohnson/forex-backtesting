@@ -60,7 +60,7 @@ do
     done
 
     # Add testing and validation group lists to each line.
-    ./add-prefix.sh ./combined/$1-temp.csv "[$testing_groups],[$validation_groups]" >> ./combined/$1.csv
+    ./add-prefix.sh ./combined/$1-temp.csv "$testing_groups,$validation_groups" >> ./combined/$1.csv
 
     rm ./combined/$1-temp.csv
 done

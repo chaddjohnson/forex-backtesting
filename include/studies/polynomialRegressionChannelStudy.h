@@ -5,7 +5,7 @@
 #include <map>
 #include <string>
 #include <gsl/gsl_multifit.h>
-#include <math.h>
+#include <cmath>
 #include "types/tick.h"
 #include "study.h"
 

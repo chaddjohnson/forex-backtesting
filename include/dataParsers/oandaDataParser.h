@@ -5,8 +5,8 @@
 #include <iterator>
 #include <vector>
 #include <sstream>
-#include <stdlib.h>
-#include <math.h>
+#include <cstdlib>
+#include <cmath>
 #include "dataParsers/dataParser.h"
 #include "types/tick.h"
 

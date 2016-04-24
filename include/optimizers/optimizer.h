@@ -1,7 +1,7 @@
 #ifndef OPTIMIZER_H
 #define OPTIMIZER_H
 
-#include <stdio.h>
+#include <cstdio>
 #include <string>
 #include <vector>
 #include <map>

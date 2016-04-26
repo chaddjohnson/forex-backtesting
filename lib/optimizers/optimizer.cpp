@@ -50,6 +50,7 @@ void Optimizer::prepareData(std::vector<Tick*> data) {
             });
         }
 
+        // Block until all tasks for the current data point to complete.
         pool.drain();
 
         // Periodically free up memory.

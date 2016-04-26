@@ -11,8 +11,8 @@
 
 class ReversalsOptimizer : public Optimizer {
     public:
-        ReversalsOptimizer(std::string symbol, int group)
-            : Optimizer("Reversals", symbol, group) {}
+        ReversalsOptimizer(mongoc_client_t *dbClient, std::string symbol, int group)
+            : Optimizer(dbClient, "Reversals", symbol, group) {}
         void prepareStudies();
 };
 

@@ -3,6 +3,7 @@
 #include <map>
 #include <iterator>
 #include <iostream>
+#include <mongoc.h>
 #include "dataParsers/dataParser.h"
 #include "optimizers/optimizer.h"
 #include "factories/dataParserFactory.h"
@@ -20,12 +21,16 @@ int main(int argc, char *argv[]) {
     std::string symbol = "AUDJPY";
     int group = 1;
 
+    // Connect to the database
+    mongoc_init();
+    mongoc_client_t *dbClient = mongoc_client_new("mongodb://localhost:27017");
+
     // Parse the data file.
     dataParser = DataParserFactory::create(dataParserName, dataFilePath);
     parsedData = dataParser->parse();
 
     // Initialize the optimizer.
-    Optimizer *optimizer = OptimizerFactory::create(optimizerName, symbol, group);
+    Optimizer *optimizer = OptimizerFactory::create(optimizerName, dbClient, symbol, group);
 
     // Prepare the data.
     optimizer->prepareData(parsedData);

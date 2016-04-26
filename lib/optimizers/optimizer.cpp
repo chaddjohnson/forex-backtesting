@@ -1,6 +1,7 @@
 #include "optimizers/optimizer.h"
 
-Optimizer::Optimizer(std::string strategyName, std::string symbol, int group) {
+Optimizer::Optimizer(mongoc_client_t *dbClient, std::string strategyName, std::string symbol, int group) {
+    this->dbClient = dbClient;
     this->strategyName = strategyName;
     this->symbol = symbol;
     this->group = group;
@@ -11,9 +12,10 @@ void Optimizer::prepareData(std::vector<Tick*> data) {
     int dataCount = data.size();
     std::vector<Tick*> cumulativeData;
     std::vector<Tick*> tempCumulativeData;
+    int threadCount = std::thread::hardware_concurrency();
     int i = 0;
     int j = 0;
-    maginatics::ThreadPool pool(1, 8, 5000);
+    maginatics::ThreadPool pool(1, threadCount, 5000);
 
     // If there is a significant gap, save the current data points, and start over with recording.
     // TODO
@@ -38,6 +40,7 @@ void Optimizer::prepareData(std::vector<Tick*> data) {
             // Update the data for the study.
             (*studyIterator)->setData(&cumulativeData);
 
+            // Use a thread pool so that all CPU cores can be used.
             pool.execute([&]() {
                 // Source: http://stackoverflow.com/a/7854596/83897
                 auto functor = [=]() {

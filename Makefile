@@ -1,8 +1,8 @@
 CC = g++
 NVCC = nvcc
 CFLAGS = -O3 -std=c++11 -Wall -pedantic
-LFLAGS = -L/usr/local/lib -Llib
-INCLUDES = -I/usr/include -I/usr/local/include -Iinclude
+LFLAGS = -L/usr/local/lib -Llib $(shell pkg-config --libs libmongoc-1.0 libbson-1.0)
+INCLUDES = -I/usr/include -I/usr/local/include -Iinclude $(shell pkg-config --cflags libmongoc-1.0 libbson-1.0)
 LIBS = -lgsl -lcblas
 BIN = ./bin
 OBJDIR = ./obj

@@ -17,7 +17,7 @@ double OandaDataParser::parseGroups(std::string groupString) {
     }
 
     for (std::vector<int>::iterator iterator = groups.begin(); iterator != groups.end(); ++iterator) {
-        value += pow(2, (*iterator) - 1);
+        value += pow(2, *iterator);
     }
 
     return value;

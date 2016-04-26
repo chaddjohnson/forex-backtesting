@@ -4,11 +4,22 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <sstream>
+#include <iterator>
+#include <cmath>
+#include <cstdlib>
 #include "types/tick.h"
 
 class DataParser {
+    private:
+        std::string filePath;
+
+    protected:
+        std::string getFilePath();
+        double parseGroups(std::string groupString);
+
     public:
-        virtual ~DataParser() {}
+        DataParser(std::string filePath);
         virtual std::vector<Tick*> parse() = 0;
 };
 

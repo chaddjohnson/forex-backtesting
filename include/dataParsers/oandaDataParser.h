@@ -4,21 +4,15 @@
 #include <fstream>
 #include <iterator>
 #include <vector>
+#include <string>
 #include <sstream>
 #include <cstdlib>
-#include <cmath>
 #include "dataParsers/dataParser.h"
 #include "types/tick.h"
 
 class OandaDataParser : public DataParser {
-    private:
-        std::string filePath;
-
-    protected:
-        double parseGroups(std::string string);
-
     public:
-        OandaDataParser(std::string filePath);
+        OandaDataParser(std::string filePath) : DataParser(filePath) {}
         std::vector<Tick*> parse();
 };
 

@@ -24,7 +24,7 @@ void Optimizer::prepareData(std::vector<Tick*> data) {
     cumulativeData.reserve(dataCount);
 
     // Prepare studies for use.
-    this->prepareStudies();
+    prepareStudies();
 
     printf("Preparing data...");
 

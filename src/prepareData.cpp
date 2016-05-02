@@ -14,6 +14,7 @@ int main(int argc, char *argv[]) {
     std::string dataParserName = "oanda";
     std::string dataFilePath = "/Users/chad/development/desktop/forex-backtesting/data/oanda/k-fold/combined/AUDJPY.csv";
     DataParser *dataParser;
+    Optimizer *optimizer;
     std::vector<Tick*> ticks;
 
     // Optimizer settings.
@@ -30,13 +31,16 @@ int main(int argc, char *argv[]) {
     ticks = dataParser->parse();
 
     // Initialize the optimizer.
-    Optimizer *optimizer = OptimizerFactory::create(optimizerName, dbClient, symbol, group);
+    optimizer = OptimizerFactory::create(optimizerName, dbClient, symbol, group);
 
     // Prepare the data.
     optimizer->prepareData(ticks);
 
     // Clean up.
     // TODO
+    delete dataParser;
+    delete optimizer;
+    mongoc_cleanup();
 
     return 0;
 }

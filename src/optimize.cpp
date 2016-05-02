@@ -27,5 +27,10 @@ int main(int argc, char *argv[]) {
         std::cerr << error.what() << std::endl;
     }
 
+    // Clean up.
+    // TODO
+    delete optimizer;
+    mongoc_cleanup();
+
     return 0;
 }

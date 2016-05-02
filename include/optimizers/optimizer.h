@@ -29,6 +29,8 @@ class Optimizer {
         std::vector<int> dataIndex;
         int getDataPropertyCount();
         void loadData();
+        bson_t *convertTickToBson(Tick *tick);
+        void saveTicks(std::vector<Tick*> ticks);
 
     protected:
         virtual void prepareStudies() = 0;

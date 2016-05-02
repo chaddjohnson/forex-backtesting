@@ -11,15 +11,60 @@ Optimizer::Optimizer(mongoc_client_t *dbClient, std::string strategyName, std::s
     prepareStudies();
 }
 
+bson_t *Optimizer::convertTickToBson(Tick *tick) {
+    bson_t *document;
+    bson_t *dataDocument;
+
+    bson_init(document);
+    bson_append_utf8(document, "symbol", 6, this->symbol, -1);
+    bson_append_document_begin(document, "data", 4, dataDocument);
+
+    // Add tick properties to document.
+    for (Tick::iterator propertyIterator = tick.begin(); propertyIterator != tick.end(); ++propertyIterator) {
+        bson_append_double(dataDocument, propertyIterator->first.c_str(), propertyIterator->first.length(), propertyIterator->second);
+    }
+
+    bson_append_document_end(document, dataDocument);
+
+    return document;
+}
+
+void Optimizer::saveTicks(std::vector<Tick*> ticks) {
+    mongoc_collection_t collection;
+    mongoc_bulk_operation_t bulkOperation;
+    bson_t *document;
+    bson_t bulkOperationReply;
+    bson_error_t bulkOperationError;
+
+    // Get a reference to the database collection.
+    collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting", "datapoints");
+
+    // Begin a bulk operation.
+    bulkOperation = mongoc_collection_create_bulk_operation(collection, true, NULL);
+
+    // Reference: http://api.mongodb.org/c/current/bulk.html
+    for (std::vector<Tick*>::iterator insertionIterator = tempCumulativeTicks.begin(); insertionIterator != tempCumulativeTicks.end(); ++insertionIterator) {
+        document = convertTickToBson(*insertionIterator);
+        mongoc_bulk_operation_insert(&bulkOperation, document);
+        bson_destroy(document);
+    }
+
+    // Execute the bulk operation.
+    mongoc_bulk_operation_execute(&bulkOperation, &bulkOperationReply, &bulkOperationError);
+
+    // Cleanup.
+    mongoc_collection_destroy(collection);
+}
+
 void Optimizer::prepareData(std::vector<Tick*> ticks) {
     double percentage;
     int tickCount = ticks.size();
     std::vector<Tick*> cumulativeTicks;
-    std::vector<Tick*> tempcumulativeTicks;
+    std::vector<Tick*> tempCumulativeTicks;
     int threadCount = std::thread::hardware_concurrency();
+    maginatics::ThreadPool pool(1, threadCount, 5000);
     int i = 0;
     int j = 0;
-    maginatics::ThreadPool pool(1, threadCount, 5000);
 
     // If there is a significant gap, save the current data points, and start over with recording.
     // TODO
@@ -54,21 +99,27 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
         // Block until all tasks for the current data point to complete.
         pool.drain();
 
-        // Periodically free up memory.
+        // Periodically save tick data to the database and free up memory.
         if (cumulativeTicks.size() >= 2000) {
+            // Extract the first ~1000 ticks to be inserted.
+            std::vector<Tick*> tempCumulativeTicks(cumulativeTicks.begin(), cumulativeTicks.begin() + ((cumulativeTicks.size() - 1000) - 1));
+
+            // Write ticks to database.
+            saveTicks(cumulativeTicks);
+
             for (j=0; j<1000; j++) {
                 delete cumulativeTicks[j];
             }
 
             // Extract the last 1000 elements into a new vector.
-            std::vector<Tick*> tempcumulativeTicks(cumulativeTicks.begin() + (cumulativeTicks.size() - 1000), cumulativeTicks.end());
+            tempCumulativeTicks.clear();
+            std::vector<Tick*> tempCumulativeTicks(cumulativeTicks.begin() + (cumulativeTicks.size() - 1000), cumulativeTicks.end());
 
             // Release memory for the old vector.
             std::vector<Tick*>().swap(cumulativeTicks);
-            //cumulativeTicks.shrink_to_fit();
 
             // Set the original to be the new vector.
-            cumulativeTicks = tempcumulativeTicks;
+            cumulativeTicks = tempCumulativeTicks;
         }
     }
 
@@ -119,7 +170,7 @@ void Optimizer::loadData() {
     mongoc_cursor_t *cursor;
     const bson_t *document;
     bson_iter_t iterator;
-    bson_iter_t close;
+    bson_iter_t value;
     bson_error_t error;
 
     // Get a reference to the database collection.
@@ -154,7 +205,7 @@ void Optimizer::loadData() {
 
         if (bson_iter_init(&iterator, document)) {
             // TODO
-            bson_iter_find_descendant(&iterator, "data.?", &close);
+            bson_iter_find_descendant(&iterator, "data.?", &value);
             // ...
 
             this->data[this->dataCount][propertyIndex] = bson_iter_double(&value);
@@ -163,6 +214,8 @@ void Optimizer::loadData() {
 
         // Keep track of the number of ticks.
         this->dataCount++;
+
+        bson_destroy(document);
     }
 
     // Cleanup.
@@ -183,9 +236,9 @@ void Optimizer::optimize(std::vector<Configuration*> configurations, double inve
     maginatics::ThreadPool pool(1, threadCount, 5000);
 
     // Set up one strategy instance per configuration.
-    for (std::vector<Configuration*>::iterator iterator = configurations.begin(); iterator != configurations.end(); ++iterator) {
-        i = std::distance(configurations.begin(), iterator);
-        strategies[i] = StrategyFactory::create(this->strategyName, this->symbol, this->group, *iterator);
+    for (std::vector<Configuration*>::iterator configurationIterator = configurations.begin(); configurationIterator != configurations.end(); ++configurationIterator) {
+        i = std::distance(configurations.begin(), configurationIterator);
+        strategies[i] = StrategyFactory::create(this->strategyName, this->symbol, this->group, *configurationIterator);
     }
 
     // Iterate over data ticks.

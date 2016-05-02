@@ -5,21 +5,24 @@ void ReversalsOptimizer::prepareStudies() {
     this->studies.push_back(new EmaStudy({{"length", 50.0}}, {{"ema", "ema50"}}));
     this->studies.push_back(new EmaStudy({{"length", 100.0}}, {{"ema", "ema100"}}));
     this->studies.push_back(new EmaStudy({{"length", 200.0}}, {{"ema", "ema200"}}));
-    this->studies.push_back(new EmaStudy({{"length", 250.0}}, {{"ema", "ema250"}}));
-    this->studies.push_back(new EmaStudy({{"length", 300.0}}, {{"ema", "ema300"}}));
-    this->studies.push_back(new EmaStudy({{"length", 350.0}}, {{"ema", "ema350"}}));
-    this->studies.push_back(new EmaStudy({{"length", 400.0}}, {{"ema", "ema400"}}));
-    this->studies.push_back(new EmaStudy({{"length", 450.0}}, {{"ema", "ema450"}}));
-    this->studies.push_back(new EmaStudy({{"length", 500.0}}, {{"ema", "ema500"}}));
+
+    // TODO: Definitely try these too.
+    // this->studies.push_back(new EmaStudy({{"length", 250.0}}, {{"ema", "ema250"}}));
+    // this->studies.push_back(new EmaStudy({{"length", 300.0}}, {{"ema", "ema300"}}));
+    // this->studies.push_back(new EmaStudy({{"length", 350.0}}, {{"ema", "ema350"}}));
+    // this->studies.push_back(new EmaStudy({{"length", 400.0}}, {{"ema", "ema400"}}));
+    // this->studies.push_back(new EmaStudy({{"length", 450.0}}, {{"ema", "ema450"}}));
+    // this->studies.push_back(new EmaStudy({{"length", 500.0}}, {{"ema", "ema500"}}));
+
     this->studies.push_back(new RsiStudy({{"length", 2.0}}, {{"rsi", "rsi2"}}));
     this->studies.push_back(new RsiStudy({{"length", 5.0}}, {{"rsi", "rsi5"}}));
     this->studies.push_back(new RsiStudy({{"length", 7.0}}, {{"rsi", "rsi7"}}));
     this->studies.push_back(new RsiStudy({{"length", 9.0}}, {{"rsi", "rsi9"}}));
     this->studies.push_back(new RsiStudy({{"length", 14.0}}, {{"rsi", "rsi14"}}));
-    // this->studies.push_back(new StochasticOscillatorStudy({{"length", 5.0}, {"averageLength", 3.0}}, {{"K", "stochastic5K"}, {"D", "stochastic5D"}}));
-    // this->studies.push_back(new StochasticOscillatorStudy({{"length", 10.0}, {"averageLength", 3.0}}, {{"K", "stochastic10K"}, {"D", "stochastic10D"}}));
-    // this->studies.push_back(new StochasticOscillatorStudy({{"length", 14.0}, {"averageLength", 3.0}}, {{"K", "stochastic14K"}, {"D", "stochastic14D"}}));
-    // this->studies.push_back(new StochasticOscillatorStudy({{"length", 21.0}, {"averageLength", 3.0}}, {{"K", "stochastic21K"}, {"D", "stochastic21D"}}));
+    this->studies.push_back(new StochasticOscillatorStudy({{"length", 5.0}, {"averageLength", 3.0}}, {{"K", "stochastic5K"}, {"D", "stochastic5D"}}));
+    this->studies.push_back(new StochasticOscillatorStudy({{"length", 10.0}, {"averageLength", 3.0}}, {{"K", "stochastic10K"}, {"D", "stochastic10D"}}));
+    this->studies.push_back(new StochasticOscillatorStudy({{"length", 14.0}, {"averageLength", 3.0}}, {{"K", "stochastic14K"}, {"D", "stochastic14D"}}));
+    this->studies.push_back(new StochasticOscillatorStudy({{"length", 21.0}, {"averageLength", 3.0}}, {{"K", "stochastic21K"}, {"D", "stochastic21D"}}));
     this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 2.0}, {"deviations", 1.90}}, {{"regression", "prChannel100_2_1.90"}, {"upper", "prChannelUpper100_2_1.90"}, {"lower", "prChannelLower100_2_1.90"}}));
     this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 2.0}, {"deviations", 1.95}}, {{"regression", "prChannel100_2_1.95"}, {"upper", "prChannelUpper100_2_1.95"}, {"lower", "prChannelLower100_2_1.95"}}));
     this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 2.0}, {"deviations", 2.00}}, {{"regression", "prChannel100_2_2.00"}, {"upper", "prChannelUpper100_2_2.00"}, {"lower", "prChannelLower100_2_2.00"}}));
@@ -182,4 +185,33 @@ void ReversalsOptimizer::prepareStudies() {
     this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 4.0}, {"deviations", 2.10}}, {{"regression", "prChannel500_4_2.10"}, {"upper", "prChannelUpper500_4_2.10"}, {"lower", "prChannelLower500_4_2.10"}}));
     this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 4.0}, {"deviations", 2.15}}, {{"regression", "prChannel500_4_2.15"}, {"upper", "prChannelUpper500_4_2.15"}, {"lower", "prChannelLower500_4_2.15"}}));
     this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 5.0}, {"deviations", 2.05}}, {{"regression", "prChannel500_5_2.05"}, {"upper", "prChannelUpper500_5_2.05"}, {"lower", "prChannelLower500_5_2.05"}}));
+}
+
+std::vector<Study*> ReversalsOptimizer::getStudies() {
+    return this->studies;
+}
+
+std::map<std::string, std::vector<std::map<std::string, boost::variant<std::string, double>>>> ReversalsOptimizer::getConfigurationOptions();
+    std::map<std::string, std::vector<std::map<std::string, boost::variant<std::string, double>>>> configurationOptions;
+
+    std::vector<ConfigurationOption*> ema200Options;
+    std::vector<ConfigurationOption*> ema100Options;
+    std::vector<ConfigurationOption*> ema50Options;
+    std::vector<ConfigurationOption*> sma13Options;
+    std::vector<ConfigurationOption*> rsiOptions;
+    std::vector<ConfigurationOption*> stochasticOptions;
+    std::vector<ConfigurationOption*> prChannelOptions;
+
+    // TODO: Solve problem where configurationOptions map need to store values of both strings and numbers.
+    rsiOptions.push_back(...);
+
+    configurationOptions["ema200"] = ema200Options;
+    configurationOptions["ema100"] = ema100Options;
+    configurationOptions["ema50"] = ema50Options;
+    configurationOptions["sma13"] = sma13Options;
+    configurationOptions["rsi"] = rsiOptions;
+    configurationOptions["stochastic"] = stochasticOptions;
+    configurationOptions["prChannel"] = prChannelOptions;
+
+    return *configurationOptions;
 }

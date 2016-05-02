@@ -6,9 +6,12 @@ INCLUDES = -I/usr/include -I/usr/local/include -Iinclude $(shell pkg-config --cf
 LIBS = -lgsl -lcblas
 BIN = ./bin
 OBJDIR = ./obj
-OBJ = factories/optimizerFactory.o optimizers/reversalsOptimizer.o optimizers/optimizer.o factories/dataParserFactory.o \
-      dataParsers/oandaDataParser.o dataParsers/dataParser.o studies/study.o studies/smaStudy.o studies/emaStudy.o \
-      studies/rsiStudy.o studies/stochasticOscillatorStudy.o studies/polynomialRegressionChannelStudy.o
+OBJ = factories/strategyFactory.o positions/callPosition.o positions/putPosition.o positions/position.o \
+      strategies/reversalsStrategy.o strategies/strategy.o factories/optimizerFactory.o \
+      optimizers/reversalsOptimizer.o optimizers/optimizer.o factories/dataParserFactory.o \
+      dataParsers/oandaDataParser.o dataParsers/dataParser.o studies/study.o studies/smaStudy.o \
+      studies/emaStudy.o studies/rsiStudy.o studies/stochasticOscillatorStudy.o \
+      studies/polynomialRegressionChannelStudy.o
 
 all: prepareData optimize
 
@@ -21,7 +24,7 @@ optimize: src/optimize.cpp $(addprefix lib/,$(OBJ))
 	$(CC) $(CFLAGS) $(LFLAGS) $(INCLUDES) -o $(BIN)/$@ src/optimize.cpp $(addprefix $(OBJDIR)/,$(addprefix lib/,$(OBJ))) $(LIBS)
 
 %.o: %.cpp
-	@mkdir -p $(OBJDIR)/lib/factories $(OBJDIR)/lib/optimizers $(OBJDIR)/lib/dataParsers $(OBJDIR)/lib/studies
+	@mkdir -p $(OBJDIR)/lib/strategies $(OBJDIR)/lib/positions $(OBJDIR)/lib/factories $(OBJDIR)/lib/optimizers $(OBJDIR)/lib/dataParsers $(OBJDIR)/lib/studies
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(OBJDIR)/$@ -c $<
 clean:
 	rm -f $(BIN)/* $(OBJDIR)/*.o

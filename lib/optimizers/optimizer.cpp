@@ -117,8 +117,8 @@ void Optimizer::loadData() {
     bson_t *countQuery;
     bson_t *query;
     mongoc_cursor_t *cursor;
-    const bson_t *doc;
-    bson_iter_t iter;
+    const bson_t *document;
+    bson_iter_t iterator;
     bson_iter_t close;
     bson_error_t error;
 
@@ -146,15 +146,15 @@ void Optimizer::loadData() {
     cursor = mongoc_collection_find(collection, MONGOC_QUERY_NONE, 0, 0, 1000, query, NULL, NULL);
 
     // Go through query results, and convert each document into an array.
-    while (mongoc_cursor_next(cursor, &doc)) {
+    while (mongoc_cursor_next(cursor, &document)) {
         propertyIndex = 0;
 
         // Allocate memory for the data point.
         this->data[this->dataCount] = (double*) malloc(this->getDataPropertyCount() * sizeof(double));
 
-        if (bson_iter_init(&iter, doc)) {
+        if (bson_iter_init(&iterator, document)) {
             // TODO
-            bson_iter_find_descendant(&iter, "data.?", &close);
+            bson_iter_find_descendant(&iterator, "data.?", &close);
             // ...
 
             this->data[this->dataCount][propertyIndex] = bson_iter_double(&value);

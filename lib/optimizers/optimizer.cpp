@@ -123,7 +123,7 @@ void Optimizer::loadData() {
     bson_error_t error;
 
     // Get a reference to the database collection.
-    collection = mongoc_client_get_collection(this->dbClient, "forec-backtesting", "datapoints");
+    collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting", "datapoints");
 
     // Query for the number of data points.
     countQuery = BCON_NEW("$query", "{", "symbol", BCON_UTF8(this->symbol), "}");

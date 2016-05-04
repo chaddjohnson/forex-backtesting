@@ -244,10 +244,10 @@ void Optimizer::optimize(std::vector<Configuration*> configurations, double inve
     // Iterate over data ticks.
     for (i=0; i<this->dataCount; i++) {
         // Loop through all strategies/configurations.
-        for (std::vector<Strategy*>::iterator strategyIterator = strategies.begin(); strategyIterator != strategies.end(); ++ strategyIterator) {
+        for (std::vector<Strategy*>::iterator strategyIterator = strategies.begin(); strategyIterator != strategies.end(); ++strategyIterator) {
             // Use a thread pool so that all CPU cores can be used.
             pool.execute([&]() {
-                // Source: http://stackoverflow.com/a/7854596/83897
+                // Reference: http://stackoverflow.com/a/7854596/83897
                 auto functor = [=]() {
                     // Process the latest data for the study.
                     (*strategyIterator)->backtest(this->data[i], investment, profitability);

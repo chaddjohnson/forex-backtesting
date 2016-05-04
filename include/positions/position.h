@@ -26,7 +26,7 @@ class Position {
         time_t getExpirationTimestamp();
         virtual std::string getTransactionType() = 0;
         bool getIsOpen();
-        bool getHasExpired();
+        bool getHasExpired(time_t timestamp);
         void close(double price, time_t timestamp);
         virtual double getProfitLoss() = 0;
 };

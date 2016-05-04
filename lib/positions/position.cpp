@@ -49,9 +49,9 @@ bool Position::getIsOpen() {
     return this->isOpen;
 }
 
-bool Position::getHasExpired() {
+bool Position::getHasExpired(time_t timestamp) {
     // TODO
-    return this->timestamp >= this->expirationTimestamp;
+    return timestamp >= this->expirationTimestamp;
 }
 
 void Position::close(double price, time_t timestamp) {

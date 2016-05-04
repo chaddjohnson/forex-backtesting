@@ -14,7 +14,7 @@
 #include <boost/variant.hpp>
 #include "maginatics/threadpool/threadpool.h"
 #include "studies/study.h"
-#include "factories/strategyFactory.h"
+#include "factories/optimizationStrategyFactory.h"
 #include "types/tick.h"
 #include "types/configuration.h"
 
@@ -26,7 +26,7 @@ class Optimizer {
         int group;
         int dataCount;
         double **data;
-        std::vector<int> dataIndex;
+        std::map<int> dataIndexes;
         int getDataPropertyCount();
         void loadData();
         bson_t *convertTickToBson(Tick *tick);

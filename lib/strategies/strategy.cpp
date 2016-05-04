@@ -67,7 +67,7 @@ void Strategy::closeExpiredPositions(double price, time_t timestamp) {
     }
 }
 
-std::map<double> *Strategy::getResults() {
+std::map<std::string, double> *Strategy::getResults() {
     std::map<double> *results = new std::map<double>();
 
     results["profitLoss"] = this->profitLoss;

@@ -1,7 +1,7 @@
 #include "strategies/reversalsOptimizationStrategy.h"
 
 ReversalsOptimizationStrategy::ReversalsOptimizationStrategy(std::string symbol, int group, Configuration *configuration)
-        : Strategy(symbol, group, configuration) {
+        : OptimizationStrategy(symbol, group, configuration) {
     this->configuration = configuration;
     this->previousDataPoint = nullptr;
     this->putNextTick = false;
@@ -45,14 +45,14 @@ void ReversalsOptimizationStrategy::backtest(double *dataPoint, double investmen
     callNextTick = true;
 
     if (configuration->prChannelUpper && configuration->prChannelLower) {
-        if (dataPoint[configuration->prChannelUpper] && dataPoint[configuration->prChannel.lower]) {
+        if (dataPoint[configuration->prChannelUpper] && dataPoint[configuration->prChannelLower]) {
             // Determine if the upper regression bound was not breached by the high price.
             if (putNextTick && (!dataPoint[configuration->prChannelUpper] || dataPoint[configuration->high] <= dataPoint[configuration->prChannelUpper])) {
                 putNextTick = false;
             }
 
             // Determine if the lower regression bound was not breached by the low price.
-            if (callNextTick && (!dataPoint[configuration->prChannelLower] || dataPoint[configuration->low] >= dataPoint[configuraiton.prChannelLower])) {
+            if (callNextTick && (!dataPoint[configuration->prChannelLower] || dataPoint[configuration->low] >= dataPoint[configuration->prChannelLower])) {
                 callNextTick = false;
             }
         }
@@ -65,7 +65,7 @@ void ReversalsOptimizationStrategy::backtest(double *dataPoint, double investmen
         previousDataPoint = dataPoint;
         return;
     }
-    if (!configuration->stochastic) {
+    if (!configuration->stochasticK && configuration->stochasticD) {
         if (dataPoint[configuration->stochasticK] && dataPoint[configuration->stochasticD]) {
             // Determine if stochastic is not above the overbought line.
             if (putNextTick && (dataPoint[configuration->stochasticK] <= configuration->stochasticOverbought || dataPoint[configuration->stochasticD] <= configuration->stochasticOverbought)) {
@@ -127,7 +127,7 @@ void ReversalsOptimizationStrategy::backtest(double *dataPoint, double investmen
         previousDataPoint = dataPoint;
         return;
     }
-    if (configuration->ema100 && configuration->ema500) {
+    if (configuration->ema100 && configuration->ema50) {
         if (!dataPoint[configuration->ema100] || !dataPoint[configuration->ema50]) {
             putNextTick = false;
             callNextTick = false;

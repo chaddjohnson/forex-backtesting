@@ -5,9 +5,13 @@
 #include "position.h"
 
 class PutPosition : public Position {
+    protected:
+        std::string getTransactionType();
+
     public:
-        PutPosition::PutPosition(std::string symbol, time_t timestamp, double price, double investment, double profitability, int expirationMinutes)
-            : Position(std::string symbol, time_t timestamp, double price, double investment, double profitability, int expirationMinutes) {}
+        PutPosition(std::string symbol, time_t timestamp, double price, double investment, double profitability, int expirationMinutes)
+            : Position(symbol, timestamp, price, investment, profitability, expirationMinutes) {}
+        double getProfitLoss();
 };
 
 #endif

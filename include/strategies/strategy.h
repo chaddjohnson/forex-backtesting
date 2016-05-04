@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include <map>
-#include "positions/position"
+#include "positions/position.h"
 #include "types/configuration.h"
 
 class Strategy {
@@ -30,7 +30,7 @@ class Strategy {
         virtual void backtest(double *dataPoint, double investment, double profitability) = 0;
         std::string getSymbol();
         void setProfitLoss(double profitLoss);
-        std::map<double> *getResults();
+        std::map<std::string, double> *getResults();
 };
 
 #endif

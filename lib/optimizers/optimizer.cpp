@@ -238,7 +238,7 @@ void Optimizer::optimize(std::vector<Configuration*> configurations, double inve
     // Set up one strategy instance per configuration.
     for (std::vector<Configuration*>::iterator configurationIterator = configurations.begin(); configurationIterator != configurations.end(); ++configurationIterator) {
         i = std::distance(configurations.begin(), configurationIterator);
-        strategies[i] = StrategyFactory::create(this->strategyName, this->symbol, this->group, *configurationIterator);
+        strategies[i] = OptimizationStrategyFactory::create(this->strategyName, this->symbol, this->group, *configurationIterator);
     }
 
     // Iterate over data ticks.

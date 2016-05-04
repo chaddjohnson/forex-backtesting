@@ -6,12 +6,12 @@ INCLUDES = -I/usr/include -I/usr/local/include -Iinclude $(shell pkg-config --cf
 LIBS = -lgsl -lcblas
 BIN = ./bin
 OBJDIR = ./obj
-OBJ = factories/strategyFactory.o positions/callPosition.o positions/putPosition.o positions/position.o \
-      strategies/reversalsStrategy.o strategies/strategy.o factories/optimizerFactory.o \
-      optimizers/reversalsOptimizer.o optimizers/optimizer.o factories/dataParserFactory.o \
-      dataParsers/oandaDataParser.o dataParsers/dataParser.o studies/study.o studies/smaStudy.o \
-      studies/emaStudy.o studies/rsiStudy.o studies/stochasticOscillatorStudy.o \
-      studies/polynomialRegressionChannelStudy.o
+OBJ = factories/optimizationStrategyFactory.o positions/callPosition.o positions/putPosition.o \
+      positions/position.o strategies/reversalsOptimizationStrategy.o strategies/strategy.o \
+      factories/optimizerFactory.o optimizers/reversalsOptimizer.o optimizers/optimizer.o \
+      factories/dataParserFactory.o dataParsers/oandaDataParser.o dataParsers/dataParser.o \
+      studies/study.o studies/smaStudy.o studies/emaStudy.o studies/rsiStudy.o \
+      studies/stochasticOscillatorStudy.o studies/polynomialRegressionChannelStudy.o
 
 all: prepareData optimize
 

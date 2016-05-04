@@ -13,6 +13,10 @@ class Position {
         double closePrice;
         bool isOpen;
         time_t closeTimestamp;
+        time_t expirationTimestamp;
+
+    protected:
+        virtual std::string getTransactionType() = 0;
 
     public:
         Position(std::string symbol, time_t timestamp, double price, double investment, double profitability, int expirationMinutes);
@@ -24,7 +28,6 @@ class Position {
         double getProfitability();
         time_t getCloseTimestamp();
         time_t getExpirationTimestamp();
-        virtual std::string getTransactionType() = 0;
         bool getIsOpen();
         bool getHasExpired(time_t timestamp);
         void close(double price, time_t timestamp);

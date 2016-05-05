@@ -1,6 +1,6 @@
 #include "strategies/strategy.h"
 
-Strategy::Strategy(std::string symbol, Configuration *configuration) {
+Strategy::Strategy(std::string symbol) {
     this->symbol = symbol;
     this->profitLoss = 0.0;
     this->winCount = 0;
@@ -41,13 +41,13 @@ void Strategy::closeExpiredPositions(double price, time_t timestamp) {
             (*positionIterator)->close(price, timestamp);
 
             // Remove the position's investment amount from the total profit/loss for this strategy.
-            this->profitLoss -= position.getInvestment();
+            this->profitLoss -= (*positionIterator)->getInvestment();
 
             // Add the profit/loss for this position to the profit/loss for this strategy.
-            positionProfitLoss = position.getProfitLoss();
-            this->profitLoss += profitLoss();
+            positionProfitLoss = (*positionIterator)->getProfitLoss();
+            this->profitLoss += positionProfitLoss;
 
-            if (positionProfitLoss > position.getInvestment()) {
+            if (positionProfitLoss > (*positionIterator)->getInvestment()) {
                 this->winCount++;
                 this->consecutiveLosses = 0;
             }
@@ -68,15 +68,15 @@ void Strategy::closeExpiredPositions(double price, time_t timestamp) {
 }
 
 std::map<std::string, double> *Strategy::getResults() {
-    std::map<double> *results = new std::map<double>();
+    std::map<std::string, double> *results = new std::map<std::string, double>();
 
-    results["profitLoss"] = this->profitLoss;
-    results["winCount"] = this->winCount;
-    results["loseCount"] = this->loseCount;
-    results["winRate"] = getWinRate();
-    results["tradeCount"] = this->winCount + this.loseCount;
-    results["maximumConsecutiveLosses"] = this->maximumConsecutiveLosses;
-    results["minimumProfitLoss"] = this->minimumProfitLoss;
+    (*results)["profitLoss"] = this->profitLoss;
+    (*results)["winCount"] = (double)this->winCount;
+    (*results)["loseCount"] = (double)this->loseCount;
+    (*results)["winRate"] = getWinRate();
+    (*results)["tradeCount"] = (double)this->winCount + this->loseCount;
+    (*results)["maximumConsecutiveLosses"] = (double)this->maximumConsecutiveLosses;
+    (*results)["minimumProfitLoss"] = (double)this->minimumProfitLoss;
 
     return results;
 }

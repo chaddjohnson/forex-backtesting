@@ -191,27 +191,27 @@ std::vector<Study*> ReversalsOptimizer::getStudies() {
     return this->studies;
 }
 
-std::map<std::string, std::vector<std::map<std::string, boost::variant<std::string, double>>>> ReversalsOptimizer::getConfigurationOptions();
-    std::map<std::string, std::vector<std::map<std::string, boost::variant<std::string, double>>>> configurationOptions;
+std::map<std::string, std::vector<std::map<std::string, boost::variant<std::string, double>>>> *ReversalsOptimizer::getConfigurationOptions() {
+    std::map<std::string, std::vector<std::map<std::string, boost::variant<std::string, double>>>> *configurationOptions = nullptr;
 
-    std::vector<ConfigurationOption*> ema200Options;
-    std::vector<ConfigurationOption*> ema100Options;
-    std::vector<ConfigurationOption*> ema50Options;
-    std::vector<ConfigurationOption*> sma13Options;
-    std::vector<ConfigurationOption*> rsiOptions;
-    std::vector<ConfigurationOption*> stochasticOptions;
-    std::vector<ConfigurationOption*> prChannelOptions;
+    // std::vector<ConfigurationOption*> ema200Options;
+    // std::vector<ConfigurationOption*> ema100Options;
+    // std::vector<ConfigurationOption*> ema50Options;
+    // std::vector<ConfigurationOption*> sma13Options;
+    // std::vector<ConfigurationOption*> rsiOptions;
+    // std::vector<ConfigurationOption*> stochasticOptions;
+    // std::vector<ConfigurationOption*> prChannelOptions;
 
-    // TODO: Solve problem where configurationOptions map need to store values of both strings and numbers.
-    rsiOptions.push_back(...);
+    // // TODO: Solve problem where configurationOptions map need to store values of both strings and numbers.
+    // rsiOptions.push_back(...);
 
-    configurationOptions["ema200"] = ema200Options;
-    configurationOptions["ema100"] = ema100Options;
-    configurationOptions["ema50"] = ema50Options;
-    configurationOptions["sma13"] = sma13Options;
-    configurationOptions["rsi"] = rsiOptions;
-    configurationOptions["stochastic"] = stochasticOptions;
-    configurationOptions["prChannel"] = prChannelOptions;
+    // configurationOptions["ema200"] = ema200Options;
+    // configurationOptions["ema100"] = ema100Options;
+    // configurationOptions["ema50"] = ema50Options;
+    // configurationOptions["sma13"] = sma13Options;
+    // configurationOptions["rsi"] = rsiOptions;
+    // configurationOptions["stochastic"] = stochasticOptions;
+    // configurationOptions["prChannel"] = prChannelOptions;
 
-    return *configurationOptions;
+    return configurationOptions;
 }

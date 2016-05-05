@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
         configurations = optimizer->buildConfigurations();
         optimizer->optimize(configurations, 1000, 0.76);
     }
-    catch (const std::exception &error) {
+    catch (const std::exception const &error) {
         std::cerr << error.what() << std::endl;
     }
 

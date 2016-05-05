@@ -16,8 +16,8 @@ ReversalsOptimizationStrategy::~ReversalsOptimizationStrategy() {
 
 void ReversalsOptimizationStrategy::backtest(double *dataPoint, double investment, double profitability) {
     // TODO
-    int timestampHour = ...
-    int timestampMinute = ...
+    int timestampHour = 0;
+    int timestampMinute = 0;
 
     // TODO: Account for daylight savings.
     if (timestampHour >= 0 && (timestampHour < 7 || (timestampHour == 7 && timestampMinute < 30))) {

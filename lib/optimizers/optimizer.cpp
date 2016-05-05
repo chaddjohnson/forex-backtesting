@@ -6,6 +6,7 @@ Optimizer::Optimizer(mongoc_client_t *dbClient, std::string strategyName, std::s
     this->symbol = symbol;
     this->group = group;
     this->dataCount = 0;
+    this->configurations = nullptr;
 
     // Prepare studies for use.
     prepareStudies();
@@ -13,25 +14,25 @@ Optimizer::Optimizer(mongoc_client_t *dbClient, std::string strategyName, std::s
 
 bson_t *Optimizer::convertTickToBson(Tick *tick) {
     bson_t *document;
-    bson_t *dataDocument;
+    bson_t dataDocument;
 
-    bson_init(document);
-    bson_append_utf8(document, "symbol", 6, this->symbol, -1);
-    bson_append_document_begin(document, "data", 4, dataDocument);
+    document = bson_new();
+    BSON_APPEND_UTF8(document, "symbol", this->symbol.c_str());
+    BSON_APPEND_DOCUMENT_BEGIN(document, "data", &dataDocument);
 
     // Add tick properties to document.
-    for (Tick::iterator propertyIterator = tick.begin(); propertyIterator != tick.end(); ++propertyIterator) {
-        bson_append_double(dataDocument, propertyIterator->first.c_str(), propertyIterator->first.length(), propertyIterator->second);
+    for (Tick::iterator propertyIterator = tick->begin(); propertyIterator != tick->end(); ++propertyIterator) {
+        bson_append_double(&dataDocument, propertyIterator->first.c_str(), propertyIterator->first.length(), propertyIterator->second);
     }
 
-    bson_append_document_end(document, dataDocument);
+    bson_append_document_end(document, &dataDocument);
 
     return document;
 }
 
 void Optimizer::saveTicks(std::vector<Tick*> ticks) {
-    mongoc_collection_t collection;
-    mongoc_bulk_operation_t bulkOperation;
+    mongoc_collection_t *collection;
+    mongoc_bulk_operation_t *bulkOperation;
     bson_t *document;
     bson_t bulkOperationReply;
     bson_error_t bulkOperationError;
@@ -43,26 +44,29 @@ void Optimizer::saveTicks(std::vector<Tick*> ticks) {
     bulkOperation = mongoc_collection_create_bulk_operation(collection, true, NULL);
 
     // Reference: http://api.mongodb.org/c/current/bulk.html
-    for (std::vector<Tick*>::iterator insertionIterator = tempCumulativeTicks.begin(); insertionIterator != tempCumulativeTicks.end(); ++insertionIterator) {
+    for (std::vector<Tick*>::iterator insertionIterator = ticks.begin(); insertionIterator != ticks.end(); ++insertionIterator) {
         document = convertTickToBson(*insertionIterator);
-        mongoc_bulk_operation_insert(&bulkOperation, document);
+        mongoc_bulk_operation_insert(bulkOperation, document);
         bson_destroy(document);
     }
 
     // Execute the bulk operation.
-    mongoc_bulk_operation_execute(&bulkOperation, &bulkOperationReply, &bulkOperationError);
+    mongoc_bulk_operation_execute(bulkOperation, &bulkOperationReply, &bulkOperationError);
 
     // Cleanup.
     mongoc_collection_destroy(collection);
+    mongoc_bulk_operation_destroy(bulkOperation);
+    bson_destroy(&bulkOperationReply);
+    delete document;
 }
 
 void Optimizer::prepareData(std::vector<Tick*> ticks) {
     double percentage;
     int tickCount = ticks.size();
     std::vector<Tick*> cumulativeTicks;
-    std::vector<Tick*> tempCumulativeTicks;
     int threadCount = std::thread::hardware_concurrency();
     maginatics::ThreadPool pool(1, threadCount, 5000);
+    std::vector<Study*> studies = this->getStudies();
     int i = 0;
     int j = 0;
 
@@ -102,7 +106,7 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
         // Periodically save tick data to the database and free up memory.
         if (cumulativeTicks.size() >= 2000) {
             // Extract the first ~1000 ticks to be inserted.
-            std::vector<Tick*> tempCumulativeTicks(cumulativeTicks.begin(), cumulativeTicks.begin() + ((cumulativeTicks.size() - 1000) - 1));
+            std::vector<Tick*> firstCumulativeTicks(cumulativeTicks.begin(), cumulativeTicks.begin() + ((cumulativeTicks.size() - 1000) - 1));
 
             // Write ticks to database.
             saveTicks(cumulativeTicks);
@@ -112,38 +116,26 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
             }
 
             // Extract the last 1000 elements into a new vector.
-            tempCumulativeTicks.clear();
-            std::vector<Tick*> tempCumulativeTicks(cumulativeTicks.begin() + (cumulativeTicks.size() - 1000), cumulativeTicks.end());
+            std::vector<Tick*> lastCumulativeTicks(cumulativeTicks.begin() + (cumulativeTicks.size() - 1000), cumulativeTicks.end());
 
             // Release memory for the old vector.
             std::vector<Tick*>().swap(cumulativeTicks);
 
             // Set the original to be the new vector.
-            cumulativeTicks = tempCumulativeTicks;
+            cumulativeTicks = lastCumulativeTicks;
         }
     }
 
     printf("\n");
 }
 
-std::vector<Configuration*> Optimizer::buildConfigurations() {
-    std::vector<Configuration*> configurations;
-
-
-
-    // Built a flat key/value list of configurations.
-    // ...
-
-    return configurations;
-}
-
 // double *Optimizer::convertTickToArray(Tick *tick) {
-//     double *convertedTick = (double*) malloc(getStudies.size() * sizeof(double));
+//     double *convertedTick = (double*) malloc(this->getStudies().size() * sizeof(double));
 //     int index;
 
-//     for (Tick::iterator iterator = tick.begin(); iterator != tick.end(); ++iterator) {
+//     for (Tick::iterator iterator = tick->begin(); iterator != tick->end(); ++iterator) {
 //         // Get the current property index.
-//         index = std::distance(tick.begin(), iterator);
+//         index = std::distance(tick->begin(), iterator);
 
 //         // Add the current property value to the array.
 //         convertedTick[index] = iterator->second;
@@ -153,45 +145,49 @@ std::vector<Configuration*> Optimizer::buildConfigurations() {
 // }
 
 int Optimizer::getDataPropertyCount() {
-    int count = 0;
+    std::vector<Study*> studies = this->getStudies();
+    int propertyCount = 0;
 
-    for (std::vector<Study*>::iterator iterator = this->studies.begin(); iterator != this->studies.end(); ++iterator) {
-        count += (*iterator)->getOutputMap().size();
+    for (std::vector<Study*>::iterator iterator = studies.begin(); iterator != studies.end(); ++iterator) {
+        propertyCount += (*iterator)->getOutputMap().size();
     }
 
-    return 0;
+    return propertyCount;
 }
 
 void Optimizer::loadData() {
+    int dataPointIndex = 0;
     int propertyIndex = 0;
     mongoc_collection_t *collection;
+    mongoc_cursor_t *cursor;
     bson_t *countQuery;
     bson_t *query;
-    mongoc_cursor_t *cursor;
     const bson_t *document;
-    bson_iter_t iterator;
-    bson_iter_t value;
+    bson_iter_t documentIterator;
+    bson_iter_t dataIterator;
     bson_error_t error;
+    const char *propertyName;
+    const bson_value_t *propertyValue;
 
     // Get a reference to the database collection.
     collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting", "datapoints");
 
     // Query for the number of data points.
-    countQuery = BCON_NEW("$query", "{", "symbol", BCON_UTF8(this->symbol), "}");
+    countQuery = BCON_NEW("$query", "{", "symbol", BCON_UTF8(this->symbol.c_str()), "}");
     this->dataCount = mongoc_collection_count(collection, MONGOC_QUERY_NONE, countQuery, 0, 0, NULL, &error);
 
     if (this->dataCount < 0) {
         // No data points found.
-        throw std::exception(error.message);
+        throw std::runtime_error(error.message);
     }
 
     // Allocate memory for the data.
-    this->data = (double** data) malloc(this->dataCount * sizeof(double*));
+    this->data = (double**) malloc(this->dataCount * sizeof(double*));
 
     // Query the database.
     query = BCON_NEW(
-        "$query", "{", "symbol", BCON_UTF8(this->symbol), "}",
-        "$orderby", "{", "data.timestamp", BCON_INT32(1) "}",
+        "$query", "{", "symbol", BCON_UTF8(this->symbol.c_str()), "}",
+        "$orderby", "{", "data.timestamp", BCON_INT32(1), "}",
         "$hint", "{", "data.timestamp", BCON_INT32(1), "}"
     );
     cursor = mongoc_collection_find(collection, MONGOC_QUERY_NONE, 0, 0, 1000, query, NULL, NULL);
@@ -201,27 +197,57 @@ void Optimizer::loadData() {
         propertyIndex = 0;
 
         // Allocate memory for the data point.
-        this->data[this->dataCount] = (double*) malloc(this->getDataPropertyCount() * sizeof(double));
+        this->data[dataPointIndex] = (double*) malloc(this->getDataPropertyCount() * sizeof(double));
 
-        if (bson_iter_init(&iterator, document)) {
-            // TODO
-            bson_iter_find_descendant(&iterator, "data.?", &value);
-            // ...
+        if (bson_iter_init(&documentIterator, document)) {
+            // Find the "data" subdocument.
+            if (bson_iter_init_find(&documentIterator, document, "data") &&
+                BSON_ITER_HOLDS_DOCUMENT(&documentIterator) &&
+                bson_iter_recurse(&documentIterator, &dataIterator)) {
 
-            this->data[this->dataCount][propertyIndex] = bson_iter_double(&value);
-            propertyIndex++;
+                // Iterate through the data properties.
+                while (bson_iter_next(&dataIterator)) {
+                    propertyValue = bson_iter_value(&dataIterator);
+
+                    // Add the data property value to the data store.
+                    this->data[dataPointIndex][propertyIndex] = propertyValue->value.v_double;
+
+                    // For the first data point only (only need to do this once), build an
+                    // index of data item positions.
+                    if (this->dataCount == 0) {
+                        // Get the property name.
+                        propertyName = bson_iter_key(&dataIterator);
+
+                        // Add to the data index map.
+                        this->dataIndex[propertyName] = propertyIndex;
+                    }
+
+                    propertyIndex++;
+                }
+            }
         }
 
         // Keep track of the number of ticks.
-        this->dataCount++;
-
-        bson_destroy(document);
+        dataPointIndex++;
     }
 
     // Cleanup.
+    bson_destroy(countQuery);
     bson_destroy(query);
     mongoc_cursor_destroy(cursor);
     mongoc_collection_destroy(collection);
+    delete document;
+}
+
+std::vector<Configuration*> *Optimizer::buildConfigurations() {
+    std::vector<Configuration*> *configurations = new std::vector<Configuration*>();
+
+
+
+    // Built a flat key/value list of configurations.
+    // ...
+
+    return configurations;
 }
 
 void Optimizer::optimize(std::vector<Configuration*> configurations, double investment, double profitability) {
@@ -231,6 +257,9 @@ void Optimizer::optimize(std::vector<Configuration*> configurations, double inve
 
     // Load tick data from the database.
     loadData();
+
+    // Build configurations.
+    this->configurations = buildConfigurations();
 
     // Set up a threadpool so all CPU cores and their threads can be used.
     maginatics::ThreadPool pool(1, threadCount, 5000);

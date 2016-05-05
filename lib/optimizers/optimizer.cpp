@@ -38,7 +38,7 @@ void Optimizer::saveTicks(std::vector<Tick*> ticks) {
     bson_error_t bulkOperationError;
 
     // Get a reference to the database collection.
-    collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting", "datapoints");
+    collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting-test", "datapoints");
 
     // Begin a bulk operation.
     bulkOperation = mongoc_collection_create_bulk_operation(collection, true, NULL);
@@ -169,7 +169,7 @@ void Optimizer::loadData() {
     const bson_value_t *propertyValue;
 
     // Get a reference to the database collection.
-    collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting", "datapoints");
+    collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting-test", "datapoints");
 
     // Query for the number of data points.
     countQuery = BCON_NEW("symbol", BCON_UTF8(this->symbol.c_str()));

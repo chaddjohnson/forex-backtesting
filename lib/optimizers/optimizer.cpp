@@ -18,7 +18,13 @@ bson_t *Optimizer::convertTickToBson(Tick *tick) {
 
     document = bson_new();
     BSON_APPEND_UTF8(document, "symbol", this->symbol.c_str());
+    BSON_APPEND_INT32(document, "testingGroups", tick->at("testingGroups"));
+    BSON_APPEND_INT32(document, "validationGroups", tick->at("validationGroups"));
     BSON_APPEND_DOCUMENT_BEGIN(document, "data", &dataDocument);
+
+    // Remove group keys as they are no longer needed.
+    tick->erase("testingGroups");
+    tick->erase("validationGroups");
 
     // Add tick properties to document.
     for (Tick::iterator propertyIterator = tick->begin(); propertyIterator != tick->end(); ++propertyIterator) {

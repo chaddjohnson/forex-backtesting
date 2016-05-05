@@ -6,9 +6,6 @@ Optimizer::Optimizer(mongoc_client_t *dbClient, std::string strategyName, std::s
     this->symbol = symbol;
     this->group = group;
     this->dataCount = 0;
-
-    // Prepare studies for use.
-    prepareStudies();
 }
 
 Optimizer::~Optimizer() {

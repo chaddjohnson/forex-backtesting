@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
     // Clean up.
     // TODO
     delete dataParser;
-    delete optimizer;
+    // delete optimizer;
     mongoc_cleanup();
 
     return 0;

@@ -33,13 +33,12 @@ class Optimizer {
         void saveTicks(std::vector<Tick*> ticks);
 
     protected:
-        virtual void prepareStudies();
-        virtual std::vector<Study*> getStudies();
-        virtual std::map<std::string, std::vector<std::map<std::string, boost::variant<std::string, double>>>> *getConfigurationOptions();
+        virtual std::vector<Study*> getStudies() = 0;
+        virtual std::map<std::string, std::vector<std::map<std::string, boost::variant<std::string, double>>>> *getConfigurationOptions() = 0;
 
     public:
         Optimizer(mongoc_client_t *dbClient, std::string strategyName, std::string symbol, int group);
-        virtual ~Optimizer() = 0;
+        virtual ~Optimizer();
         void prepareData(std::vector<Tick*> ticks);
         std::vector<Configuration*> buildConfigurations();
         void optimize(std::vector<Configuration*> configurations, double investment, double profitability);

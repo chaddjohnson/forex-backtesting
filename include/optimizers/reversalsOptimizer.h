@@ -3,6 +3,8 @@
 
 #include <string>
 #include <vector>
+#include <mongoc.h>
+#include <boost/variant.hpp>
 #include "optimizers/optimizer.h"
 #include "studies/smaStudy.h"
 #include "studies/emaStudy.h"
@@ -15,14 +17,13 @@ class ReversalsOptimizer : public Optimizer {
         std::vector<Study*> studies;
 
     protected:
-        std::map<std::string, std::vector<std::map<std::string, boost::variant<std::string, double>>>> *getConfigurationOptions();
         std::vector<Study*> getStudies();
+        std::map<std::string, std::vector<std::map<std::string, boost::variant<std::string, double>>>> *getConfigurationOptions();
 
     public:
         ReversalsOptimizer(mongoc_client_t *dbClient, std::string symbol, int group)
             : Optimizer(dbClient, "ReversalsOptimization", symbol, group) {}
         ~ReversalsOptimizer() {}
-        void prepareStudies();
 };
 
 #endif

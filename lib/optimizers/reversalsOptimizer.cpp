@@ -1,6 +1,11 @@
 #include "optimizers/reversalsOptimizer.h"
 
-void ReversalsOptimizer::prepareStudies() {
+std::vector<Study*> ReversalsOptimizer::getStudies() {
+    if (this->studies.size() > 0) {
+        // Studies have already been prepared.
+        return this->studies;
+    }
+
     this->studies.push_back(new SmaStudy({{"length", 13.0}}, {{"sma", "sma13"}}));
     this->studies.push_back(new EmaStudy({{"length", 50.0}}, {{"ema", "ema50"}}));
     this->studies.push_back(new EmaStudy({{"length", 100.0}}, {{"ema", "ema100"}}));
@@ -185,9 +190,7 @@ void ReversalsOptimizer::prepareStudies() {
     this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 4.0}, {"deviations", 2.10}}, {{"regression", "prChannel500_4_2.10"}, {"upper", "prChannelUpper500_4_2.10"}, {"lower", "prChannelLower500_4_2.10"}}));
     this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 4.0}, {"deviations", 2.15}}, {{"regression", "prChannel500_4_2.15"}, {"upper", "prChannelUpper500_4_2.15"}, {"lower", "prChannelLower500_4_2.15"}}));
     this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 5.0}, {"deviations", 2.05}}, {{"regression", "prChannel500_5_2.05"}, {"upper", "prChannelUpper500_5_2.05"}, {"lower", "prChannelLower500_5_2.05"}}));
-}
 
-std::vector<Study*> ReversalsOptimizer::getStudies() {
     return this->studies;
 }
 

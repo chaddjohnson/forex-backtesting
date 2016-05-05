@@ -20,7 +20,7 @@ class DataParser {
 
     public:
         DataParser(std::string filePath);
-        virtual ~DataParser() = 0;
+        virtual ~DataParser();
         virtual std::vector<Tick*> parse() = 0;
 };
 

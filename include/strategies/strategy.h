@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <algorithm>
 #include "positions/position.h"
 #include "types/configuration.h"
 

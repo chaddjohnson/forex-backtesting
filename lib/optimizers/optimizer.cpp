@@ -125,7 +125,8 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
             // Extract the last 1000 elements into a new vector.
             std::vector<Tick*> lastCumulativeTicks(cumulativeTicks.begin() + (cumulativeTicks.size() - 1000), cumulativeTicks.end());
 
-            // Release memory for the old vector.
+            // Release memory.
+            std::vector<Tick*>().swap(firstCumulativeTicks);
             std::vector<Tick*>().swap(cumulativeTicks);
 
             // Set the original to be the new vector.

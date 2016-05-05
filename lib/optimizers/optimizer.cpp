@@ -90,12 +90,9 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
             (*studyIterator)->setData(&cumulativeTicks);
 
             // Use a thread pool so that all CPU cores can be used.
-            pool.execute([&]() {
-                // Source: http://stackoverflow.com/a/7854596/83897
-                auto functor = [=]() {
-                    // Process the latest data for the study.
-                    (*studyIterator)->tick();
-                };
+            pool.execute([studyIterator]() {
+                // Process the latest data for the study.
+                (*studyIterator)->tick();
             });
         }
 
@@ -268,12 +265,9 @@ void Optimizer::optimize(std::vector<Configuration*> configurations, double inve
         // Loop through all strategies/configurations.
         for (std::vector<Strategy*>::iterator strategyIterator = strategies.begin(); strategyIterator != strategies.end(); ++strategyIterator) {
             // Use a thread pool so that all CPU cores can be used.
-            pool.execute([&]() {
-                // Reference: http://stackoverflow.com/a/7854596/83897
-                auto functor = [=]() {
-                    // Process the latest data for the study.
-                    (*strategyIterator)->backtest(this->data[i], investment, profitability);
-                };
+            pool.execute([this, strategyIterator, i, investment, profitability]() {
+                // Process the latest data for the study.
+                (*strategyIterator)->backtest(this->data[i], investment, profitability);
             });
         }
 

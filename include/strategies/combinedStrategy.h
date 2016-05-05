@@ -7,15 +7,15 @@
 
 class CombinedStrategy : public Strategy {
     private:
-        std::vector<Configuration*> *configurations;
+        std::vector<Configuration*> configurations;
         double *tickPreviousDataPoint;
 
     protected:
         void tick(double *dataPoint);
-        std::vector<Configuration*> *getConfigurations();
+        std::vector<Configuration*> getConfigurations();
 
     public:
-        CombinedStrategy(std::string symbol, std::vector<Configuration*> *configurations);
+        CombinedStrategy(std::string symbol, std::vector<Configuration*> configurations);
         ~CombinedStrategy();
 };
 

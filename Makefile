@@ -7,8 +7,8 @@ LIBS = -lgsl -lcblas
 BIN = ./bin
 OBJDIR = ./obj
 OBJ = factories/optimizationStrategyFactory.o positions/callPosition.o positions/putPosition.o \
-      positions/position.o strategies/reversalsOptimizationStrategy.o strategies/strategy.o \
-      factories/optimizerFactory.o optimizers/reversalsOptimizer.o optimizers/optimizer.o \
+      positions/position.o strategies/reversalsOptimizationStrategy.o strategies/optimizationStrategy.o \
+      strategies/strategy.o factories/optimizerFactory.o optimizers/reversalsOptimizer.o optimizers/optimizer.o \
       factories/dataParserFactory.o dataParsers/oandaDataParser.o dataParsers/dataParser.o \
       studies/study.o studies/smaStudy.o studies/emaStudy.o studies/rsiStudy.o \
       studies/stochasticOscillatorStudy.o studies/polynomialRegressionChannelStudy.o

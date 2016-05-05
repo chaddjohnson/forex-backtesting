@@ -1,6 +1,6 @@
 #include "strategies/combinedStrategy.h"
 
-CombinedStrategy::CombinedStrategy(std::string symbol, std::vector<Configuration*> *configurations)
+CombinedStrategy::CombinedStrategy(std::string symbol, std::vector<Configuration*> configurations)
         : Strategy(symbol) {
     this->configurations = configurations;
 }

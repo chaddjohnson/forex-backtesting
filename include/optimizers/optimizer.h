@@ -27,7 +27,6 @@ class Optimizer {
         int dataCount;
         double **data;
         std::map<std::string, int> dataIndex;
-        std::vector<Configuration*> *configurations;
         int getDataPropertyCount();
         void loadData();
         bson_t *convertTickToBson(Tick *tick);
@@ -40,9 +39,9 @@ class Optimizer {
 
     public:
         Optimizer(mongoc_client_t *dbClient, std::string strategyName, std::string symbol, int group);
-        virtual ~Optimizer();
+        virtual ~Optimizer() = 0;
         void prepareData(std::vector<Tick*> ticks);
-        std::vector<Configuration*> *buildConfigurations();
+        std::vector<Configuration*> buildConfigurations();
         void optimize(std::vector<Configuration*> configurations, double investment, double profitability);
 };
 

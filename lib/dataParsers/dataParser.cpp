@@ -4,6 +4,8 @@ DataParser::DataParser(std::string filePath) {
     this->filePath = filePath;
 }
 
+DataParser::~DataParser() {}
+
 std::string DataParser::getFilePath() {
     return filePath;
 }

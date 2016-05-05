@@ -6,10 +6,13 @@ Optimizer::Optimizer(mongoc_client_t *dbClient, std::string strategyName, std::s
     this->symbol = symbol;
     this->group = group;
     this->dataCount = 0;
-    this->configurations = nullptr;
 
     // Prepare studies for use.
     prepareStudies();
+}
+
+Optimizer::~Optimizer() {
+    free(data);
 }
 
 bson_t *Optimizer::convertTickToBson(Tick *tick) {
@@ -130,7 +133,7 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
 }
 
 // double *Optimizer::convertTickToArray(Tick *tick) {
-//     double *convertedTick = (double*) malloc(this->getStudies().size() * sizeof(double));
+//     double *convertedTick = (double*)malloc(this->getStudies().size() * sizeof(double));
 //     int index;
 
 //     for (Tick::iterator iterator = tick->begin(); iterator != tick->end(); ++iterator) {
@@ -182,7 +185,7 @@ void Optimizer::loadData() {
     }
 
     // Allocate memory for the data.
-    this->data = (double**) malloc(this->dataCount * sizeof(double*));
+    this->data = (double**)malloc(this->dataCount * sizeof(double*));
 
     // Query the database.
     query = BCON_NEW(
@@ -197,7 +200,7 @@ void Optimizer::loadData() {
         propertyIndex = 0;
 
         // Allocate memory for the data point.
-        this->data[dataPointIndex] = (double*) malloc(this->getDataPropertyCount() * sizeof(double));
+        this->data[dataPointIndex] = (double*)malloc(this->getDataPropertyCount() * sizeof(double));
 
         if (bson_iter_init(&documentIterator, document)) {
             // Find the "data" subdocument.
@@ -239,10 +242,8 @@ void Optimizer::loadData() {
     delete document;
 }
 
-std::vector<Configuration*> *Optimizer::buildConfigurations() {
-    std::vector<Configuration*> *configurations = new std::vector<Configuration*>();
-
-
+std::vector<Configuration*> Optimizer::buildConfigurations() {
+    std::vector<Configuration*> configurations;
 
     // Built a flat key/value list of configurations.
     // ...
@@ -257,9 +258,6 @@ void Optimizer::optimize(std::vector<Configuration*> configurations, double inve
 
     // Load tick data from the database.
     loadData();
-
-    // Build configurations.
-    this->configurations = buildConfigurations();
 
     // Set up a threadpool so all CPU cores and their threads can be used.
     maginatics::ThreadPool pool(1, threadCount, 5000);

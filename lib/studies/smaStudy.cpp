@@ -1,7 +1,6 @@
 #include "studies/smaStudy.h"
 
 void SmaStudy::tick() {
-    Tick *lastTick = getLastTick();
     std::vector<Tick*> *dataSegment = new std::vector<Tick*>();
     int dataSegmentLength = 0;
     double sum = 0.0;
@@ -20,7 +19,7 @@ void SmaStudy::tick() {
     }
     sma = sum / dataSegmentLength;
 
-    (*lastTick)[getOutputMapping("sma")] = sma;
+    setTickOutput(getOutputMapping("sma"), sma);
 
     // Free memory.
     delete dataSegment;

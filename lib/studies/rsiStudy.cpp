@@ -75,7 +75,7 @@ void RsiStudy::tick() {
     // Calculate RSI.
     rsi = 100 - (100 / (1 + RS));
 
-    (*lastTick)[getOutputMapping("rsi")] = rsi;
+    setTickOutput(getOutputMapping("rsi"), rsi);
 
     // Free memory.
     delete dataSegment;

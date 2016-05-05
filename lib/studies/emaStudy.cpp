@@ -22,5 +22,5 @@ void EmaStudy::tick() {
     // Set the new EMA just calculated as the previous EMA.
     previousEma = ema;
 
-    (*lastTick)[getOutputMapping("ema")] = ema;
+    setTickOutput(getOutputMapping("ema"), ema);
 }

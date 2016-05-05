@@ -38,8 +38,8 @@ void StochasticOscillatorStudy::tick() {
     // }
     // D = DSum / averageLengthDataSegment.size();
 
-    // (*lastTick)[KOutputName] = K;
-    // (*lastTick)[getOutputMapping("D")] = D;
+    // setTickOutput(KOutputName, K);
+    // setTickOutput(getOutputMapping("D"), D);
 
     // // Free memory.
     // delete dataSegment;

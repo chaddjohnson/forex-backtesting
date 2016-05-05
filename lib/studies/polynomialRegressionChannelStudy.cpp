@@ -112,10 +112,10 @@ void PolynomialRegressionChannelStudy::tick() {
     regressionStandardDeviation = calculateStandardDeviation(pastRegressions);
 
     // Calculate the upper and lower values.
-    (*lastTick)[getOutputMapping("upper")] = regression + (regressionStandardDeviation * getInput("deviations"));
-    (*lastTick)[getOutputMapping("lower")] = regression - (regressionStandardDeviation * getInput("deviations"));
+    setTickOutput(getOutputMapping("upper"), regression + (regressionStandardDeviation * getInput("deviations")));
+    setTickOutput(getOutputMapping("lower"), regression - (regressionStandardDeviation * getInput("deviations")));
 
-    (*lastTick)[regressionOutputName] = regression;
+    setTickOutput(regressionOutputName, regression);
 
     // Free memory.
     delete dataSegment;

@@ -99,6 +99,17 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
         // Block until all tasks for the current data point to complete.
         pool.drain();
 
+        // Merge tick output values from the studies into the current tick.
+        for (std::vector<Study*>::iterator studyIterator = studies.begin(); studyIterator != studies.end(); ++studyIterator) {
+            std::map<std::string, double> studyOutputs = (*studyIterator)->getTickOutputs();
+
+            for (std::map<std::string, double>::iterator outputIterator = studyOutputs.begin(); outputIterator != studyOutputs.end(); ++outputIterator) {
+                (**dataIterator)[outputIterator->first] = outputIterator->second;
+            }
+
+            (*studyIterator)->resetTickOutputs();
+        }
+
         // Periodically save tick data to the database and free up memory.
         if (cumulativeTicks.size() >= 2000) {
             // Extract the first ~1000 ticks to be inserted.

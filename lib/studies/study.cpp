@@ -36,3 +36,15 @@ Tick *Study::getPreviousTick() {
 Tick *Study::getLastTick() {
     return data->back();
 }
+
+std::map<std::string, double> Study::getTickOutputs() {
+    return this->tickOutputs;
+}
+
+void Study::setTickOutput(std::string key, double value) {
+    this->tickOutputs[key] = value;
+}
+
+void Study::resetTickOutputs() {
+    std::map<std::string, double>().swap(this->tickOutputs);
+}

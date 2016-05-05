@@ -57,7 +57,6 @@ void Optimizer::saveTicks(std::vector<Tick*> ticks) {
     mongoc_collection_destroy(collection);
     mongoc_bulk_operation_destroy(bulkOperation);
     bson_destroy(&bulkOperationReply);
-    delete document;
 }
 
 void Optimizer::prepareData(std::vector<Tick*> ticks) {
@@ -173,7 +172,7 @@ void Optimizer::loadData() {
     collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting", "datapoints");
 
     // Query for the number of data points.
-    countQuery = BCON_NEW("$query", "{", "symbol", BCON_UTF8(this->symbol.c_str()), "}");
+    countQuery = BCON_NEW("symbol", BCON_UTF8(this->symbol.c_str()));
     this->dataCount = mongoc_collection_count(collection, MONGOC_QUERY_NONE, countQuery, 0, 0, NULL, &error);
 
     if (this->dataCount < 0) {
@@ -236,7 +235,6 @@ void Optimizer::loadData() {
     bson_destroy(query);
     mongoc_cursor_destroy(cursor);
     mongoc_collection_destroy(collection);
-    delete document;
 }
 
 std::vector<Configuration*> Optimizer::buildConfigurations() {

@@ -113,24 +113,19 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
         // Periodically save tick data to the database and free up memory.
         if (cumulativeTicks.size() >= 2000) {
             // Extract the first ~1000 ticks to be inserted.
-            std::vector<Tick*> firstCumulativeTicks(cumulativeTicks.begin(), cumulativeTicks.begin() + ((cumulativeTicks.size() - 1000) - 1));
+            std::vector<Tick*> firstCumulativeTicks(cumulativeTicks.begin(), cumulativeTicks.begin() + (cumulativeTicks.size() - 1000));
 
             // Write ticks to database.
-            saveTicks(cumulativeTicks);
+            saveTicks(firstCumulativeTicks);
 
+            // Release memory.
+            std::vector<Tick*>().swap(firstCumulativeTicks);
             for (j=0; j<1000; j++) {
                 delete cumulativeTicks[j];
             }
 
-            // Extract the last 1000 elements into a new vector.
-            std::vector<Tick*> lastCumulativeTicks(cumulativeTicks.begin() + (cumulativeTicks.size() - 1000), cumulativeTicks.end());
-
-            // Release memory.
-            std::vector<Tick*>().swap(firstCumulativeTicks);
-            std::vector<Tick*>().swap(cumulativeTicks);
-
-            // Set the original to be the new vector.
-            cumulativeTicks = lastCumulativeTicks;
+            // Keep only the last 1000 elements.
+            std::vector<Tick*>(cumulativeTicks.begin() + (cumulativeTicks.size() - 1000), cumulativeTicks.end()).swap(cumulativeTicks);
         }
     }
 

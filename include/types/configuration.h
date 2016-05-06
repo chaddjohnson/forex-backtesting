@@ -2,14 +2,12 @@
 #define CONFIGURATION_H
 
 typedef struct Configuration {
-    // Basic properties
-    time_t timestamp;
+    // Index mappings
+    int timestamp;
     int open;
     int high;
     int low;
     int close;
-
-    // Index mappings
     int ema200;
     int ema100;
     int ema50;

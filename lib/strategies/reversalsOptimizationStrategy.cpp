@@ -1,7 +1,7 @@
 #include "strategies/reversalsOptimizationStrategy.h"
 
-ReversalsOptimizationStrategy::ReversalsOptimizationStrategy(std::string symbol, int group, Configuration *configuration)
-        : OptimizationStrategy(symbol, group, configuration) {
+ReversalsOptimizationStrategy::ReversalsOptimizationStrategy(std::string symbol, std::map<std::string, int> dataIndex, int group, Configuration *configuration)
+        : OptimizationStrategy(symbol, dataIndex, group, configuration) {
     this->configuration = configuration;
     this->previousDataPoint = nullptr;
     this->putNextTick = false;
@@ -15,10 +15,13 @@ ReversalsOptimizationStrategy::~ReversalsOptimizationStrategy() {
 }
 
 void ReversalsOptimizationStrategy::backtest(double *dataPoint, double investment, double profitability) {
-    time_t utcTime = configuration.timestamp;
+    time_t utcTime = dataPoint[configuration->timestamp];
     struct tm *localTime = localtime(&utcTime);
     int timestampHour = localTime->tm_hour;
     int timestampMinute = localTime->tm_min;
+
+    // Tick the strategy.
+    this->tick(dataPoint);
 
     // Do not create trades between 4pm - 11:30pm Central, as the payout is lower during these times.
     if (timestampHour >= 16 && (timestampHour < 23 || (timestampHour == 23 && timestampMinute < 30))) {
@@ -32,10 +35,10 @@ void ReversalsOptimizationStrategy::backtest(double *dataPoint, double investmen
 
     if (previousDataPoint) {
         if (putNextTick) {
-            addPosition(new PutPosition(getSymbol(), (configuration->timestamp - 1), previousDataPoint[configuration->close], investment, profitability, expirationMinutes));
+            addPosition(new PutPosition(getSymbol(), (dataPoint[configuration->timestamp] - 1), previousDataPoint[configuration->close], investment, profitability, expirationMinutes));
         }
         if (callNextTick) {
-            addPosition(new CallPosition(getSymbol(), (configuration->timestamp - 1), previousDataPoint[configuration->close], investment, profitability, expirationMinutes));
+            addPosition(new CallPosition(getSymbol(), (dataPoint[configuration->timestamp] - 1), previousDataPoint[configuration->close], investment, profitability, expirationMinutes));
         }
     }
 

@@ -10,7 +10,7 @@ Position::Position(std::string symbol, time_t timestamp, double price, double in
     this->isOpen = true;
 
     // TODO
-    this->expirationTimestamp = this->timestamp + (expirationMinutes * 1000 * 60);
+    this->expirationTimestamp = this->timestamp + (expirationMinutes * 60);
 }
 
 std::string Position::getSymbol() {
@@ -50,7 +50,6 @@ bool Position::getIsOpen() {
 }
 
 bool Position::getHasExpired(time_t timestamp) {
-    // TODO
     return timestamp >= this->expirationTimestamp;
 }
 

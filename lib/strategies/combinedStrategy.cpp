@@ -1,7 +1,7 @@
 #include "strategies/combinedStrategy.h"
 
-CombinedStrategy::CombinedStrategy(std::string symbol, std::vector<Configuration*> configurations)
-        : Strategy(symbol) {
+CombinedStrategy::CombinedStrategy(std::string symbol, std::map<std::string, int> dataIndex, std::vector<Configuration*> configurations)
+        : Strategy(symbol, dataIndex) {
     this->configurations = configurations;
 }
 
@@ -11,10 +11,11 @@ CombinedStrategy::~CombinedStrategy() {
 }
 
 void CombinedStrategy::tick(double *dataPoint) {
+    std::map<std::string, int> dataIndex = this->getDataIndex();
+
     if (this->tickPreviousDataPoint) {
         // Simulate expiry of and profit/loss related to positions held.
-        // TODO: Timestamp stuff.
-        closeExpiredPositions(this->tickPreviousDataPoint[configuration->close], dataPoint[configuration->timestamp] - 1000);
+        closeExpiredPositions(this->tickPreviousDataPoint[dataIndex["close"]], dataPoint[dataIndex["timestamp"]] - 1);
     }
 
     this->tickPreviousDataPoint = dataPoint;

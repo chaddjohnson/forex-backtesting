@@ -69,14 +69,13 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
     double percentage;
     int tickCount = ticks.size();
     std::vector<Tick*> cumulativeTicks;
+    Tick *tick = nullptr;
+    Tick *previousTick = nullptr;
     int threadCount = std::thread::hardware_concurrency();
     maginatics::ThreadPool pool(1, threadCount, 5000);
     std::vector<Study*> studies = this->getStudies();
     int i = 0;
     int j = 0;
-
-    // If there is a significant gap, save the current data points, and start over with recording.
-    // TODO
 
     // Reserve space in advance for better performance
     cumulativeTicks.reserve(tickCount);
@@ -84,12 +83,22 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
     printf("Preparing data...");
 
     // Go through the data and run studies for each data item.
-    for (std::vector<Tick*>::iterator dataIterator = ticks.begin(); dataIterator != ticks.end(); ++dataIterator) {
+    for (std::vector<Tick*>::iterator tickIterator = ticks.begin(); tickIterator != ticks.end(); ++tickIterator) {
         percentage = (++i / (double)tickCount) * 100.0;
         printf("\rPreparing data...%0.4f%%", percentage);
 
+        tick = *tickIterator;
+
+        // If the previous tick's minute was not the previous minute, then save the current
+        // ticks, and start over with recording.
+        if (previousTick && ((*tick)["timestamp"] - (*previousTick)["timestamp"]) > 60) {
+            // Save and then remove the current cumulative ticks.
+            saveTicks(cumulativeTicks);
+            std::vector<Tick*>().swap(cumulativeTicks);
+        }
+
         // Append to the cumulative data.
-        cumulativeTicks.push_back(*dataIterator);
+        cumulativeTicks.push_back(tick);
 
         for (std::vector<Study*>::iterator studyIterator = studies.begin(); studyIterator != studies.end(); ++studyIterator) {
             // Update the data for the study.
@@ -110,11 +119,13 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
             std::map<std::string, double> studyOutputs = (*studyIterator)->getTickOutputs();
 
             for (std::map<std::string, double>::iterator outputIterator = studyOutputs.begin(); outputIterator != studyOutputs.end(); ++outputIterator) {
-                (**dataIterator)[outputIterator->first] = outputIterator->second;
+                (*tick)[outputIterator->first] = outputIterator->second;
             }
 
             (*studyIterator)->resetTickOutputs();
         }
+
+        previousTick = tick;
 
         // Periodically save tick data to the database and free up memory.
         if (cumulativeTicks.size() >= 2000) {
@@ -270,7 +281,7 @@ void Optimizer::optimize(std::vector<Configuration*> configurations, double inve
     // Set up one strategy instance per configuration.
     for (std::vector<Configuration*>::iterator configurationIterator = configurations.begin(); configurationIterator != configurations.end(); ++configurationIterator) {
         i = std::distance(configurations.begin(), configurationIterator);
-        strategies[i] = OptimizationStrategyFactory::create(this->strategyName, this->symbol, this->group, *configurationIterator);
+        strategies[i] = OptimizationStrategyFactory::create(this->strategyName, this->symbol, this->dataIndex, this->group, *configurationIterator);
     }
 
     // Iterate over data ticks.

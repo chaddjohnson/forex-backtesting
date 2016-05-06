@@ -15,12 +15,13 @@ ReversalsOptimizationStrategy::~ReversalsOptimizationStrategy() {
 }
 
 void ReversalsOptimizationStrategy::backtest(double *dataPoint, double investment, double profitability) {
-    // TODO
-    int timestampHour = 0;
-    int timestampMinute = 0;
+    time_t utcTime = configuration.timestamp;
+    struct tm *localTime = localtime(&utcTime);
+    int timestampHour = localTime->tm_hour;
+    int timestampMinute = localTime->tm_min;
 
-    // TODO: Account for daylight savings.
-    if (timestampHour >= 0 && (timestampHour < 7 || (timestampHour == 7 && timestampMinute < 30))) {
+    // Do not create trades between 4pm - 11:30pm Central, as the payout is lower during these times.
+    if (timestampHour >= 16 && (timestampHour < 23 || (timestampHour == 23 && timestampMinute < 30))) {
         previousDataPoint = dataPoint;
 
         putNextTick = false;
@@ -31,13 +32,10 @@ void ReversalsOptimizationStrategy::backtest(double *dataPoint, double investmen
 
     if (previousDataPoint) {
         if (putNextTick) {
-            // TODO: Deal with timestamp math.
-            addPosition(new PutPosition(getSymbol(), (dataPoint[configuration->timestamp] - 1000), previousDataPoint[configuration->close], investment, profitability, expirationMinutes));
+            addPosition(new PutPosition(getSymbol(), (configuration->timestamp - 1), previousDataPoint[configuration->close], investment, profitability, expirationMinutes));
         }
-
         if (callNextTick) {
-            // TODO: Deal with timestamp math.
-            addPosition(new CallPosition(getSymbol(), (dataPoint[configuration->timestamp] - 1000), previousDataPoint[configuration->close], investment, profitability, expirationMinutes));
+            addPosition(new CallPosition(getSymbol(), (configuration->timestamp - 1), previousDataPoint[configuration->close], investment, profitability, expirationMinutes));
         }
     }
 

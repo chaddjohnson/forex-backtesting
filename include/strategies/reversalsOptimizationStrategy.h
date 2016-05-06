@@ -3,6 +3,7 @@
 
 #include <cstdlib>
 #include <string>
+#include <ctime>
 #include "optimizationStrategy.h"
 #include "positions/callPosition.h"
 #include "positions/putPosition.h"

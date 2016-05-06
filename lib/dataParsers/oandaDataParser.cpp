@@ -29,7 +29,7 @@ std::vector<Tick*> OandaDataParser::parse() {
         // Translate the data items.
         (*translatedLine)["testingGroups"] = parseGroups(lineItems.at(0));
         (*translatedLine)["validationGroups"] = parseGroups(lineItems.at(1));
-        (*translatedLine)["timestamp"] = 1234567890.0;  // TODO
+        (*translatedLine)["timestamp"] = std::atof(lineItems.at(2).c_str());
         (*translatedLine)["open"] = std::atof(lineItems.at(3).c_str());
         (*translatedLine)["high"] = std::atof(lineItems.at(4).c_str());
         (*translatedLine)["low"] = std::atof(lineItems.at(5).c_str());

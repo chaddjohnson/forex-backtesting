@@ -4,6 +4,7 @@ var es = require('event-stream');
 var stream;
 var transactionData = [];
 var date;
+var timestamp = 0;
 var currentDay = -1;
 var previousDay = -1;
 var week = 1;
@@ -23,7 +24,9 @@ stream = fs.createReadStream('./original/' + process.argv[2] + '.csv')
             }
 
             transactionData = line.split(',');
-            date = new Date(transactionData[0]);
+            date = new Date(transactionData.shift());
+            timestamp = Math.floor(new Date(date).getTime() / 1000);
+            transactionData.unshift(timestamp);
 
             currentDay = date.getDay();
 
@@ -34,7 +37,7 @@ stream = fs.createReadStream('./original/' + process.argv[2] + '.csv')
             }
 
             previousDay = currentDay;
-            buffer.push(line);
+            buffer.push(transactionData.join(','));
 
             // Resume the read stream.
             stream.resume();

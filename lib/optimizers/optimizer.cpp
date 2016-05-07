@@ -84,6 +84,7 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
 
     // Go through the data and run studies for each data item.
     for (std::vector<Tick*>::iterator tickIterator = ticks.begin(); tickIterator != ticks.end(); ++tickIterator) {
+        // Show progress.
         percentage = (++i / (double)tickCount) * 100.0;
         printf("\rPreparing data...%0.4f%%", percentage);
 
@@ -268,6 +269,7 @@ std::vector<Configuration*> Optimizer::buildConfigurations() {
 }
 
 void Optimizer::optimize(std::vector<Configuration*> configurations, double investment, double profitability) {
+    double percentage;
     int threadCount = std::thread::hardware_concurrency();
     std::vector<Strategy*> strategies;
     int i = 0;
@@ -278,11 +280,16 @@ void Optimizer::optimize(std::vector<Configuration*> configurations, double inve
     // Set up a threadpool so all CPU cores and their threads can be used.
     maginatics::ThreadPool pool(1, threadCount, 5000);
 
+    printf("Preparing configurations...");
+
     // Set up one strategy instance per configuration.
     for (std::vector<Configuration*>::iterator configurationIterator = configurations.begin(); configurationIterator != configurations.end(); ++configurationIterator) {
         i = std::distance(configurations.begin(), configurationIterator);
         strategies[i] = OptimizationStrategyFactory::create(this->strategyName, this->symbol, this->dataIndex, this->group, *configurationIterator);
     }
+
+    printf("%i configurations prepared\n", strategies.size());
+    printf("Optimizing...");
 
     // Iterate over data ticks.
     for (i=0; i<this->dataCount; i++) {
@@ -297,6 +304,10 @@ void Optimizer::optimize(std::vector<Configuration*> configurations, double inve
 
         // Block until all tasks for the current data point to complete.
         pool.drain();
+
+        // Show progress.
+        percentage = (++i / (double)this->dataCount) * 100.0;
+        printf("\rOptimizing...%0.4f%%", percentage);
     }
 
     // Unload data.

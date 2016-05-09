@@ -288,7 +288,7 @@ void Optimizer::optimize(std::vector<Configuration*> configurations, double inve
         strategies[i] = OptimizationStrategyFactory::create(this->strategyName, this->symbol, this->dataIndex, this->group, *configurationIterator);
     }
 
-    printf("%i configurations prepared\n", strategies.size());
+    printf("%i configurations prepared\n", (int)strategies.size());
     printf("Optimizing...");
 
     // Iterate over data ticks.

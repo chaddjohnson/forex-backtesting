@@ -88,7 +88,7 @@ void PolynomialRegressionChannelStudy::tick() {
     dataSegmentLength = dataSegment->size();
 
     // Record another past price.
-    pastPrices.push_back(lastTick->at("close"));
+    this->pastPrices.push_back(lastTick->at("close"));
 
     if (dataSegmentLength < getInput("length")) {
         // Reset.
@@ -101,23 +101,23 @@ void PolynomialRegressionChannelStudy::tick() {
     }
 
     // Keep the correct number of past prices.
-    while (pastPrices.size() > getInput("length")) {
-        pastPrices.erase(pastPrices.begin());
+    while (this->pastPrices.size() > getInput("length")) {
+        this->pastPrices.erase(this->pastPrices.begin());
     }
 
     // Calculate the regression.
-    regression = calculateRegression(pastPrices, getInput("degree"));
+    regression = calculateRegression(this->pastPrices, getInput("degree"));
 
     // Record another past regression.
-    pastRegressions.push_back(regression);
+    this->pastRegressions.push_back(regression);
 
     // Keep the correct number of past regressions.
-    while (pastRegressions.size() > getInput("length")) {
-        pastRegressions.erase(pastRegressions.begin());
+    while (this->pastRegressions.size() > getInput("length")) {
+        this->pastRegressions.erase(this->pastRegressions.begin());
     }
 
     // Calculate the standard deviation from the regressions.
-    regressionStandardDeviation = calculateStandardDeviation(pastRegressions);
+    regressionStandardDeviation = calculateStandardDeviation(this->pastRegressions);
 
     setTickOutput(regressionOutputName, regression);
 

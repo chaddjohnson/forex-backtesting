@@ -37,6 +37,10 @@ bson_t *Optimizer::convertTickToBson(Tick *tick) {
 }
 
 void Optimizer::saveTicks(std::vector<Tick*> ticks) {
+    if (ticks.size() == 0) {
+        return;
+    }
+
     mongoc_collection_t *collection;
     mongoc_bulk_operation_t *bulkOperation;
     bson_t *document;
@@ -69,6 +73,7 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
     double percentage;
     int tickCount = ticks.size();
     std::vector<Tick*> cumulativeTicks;
+    int cumulativeTickCount;
     Tick *tick = nullptr;
     Tick *previousTick = nullptr;
     int threadCount = std::thread::hardware_concurrency();
@@ -90,13 +95,27 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
 
         tick = *tickIterator;
 
+        if (cumulativeTicks.size() > 0) {
+            previousTick = cumulativeTicks.back();
+        }
+
         // If the previous tick's minute was not the previous minute, then save the current
         // ticks, and start over with recording.
         if (previousTick && ((*tick)["timestamp"] - (*previousTick)["timestamp"]) > 60) {
+            previousTick = nullptr;
+
             // Save and then remove the current cumulative ticks.
             saveTicks(cumulativeTicks);
+
+            // Release memory.
+            cumulativeTickCount = cumulativeTicks.size();
+            for (j=0; j<cumulativeTickCount; j++) {
+                delete cumulativeTicks[j];
+            }
             std::vector<Tick*>().swap(cumulativeTicks);
         }
+
+        previousTick = tick;
 
         // Append to the cumulative data.
         cumulativeTicks.push_back(tick);
@@ -124,8 +143,6 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
             }
         }
 
-        previousTick = tick;
-
         // Periodically save tick data to the database and free up memory.
         if (cumulativeTicks.size() >= 2000) {
             // Extract the first ~1000 ticks to be inserted.
@@ -135,10 +152,10 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
             saveTicks(firstCumulativeTicks);
 
             // Release memory.
-            std::vector<Tick*>().swap(firstCumulativeTicks);
             for (j=0; j<1000; j++) {
                 delete cumulativeTicks[j];
             }
+            std::vector<Tick*>().swap(firstCumulativeTicks);
 
             // Keep only the last 1000 elements.
             std::vector<Tick*>(cumulativeTicks.begin() + (cumulativeTicks.size() - 1000), cumulativeTicks.end()).swap(cumulativeTicks);

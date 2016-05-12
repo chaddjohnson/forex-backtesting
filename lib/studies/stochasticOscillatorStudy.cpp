@@ -43,10 +43,13 @@ void StochasticOscillatorStudy::tick() {
     double D = 0.0;
     std::string KOutputName = getOutputMapping("K");
 
+    resetTickOutputs();
+
     dataSegment = getDataSegment(getInput("length"));
     dataSegmentLength = dataSegment->size();
 
     if (dataSegmentLength < getInput("length")) {
+        delete dataSegment;
         return;
     }
 

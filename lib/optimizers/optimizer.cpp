@@ -122,8 +122,6 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
             for (std::map<std::string, double>::iterator outputIterator = studyOutputs.begin(); outputIterator != studyOutputs.end(); ++outputIterator) {
                 (*tick)[outputIterator->first] = outputIterator->second;
             }
-
-            (*studyIterator)->resetTickOutputs();
         }
 
         previousTick = tick;

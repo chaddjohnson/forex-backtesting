@@ -6,10 +6,13 @@ void SmaStudy::tick() {
     double sum = 0.0;
     double sma = 0.0;
 
+    resetTickOutputs();
+
     dataSegment = getDataSegment(getInput("length"));
     dataSegmentLength = dataSegment->size();
 
     if (dataSegmentLength < getInput("length")) {
+        delete dataSegment;
         return;
     }
 

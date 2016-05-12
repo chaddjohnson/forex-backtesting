@@ -22,6 +22,7 @@ class Study {
         Tick *getPreviousTick();
         Tick *getLastTick();
         void setTickOutput(std::string key, double value);
+        void resetTickOutputs();
 
     public:
         Study(std::map<std::string, double> inputs, std::map<std::string, std::string> outputMap);
@@ -29,7 +30,6 @@ class Study {
         std::map<std::string, std::string> &getOutputMap();
         virtual void tick() = 0;
         std::map<std::string, double> getTickOutputs();
-        void resetTickOutputs();
 };
 
 #endif

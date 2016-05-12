@@ -12,6 +12,8 @@ void EmaStudy::tick() {
     double K = 0.0;
     double ema = 0.0;
 
+    resetTickOutputs();
+
     dataSegment = getDataSegment(getInput("length"));
     dataSegmentLength = dataSegment->size();
 
@@ -32,4 +34,7 @@ void EmaStudy::tick() {
     this->previousEma = ema;
 
     setTickOutput(getOutputMapping("ema"), ema);
+
+    // Free memory.
+    delete dataSegment;
 }

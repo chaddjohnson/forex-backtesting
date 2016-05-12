@@ -48,12 +48,16 @@ void RsiStudy::tick() {
     double RS = 0.0;
     double rsi = 0.0;
 
+    resetTickOutputs();
+
     dataSegment = getDataSegment(getInput("length"));
     this->dataSegmentLength = dataSegment->size();
 
     if (this->dataSegmentLength < getInput("length")) {
         this->previousAverageGain = -1.0;
         this->previousAverageLoss = -1.0;
+
+        delete dataSegment;
 
         return;
     }

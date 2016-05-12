@@ -82,6 +82,8 @@ void PolynomialRegressionChannelStudy::tick() {
     double regression;
     double regressionStandardDeviation;
 
+    resetTickOutputs();
+
     dataSegment = getDataSegment(getInput("length"));
     dataSegmentLength = dataSegment->size();
 
@@ -89,6 +91,7 @@ void PolynomialRegressionChannelStudy::tick() {
     pastPrices.push_back(lastTick->at("close"));
 
     if (dataSegmentLength < getInput("length")) {
+        delete dataSegment;
         return;
     }
 

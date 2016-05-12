@@ -18,6 +18,7 @@ void EmaStudy::tick() {
     dataSegmentLength = dataSegment->size();
 
     if (dataSegmentLength <= 1) {
+        // Reset.
         this->previousEma = 0.0;
     }
 

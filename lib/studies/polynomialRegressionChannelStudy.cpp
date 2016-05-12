@@ -91,7 +91,12 @@ void PolynomialRegressionChannelStudy::tick() {
     pastPrices.push_back(lastTick->at("close"));
 
     if (dataSegmentLength < getInput("length")) {
+        // Reset.
+        std::vector<double>().swap(this->pastPrices);
+        std::vector<double>().swap(this->pastRegressions);
+
         delete dataSegment;
+
         return;
     }
 

@@ -54,6 +54,7 @@ void RsiStudy::tick() {
     this->dataSegmentLength = dataSegment->size();
 
     if (this->dataSegmentLength < getInput("length")) {
+        // Reset.
         this->previousAverageGain = -1.0;
         this->previousAverageLoss = -1.0;
 

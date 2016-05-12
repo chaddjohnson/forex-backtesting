@@ -69,7 +69,7 @@ double PolynomialRegressionChannelStudy::calculateStandardDeviation(std::vector<
     }
 
     mean = sum / valueCount;
-    variance = squaredSum / valueCount - mean * mean;
+    variance = (squaredSum / valueCount) - (mean * mean);
 
     return sqrt(variance);
 }
@@ -111,11 +111,11 @@ void PolynomialRegressionChannelStudy::tick() {
     // Calculate the standard deviation from the regressions.
     regressionStandardDeviation = calculateStandardDeviation(pastRegressions);
 
+    setTickOutput(regressionOutputName, regression);
+
     // Calculate the upper and lower values.
     setTickOutput(getOutputMapping("upper"), regression + (regressionStandardDeviation * getInput("deviations")));
     setTickOutput(getOutputMapping("lower"), regression - (regressionStandardDeviation * getInput("deviations")));
-
-    setTickOutput(regressionOutputName, regression);
 
     // Free memory.
     delete dataSegment;

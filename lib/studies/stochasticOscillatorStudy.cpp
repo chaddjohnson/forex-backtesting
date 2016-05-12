@@ -55,7 +55,7 @@ void StochasticOscillatorStudy::tick() {
     low = getLowestLow(dataSegment);
     high = getHighestHigh(dataSegment);
     highLowDifference = high - low;
-    K = highLowDifference > 0 ? 100 * ((lastTick->at("close") - low) / highLowDifference) : 0;
+    K = highLowDifference > 0 ? 100 * ((lastTick->at("close") - low) / highLowDifference) : lastTick->at("close");
 
     // Calculate D.
     for (std::vector<Tick*>::iterator iterator = averageLengthDataSegment.begin(); iterator != averageLengthDataSegment.end(); ++iterator) {

@@ -66,8 +66,10 @@ void Strategy::closeExpiredPositions(double price, time_t timestamp) {
                 this->maximumConsecutiveLosses = this->consecutiveLosses;
             }
 
-            // Remove the position from the list of open positions.
+            // Remove the position from the list of open positions, and free memory.
             this->openPositions.erase(std::remove(this->openPositions.begin(), this->openPositions.end(), *positionIterator), this->openPositions.end());
+            delete *positionIterator;
+            *positionIterator = nullptr;
         }
     }
 }

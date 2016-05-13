@@ -20,6 +20,7 @@ class Position {
 
     public:
         Position(std::string symbol, time_t timestamp, double price, double investment, double profitability, int expirationMinutes);
+        virtual ~Position() {}
         std::string getSymbol();
         time_t getTimestamp();
         double getPrice();

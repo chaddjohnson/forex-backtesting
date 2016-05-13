@@ -11,6 +11,7 @@ class PutPosition : public Position {
     public:
         PutPosition(std::string symbol, time_t timestamp, double price, double investment, double profitability, int expirationMinutes)
             : Position(symbol, timestamp, price, investment, profitability, expirationMinutes) {}
+        ~PutPosition() {}
         double getProfitLoss();
 };
 

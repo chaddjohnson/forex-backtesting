@@ -11,6 +11,7 @@ class CallPosition : public Position {
     public:
         CallPosition(std::string symbol, time_t timestamp, double price, double investment, double profitability, int expirationMinutes)
             : Position(symbol, timestamp, price, investment, profitability, expirationMinutes) {}
+        ~CallPosition() {}
         double getProfitLoss();
 };
 

@@ -195,6 +195,7 @@ int Optimizer::getDataPropertyCount() {
 }
 
 void Optimizer::loadData() {
+    double percentage;
     int dataPointIndex = 0;
     int propertyIndex = 0;
     mongoc_collection_t *collection;
@@ -207,6 +208,8 @@ void Optimizer::loadData() {
     bson_error_t error;
     const char *propertyName;
     const bson_value_t *propertyValue;
+
+    printf("Loading data...");
 
     // Get a reference to the database collection.
     collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting-test", "datapoints");
@@ -268,6 +271,10 @@ void Optimizer::loadData() {
 
         // Keep track of the number of ticks.
         dataPointIndex++;
+
+        // Show progress.
+        percentage = (++dataPointIndex / (double)this->dataCount) * 100.0;
+        printf("\rLoading data...%0.4f%%", percentage);
     }
 
     // Cleanup.

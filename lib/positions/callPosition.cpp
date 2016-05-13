@@ -9,7 +9,6 @@ double CallPosition::getProfitLoss() {
         return 0.0;
     }
 
-    // TODO
     if (getCloseTimestamp() > getExpirationTimestamp()) {
         return getInvestment();
     }

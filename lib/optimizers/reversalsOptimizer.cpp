@@ -205,7 +205,7 @@ std::map<std::string, std::vector<std::map<std::string, boost::variant<std::stri
     // std::vector<ConfigurationOption*> stochasticOptions;
     // std::vector<ConfigurationOption*> prChannelOptions;
 
-    // // TODO: Solve problem where configurationOptions map need to store values of both strings and numbers.
+    // // TODO: Solve problem where configurationOptions map needs to store values of both strings and numbers.
     // rsiOptions.push_back(...);
 
     // configurationOptions["ema200"] = ema200Options;

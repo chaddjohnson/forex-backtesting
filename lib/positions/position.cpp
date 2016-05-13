@@ -8,8 +8,6 @@ Position::Position(std::string symbol, time_t timestamp, double price, double in
     this->profitability = profitability;
     this->closePrice = 0.0;
     this->isOpen = true;
-
-    // TODO
     this->expirationTimestamp = this->timestamp + (expirationMinutes * 60);
 }
 

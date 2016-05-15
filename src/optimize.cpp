@@ -20,7 +20,8 @@ int main(int argc, char *argv[]) {
     // Perform optimization.
     try {
         optimizer = OptimizerFactory::create(optimizerName, dbClient, symbol, group);
-        configurations = optimizer->buildConfigurations();
+        optimizer->loadData();
+        configurations = optimizer->buildConfigurations(optimizer->getConfigurationOptions());
         optimizer->optimize(configurations, 1000, 0.76);
     }
     catch (const std::exception &error) {

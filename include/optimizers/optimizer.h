@@ -28,19 +28,24 @@ class Optimizer {
         double **data;
         std::map<std::string, int> dataIndex;
         int getDataPropertyCount();
-        void loadData();
         bson_t *convertTickToBson(Tick *tick);
         void saveTicks(std::vector<Tick*> ticks);
 
     protected:
         virtual std::vector<Study*> getStudies() = 0;
-        virtual std::map<std::string, std::vector<std::map<std::string, boost::variant<std::string, double>>>> *getConfigurationOptions() = 0;
 
     public:
         Optimizer(mongoc_client_t *dbClient, std::string strategyName, std::string symbol, int group);
         virtual ~Optimizer();
         void prepareData(std::vector<Tick*> ticks);
-        std::vector<Configuration*> buildConfigurations();
+        virtual std::map<std::string, std::vector<std::map<std::string, boost::variant<std::string, double, bool>>>> getConfigurationOptions() = 0;
+        std::vector<Configuration*> buildConfigurations(
+            std::map<std::string, std::vector<std::map<std::string, boost::variant<std::string, double, bool>>>> options,
+            int optionIndex = 0,
+            std::vector<Configuration*> results = std::vector<Configuration*>(),
+            Configuration *current = nullptr
+        );
+        void loadData();
         void optimize(std::vector<Configuration*> configurations, double investment, double profitability);
 };
 

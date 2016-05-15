@@ -277,6 +277,8 @@ void Optimizer::loadData() {
         printf("\rLoading data...%0.4f%%", percentage);
     }
 
+    printf("\n");
+
     // Cleanup.
     bson_destroy(countQuery);
     bson_destroy(query);
@@ -284,11 +286,74 @@ void Optimizer::loadData() {
     mongoc_collection_destroy(collection);
 }
 
-std::vector<Configuration*> Optimizer::buildConfigurations() {
+std::vector<Configuration*> Optimizer::buildConfigurations(
+    std::map<std::string, std::vector<std::map<std::string, boost::variant<std::string, double, bool>>>> options,
+    int optionIndex,
+    std::vector<Configuration*> results,
+    Configuration *current
+) {
+    std::vector<std::map<std::string, boost::variant<std::string, int, double>>> mapConfigurations;
     std::vector<Configuration*> configurations;
 
     // Built a flat key/value list of configurations.
     // ...
+
+    for (std::vector<std::map<std::string, boost::variant<std::string, int, double>>>::iterator mapConfigurationIterator = mapConfigurations.begin(); mapConfigurationIterator != mapConfigurations.end(); ++mapConfigurationIterator) {
+        // Set up a new, empty configuration.
+        Configuration *configuration = new Configuration();
+
+        // Set basic properties.
+        configuration->timestamp = this->dataIndex["timestamp"];
+        configuration->open = this->dataIndex["open"];
+        configuration->high = this->dataIndex["high"];
+        configuration->low = this->dataIndex["low"];
+        configuration->close = this->dataIndex["close"];
+
+        // Set map values.
+        if (mapConfigurationIterator->find("sma13") != mapConfigurationIterator->end()) {
+            configuration->sma13 = boost::get<int>((*mapConfigurationIterator)["sma13"]);
+        }
+        if (mapConfigurationIterator->find("ema50") != mapConfigurationIterator->end()) {
+            configuration->ema50 = boost::get<int>((*mapConfigurationIterator)["ema50"]);
+        }
+        if (mapConfigurationIterator->find("ema100") != mapConfigurationIterator->end()) {
+            configuration->ema100 = boost::get<int>((*mapConfigurationIterator)["ema100"]);
+        }
+        if (mapConfigurationIterator->find("ema200") != mapConfigurationIterator->end()) {
+            configuration->ema200 = boost::get<int>((*mapConfigurationIterator)["ema200"]);
+        }
+        if (mapConfigurationIterator->find("rsi") != mapConfigurationIterator->end()) {
+            configuration->rsi = boost::get<int>((*mapConfigurationIterator)["rsi"]);
+        }
+        if (mapConfigurationIterator->find("stochasticD") != mapConfigurationIterator->end()) {
+            configuration->stochasticD = boost::get<int>((*mapConfigurationIterator)["stochasticD"]);
+        }
+        if (mapConfigurationIterator->find("stochasticK") != mapConfigurationIterator->end()) {
+            configuration->stochasticK = boost::get<int>((*mapConfigurationIterator)["stochasticK"]);
+        }
+        if (mapConfigurationIterator->find("prChannelUpper") != mapConfigurationIterator->end()) {
+            configuration->prChannelUpper = boost::get<int>((*mapConfigurationIterator)["prChannelUpper"]);
+        }
+        if (mapConfigurationIterator->find("prChannelLower") != mapConfigurationIterator->end()) {
+            configuration->prChannelLower = boost::get<int>((*mapConfigurationIterator)["prChannelLower"]);
+        }
+
+        // Set values.
+        if (mapConfigurationIterator->find("rsiOverbought") != mapConfigurationIterator->end()) {
+            configuration->rsiOverbought = boost::get<double>((*mapConfigurationIterator)["rsiOverbought"]);
+        }
+        if (mapConfigurationIterator->find("rsiOversold") != mapConfigurationIterator->end()) {
+            configuration->rsiOversold = boost::get<double>((*mapConfigurationIterator)["rsiOversold"]);
+        }
+        if (mapConfigurationIterator->find("stochasticOverbought") != mapConfigurationIterator->end()) {
+            configuration->stochasticOverbought = boost::get<double>((*mapConfigurationIterator)["stochasticOverbought"]);
+        }
+        if (mapConfigurationIterator->find("stochasticOversold") != mapConfigurationIterator->end()) {
+            configuration->stochasticOversold = boost::get<double>((*mapConfigurationIterator)["stochasticOversold"]);
+        }
+
+        configurations.push_back(configuration);
+    }
 
     return configurations;
 }
@@ -298,9 +363,6 @@ void Optimizer::optimize(std::vector<Configuration*> configurations, double inve
     int threadCount = std::thread::hardware_concurrency();
     std::vector<Strategy*> strategies;
     int i = 0;
-
-    // Load tick data from the database.
-    loadData();
 
     // Set up a threadpool so all CPU cores and their threads can be used.
     maginatics::ThreadPool pool(1, threadCount, 5000);
@@ -334,6 +396,8 @@ void Optimizer::optimize(std::vector<Configuration*> configurations, double inve
         percentage = (++i / (double)this->dataCount) * 100.0;
         printf("\rOptimizing...%0.4f%%", percentage);
     }
+
+    printf("\n");
 
     // Unload data.
     // TODO

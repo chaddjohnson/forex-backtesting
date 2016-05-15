@@ -8,10 +8,10 @@ typedef struct Configuration {
     int high;
     int low;
     int close;
-    int ema200;
-    int ema100;
-    int ema50;
     int sma13;
+    int ema50;
+    int ema100;
+    int ema200;
     int rsi;
     int stochasticD;
     int stochasticK;

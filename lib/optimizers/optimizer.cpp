@@ -277,7 +277,7 @@ void Optimizer::loadData() {
         printf("\rLoading data...%0.4f%%", percentage);
     }
 
-    printf("\n");
+    printf("done\n");
 
     // Cleanup.
     bson_destroy(countQuery);
@@ -294,6 +294,8 @@ std::vector<Configuration*> Optimizer::buildConfigurations(
 ) {
     std::vector<std::map<std::string, boost::variant<std::string, int, double>>> mapConfigurations;
     std::vector<Configuration*> configurations;
+
+    printf("Building configurations...");
 
     // Built a flat key/value list of configurations.
     // ...
@@ -355,6 +357,8 @@ std::vector<Configuration*> Optimizer::buildConfigurations(
         configurations.push_back(configuration);
     }
 
+    printf("%i configurations built\n", (int)configurations.size());
+
     return configurations;
 }
 
@@ -367,7 +371,7 @@ void Optimizer::optimize(std::vector<Configuration*> configurations, double inve
     // Set up a threadpool so all CPU cores and their threads can be used.
     maginatics::ThreadPool pool(1, threadCount, 5000);
 
-    printf("Preparing configurations...");
+    printf("Preparing strategies...");
 
     // Set up one strategy instance per configuration.
     for (std::vector<Configuration*>::iterator configurationIterator = configurations.begin(); configurationIterator != configurations.end(); ++configurationIterator) {
@@ -375,7 +379,7 @@ void Optimizer::optimize(std::vector<Configuration*> configurations, double inve
         strategies[i] = OptimizationStrategyFactory::create(this->strategyName, this->symbol, this->dataIndex, this->group, *configurationIterator);
     }
 
-    printf("%i configurations prepared\n", (int)strategies.size());
+    printf("%i strategies prepared\n", (int)strategies.size());
     printf("Optimizing...");
 
     // Iterate over data ticks.

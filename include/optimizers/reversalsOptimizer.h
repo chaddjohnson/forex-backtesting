@@ -24,7 +24,7 @@ class ReversalsOptimizer : public Optimizer {
         ReversalsOptimizer(mongoc_client_t *dbClient, std::string symbol, int group)
             : Optimizer(dbClient, "ReversalsOptimization", symbol, group) {}
         ~ReversalsOptimizer() {}
-        std::map<std::string, std::vector<std::map<std::string, boost::variant<std::string, double, bool>>>> getConfigurationOptions();
+        std::map<std::string, ConfigurationOption> getConfigurationOptions();
 };
 
 #endif

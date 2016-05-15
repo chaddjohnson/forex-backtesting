@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
         optimizer = OptimizerFactory::create(optimizerName, dbClient, symbol, group);
         optimizer->loadData();
         configurations = optimizer->buildConfigurations(optimizer->getConfigurationOptions());
-        optimizer->optimize(configurations, 1000, 0.76);
+        optimizer->optimize(configurations, 1000.0, 0.76);
     }
     catch (const std::exception &error) {
         std::cerr << error.what() << std::endl;

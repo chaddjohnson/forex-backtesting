@@ -1,9 +1,10 @@
 #include "strategies/optimizationStrategy.h"
 
-OptimizationStrategy::OptimizationStrategy(std::string symbol, std::map<std::string, int> dataIndex, int group, Configuration *configuration)
+OptimizationStrategy::OptimizationStrategy(std::string symbol, std::map<std::string, int> *dataIndex, int group, Configuration *configuration)
         : Strategy(symbol, dataIndex) {
     this->group = group;
     this->configuration = configuration;
+    this->tickPreviousDataPoint = nullptr;
 }
 
 OptimizationStrategy::~OptimizationStrategy() {
@@ -16,12 +17,11 @@ int OptimizationStrategy::getGroup() {
 }
 
 void OptimizationStrategy::tick(double *dataPoint) {
-    std::map<std::string, int> dataIndex = this->getDataIndex();
+    std::map<std::string, int> *dataIndex = this->getDataIndex();
 
     if (this->tickPreviousDataPoint) {
         // Simulate expiry of and profit/loss related to positions held.
-        // TODO: Timestamp stuff.
-        closeExpiredPositions(this->tickPreviousDataPoint[dataIndex["close"]], dataPoint[dataIndex["timestamp"]] - 1);
+        closeExpiredPositions(this->tickPreviousDataPoint[(*dataIndex)["close"]], dataPoint[(*dataIndex)["timestamp"]] - 1);
     }
 
     this->tickPreviousDataPoint = dataPoint;

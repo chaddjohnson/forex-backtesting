@@ -18,7 +18,7 @@ class ReversalsOptimizationStrategy : public OptimizationStrategy {
         int expirationMinutes;
 
     public:
-        ReversalsOptimizationStrategy(std::string symbol, std::map<std::string, int> dataIndex, int group, Configuration *configuration);
+        ReversalsOptimizationStrategy(std::string symbol, std::map<std::string, int> *dataIndex, int group, Configuration *configuration);
         ~ReversalsOptimizationStrategy();
         void backtest(double *dataPoint, double investment, double profitability);
 };

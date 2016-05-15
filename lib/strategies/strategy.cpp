@@ -1,6 +1,6 @@
 #include "strategies/strategy.h"
 
-Strategy::Strategy(std::string symbol, std::map<std::string, int> dataIndex) {
+Strategy::Strategy(std::string symbol, std::map<std::string, int> *dataIndex) {
     this->symbol = symbol;
     this->dataIndex = dataIndex;
     this->profitLoss = 0.0;
@@ -11,7 +11,7 @@ Strategy::Strategy(std::string symbol, std::map<std::string, int> dataIndex) {
     this->minimumProfitLoss = 99999.0;
 }
 
-std::map<std::string, int> Strategy::getDataIndex() {
+std::map<std::string, int> *Strategy::getDataIndex() {
     return this->dataIndex;
 }
 

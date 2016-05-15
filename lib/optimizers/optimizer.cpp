@@ -6,6 +6,7 @@ Optimizer::Optimizer(mongoc_client_t *dbClient, std::string strategyName, std::s
     this->symbol = symbol;
     this->group = group;
     this->dataCount = 0;
+    this->dataIndex = new std::map<std::string, int>();
 }
 
 Optimizer::~Optimizer() {
@@ -130,7 +131,7 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
             });
         }
 
-        // Block until all tasks for the current data point to complete.
+        // Block until all tasks for the current data point complete.
         pool.drain();
 
         // Merge tick output values from the studies into the current tick.
@@ -247,7 +248,7 @@ void Optimizer::loadData() {
                         propertyName = bson_iter_key(&dataIterator);
 
                         // Add to the data index map.
-                        this->dataIndex[propertyName] = propertyIndex;
+                        (*this->dataIndex)[propertyName] = propertyIndex;
                     }
 
                     propertyIndex++;
@@ -291,7 +292,7 @@ std::vector<MapConfiguration*> *Optimizer::buildMapConfigurations(
         // Iterate through configuration option values.
         for (std::map<std::string, boost::variant<std::string, double>>::iterator valuesIterator = configurationOptionsIterator->begin(); valuesIterator != configurationOptionsIterator->end(); ++valuesIterator) {
             if (valuesIterator->second.type() == typeid(std::string)) {
-                (*current)[valuesIterator->first] = this->dataIndex[boost::get<std::string>(valuesIterator->second)];
+                (*current)[valuesIterator->first] = (*this->dataIndex)[boost::get<std::string>(valuesIterator->second)];
             }
             else {
                 (*current)[valuesIterator->first] = boost::get<double>(valuesIterator->second);
@@ -314,6 +315,7 @@ std::vector<Configuration*> Optimizer::buildConfigurations(std::map<std::string,
 
     std::vector<MapConfiguration*> *mapConfigurations = buildMapConfigurations(options);
     std::vector<Configuration*> configurations;
+    Configuration *configuration = new Configuration();
 
     // Reserve space in advance for better performance.
     configurations.reserve(mapConfigurations->size());
@@ -321,14 +323,14 @@ std::vector<Configuration*> Optimizer::buildConfigurations(std::map<std::string,
     // Convert map representations of maps into structs of type Configuration.
     for (std::vector<MapConfiguration*>::iterator mapConfigurationIterator = mapConfigurations->begin(); mapConfigurationIterator != mapConfigurations->end(); ++mapConfigurationIterator) {
         // Set up a new, empty configuration.
-        Configuration *configuration = new Configuration();
+        configuration = new Configuration();
 
         // Set basic properties.
-        configuration->timestamp = this->dataIndex["timestamp"];
-        configuration->open = this->dataIndex["open"];
-        configuration->high = this->dataIndex["high"];
-        configuration->low = this->dataIndex["low"];
-        configuration->close = this->dataIndex["close"];
+        configuration->timestamp = (*this->dataIndex)["timestamp"];
+        configuration->open = (*this->dataIndex)["open"];
+        configuration->high = (*this->dataIndex)["high"];
+        configuration->low = (*this->dataIndex)["low"];
+        configuration->close = (*this->dataIndex)["close"];
 
         // Set index mappings.
         if ((*mapConfigurationIterator)->find("sma13") != (*mapConfigurationIterator)->end()) {
@@ -381,28 +383,34 @@ std::vector<Configuration*> Optimizer::buildConfigurations(std::map<std::string,
     return configurations;
 }
 
-void Optimizer::optimize(std::vector<Configuration*> configurations, double investment, double profitability) {
+void Optimizer::optimize(std::vector<Configuration*> &configurations, double investment, double profitability) {
     double percentage;
     int threadCount = std::thread::hardware_concurrency();
     std::vector<Strategy*> strategies;
     int i = 0;
 
-    // Set up a threadpool so all CPU cores and their threads can be used.
-    maginatics::ThreadPool pool(1, threadCount, 5000);
+    // Reserve space in advance for better performance.
+    strategies.reserve(configurations.size());
 
     printf("Preparing strategies...");
 
-    // Set up one strategy instance per configuration.
+    // // // Set up one strategy instance per configuration.
     for (std::vector<Configuration*>::iterator configurationIterator = configurations.begin(); configurationIterator != configurations.end(); ++configurationIterator) {
-        i = std::distance(configurations.begin(), configurationIterator);
-        strategies[i] = OptimizationStrategyFactory::create(this->strategyName, this->symbol, this->dataIndex, this->group, *configurationIterator);
+        strategies.push_back(OptimizationStrategyFactory::create(this->strategyName, this->symbol, this->dataIndex, this->group, *configurationIterator));
     }
 
     printf("%i strategies prepared\n", (int)strategies.size());
     printf("Optimizing...");
 
+    // // Set up a threadpool so all CPU cores and their threads can be used.
+    maginatics::ThreadPool pool(1, threadCount, 5000);
+
     // Iterate over data ticks.
     for (i=0; i<this->dataCount; i++) {
+        // Show progress.
+        percentage = (++i / (double)this->dataCount) * 100.0;
+        printf("\rOptimizing...%0.4f%%", percentage);
+
         // Loop through all strategies/configurations.
         for (std::vector<Strategy*>::iterator strategyIterator = strategies.begin(); strategyIterator != strategies.end(); ++strategyIterator) {
             // Use a thread pool so that all CPU cores can be used.
@@ -412,12 +420,8 @@ void Optimizer::optimize(std::vector<Configuration*> configurations, double inve
             });
         }
 
-        // Block until all tasks for the current data point to complete.
+        // Block until all tasks for the current data point complete.
         pool.drain();
-
-        // Show progress.
-        percentage = (++i / (double)this->dataCount) * 100.0;
-        printf("\rOptimizing...%0.4f%%", percentage);
     }
 
     printf("\n");

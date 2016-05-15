@@ -1,6 +1,6 @@
 #include "strategies/reversalsOptimizationStrategy.h"
 
-ReversalsOptimizationStrategy::ReversalsOptimizationStrategy(std::string symbol, std::map<std::string, int> dataIndex, int group, Configuration *configuration)
+ReversalsOptimizationStrategy::ReversalsOptimizationStrategy(std::string symbol, std::map<std::string, int> *dataIndex, int group, Configuration *configuration)
         : OptimizationStrategy(symbol, dataIndex, group, configuration) {
     this->configuration = configuration;
     this->previousDataPoint = nullptr;
@@ -20,10 +20,10 @@ void ReversalsOptimizationStrategy::backtest(double *dataPoint, double investmen
     int timestampHour = localTime->tm_hour;
     int timestampMinute = localTime->tm_min;
 
-    // Tick the strategy.
+    // // Tick the strategy.
     this->tick(dataPoint);
 
-    // Do not create trades between 4pm - 11:30pm Central, as the payout is lower during these times.
+    // // Do not create trades between 4pm - 11:30pm Central, as the payout is lower during these times.
     if (timestampHour >= 16 && (timestampHour < 23 || (timestampHour == 23 && timestampMinute < 30))) {
         previousDataPoint = dataPoint;
 

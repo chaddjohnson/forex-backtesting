@@ -28,7 +28,7 @@ class Optimizer {
         int group;
         int dataCount;
         double **data;
-        std::map<std::string, int> dataIndex;
+        std::map<std::string, int> *dataIndex;
         int getDataPropertyCount();
         bson_t *convertTickToBson(Tick *tick);
         void saveTicks(std::vector<Tick*> ticks);
@@ -49,7 +49,7 @@ class Optimizer {
         virtual std::map<std::string, ConfigurationOption> getConfigurationOptions() = 0;
         std::vector<Configuration*> buildConfigurations(std::map<std::string, ConfigurationOption> options);
         void loadData();
-        void optimize(std::vector<Configuration*> configurations, double investment, double profitability);
+        void optimize(std::vector<Configuration*> &configurations, double investment, double profitability);
 };
 
 #endif

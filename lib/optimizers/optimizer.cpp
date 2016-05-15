@@ -79,7 +79,7 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
     int i = 0;
     int j = 0;
 
-    // Reserve space in advance for better performance
+    // Reserve space in advance for better performance.
     cumulativeTicks.reserve(tickCount);
 
     printf("Preparing data...");
@@ -312,8 +312,11 @@ std::vector<MapConfiguration*> *Optimizer::buildMapConfigurations(
 std::vector<Configuration*> Optimizer::buildConfigurations(std::map<std::string, ConfigurationOption> options) {
     printf("Building configurations...");
 
-    std::vector<Configuration*> configurations;
     std::vector<MapConfiguration*> *mapConfigurations = buildMapConfigurations(options);
+    std::vector<Configuration*> configurations;
+
+    // Reserve space in advance for better performance.
+    configurations.reserve(mapConfigurations->size());
 
     // Convert map representations of maps into structs of type Configuration.
     for (std::vector<MapConfiguration*>::iterator mapConfigurationIterator = mapConfigurations->begin(); mapConfigurationIterator != mapConfigurations->end(); ++mapConfigurationIterator) {
@@ -327,7 +330,7 @@ std::vector<Configuration*> Optimizer::buildConfigurations(std::map<std::string,
         configuration->low = this->dataIndex["low"];
         configuration->close = this->dataIndex["close"];
 
-        // Set map values.
+        // Set index mappings.
         if ((*mapConfigurationIterator)->find("sma13") != (*mapConfigurationIterator)->end()) {
             configuration->sma13 = boost::get<int>((**mapConfigurationIterator)["sma13"]);
         }

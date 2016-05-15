@@ -171,7 +171,8 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
 
 int Optimizer::getDataPropertyCount() {
     std::vector<Study*> studies = this->getStudies();
-    int propertyCount = 0;
+    int basePropertyCount = 5;
+    int propertyCount = basePropertyCount;
 
     for (std::vector<Study*>::iterator iterator = studies.begin(); iterator != studies.end(); ++iterator) {
         propertyCount += (*iterator)->getOutputMap().size();

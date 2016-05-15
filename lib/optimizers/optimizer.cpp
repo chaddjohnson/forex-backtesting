@@ -387,20 +387,20 @@ std::vector<Configuration*> Optimizer::buildConfigurations(std::map<std::string,
 void Optimizer::optimize(std::vector<Configuration*> &configurations, double investment, double profitability) {
     double percentage;
     int threadCount = std::thread::hardware_concurrency();
-    std::vector<Strategy*> strategies;
+    std::vector<std::vector<Strategy*>> strategyGroups;
+    int strategyCount = configurations.size();
     int i = 0;
-
-    // Reserve space in advance for better performance.
-    strategies.reserve(configurations.size());
+    int j = 0;
 
     printf("Preparing strategies...");
 
-    // // // Set up one strategy instance per configuration.
+    // Set up one strategy instance per configuration.
     for (std::vector<Configuration*>::iterator configurationIterator = configurations.begin(); configurationIterator != configurations.end(); ++configurationIterator) {
-        strategies.push_back(OptimizationStrategyFactory::create(this->strategyName, this->symbol, this->dataIndex, this->group, *configurationIterator));
+        i = std::distance(configurations.begin(), configurationIterator);
+        strategyGroups[i % threadCount].push_back(OptimizationStrategyFactory::create(this->strategyName, this->symbol, this->dataIndex, this->group, *configurationIterator));
     }
 
-    printf("%i strategies prepared\n", (int)strategies.size());
+    printf("%i strategies prepared\n", strategyCount);
     printf("Optimizing...");
 
     // // Set up a threadpool so all CPU cores and their threads can be used.
@@ -412,14 +412,15 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
         percentage = (++i / (double)this->dataCount) * 100.0;
         printf("\rOptimizing...%0.4f%%", percentage);
 
-        // Loop through all strategies/configurations.
-        for (std::vector<Strategy*>::iterator strategyIterator = strategies.begin(); strategyIterator != strategies.end(); ++strategyIterator) {
-            double *dataPoint = this->data[i];
+        double *dataPoint = this->data[i];
 
-            // Use a thread pool so that all CPU cores can be used.
-            pool.execute([this, &dataPoint, strategyIterator, &investment, &profitability]() {
-                // Process the latest data for the study.
-                (*strategyIterator)->backtest(dataPoint, investment, profitability);
+        for (j=0; j<threadCount; j++) {
+            std::vector<Strategy*> *strategyGroup = &strategyGroups[j];
+
+            pool.execute([dataPoint, strategyGroup, investment, profitability]() {
+                for (std::vector<Strategy*>::iterator strategyIterator = strategyGroup->begin(); strategyIterator != strategyGroup->end(); ++strategyIterator) {
+                    (*strategyIterator)->backtest(dataPoint, investment, profitability);
+                }
             });
         }
 

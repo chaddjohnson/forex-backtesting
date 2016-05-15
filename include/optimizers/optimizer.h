@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <iterator>
 #include <exception>
 #include <thread>
 #include <mongoc.h>

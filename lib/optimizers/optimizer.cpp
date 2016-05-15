@@ -413,10 +413,12 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
 
         // Loop through all strategies/configurations.
         for (std::vector<Strategy*>::iterator strategyIterator = strategies.begin(); strategyIterator != strategies.end(); ++strategyIterator) {
+            double *dataPoint = this->data[i];
+
             // Use a thread pool so that all CPU cores can be used.
-            pool.execute([this, strategyIterator, i, investment, profitability]() {
+            pool.execute([this, &dataPoint, strategyIterator, &investment, &profitability]() {
                 // Process the latest data for the study.
-                (*strategyIterator)->backtest(this->data[i], investment, profitability);
+                (*strategyIterator)->backtest(dataPoint, investment, profitability);
             });
         }
 

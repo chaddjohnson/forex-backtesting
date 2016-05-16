@@ -410,17 +410,20 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
         printf("\rOptimizing...%0.4f%%", percentage);
 
         double *dataPoint = this->data[i];
+        std::thread *threads = new std::thread[threadCount];
 
         for (j=0; j<threadCount; j++) {
             std::vector<Strategy*> *strategyGroup = &strategyGroups[j];
 
-            std::thread t([&dataPoint, &strategyGroup, &investment, &profitability]{
+            threads[j] = std::thread([&dataPoint, &strategyGroup, &investment, &profitability]{
                 for (std::vector<Strategy*>::iterator strategyIterator = strategyGroup->begin(); strategyIterator != strategyGroup->end(); ++strategyIterator) {
                     (*strategyIterator)->backtest(dataPoint, investment, profitability);
                 }
             });
+        }
 
-            t.join();
+        for (j=0; j<threadCount; j++) {
+            threads[j].join();
         }
     }
 

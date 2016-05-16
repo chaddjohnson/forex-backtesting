@@ -1,6 +1,7 @@
 #include <string>
 #include <iostream>
 #include <mongoc.h>
+#include <thrust/host_vector.h>
 #include "optimizers/optimizer.cuh"
 #include "factories/optimizerFactory.cuh"
 #include "types/configuration.cuh"
@@ -11,7 +12,7 @@ int main(int argc, char *argv[]) {
     std::string symbol = "AUDJPY";
     int group = 1;
     Optimizer *optimizer;
-    std::vector<Configuration*> configurations;
+    thrust::host_vector<Configuration*> configurations;
 
     // Connect to the database
     mongoc_init();

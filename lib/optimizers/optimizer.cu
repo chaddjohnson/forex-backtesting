@@ -1,5 +1,29 @@
 #include "optimizers/optimizer.cuh"
 
+__global__ void optimizer_initialize(thrust::device_vector<Strategy*> strategies, thrust::device_vector<Configuration*> configurations, int configurationCount) {
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if (i < configurationCount) {
+        // Set up one strategy instance per configuration.
+        // strategies[i] = OptimizationStrategyFactory::create(strategyName, symbol, dataIndex, group, configurations[i]);
+    }
+}
+
+__global__ void optimizer_backtest(
+    thrust::device_vector<double*> data,
+    thrust::device_vector<Strategy*> strategies,
+    int dataPointIndex,
+    int configurationCount,
+    double investment,
+    double profitability
+) {
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if (i < configurationCount) {
+        // strategies[i]->backtest(data[dataPointIndex], investment, profitability);
+    }
+}
+
 Optimizer::Optimizer(mongoc_client_t *dbClient, std::string strategyName, std::string symbol, int group) {
     this->dbClient = dbClient;
     this->strategyName = strategyName;
@@ -311,11 +335,11 @@ std::vector<MapConfiguration*> *Optimizer::buildMapConfigurations(
     return results;
 }
 
-std::vector<Configuration*> Optimizer::buildConfigurations(std::map<std::string, ConfigurationOption> options) {
+thrust::host_vector<Configuration*> Optimizer::buildConfigurations(std::map<std::string, ConfigurationOption> options) {
     printf("Building configurations...");
 
     std::vector<MapConfiguration*> *mapConfigurations = buildMapConfigurations(options);
-    std::vector<Configuration*> configurations;
+    thrust::host_vector<Configuration*> configurations;
     Configuration *configuration = new Configuration();
 
     // Reserve space in advance for better performance.
@@ -384,30 +408,36 @@ std::vector<Configuration*> Optimizer::buildConfigurations(std::map<std::string,
     return configurations;
 }
 
-void backtestStrategy(double *dataPoint, std::vector<Strategy*> *strategyGroup, double &investment, double &profitability) {
-    for (std::vector<Strategy*>::iterator strategyIterator = strategyGroup->begin(); strategyIterator != strategyGroup->end(); ++strategyIterator) {
-        (*strategyIterator)->backtest(dataPoint, investment, profitability);
-    }
-}
+// void backtestStrategy(double *dataPoint, std::vector<Strategy*> *strategyGroup, double &investment, double &profitability) {
+//     for (std::vector<Strategy*>::iterator strategyIterator = strategyGroup->begin(); strategyIterator != strategyGroup->end(); ++strategyIterator) {
+//         (*strategyIterator)->backtest(dataPoint, investment, profitability);
+//     }
+// }
 
-void Optimizer::optimize(std::vector<Configuration*> &configurations, double investment, double profitability) {
+void Optimizer::optimize(thrust::host_vector<Configuration*> &configurations, double investment, double profitability) {
+    printf("Optimizing...");
+
     double percentage;
     int threadCount = std::thread::hardware_concurrency();
-    std::vector<std::vector<Strategy*>> strategyGroups(threadCount);
-    int strategyCount = configurations.size();
+    int configurationCount = configurations.size();
     int i = 0;
-    int j = 0;
+    int dataChunkSize = 500000;
 
-    printf("Preparing strategies...");
+    // Host data.
+    thrust::host_vector<double*> data;
+    thrust::host_vector<Strategy*> strategies(configurationCount);
 
-    // Set up one strategy instance per configuration.
-    for (std::vector<Configuration*>::iterator configurationIterator = configurations.begin(); configurationIterator != configurations.end(); ++configurationIterator) {
-        i = std::distance(configurations.begin(), configurationIterator);
-        strategyGroups[i % threadCount].push_back(OptimizationStrategyFactory::create(this->strategyName, this->symbol, this->dataIndex, this->group, *configurationIterator));
-    }
+    // GPU settings.
+    int blockCount = 32;
+    int threadsPerBlock = 1024;
 
-    printf("%i strategies prepared\n", strategyCount);
-    printf("Optimizing...");
+    // Copy data to the GPU.
+    thrust::device_vector<double*> devData;
+    thrust::device_vector<Strategy*> devStrategies = strategies;
+    thrust::device_vector<Configuration*> devConfigurations = configurations;
+
+    // Initialize strategies on the GPU.
+    optimizer_initialize<<<blockCount, threadsPerBlock>>>(devStrategies, configurations, configurationCount);
 
     // Iterate over data ticks.
     for (i=0; i<this->dataCount; i++) {
@@ -415,24 +445,17 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
         percentage = (++i / (double)this->dataCount) * 100.0;
         printf("\rOptimizing...%0.4f%%", percentage);
 
-        double *dataPoint = this->data[i];
-        std::thread *threads = new std::thread[threadCount];
-
-        for (j=0; j<threadCount; j++) {
-            std::vector<Strategy*> *strategyGroup = &strategyGroups[j];
-
-            // threads[j] = std::thread([&dataPoint, &strategyGroup, &investment, &profitability]{
-            //     for (std::vector<Strategy*>::iterator strategyIterator = strategyGroup->begin(); strategyIterator != strategyGroup->end(); ++strategyIterator) {
-            //         (*strategyIterator)->backtest(dataPoint, investment, profitability);
-            //     }
-            // });
-            threads[j] = std::thread(backtestStrategy, dataPoint, strategyGroup, std::ref(investment), std::ref(profitability));
+        if (i == 0 || i % dataChunkSize == 0) {
+            // Copy a chunk of data points to the GPU.
+            // ...
         }
 
-        for (j=0; j<threadCount; j++) {
-            threads[j].join();
-        }
+        // Backtest all strategies against the current data point.
+        optimizer_backtest<<<blockCount, threadsPerBlock>>>(devData, devStrategies, i % dataChunkSize, configurationCount, investment, profitability);
     }
+
+    // Copy strategies from the GPU back to the host.
+    strategies = devStrategies;
 
     printf("\n");
 

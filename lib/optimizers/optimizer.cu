@@ -402,12 +402,6 @@ thrust::host_vector<Configuration*> Optimizer::buildConfigurations(std::map<std:
     return configurations;
 }
 
-// void backtestStrategy(double *dataPoint, std::vector<Strategy*> *strategyGroup, double &investment, double &profitability) {
-//     for (std::vector<Strategy*>::iterator strategyIterator = strategyGroup->begin(); strategyIterator != strategyGroup->end(); ++strategyIterator) {
-//         (*strategyIterator)->backtest(dataPoint, investment, profitability);
-//     }
-// }
-
 void Optimizer::optimize(thrust::host_vector<Configuration*> &configurations, double investment, double profitability) {
     printf("Optimizing...");
 

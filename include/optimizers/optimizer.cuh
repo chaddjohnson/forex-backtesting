@@ -34,7 +34,7 @@ class Optimizer {
         std::string symbol;
         int group;
         int dataCount;
-        double **data;
+        thrust::host_vector<double*> data;
         std::map<std::string, int> *dataIndex;
         int getDataPropertyCount();
         bson_t *convertTickToBson(Tick *tick);
@@ -51,7 +51,7 @@ class Optimizer {
 
     public:
         Optimizer(mongoc_client_t *dbClient, std::string strategyName, std::string symbol, int group);
-        virtual ~Optimizer();
+        virtual ~Optimizer() {}
         void prepareData(std::vector<Tick*> ticks);
         virtual std::map<std::string, ConfigurationOption> getConfigurationOptions() = 0;
         thrust::host_vector<Configuration*> buildConfigurations(std::map<std::string, ConfigurationOption> options);

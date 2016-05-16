@@ -33,10 +33,6 @@ Optimizer::Optimizer(mongoc_client_t *dbClient, std::string strategyName, std::s
     this->dataIndex = new std::map<std::string, int>();
 }
 
-Optimizer::~Optimizer() {
-    free(data);
-}
-
 bson_t *Optimizer::convertTickToBson(Tick *tick) {
     bson_t *document;
     bson_t dataDocument;
@@ -207,7 +203,6 @@ int Optimizer::getDataPropertyCount() {
 
 void Optimizer::loadData() {
     double percentage;
-    int dataPointIndex = 0;
     int propertyIndex = 0;
     mongoc_collection_t *collection;
     mongoc_cursor_t *cursor;
@@ -220,6 +215,7 @@ void Optimizer::loadData() {
     const char *propertyName;
     const bson_value_t *propertyValue;
     int dataPropertyCount = this->getDataPropertyCount();
+    int i = 0;
 
     printf("Loading data...");
 
@@ -235,9 +231,6 @@ void Optimizer::loadData() {
         throw std::runtime_error(error.message);
     }
 
-    // Allocate memory for the data.
-    this->data = (double**)malloc(this->dataCount * sizeof(double*));
-
     // Query the database.
     query = BCON_NEW(
         "$query", "{", "symbol", BCON_UTF8(this->symbol.c_str()), "}",
@@ -248,10 +241,11 @@ void Optimizer::loadData() {
 
     // Go through query results, and convert each document into an array.
     while (mongoc_cursor_next(cursor, &document)) {
+        double *dataPoint;
         propertyIndex = 0;
 
         // Allocate memory for the data point.
-        this->data[dataPointIndex] = (double*)malloc(dataPropertyCount * sizeof(double));
+        dataPoint = (double*)malloc(dataPropertyCount * sizeof(double));
 
         if (bson_iter_init(&documentIterator, document)) {
             // Find the "data" subdocument.
@@ -264,7 +258,7 @@ void Optimizer::loadData() {
                     propertyValue = bson_iter_value(&dataIterator);
 
                     // Add the data property value to the data store.
-                    this->data[dataPointIndex][propertyIndex] = propertyValue->value.v_double;
+                    dataPoint[propertyIndex] = propertyValue->value.v_double;
 
                     // For the first data point only (only need to do this once), build an
                     // index of data item positions.
@@ -282,7 +276,7 @@ void Optimizer::loadData() {
         }
 
         // Show progress.
-        percentage = (++dataPointIndex / (double)this->dataCount) * 100.0;
+        percentage = (++i / (double)this->dataCount) * 100.0;
         printf("\rLoading data...%0.4f%%", percentage);
     }
 
@@ -420,11 +414,11 @@ void Optimizer::optimize(thrust::host_vector<Configuration*> &configurations, do
     double percentage;
     int threadCount = std::thread::hardware_concurrency();
     int configurationCount = configurations.size();
-    int i = 0;
     int dataChunkSize = 500000;
+    int dataPointCount = this->data.size();
+    int i = 0;
 
     // Host data.
-    thrust::host_vector<double*> data;
     thrust::host_vector<Strategy*> strategies(configurationCount);
 
     // GPU settings.
@@ -446,8 +440,13 @@ void Optimizer::optimize(thrust::host_vector<Configuration*> &configurations, do
         printf("\rOptimizing...%0.4f%%", percentage);
 
         if (i == 0 || i % dataChunkSize == 0) {
+            int nextChunkSize = i + dataChunkSize < dataPointCount ? dataChunkSize : (dataPointCount - i) - 1;
+
+            // Empty the current device vector contents.
+            thrust::device_vector<double*>().swap(devData);
+
             // Copy a chunk of data points to the GPU.
-            // ...
+            thrust::copy_n(this->data.begin() + i, nextChunkSize, this->data.begin() + i);
         }
 
         // Backtest all strategies against the current data point.

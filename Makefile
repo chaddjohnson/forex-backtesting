@@ -1,6 +1,6 @@
 CC = g++
 NVCC = nvcc
-CFLAGS = -std=c++11 --compiler-options=-Wall,-pedantic,-O3
+CFLAGS = -std=c++11 --compiler-options=-Wall,-Wno-unused-function
 LFLAGS = -L/usr/local/lib -Llib $(shell pkg-config --libs libmongoc-1.0 libbson-1.0)
 INCLUDES = -I/usr/include -I/usr/local/include -Iinclude $(shell pkg-config --cflags libmongoc-1.0 libbson-1.0)
 LIBS = -lgsl -lcblas
@@ -15,15 +15,15 @@ OBJ = factories/optimizationStrategyFactory.o positions/callPosition.o positions
 
 all: prepareData optimize
 
-prepareData: src/prepareData.cpp $(addprefix lib/,$(OBJ))
+prepareData: src/prepareData.cu $(addprefix lib/,$(OBJ))
 	@mkdir -p $(BIN)
-	$(NVCC) $(CFLAGS) $(INCLUDES) -o $(BIN)/$@ src/prepareData.cpp $(addprefix $(OBJDIR)/,$(addprefix lib/,$(OBJ))) $(LFLAGS) $(LIBS)
+	$(NVCC) $(CFLAGS) $(INCLUDES) -o $(BIN)/$@ src/prepareData.cu $(addprefix $(OBJDIR)/,$(addprefix lib/,$(OBJ))) $(LFLAGS) $(LIBS)
 
-optimize: src/optimize.cpp $(addprefix lib/,$(OBJ))
+optimize: src/optimize.cu $(addprefix lib/,$(OBJ))
 	@mkdir -p $(BIN)
-	$(NVCC) $(CFLAGS) $(INCLUDES) -o $(BIN)/$@ src/optimize.cpp $(addprefix $(OBJDIR)/,$(addprefix lib/,$(OBJ))) $(LFLAGS) $(LIBS)
+	$(NVCC) $(CFLAGS) $(INCLUDES) -o $(BIN)/$@ src/optimize.cu $(addprefix $(OBJDIR)/,$(addprefix lib/,$(OBJ))) $(LFLAGS) $(LIBS)
 
-%.o: %.cpp
+%.o: %.cu
 	@mkdir -p $(OBJDIR)/lib/strategies $(OBJDIR)/lib/positions $(OBJDIR)/lib/factories $(OBJDIR)/lib/optimizers $(OBJDIR)/lib/dataParsers $(OBJDIR)/lib/studies
 	$(NVCC) $(CFLAGS) $(INCLUDES) -o $(OBJDIR)/$@ -c $<
 clean:

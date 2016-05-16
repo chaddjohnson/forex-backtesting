@@ -387,7 +387,7 @@ std::vector<Configuration*> Optimizer::buildConfigurations(std::map<std::string,
 void Optimizer::optimize(std::vector<Configuration*> &configurations, double investment, double profitability) {
     double percentage;
     int threadCount = std::thread::hardware_concurrency();
-    std::vector<std::vector<Strategy*>> strategyGroups;
+    std::vector<std::vector<Strategy*>> strategyGroups(threadCount);
     int strategyCount = configurations.size();
     int i = 0;
     int j = 0;
@@ -403,9 +403,6 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     printf("%i strategies prepared\n", strategyCount);
     printf("Optimizing...");
 
-    // // Set up a threadpool so all CPU cores and their threads can be used.
-    maginatics::ThreadPool pool(1, threadCount, 5000);
-
     // Iterate over data ticks.
     for (i=0; i<this->dataCount; i++) {
         // Show progress.
@@ -417,15 +414,14 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
         for (j=0; j<threadCount; j++) {
             std::vector<Strategy*> *strategyGroup = &strategyGroups[j];
 
-            pool.execute([dataPoint, strategyGroup, investment, profitability]() {
+            std::thread t([&dataPoint, &strategyGroup, &investment, &profitability]{
                 for (std::vector<Strategy*>::iterator strategyIterator = strategyGroup->begin(); strategyIterator != strategyGroup->end(); ++strategyIterator) {
                     (*strategyIterator)->backtest(dataPoint, investment, profitability);
                 }
             });
-        }
 
-        // Block until all tasks for the current data point complete.
-        pool.drain();
+            t.join();
+        }
     }
 
     printf("\n");

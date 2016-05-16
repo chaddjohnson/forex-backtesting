@@ -384,6 +384,12 @@ std::vector<Configuration*> Optimizer::buildConfigurations(std::map<std::string,
     return configurations;
 }
 
+void backtestStrategy(double *dataPoint, std::vector<Strategy*> *strategyGroup, double &investment, double &profitability) {
+    for (std::vector<Strategy*>::iterator strategyIterator = strategyGroup->begin(); strategyIterator != strategyGroup->end(); ++strategyIterator) {
+        (*strategyIterator)->backtest(dataPoint, investment, profitability);
+    }
+}
+
 void Optimizer::optimize(std::vector<Configuration*> &configurations, double investment, double profitability) {
     double percentage;
     int threadCount = std::thread::hardware_concurrency();
@@ -415,11 +421,12 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
         for (j=0; j<threadCount; j++) {
             std::vector<Strategy*> *strategyGroup = &strategyGroups[j];
 
-            threads[j] = std::thread([&dataPoint, &strategyGroup, &investment, &profitability]{
-                for (std::vector<Strategy*>::iterator strategyIterator = strategyGroup->begin(); strategyIterator != strategyGroup->end(); ++strategyIterator) {
-                    (*strategyIterator)->backtest(dataPoint, investment, profitability);
-                }
-            });
+            // threads[j] = std::thread([&dataPoint, &strategyGroup, &investment, &profitability]{
+            //     for (std::vector<Strategy*>::iterator strategyIterator = strategyGroup->begin(); strategyIterator != strategyGroup->end(); ++strategyIterator) {
+            //         (*strategyIterator)->backtest(dataPoint, investment, profitability);
+            //     }
+            // });
+            threads[j] = std::thread(backtestStrategy, dataPoint, strategyGroup, std::ref(investment), std::ref(profitability));
         }
 
         for (j=0; j<threadCount; j++) {

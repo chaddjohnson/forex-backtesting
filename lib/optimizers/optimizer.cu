@@ -202,6 +202,8 @@ int Optimizer::getDataPropertyCount() {
 }
 
 void Optimizer::loadData() {
+    printf("Loading data...");
+
     double percentage;
     int propertyIndex = 0;
     mongoc_collection_t *collection;
@@ -216,8 +218,6 @@ void Optimizer::loadData() {
     const bson_value_t *propertyValue;
     int dataPropertyCount = this->getDataPropertyCount();
     int i = 0;
-
-    printf("Loading data...");
 
     // Get a reference to the database collection.
     collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting-test", "datapoints");
@@ -412,7 +412,6 @@ void Optimizer::optimize(thrust::host_vector<Configuration*> &configurations, do
     printf("Optimizing...");
 
     double percentage;
-    int threadCount = std::thread::hardware_concurrency();
     int configurationCount = configurations.size();
     int dataChunkSize = 500000;
     int dataPointCount = this->data.size();

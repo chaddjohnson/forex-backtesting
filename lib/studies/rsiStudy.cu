@@ -39,7 +39,7 @@ double RsiStudy::calculateInitialAverageLoss(Tick *initialTick, std::vector<Tick
 
 void RsiStudy::tick() {
     Tick *lastTick = getLastTick();
-    std::vector<Tick*> *dataSegment = new std::vector<Tick*>();
+    std::vector<Tick*> *dataSegment = nullptr;
     Tick *previousTick = getPreviousTick();
     double currentGain = 0.0;
     double currentLoss = 0.0;

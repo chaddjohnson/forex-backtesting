@@ -7,7 +7,7 @@ EmaStudy::EmaStudy(std::map<std::string, double> inputs, std::map<std::string, s
 
 void EmaStudy::tick() {
     Tick *lastTick = getLastTick();
-    std::vector<Tick*> *dataSegment = new std::vector<Tick*>();
+    std::vector<Tick*> *dataSegment = nullptr;
     int dataSegmentLength = 0;
     double K = 0.0;
     double ema = 0.0;

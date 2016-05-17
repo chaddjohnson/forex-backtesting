@@ -1,7 +1,7 @@
 #include "studies/smaStudy.cuh"
 
 void SmaStudy::tick() {
-    std::vector<Tick*> *dataSegment = new std::vector<Tick*>();
+    std::vector<Tick*> *dataSegment = nullptr;
     int dataSegmentLength = 0;
     double sum = 0.0;
     double sma = 0.0;

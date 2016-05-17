@@ -32,7 +32,7 @@ double StochasticOscillatorStudy::getHighestHigh(std::vector<Tick*> *dataSegment
 
 void StochasticOscillatorStudy::tick() {
     Tick *lastTick = getLastTick();
-    std::vector<Tick*> *dataSegment = new std::vector<Tick*>();
+    std::vector<Tick*> *dataSegment = nullptr;
     int dataSegmentLength = 0;
     std::vector<Tick*> averageLengthDataSegment;
     double low = 0.0;

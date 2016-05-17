@@ -76,7 +76,7 @@ double PolynomialRegressionChannelStudy::calculateStandardDeviation(std::vector<
 
 void PolynomialRegressionChannelStudy::tick() {
     Tick *lastTick = getLastTick();
-    std::vector<Tick*> *dataSegment = new std::vector<Tick*>();
+    std::vector<Tick*> *dataSegment = nullptr;
     int dataSegmentLength = 0;
     std::string regressionOutputName = getOutputMapping("regression");
     double regression;

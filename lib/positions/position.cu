@@ -1,6 +1,6 @@
 #include "positions/position.cuh"
 
-Position::Position(char *symbol, time_t timestamp, double price, double investment, double profitability, int expirationMinutes) {
+Position::Position(const char *symbol, time_t timestamp, double price, double investment, double profitability, int expirationMinutes) {
     this->symbol = symbol;
     this->timestamp = timestamp;
     this->price = price;
@@ -11,7 +11,7 @@ Position::Position(char *symbol, time_t timestamp, double price, double investme
     this->expirationTimestamp = this->timestamp + (expirationMinutes * 60);
 }
 
-char *Position::getSymbol() {
+const char *Position::getSymbol() {
     return this->symbol;
 }
 

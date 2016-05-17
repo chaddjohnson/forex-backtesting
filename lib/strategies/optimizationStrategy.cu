@@ -1,6 +1,6 @@
 #include "strategies/optimizationStrategy.cuh"
 
-OptimizationStrategy::OptimizationStrategy(char *symbol, std::map<std::string, int> *dataIndex, int group, Configuration *configuration)
+OptimizationStrategy::OptimizationStrategy(const char *symbol, std::map<std::string, int> *dataIndex, int group, Configuration *configuration)
         : Strategy(symbol, dataIndex) {
     this->group = group;
     this->configuration = configuration;

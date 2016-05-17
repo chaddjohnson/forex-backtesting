@@ -10,7 +10,7 @@
 
 class Strategy {
     private:
-        char *symbol;
+        const char *symbol;
         std::map<std::string, int> *dataIndex;
         std::vector<Position*> openPositions;
         double profitLoss;
@@ -29,9 +29,9 @@ class Strategy {
         void addPosition(Position *position);
 
     public:
-        Strategy(char *symbol, std::map<std::string, int> *dataIndex);
+        Strategy(const char *symbol, std::map<std::string, int> *dataIndex);
         virtual void backtest(double *dataPoint, double investment, double profitability) = 0;
-        char *getSymbol();
+        const char *getSymbol();
         void setProfitLoss(double profitLoss);
         std::map<std::string, double> *getResults();
 };

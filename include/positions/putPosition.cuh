@@ -6,10 +6,10 @@
 
 class PutPosition : public Position {
     protected:
-        char *getTransactionType();
+        const char *getTransactionType();
 
     public:
-        PutPosition(char *symbol, time_t timestamp, double price, double investment, double profitability, int expirationMinutes)
+        PutPosition(const char *symbol, time_t timestamp, double price, double investment, double profitability, int expirationMinutes)
             : Position(symbol, timestamp, price, investment, profitability, expirationMinutes) {}
         ~PutPosition() {}
         double getProfitLoss();

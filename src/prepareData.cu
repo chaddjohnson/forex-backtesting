@@ -11,15 +11,15 @@
 
 int main(int argc, char *argv[]) {
     // Data parser settings and objects.
-    char *dataParserName = "oanda";
+    const char *dataParserName = "oanda";
     std::string dataFilePath = "/Users/chad/development/desktop/forex-backtesting/data/oanda/k-fold/combined/AUDJPY.csv";
     DataParser *dataParser;
     Optimizer *optimizer;
     std::vector<Tick*> ticks;
 
     // Optimizer settings.
-    char *optimizerName = "reversals";
-    char *symbol = "AUDJPY";
+    const char *optimizerName = "reversals";
+    const char *symbol = "AUDJPY";
     int group = 1;
 
     // Connect to the database

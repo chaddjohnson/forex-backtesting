@@ -24,7 +24,7 @@ __global__ void optimizer_backtest(
     }
 }
 
-Optimizer::Optimizer(mongoc_client_t *dbClient, char *strategyName, char *symbol, int group) {
+Optimizer::Optimizer(mongoc_client_t *dbClient, const char *strategyName, const char *symbol, int group) {
     this->dbClient = dbClient;
     this->strategyName = strategyName;
     this->symbol = symbol;

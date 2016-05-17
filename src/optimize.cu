@@ -8,8 +8,8 @@
 
 int main(int argc, char *argv[]) {
     // Optimizer settings and objects.
-    char *optimizerName = "reversals";
-    char *symbol = "AUDJPY";
+    const char *optimizerName = "reversals";
+    const char *symbol = "AUDJPY";
     int group = 1;
     Optimizer *optimizer;
     thrust::host_vector<Configuration*> configurations;

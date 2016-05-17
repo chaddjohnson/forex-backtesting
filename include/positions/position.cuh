@@ -5,7 +5,7 @@
 
 class Position {
     private:
-        char *symbol;
+        const char *symbol;
         time_t timestamp;
         double price;
         double investment;
@@ -16,12 +16,12 @@ class Position {
         time_t expirationTimestamp;
 
     protected:
-        virtual char *getTransactionType() = 0;
+        virtual const char *getTransactionType() = 0;
 
     public:
-        Position(char *symbol, time_t timestamp, double price, double investment, double profitability, int expirationMinutes);
+        Position(const char *symbol, time_t timestamp, double price, double investment, double profitability, int expirationMinutes);
         virtual ~Position() {}
-        char *getSymbol();
+        const char *getSymbol();
         time_t getTimestamp();
         double getPrice();
         double getClosePrice();

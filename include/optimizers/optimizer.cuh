@@ -30,8 +30,8 @@ __global__ void optimizer_backtest(thrust::device_vector<double*> data, thrust::
 class Optimizer {
     private:
         mongoc_client_t *dbClient;
-        std::string strategyName;
-        std::string symbol;
+        char *strategyName;
+        char *symbol;
         int group;
         int dataCount;
         thrust::host_vector<double*> data;
@@ -50,7 +50,7 @@ class Optimizer {
         virtual std::vector<Study*> getStudies() = 0;
 
     public:
-        Optimizer(mongoc_client_t *dbClient, std::string strategyName, std::string symbol, int group);
+        Optimizer(mongoc_client_t *dbClient, char *strategyName, char *symbol, int group);
         virtual ~Optimizer() {}
         void prepareData(std::vector<Tick*> ticks);
         virtual std::map<std::string, ConfigurationOption> getConfigurationOptions() = 0;

@@ -15,7 +15,7 @@ class CombinedStrategy : public Strategy {
         std::vector<Configuration*> getConfigurations();
 
     public:
-        CombinedStrategy(std::string symbol, std::map<std::string, int> *dataIndex, std::vector<Configuration*> configurations);
+        CombinedStrategy(char *symbol, std::map<std::string, int> *dataIndex, std::vector<Configuration*> configurations);
         ~CombinedStrategy();
 };
 

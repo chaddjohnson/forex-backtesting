@@ -8,7 +8,7 @@
 
 class OptimizationStrategyFactory {
     public:
-        static OptimizationStrategy *create(std::string name, std::string symbol, std::map<std::string, int> *dataIndex, int group, Configuration *configuration);
+        static OptimizationStrategy *create(char *name, char *symbol, std::map<std::string, int> *dataIndex, int group, Configuration *configuration);
 };
 
 #endif

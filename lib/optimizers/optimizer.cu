@@ -24,7 +24,7 @@ __global__ void optimizer_backtest(
     }
 }
 
-Optimizer::Optimizer(mongoc_client_t *dbClient, std::string strategyName, std::string symbol, int group) {
+Optimizer::Optimizer(mongoc_client_t *dbClient, char *strategyName, char *symbol, int group) {
     this->dbClient = dbClient;
     this->strategyName = strategyName;
     this->symbol = symbol;
@@ -38,7 +38,7 @@ bson_t *Optimizer::convertTickToBson(Tick *tick) {
     bson_t dataDocument;
 
     document = bson_new();
-    BSON_APPEND_UTF8(document, "symbol", this->symbol.c_str());
+    BSON_APPEND_UTF8(document, "symbol", this->symbol);
     BSON_APPEND_INT32(document, "testingGroups", tick->at("testingGroups"));
     BSON_APPEND_INT32(document, "validationGroups", tick->at("validationGroups"));
     BSON_APPEND_DOCUMENT_BEGIN(document, "data", &dataDocument);
@@ -223,7 +223,7 @@ void Optimizer::loadData() {
     collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting-test", "datapoints");
 
     // Query for the number of data points.
-    countQuery = BCON_NEW("symbol", BCON_UTF8(this->symbol.c_str()));
+    countQuery = BCON_NEW("symbol", BCON_UTF8(this->symbol));
     this->dataCount = mongoc_collection_count(collection, MONGOC_QUERY_NONE, countQuery, 0, 0, NULL, &error);
 
     if (this->dataCount < 0) {
@@ -233,7 +233,7 @@ void Optimizer::loadData() {
 
     // Query the database.
     query = BCON_NEW(
-        "$query", "{", "symbol", BCON_UTF8(this->symbol.c_str()), "}",
+        "$query", "{", "symbol", BCON_UTF8(this->symbol), "}",
         "$orderby", "{", "data.timestamp", BCON_INT32(1), "}",
         "$hint", "{", "data.timestamp", BCON_INT32(1), "}"
     );

@@ -1,6 +1,6 @@
 #include "positions/putPosition.cuh"
 
-std::string PutPosition::getTransactionType() {
+char *PutPosition::getTransactionType() {
     return "PUT";
 }
 

@@ -1,6 +1,6 @@
 #include "positions/callPosition.cuh"
 
-std::string CallPosition::getTransactionType() {
+char *CallPosition::getTransactionType() {
     return "CALL";
 }
 

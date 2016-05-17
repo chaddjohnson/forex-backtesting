@@ -26,4 +26,4 @@ optimize: src/optimize.cu $(addprefix lib/,$(OBJ))
 	@mkdir -p $(OBJDIR)/lib/strategies $(OBJDIR)/lib/positions $(OBJDIR)/lib/factories $(OBJDIR)/lib/optimizers $(OBJDIR)/lib/dataParsers $(OBJDIR)/lib/studies
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(OBJDIR)/$@ -c $<
 clean:
-	rm -f $(BIN)/* $(OBJDIR)/*.o
+	rm -rf $(BIN) $(OBJDIR)

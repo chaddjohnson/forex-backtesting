@@ -311,9 +311,11 @@ std::vector<MapConfiguration*> *Optimizer::buildMapConfigurations(
         // Iterate through configuration option values.
         for (std::map<std::string, boost::variant<std::string, double>>::iterator valuesIterator = configurationOptionsIterator->begin(); valuesIterator != configurationOptionsIterator->end(); ++valuesIterator) {
             if (valuesIterator->second.type() == typeid(std::string)) {
+                // Value points to a key.
                 (*current)[valuesIterator->first] = (*this->dataIndex)[boost::get<std::string>(valuesIterator->second)];
             }
             else {
+                // Value is an actual value.
                 (*current)[valuesIterator->first] = boost::get<double>(valuesIterator->second);
             }
         }

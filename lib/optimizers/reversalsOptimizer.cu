@@ -10,15 +10,12 @@ std::vector<Study*> ReversalsOptimizer::getStudies() {
     this->studies.push_back(new EmaStudy({{"length", 50.0}}, {{"ema", "ema50"}}));
     this->studies.push_back(new EmaStudy({{"length", 100.0}}, {{"ema", "ema100"}}));
     this->studies.push_back(new EmaStudy({{"length", 200.0}}, {{"ema", "ema200"}}));
-
-    // TODO: Definitely try these too.
     this->studies.push_back(new EmaStudy({{"length", 250.0}}, {{"ema", "ema250"}}));
     this->studies.push_back(new EmaStudy({{"length", 300.0}}, {{"ema", "ema300"}}));
     this->studies.push_back(new EmaStudy({{"length", 350.0}}, {{"ema", "ema350"}}));
     this->studies.push_back(new EmaStudy({{"length", 400.0}}, {{"ema", "ema400"}}));
     this->studies.push_back(new EmaStudy({{"length", 450.0}}, {{"ema", "ema450"}}));
     this->studies.push_back(new EmaStudy({{"length", 500.0}}, {{"ema", "ema500"}}));
-
     this->studies.push_back(new RsiStudy({{"length", 2.0}}, {{"rsi", "rsi2"}}));
     this->studies.push_back(new RsiStudy({{"length", 5.0}}, {{"rsi", "rsi5"}}));
     this->studies.push_back(new RsiStudy({{"length", 7.0}}, {{"rsi", "rsi7"}}));

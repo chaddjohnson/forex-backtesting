@@ -108,6 +108,102 @@ void ReversalsOptimizationStrategy::backtest(double *dataPoint, double investmen
         previousDataPoint = dataPoint;
         return;
     }
+    if (configuration->ema500 && configuration->ema450) {
+        if (!dataPoint[configuration->ema500] || !dataPoint[configuration->ema450]) {
+            putNextTick = false;
+            callNextTick = false;
+        }
+
+        // Determine if a downtrend is not occurring.
+        if (putNextTick && dataPoint[configuration->ema500] < dataPoint[configuration->ema450]) {
+            putNextTick = false;
+        }
+
+        // Determine if an uptrend is not occurring.
+        if (callNextTick && dataPoint[configuration->ema500] > dataPoint[configuration->ema450]) {
+            callNextTick = false;
+        }
+    }
+    if (configuration->ema450 && configuration->ema400) {
+        if (!dataPoint[configuration->ema450] || !dataPoint[configuration->ema400]) {
+            putNextTick = false;
+            callNextTick = false;
+        }
+
+        // Determine if a downtrend is not occurring.
+        if (putNextTick && dataPoint[configuration->ema450] < dataPoint[configuration->ema400]) {
+            putNextTick = false;
+        }
+
+        // Determine if an uptrend is not occurring.
+        if (callNextTick && dataPoint[configuration->ema450] > dataPoint[configuration->ema400]) {
+            callNextTick = false;
+        }
+    }
+    if (configuration->ema400 && configuration->ema350) {
+        if (!dataPoint[configuration->ema400] || !dataPoint[configuration->ema350]) {
+            putNextTick = false;
+            callNextTick = false;
+        }
+
+        // Determine if a downtrend is not occurring.
+        if (putNextTick && dataPoint[configuration->ema400] < dataPoint[configuration->ema350]) {
+            putNextTick = false;
+        }
+
+        // Determine if an uptrend is not occurring.
+        if (callNextTick && dataPoint[configuration->ema400] > dataPoint[configuration->ema350]) {
+            callNextTick = false;
+        }
+    }
+    if (configuration->ema350 && configuration->ema300) {
+        if (!dataPoint[configuration->ema350] || !dataPoint[configuration->ema300]) {
+            putNextTick = false;
+            callNextTick = false;
+        }
+
+        // Determine if a downtrend is not occurring.
+        if (putNextTick && dataPoint[configuration->ema350] < dataPoint[configuration->ema300]) {
+            putNextTick = false;
+        }
+
+        // Determine if an uptrend is not occurring.
+        if (callNextTick && dataPoint[configuration->ema350] > dataPoint[configuration->ema300]) {
+            callNextTick = false;
+        }
+    }
+    if (configuration->ema300 && configuration->ema250) {
+        if (!dataPoint[configuration->ema300] || !dataPoint[configuration->ema250]) {
+            putNextTick = false;
+            callNextTick = false;
+        }
+
+        // Determine if a downtrend is not occurring.
+        if (putNextTick && dataPoint[configuration->ema300] < dataPoint[configuration->ema250]) {
+            putNextTick = false;
+        }
+
+        // Determine if an uptrend is not occurring.
+        if (callNextTick && dataPoint[configuration->ema300] > dataPoint[configuration->ema250]) {
+            callNextTick = false;
+        }
+    }
+    if (configuration->ema250 && configuration->ema200) {
+        if (!dataPoint[configuration->ema250] || !dataPoint[configuration->ema200]) {
+            putNextTick = false;
+            callNextTick = false;
+        }
+
+        // Determine if a downtrend is not occurring.
+        if (putNextTick && dataPoint[configuration->ema250] < dataPoint[configuration->ema200]) {
+            putNextTick = false;
+        }
+
+        // Determine if an uptrend is not occurring.
+        if (callNextTick && dataPoint[configuration->ema250] > dataPoint[configuration->ema200]) {
+            callNextTick = false;
+        }
+    }
     if (configuration->ema200 && configuration->ema100) {
         if (!dataPoint[configuration->ema200] || !dataPoint[configuration->ema100]) {
             putNextTick = false;
@@ -115,7 +211,7 @@ void ReversalsOptimizationStrategy::backtest(double *dataPoint, double investmen
         }
 
         // Determine if a downtrend is not occurring.
-        if (putNextTick && dataPoint[configuration->ema100] < dataPoint[configuration->ema100]) {
+        if (putNextTick && dataPoint[configuration->ema200] < dataPoint[configuration->ema100]) {
             putNextTick = false;
         }
 

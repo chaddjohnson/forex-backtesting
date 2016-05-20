@@ -12,6 +12,12 @@ typedef struct Configuration {
     int ema50;
     int ema100;
     int ema200;
+    int ema250;
+    int ema300;
+    int ema350;
+    int ema400;
+    int ema450;
+    int ema500;
     int rsi;
     int stochasticD;
     int stochasticK;

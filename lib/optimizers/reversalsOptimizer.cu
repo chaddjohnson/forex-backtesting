@@ -12,12 +12,12 @@ std::vector<Study*> ReversalsOptimizer::getStudies() {
     this->studies.push_back(new EmaStudy({{"length", 200.0}}, {{"ema", "ema200"}}));
 
     // TODO: Definitely try these too.
-    // this->studies.push_back(new EmaStudy({{"length", 250.0}}, {{"ema", "ema250"}}));
-    // this->studies.push_back(new EmaStudy({{"length", 300.0}}, {{"ema", "ema300"}}));
-    // this->studies.push_back(new EmaStudy({{"length", 350.0}}, {{"ema", "ema350"}}));
-    // this->studies.push_back(new EmaStudy({{"length", 400.0}}, {{"ema", "ema400"}}));
-    // this->studies.push_back(new EmaStudy({{"length", 450.0}}, {{"ema", "ema450"}}));
-    // this->studies.push_back(new EmaStudy({{"length", 500.0}}, {{"ema", "ema500"}}));
+    this->studies.push_back(new EmaStudy({{"length", 250.0}}, {{"ema", "ema250"}}));
+    this->studies.push_back(new EmaStudy({{"length", 300.0}}, {{"ema", "ema300"}}));
+    this->studies.push_back(new EmaStudy({{"length", 350.0}}, {{"ema", "ema350"}}));
+    this->studies.push_back(new EmaStudy({{"length", 400.0}}, {{"ema", "ema400"}}));
+    this->studies.push_back(new EmaStudy({{"length", 450.0}}, {{"ema", "ema450"}}));
+    this->studies.push_back(new EmaStudy({{"length", 500.0}}, {{"ema", "ema500"}}));
 
     this->studies.push_back(new RsiStudy({{"length", 2.0}}, {{"rsi", "rsi2"}}));
     this->studies.push_back(new RsiStudy({{"length", 5.0}}, {{"rsi", "rsi5"}}));
@@ -220,6 +220,42 @@ std::map<std::string, ConfigurationOption> ReversalsOptimizer::getConfigurationO
     ema200Options.push_back({{}});
     ema200Options.push_back({{"ema200", "ema200"}});
     configurationOptions["ema200"] = ema200Options;
+
+    // EMA 250
+    ConfigurationOption ema250Options;
+    ema250Options.push_back({{}});
+    ema250Options.push_back({{"ema250", "ema250"}});
+    configurationOptions["ema250"] = ema250Options;
+
+    // EMA 300
+    ConfigurationOption ema300Options;
+    ema300Options.push_back({{}});
+    ema300Options.push_back({{"ema300", "ema300"}});
+    configurationOptions["ema300"] = ema300Options;
+
+    // EMA 350
+    ConfigurationOption ema350Options;
+    ema350Options.push_back({{}});
+    ema350Options.push_back({{"ema350", "ema350"}});
+    configurationOptions["ema350"] = ema350Options;
+
+    // EMA 400
+    ConfigurationOption ema400Options;
+    ema400Options.push_back({{}});
+    ema400Options.push_back({{"ema400", "ema400"}});
+    configurationOptions["ema400"] = ema400Options;
+
+    // EMA 450
+    ConfigurationOption ema450Options;
+    ema450Options.push_back({{}});
+    ema450Options.push_back({{"ema450", "ema450"}});
+    configurationOptions["ema450"] = ema450Options;
+
+    // EMA 500
+    ConfigurationOption ema500Options;
+    ema500Options.push_back({{}});
+    ema500Options.push_back({{"ema500", "ema500"}});
+    configurationOptions["ema500"] = ema500Options;
 
     // RSI
     ConfigurationOption rsiOptions;

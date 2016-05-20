@@ -366,6 +366,24 @@ thrust::host_vector<Configuration*> Optimizer::buildConfigurations(std::map<std:
         if ((*mapConfigurationIterator)->find("ema200") != (*mapConfigurationIterator)->end()) {
             configuration->ema200 = boost::get<int>((**mapConfigurationIterator)["ema200"]);
         }
+        if ((*mapConfigurationIterator)->find("ema250") != (*mapConfigurationIterator)->end()) {
+            configuration->ema250 = boost::get<int>((**mapConfigurationIterator)["ema250"]);
+        }
+        if ((*mapConfigurationIterator)->find("ema300") != (*mapConfigurationIterator)->end()) {
+            configuration->ema300 = boost::get<int>((**mapConfigurationIterator)["ema300"]);
+        }
+        if ((*mapConfigurationIterator)->find("ema350") != (*mapConfigurationIterator)->end()) {
+            configuration->ema350 = boost::get<int>((**mapConfigurationIterator)["ema350"]);
+        }
+        if ((*mapConfigurationIterator)->find("ema400") != (*mapConfigurationIterator)->end()) {
+            configuration->ema400 = boost::get<int>((**mapConfigurationIterator)["ema400"]);
+        }
+        if ((*mapConfigurationIterator)->find("ema450") != (*mapConfigurationIterator)->end()) {
+            configuration->ema450 = boost::get<int>((**mapConfigurationIterator)["ema450"]);
+        }
+        if ((*mapConfigurationIterator)->find("ema500") != (*mapConfigurationIterator)->end()) {
+            configuration->ema500 = boost::get<int>((**mapConfigurationIterator)["ema500"]);
+        }
         if ((*mapConfigurationIterator)->find("rsi") != (*mapConfigurationIterator)->end()) {
             configuration->rsi = boost::get<int>((**mapConfigurationIterator)["rsi"]);
         }

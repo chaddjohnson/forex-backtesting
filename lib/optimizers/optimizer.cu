@@ -460,7 +460,7 @@ void Optimizer::optimize(thrust::host_vector<Configuration*> &configurations, do
             thrust::host_vector<double*>().swap(dataSegment);
             thrust::device_vector<double*>().swap(devDataSegment);
             
-            // Copy a chunk (within host memory).
+            // Copy another chunk (within host memory).
             thrust::copy_n(this->data.begin() + i, nextChunkSize, dataSegment);
             
             // Copy a chunk of data points to the GPU.

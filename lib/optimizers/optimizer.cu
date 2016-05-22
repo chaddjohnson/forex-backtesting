@@ -439,7 +439,8 @@ void Optimizer::optimize(thrust::host_vector<Configuration*> &configurations, do
     int threadsPerBlock = 1024;
 
     // Copy data to the GPU.
-    thrust::device_vector<double*> devData;
+    thrust::host_vector<double*> dataSegment;
+    thrust::device_vector<double*> devDataSegment;
     thrust::device_vector<Strategy*> devStrategies = strategies;
     thrust::device_vector<Configuration*> devConfigurations = configurations;
 
@@ -456,14 +457,18 @@ void Optimizer::optimize(thrust::host_vector<Configuration*> &configurations, do
             int nextChunkSize = i + dataChunkSize < dataPointCount ? dataChunkSize : (dataPointCount - i) - 1;
 
             // Empty the current device vector contents.
-            thrust::device_vector<double*>().swap(devData);
-
+            thrust::host_vector<double*>().swap(dataSegment);
+            thrust::device_vector<double*>().swap(devDataSegment);
+            
+            // Copy a chunk (within host memory).
+            thrust::copy_n(this->data.begin() + i, nextChunkSize, dataSegment);
+            
             // Copy a chunk of data points to the GPU.
-            thrust::copy_n(this->data.begin() + i, nextChunkSize, this->data.begin() + i);
+            devDataSegment = dataSegment;
         }
 
         // Backtest all strategies against the current data point.
-        optimizer_backtest<<<blockCount, threadsPerBlock>>>(devData, devStrategies, i % dataChunkSize, configurationCount, investment, profitability);
+        optimizer_backtest<<<blockCount, threadsPerBlock>>>(devDataSegment, devStrategies, i % dataChunkSize, configurationCount, investment, profitability);
     }
 
     // Copy strategies from the GPU back to the host.

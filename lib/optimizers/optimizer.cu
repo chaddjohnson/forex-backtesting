@@ -275,6 +275,9 @@ void Optimizer::loadData() {
             }
         }
 
+        // Add the data point to the data store.
+        this->data.push_back(dataPoint);
+
         // Show progress.
         percentage = (++i / (double)this->dataCount) * 100.0;
         printf("\rLoading data...%0.4f%%", percentage);
@@ -366,24 +369,24 @@ thrust::host_vector<Configuration*> Optimizer::buildConfigurations(std::map<std:
         if ((*mapConfigurationIterator)->find("ema200") != (*mapConfigurationIterator)->end()) {
             configuration->ema200 = boost::get<int>((**mapConfigurationIterator)["ema200"]);
         }
-        if ((*mapConfigurationIterator)->find("ema250") != (*mapConfigurationIterator)->end()) {
-            configuration->ema250 = boost::get<int>((**mapConfigurationIterator)["ema250"]);
-        }
-        if ((*mapConfigurationIterator)->find("ema300") != (*mapConfigurationIterator)->end()) {
-            configuration->ema300 = boost::get<int>((**mapConfigurationIterator)["ema300"]);
-        }
-        if ((*mapConfigurationIterator)->find("ema350") != (*mapConfigurationIterator)->end()) {
-            configuration->ema350 = boost::get<int>((**mapConfigurationIterator)["ema350"]);
-        }
-        if ((*mapConfigurationIterator)->find("ema400") != (*mapConfigurationIterator)->end()) {
-            configuration->ema400 = boost::get<int>((**mapConfigurationIterator)["ema400"]);
-        }
-        if ((*mapConfigurationIterator)->find("ema450") != (*mapConfigurationIterator)->end()) {
-            configuration->ema450 = boost::get<int>((**mapConfigurationIterator)["ema450"]);
-        }
-        if ((*mapConfigurationIterator)->find("ema500") != (*mapConfigurationIterator)->end()) {
-            configuration->ema500 = boost::get<int>((**mapConfigurationIterator)["ema500"]);
-        }
+        // if ((*mapConfigurationIterator)->find("ema250") != (*mapConfigurationIterator)->end()) {
+        //     configuration->ema250 = boost::get<int>((**mapConfigurationIterator)["ema250"]);
+        // }
+        // if ((*mapConfigurationIterator)->find("ema300") != (*mapConfigurationIterator)->end()) {
+        //     configuration->ema300 = boost::get<int>((**mapConfigurationIterator)["ema300"]);
+        // }
+        // if ((*mapConfigurationIterator)->find("ema350") != (*mapConfigurationIterator)->end()) {
+        //     configuration->ema350 = boost::get<int>((**mapConfigurationIterator)["ema350"]);
+        // }
+        // if ((*mapConfigurationIterator)->find("ema400") != (*mapConfigurationIterator)->end()) {
+        //     configuration->ema400 = boost::get<int>((**mapConfigurationIterator)["ema400"]);
+        // }
+        // if ((*mapConfigurationIterator)->find("ema450") != (*mapConfigurationIterator)->end()) {
+        //     configuration->ema450 = boost::get<int>((**mapConfigurationIterator)["ema450"]);
+        // }
+        // if ((*mapConfigurationIterator)->find("ema500") != (*mapConfigurationIterator)->end()) {
+        //     configuration->ema500 = boost::get<int>((**mapConfigurationIterator)["ema500"]);
+        // }
         if ((*mapConfigurationIterator)->find("rsi") != (*mapConfigurationIterator)->end()) {
             configuration->rsi = boost::get<int>((**mapConfigurationIterator)["rsi"]);
         }
@@ -457,12 +460,12 @@ void Optimizer::optimize(thrust::host_vector<Configuration*> &configurations, do
             int nextChunkSize = i + dataChunkSize < dataPointCount ? dataChunkSize : (dataPointCount - i) - 1;
 
             // Empty the current device vector contents.
-            thrust::host_vector<double*>().swap(dataSegment);
-            thrust::device_vector<double*>().swap(devDataSegment);
-            
+            // thrust::host_vector<double*>().swap(dataSegment);
+            // thrust::device_vector<double*>().swap(devDataSegment);
+
             // Copy another chunk (within host memory).
-            thrust::copy_n(this->data.begin() + i, nextChunkSize, dataSegment);
-            
+            // thrust::copy_n(this->data.begin() + i, nextChunkSize, dataSegment);
+
             // Copy a chunk of data points to the GPU.
             devDataSegment = dataSegment;
         }

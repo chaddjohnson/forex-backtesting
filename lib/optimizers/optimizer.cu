@@ -231,8 +231,6 @@ void Optimizer::loadData() {
         throw std::runtime_error(error.message);
     }
 
-    this->data = (double**)malloc(this->dataCount * sizeof(double));
-
     // Query the database.
     query = BCON_NEW(
         "$query", "{", "symbol", BCON_UTF8(this->symbol), "}",

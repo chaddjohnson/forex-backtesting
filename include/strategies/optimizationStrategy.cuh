@@ -15,7 +15,7 @@ class OptimizationStrategy : public Strategy {
         void tick(double *dataPoint);
 
     public:
-        OptimizationStrategy(const char *symbol, std::map<std::string, int> *dataIndex, int group, Configuration *configuration);
+        OptimizationStrategy(const char *symbol, std::map<std::string, int> *dataIndexMap, int group, Configuration *configuration);
         ~OptimizationStrategy();
         int getGroup();
         Configuration *getConfiguration();

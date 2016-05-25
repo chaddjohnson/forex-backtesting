@@ -12,8 +12,6 @@
 #include <bson.h>
 #include <bcon.h>
 #include <boost/variant.hpp>
-#include <thrust/host_vector.h>
-#include <thrust/device_vector.h>
 #include "maginatics/threadpool/threadpool.h"
 #include "studies/study.cuh"
 #include "strategies/strategy.cuh"
@@ -24,8 +22,8 @@
 #include "types/configurationOption.cuh"
 
 // CUDA kernel headers.
-__global__ void optimizer_initialize(thrust::device_vector<Strategy*> strategies, thrust::device_vector<Configuration*> configurations, int configurationCount);
-__global__ void optimizer_backtest(thrust::device_vector<double*> data, thrust::device_vector<Strategy*> strategies, int dataPointIndex, int configurationCount, double investment, double profitability);
+__global__ void optimizer_initialize(Strategy *strategies, Configuration *configurations, int configurationCount);
+__global__ void optimizer_backtest(double *data, Strategy *strategies, int dataPointIndex, int configurationCount, double investment, double profitability);
 
 class Optimizer {
     private:
@@ -33,9 +31,7 @@ class Optimizer {
         const char *strategyName;
         const char *symbol;
         int group;
-        int dataCount;
-        thrust::host_vector<double*> data;
-        std::map<std::string, int> *dataIndex;
+        std::map<std::string, int> *dataIndexMap;
         int getDataPropertyCount();
         bson_t *convertTickToBson(Tick *tick);
         void saveTicks(std::vector<Tick*> ticks);
@@ -54,9 +50,9 @@ class Optimizer {
         virtual ~Optimizer() {}
         void prepareData(std::vector<Tick*> ticks);
         virtual std::map<std::string, ConfigurationOption> getConfigurationOptions() = 0;
-        thrust::host_vector<Configuration*> buildConfigurations(std::map<std::string, ConfigurationOption> options);
-        void loadData();
-        void optimize(thrust::host_vector<Configuration*> &configurations, double investment, double profitability);
+        std::vector<Configuration*> buildConfigurations(std::map<std::string, ConfigurationOption> options);
+        double *loadData(int offset, int chunkSize);
+        void optimize(std::vector<Configuration*> &configurations, double investment, double profitability);
 };
 
 #endif

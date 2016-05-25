@@ -1,7 +1,7 @@
 #include <string>
 #include <iostream>
 #include <mongoc.h>
-#include <thrust/host_vector.h>
+#include <vector>
 #include "optimizers/optimizer.cuh"
 #include "factories/optimizerFactory.cuh"
 #include "types/configuration.cuh"
@@ -10,9 +10,11 @@ int main(int argc, char *argv[]) {
     // Optimizer settings and objects.
     const char *optimizerName = "reversals";
     const char *symbol = "AUDJPY";
+    double investment = 1000.0;
+    double profitability = 0.76;
     int group = 1;
     Optimizer *optimizer;
-    thrust::host_vector<Configuration*> configurations;
+    std::vector<Configuration*> configurations;
 
     // Connect to the database
     mongoc_init();
@@ -21,9 +23,8 @@ int main(int argc, char *argv[]) {
     // Perform optimization.
     try {
         optimizer = OptimizerFactory::create(optimizerName, dbClient, symbol, group);
-        optimizer->loadData();
         configurations = optimizer->buildConfigurations(optimizer->getConfigurationOptions());
-        optimizer->optimize(configurations, 1000.0, 0.76);
+        optimizer->optimize(configurations, investment, profitability);
     }
     catch (const std::exception &error) {
         std::cerr << error.what() << std::endl;

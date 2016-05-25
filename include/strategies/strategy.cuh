@@ -11,7 +11,7 @@
 class Strategy {
     private:
         const char *symbol;
-        std::map<std::string, int> *dataIndex;
+        std::map<std::string, int> *dataIndexMap;
         std::vector<Position*> openPositions;
         double profitLoss;
         int winCount;
@@ -21,7 +21,7 @@ class Strategy {
         double minimumProfitLoss;
 
     protected:
-        std::map<std::string, int> *getDataIndex();
+        std::map<std::string, int> *getDataIndexMap();
         virtual void tick(double *dataPoint) = 0;
         double getWinRate();
         double getProfitLoss();
@@ -29,7 +29,7 @@ class Strategy {
         void addPosition(Position *position);
 
     public:
-        Strategy(const char *symbol, std::map<std::string, int> *dataIndex);
+        Strategy(const char *symbol, std::map<std::string, int> *dataIndexMap);
         virtual void backtest(double *dataPoint, double investment, double profitability) = 0;
         const char *getSymbol();
         void setProfitLoss(double profitLoss);

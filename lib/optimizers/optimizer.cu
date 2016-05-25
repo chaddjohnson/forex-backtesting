@@ -1,22 +1,15 @@
 #include "optimizers/optimizer.cuh"
 
-__global__ void optimizer_initialize(thrust::device_vector<Strategy*> strategies, thrust::device_vector<Configuration*> configurations, int configurationCount) {
+__global__ void optimizer_initialize(Strategy *strategies, Configuration *configurations, int configurationCount) {
     int i = blockIdx.x * blockDim.x + threadIdx.x;
 
     if (i < configurationCount) {
         // Set up one strategy instance per configuration.
-        // strategies[i] = OptimizationStrategyFactory::create(strategyName, symbol, dataIndex, group, configurations[i]);
+        // strategies[i] = OptimizationStrategyFactory::create(strategyName, symbol, dataIndexMap, group, configurations[i]);
     }
 }
 
-__global__ void optimizer_backtest(
-    thrust::device_vector<double*> data,
-    thrust::device_vector<Strategy*> strategies,
-    int dataPointIndex,
-    int configurationCount,
-    double investment,
-    double profitability
-) {
+__global__ void optimizer_backtest(double *data, Strategy *strategies, int dataPointIndex, int configurationCount, double investment, double profitability) {
     int i = blockIdx.x * blockDim.x + threadIdx.x;
 
     if (i < configurationCount) {
@@ -29,8 +22,7 @@ Optimizer::Optimizer(mongoc_client_t *dbClient, const char *strategyName, const 
     this->strategyName = strategyName;
     this->symbol = symbol;
     this->group = group;
-    this->dataCount = 0;
-    this->dataIndex = new std::map<std::string, int>();
+    this->dataIndexMap = new std::map<std::string, int>();
 }
 
 bson_t *Optimizer::convertTickToBson(Tick *tick) {
@@ -201,11 +193,7 @@ int Optimizer::getDataPropertyCount() {
     return propertyCount;
 }
 
-void Optimizer::loadData() {
-    printf("Loading data...");
-
-    double percentage;
-    int propertyIndex = 0;
+double *Optimizer::loadData(int offset, int chunkSize) {
     mongoc_collection_t *collection;
     mongoc_cursor_t *cursor;
     bson_t *countQuery;
@@ -217,16 +205,21 @@ void Optimizer::loadData() {
     const char *propertyName;
     const bson_value_t *propertyValue;
     int dataPropertyCount = this->getDataPropertyCount();
-    int i = 0;
+    int dataPointCount;
+    int dataPointIndex = 0;
+    int propertyIndex = 0;
 
     // Get a reference to the database collection.
     collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting-test", "datapoints");
 
     // Query for the number of data points.
     countQuery = BCON_NEW("symbol", BCON_UTF8(this->symbol));
-    this->dataCount = mongoc_collection_count(collection, MONGOC_QUERY_NONE, countQuery, 0, 0, NULL, &error);
+    dataPointCount = mongoc_collection_count(collection, MONGOC_QUERY_NONE, countQuery, offset, chunkSize, NULL, &error);
 
-    if (this->dataCount < 0) {
+    // Allocate memory for the flattened data store.
+    double *data = (double*)malloc(dataPointCount * dataPropertyCount * sizeof(double));
+
+    if (dataPointCount < 0) {
         // No data points found.
         throw std::runtime_error(error.message);
     }
@@ -237,15 +230,11 @@ void Optimizer::loadData() {
         "$orderby", "{", "data.timestamp", BCON_INT32(1), "}",
         "$hint", "{", "data.timestamp", BCON_INT32(1), "}"
     );
-    cursor = mongoc_collection_find(collection, MONGOC_QUERY_NONE, 0, 0, 1000, query, NULL, NULL);
+    cursor = mongoc_collection_find(collection, MONGOC_QUERY_NONE, offset, chunkSize, 1000, query, NULL, NULL);
 
     // Go through query results, and convert each document into an array.
     while (mongoc_cursor_next(cursor, &document)) {
-        double *dataPoint;
         propertyIndex = 0;
-
-        // Allocate memory for the data point.
-        dataPoint = (double*)malloc(dataPropertyCount * sizeof(double));
 
         if (bson_iter_init(&documentIterator, document)) {
             // Find the "data" subdocument.
@@ -257,17 +246,17 @@ void Optimizer::loadData() {
                 while (bson_iter_next(&dataIterator)) {
                     propertyValue = bson_iter_value(&dataIterator);
 
-                    // Add the data property value to the data store.
-                    dataPoint[propertyIndex] = propertyValue->value.v_double;
+                    // Add the data property value to the flattened data store.
+                    data[dataPointIndex * dataPropertyCount + propertyIndex] = (double)propertyValue->value.v_double;
 
                     // For the first data point only (only need to do this once), build an
                     // index of data item positions.
-                    if (this->dataCount == 0) {
+                    if (dataPointCount == 0) {
                         // Get the property name.
                         propertyName = bson_iter_key(&dataIterator);
 
                         // Add to the data index map.
-                        (*this->dataIndex)[propertyName] = propertyIndex;
+                        (*this->dataIndexMap)[propertyName] = propertyIndex;
                     }
 
                     propertyIndex++;
@@ -275,21 +264,17 @@ void Optimizer::loadData() {
             }
         }
 
-        // Add the data point to the data store.
-        this->data.push_back(dataPoint);
-
-        // Show progress.
-        percentage = (++i / (double)this->dataCount) * 100.0;
-        printf("\rLoading data...%0.4f%%", percentage);
+        dataPointIndex++;
     }
-
-    printf("\n");
 
     // Cleanup.
     bson_destroy(countQuery);
     bson_destroy(query);
     mongoc_cursor_destroy(cursor);
     mongoc_collection_destroy(collection);
+
+    // Return the pointer to the data.
+    return data;
 }
 
 std::vector<MapConfiguration*> *Optimizer::buildMapConfigurations(
@@ -315,7 +300,7 @@ std::vector<MapConfiguration*> *Optimizer::buildMapConfigurations(
         for (std::map<std::string, boost::variant<std::string, double>>::iterator valuesIterator = configurationOptionsIterator->begin(); valuesIterator != configurationOptionsIterator->end(); ++valuesIterator) {
             if (valuesIterator->second.type() == typeid(std::string)) {
                 // Value points to a key.
-                (*current)[valuesIterator->first] = (*this->dataIndex)[boost::get<std::string>(valuesIterator->second)];
+                (*current)[valuesIterator->first] = (*this->dataIndexMap)[boost::get<std::string>(valuesIterator->second)];
             }
             else {
                 // Value is an actual value.
@@ -334,11 +319,11 @@ std::vector<MapConfiguration*> *Optimizer::buildMapConfigurations(
     return results;
 }
 
-thrust::host_vector<Configuration*> Optimizer::buildConfigurations(std::map<std::string, ConfigurationOption> options) {
+std::vector<Configuration*> Optimizer::buildConfigurations(std::map<std::string, ConfigurationOption> options) {
     printf("Building configurations...");
 
     std::vector<MapConfiguration*> *mapConfigurations = buildMapConfigurations(options);
-    thrust::host_vector<Configuration*> configurations;
+    std::vector<Configuration*> configurations;
     Configuration *configuration = new Configuration();
 
     // Reserve space in advance for better performance.
@@ -350,11 +335,11 @@ thrust::host_vector<Configuration*> Optimizer::buildConfigurations(std::map<std:
         configuration = new Configuration();
 
         // Set basic properties.
-        configuration->timestamp = (*this->dataIndex)["timestamp"];
-        configuration->open = (*this->dataIndex)["open"];
-        configuration->high = (*this->dataIndex)["high"];
-        configuration->low = (*this->dataIndex)["low"];
-        configuration->close = (*this->dataIndex)["close"];
+        configuration->timestamp = (*this->dataIndexMap)["timestamp"];
+        configuration->open = (*this->dataIndexMap)["open"];
+        configuration->high = (*this->dataIndexMap)["high"];
+        configuration->low = (*this->dataIndexMap)["low"];
+        configuration->close = (*this->dataIndexMap)["close"];
 
         // Set index mappings.
         if ((*mapConfigurationIterator)->find("sma13") != (*mapConfigurationIterator)->end()) {
@@ -425,60 +410,97 @@ thrust::host_vector<Configuration*> Optimizer::buildConfigurations(std::map<std:
     return configurations;
 }
 
-void Optimizer::optimize(thrust::host_vector<Configuration*> &configurations, double investment, double profitability) {
+void Optimizer::optimize(std::vector<Configuration*> &configurations, double investment, double profitability) {
     printf("Optimizing...");
 
     double percentage;
+    mongoc_collection_t *collection;
+    bson_t *countQuery;
+    bson_error_t error;
+    int dataPointCount;
     int configurationCount = configurations.size();
     int dataChunkSize = 500000;
-    int dataPointCount = this->data.size();
+    int dataOffset = 0;
+    int dataPropertyCount = this->getDataPropertyCount();
     int i = 0;
 
     // Host data.
-    thrust::host_vector<Strategy*> strategies(configurationCount);
+    Strategy *strategies = (Strategy*)malloc(configurationCount * sizeof(Strategy));
+    Configuration *pConfigurations = (Configuration*)malloc(configurationCount * sizeof(Configuration));
+
+    // GPU data.
+    Strategy *devStrategies;
+    Configuration *devConfigurations;
 
     // GPU settings.
     int blockCount = 32;
     int threadsPerBlock = 1024;
 
-    // Copy data to the GPU.
-    thrust::host_vector<double*> dataSegment;
-    thrust::device_vector<double*> devDataSegment;
-    thrust::device_vector<Strategy*> devStrategies = strategies;
-    thrust::device_vector<Configuration*> devConfigurations = configurations;
+    // Get a count of all data points for the symbol.
+    collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting-test", "datapoints");
+    countQuery = BCON_NEW("symbol", BCON_UTF8(this->symbol));
+    dataPointCount = mongoc_collection_count(collection, MONGOC_QUERY_NONE, countQuery, 0, 0, NULL, &error);
 
-    // Initialize strategies on the GPU.
-    optimizer_initialize<<<blockCount, threadsPerBlock>>>(devStrategies, configurations, configurationCount);
-
-    // Iterate over data ticks.
-    for (i=0; i<this->dataCount; i++) {
-        // Show progress.
-        percentage = (++i / (double)this->dataCount) * 100.0;
-        printf("\rOptimizing...%0.4f%%", percentage);
-
-        if (i == 0 || i % dataChunkSize == 0) {
-            int nextChunkSize = i + dataChunkSize < dataPointCount ? dataChunkSize : (dataPointCount - i) - 1;
-
-            // Empty the current device vector contents.
-            // thrust::host_vector<double*>().swap(dataSegment);
-            // thrust::device_vector<double*>().swap(devDataSegment);
-
-            // Copy another chunk (within host memory).
-            // thrust::copy_n(this->data.begin() + i, nextChunkSize, dataSegment);
-
-            // Copy a chunk of data points to the GPU.
-            devDataSegment = dataSegment;
-        }
-
-        // Backtest all strategies against the current data point.
-        optimizer_backtest<<<blockCount, threadsPerBlock>>>(devDataSegment, devStrategies, i % dataChunkSize, configurationCount, investment, profitability);
+    // Copy configurations vector data to pointer.
+    for (std::vector<Configuration*>::iterator configurationIterator = configurations.begin(); configurationIterator != configurations.end(); ++configurationIterator) {
+        pConfigurations[i] = **configurationIterator;
     }
 
-    // Copy strategies from the GPU back to the host.
-    strategies = devStrategies;
+    cudaSetDevice(0);
+
+    // Allocate memory on the GPU.
+    cudaMalloc((void**)&devStrategies, configurationCount * sizeof(Strategy));
+    cudaMalloc((void**)&devConfigurations, configurationCount * sizeof(Configuration));
+
+    // Copy data to the GPU.
+    cudaMemcpy(devConfigurations, pConfigurations, configurationCount * sizeof(Configuration), cudaMemcpyHostToDevice);
+
+    // Initialize strategies on the GPU.
+    optimizer_initialize<<<blockCount, threadsPerBlock>>>(devStrategies, devConfigurations, configurationCount);
+
+    while (dataOffset < dataPointCount) {
+        // Show progress.
+        percentage = (++i / (double)dataPointCount) * 100.0;
+        printf("\rOptimizing...%0.4f%%", percentage);
+
+        int nextChunkSize = i + dataChunkSize < dataPointCount ? dataChunkSize : (dataPointCount - i) - 1;
+
+        // Load another chunk of data.
+        double *data = loadData(dataOffset, nextChunkSize);
+        double *devData;
+
+        // Allocate memory for the data on the GPU.
+        cudaMalloc((void**)&devData, nextChunkSize * dataPropertyCount * sizeof(double));
+
+        // Copy a chunk of data points to the GPU.
+        cudaMemcpy(devData, data, nextChunkSize * dataPropertyCount * sizeof(double), cudaMemcpyHostToDevice);
+
+        // Backtest all strategies against the current data point.
+        optimizer_backtest<<<blockCount, threadsPerBlock>>>(devData, devStrategies, i % dataChunkSize, configurationCount, investment, profitability);
+
+        // TODO: Determine if this is actually necessary.
+        cudaDeviceSynchronize();
+
+        // Free GPU and host memory;
+        cudaFree(devData);
+        delete data;
+
+        dataOffset += dataChunkSize;
+    }
+
+    // Copy strategies from the GPU to the host.
+    cudaMemcpy(strategies, devStrategies, configurationCount * sizeof(Strategy), cudaMemcpyDeviceToHost);
+
+    // Save results
+    // TODO
+
+    // Free memory on the GPU memory.
+    cudaFree(devStrategies);
+    cudaFree(devConfigurations);
+
+    // Free host memory.
+    delete strategies;
+    delete pConfigurations;
 
     printf("\n");
-
-    // Unload data.
-    // TODO
 }

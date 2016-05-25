@@ -1,8 +1,8 @@
 #include "strategies/strategy.cuh"
 
-Strategy::Strategy(const char *symbol, std::map<std::string, int> *dataIndex) {
+Strategy::Strategy(const char *symbol, std::map<std::string, int> *dataIndexMap) {
     this->symbol = symbol;
-    this->dataIndex = dataIndex;
+    this->dataIndexMap = dataIndexMap;
     this->profitLoss = 0.0;
     this->winCount = 0;
     this->loseCount = 0;
@@ -11,8 +11,8 @@ Strategy::Strategy(const char *symbol, std::map<std::string, int> *dataIndex) {
     this->minimumProfitLoss = 99999.0;
 }
 
-std::map<std::string, int> *Strategy::getDataIndex() {
-    return this->dataIndex;
+std::map<std::string, int> *Strategy::getDataIndexMap() {
+    return this->dataIndexMap;
 }
 
 const char *Strategy::getSymbol() {

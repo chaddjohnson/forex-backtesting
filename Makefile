@@ -1,5 +1,5 @@
 CC = nvcc
-CFLAGS = -std=c++11 --compiler-options=-Wall,-O3,-Wno-unused-function,-Wno-unused-local-typedef,-Wno-unused-private-field
+CFLAGS = -std=c++11 -m64 -arch=compute_35 -code=sm_35 --compiler-options=-Wall,-O3,-Wno-unused-function,-Wno-unused-local-typedef,-Wno-unused-private-field
 LFLAGS = -L/usr/local/lib -Llib $(shell pkg-config --libs libmongoc-1.0 libbson-1.0)
 INCLUDES = -I/usr/include -I/usr/local/include -Iinclude $(shell pkg-config --cflags libmongoc-1.0 libbson-1.0)
 LIBS = -lgsl -lcblas

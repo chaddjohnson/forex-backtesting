@@ -247,7 +247,7 @@ double *Optimizer::loadData(int offset, int chunkSize) {
                     propertyValue = bson_iter_value(&dataIterator);
 
                     // Add the data property value to the flattened data store.
-                    data[dataPointIndex * dataPropertyCount + propertyIndex] = (double)propertyValue->value.v_double;
+                    data[dataPointIndex * dataPropertyCount + propertyIndex] = propertyValue->value.v_double;
 
                     // For the first data point only (only need to do this once), build an
                     // index of data item positions.

@@ -97,6 +97,10 @@ void PolynomialRegressionChannelStudy::tick() {
     this->pastPrices.push_back(lastTick->at("close"));
 
     if (dataSegmentLength < getInput("length")) {
+        setTickOutput(regressionOutputName, 0.0);
+        setTickOutput(getOutputMapping("upper"), 0.0);
+        setTickOutput(getOutputMapping("lower"), 0.0);
+
         delete dataSegment;
         return;
     }

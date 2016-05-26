@@ -58,6 +58,8 @@ void RsiStudy::tick() {
         this->previousAverageGain = -1.0;
         this->previousAverageLoss = -1.0;
 
+        setTickOutput(getOutputMapping("rsi"), 0.0);
+
         delete dataSegment;
 
         return;

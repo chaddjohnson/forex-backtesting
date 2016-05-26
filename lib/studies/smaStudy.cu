@@ -12,6 +12,8 @@ void SmaStudy::tick() {
     dataSegmentLength = dataSegment->size();
 
     if (dataSegmentLength < getInput("length")) {
+        setTickOutput(getOutputMapping("sma"), 0.0);
+
         delete dataSegment;
         return;
     }

@@ -49,6 +49,9 @@ void StochasticOscillatorStudy::tick() {
     dataSegmentLength = dataSegment->size();
 
     if (dataSegmentLength < getInput("length")) {
+        setTickOutput(KOutputName, 0.0);
+        setTickOutput(getOutputMapping("D"), 0.0);
+
         delete dataSegment;
         return;
     }

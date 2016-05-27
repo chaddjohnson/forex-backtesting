@@ -14,6 +14,13 @@ __global__ void optimizer_backtest(double *data, Strategy *strategies, int confi
 
     if (i < configurationCount) {
         // strategies[i]->backtest(data[dataPointIndex], investment, profitability);
+
+        // TODO: Remove this.
+        int j = 0;
+        int k = 0;
+        for (j=0; j<50; j++) {
+            k++;
+        }
     }
 }
 

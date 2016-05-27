@@ -499,7 +499,7 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
 
     while (dataOffset < dataPointCount) {
         // Calculate the next chunk's size.
-        int nextChunkSize = (chunkNumber * dataChunkSize < dataPointCount) ? dataChunkSize : (((chunkNumber * dataChunkSize) - dataPointCount) - 1);
+        int nextChunkSize = (chunkNumber * dataChunkSize < dataPointCount) ? dataChunkSize : ((chunkNumber * dataChunkSize) - dataPointCount);
 
         // Calculate the number of bytes needed for the next chunk.
         uint64_t dataChunkBytes = nextChunkSize * this->getDataPropertyCount() * sizeof(double);

@@ -9,7 +9,7 @@ __global__ void optimizer_initialize(Strategy *strategies, Configuration *config
     }
 }
 
-__global__ void optimizer_backtest(double *data, Strategy *strategies, int dataPointIndex, int configurationCount, double investment, double profitability) {
+__global__ void optimizer_backtest(double *data, Strategy *strategies, int configurationCount, double investment, double profitability) {
     int i = blockIdx.x * blockDim.x + threadIdx.x;
 
     if (i < configurationCount) {
@@ -22,7 +22,7 @@ Optimizer::Optimizer(mongoc_client_t *dbClient, const char *strategyName, const 
     this->strategyName = strategyName;
     this->symbol = symbol;
     this->group = group;
-    this->propertyCount = 0;
+    this->dataPropertyCount = 0;
     this->dataIndexMap = new std::map<std::string, int>();
 }
 
@@ -183,18 +183,18 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
 }
 
 int Optimizer::getDataPropertyCount() {
-    if (this->propertyCount) {
-        return this->propertyCount;
+    if (this->dataPropertyCount) {
+        return this->dataPropertyCount;
     }
 
     std::vector<Study*> studies = this->getStudies();
-    this->propertyCount = 5;
+    this->dataPropertyCount = 5;
 
     for (std::vector<Study*>::iterator iterator = studies.begin(); iterator != studies.end(); ++iterator) {
-        this->propertyCount += (*iterator)->getOutputMap().size();
+        this->dataPropertyCount += (*iterator)->getOutputMap().size();
     }
 
-    return this->propertyCount;
+    return this->dataPropertyCount;
 }
 
 std::map<std::string, int> *Optimizer::getDataIndexMap() {
@@ -252,7 +252,8 @@ double *Optimizer::loadData(int offset, int chunkSize) {
     dataPointCount = mongoc_collection_count(collection, MONGOC_QUERY_NONE, countQuery, offset, chunkSize, NULL, &error);
 
     // Allocate memory for the flattened data store.
-    double *data = (double*)malloc(dataPointCount * this->getDataPropertyCount() * sizeof(double));
+    uint64_t dataChunkBytes = dataPointCount * this->getDataPropertyCount() * sizeof(double);
+    double *data = (double*)malloc(dataChunkBytes);
 
     if (dataPointCount < 0) {
         // No data points found.
@@ -448,10 +449,16 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     bson_error_t error;
     int dataPointCount;
     int configurationCount = configurations.size();
-    int dataChunkSize = 100000;
+    int dataChunkSize = 1000000;
     int dataOffset = 0;
     std::map<std::string, int> *dataIndexMap = this->getDataIndexMap();
+    int chunkNumber = 0;
+    int dataPointIndex = 0;
     int i = 0;
+
+    // GPU settings.
+    int blockCount = 32;
+    int threadsPerBlock = 1024;
 
     // Host data.
     Strategy *strategies = (Strategy*)malloc(configurationCount * sizeof(Strategy));
@@ -461,10 +468,6 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     Strategy *devStrategies;
     Configuration *devConfigurations;
 
-    // GPU settings.
-    int blockCount = 32;
-    int threadsPerBlock = 1024;
-
     // Get a count of all data points for the symbol.
     collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting-test", "datapoints");
     countQuery = BCON_NEW("symbol", BCON_UTF8(this->symbol));
@@ -472,7 +475,7 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
 
     // Copy configurations vector data to pointer.
     for (std::vector<Configuration*>::iterator configurationIterator = configurations.begin(); configurationIterator != configurations.end(); ++configurationIterator) {
-        pConfigurations[i] = **configurationIterator;
+        pConfigurations[chunkNumber] = **configurationIterator;
     }
 
     cudaSetDevice(0);
@@ -488,33 +491,41 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     optimizer_initialize<<<blockCount, threadsPerBlock>>>(devStrategies, devConfigurations, configurationCount);
 
     while (dataOffset < dataPointCount) {
-        // Show progress.
-        percentage = (++i / (double)dataPointCount) * 100.0;
-        printf("\rOptimizing...%0.4f%%", percentage);
+        // Calculate the next chunk's size.
+        int nextChunkSize = (chunkNumber * dataChunkSize < dataPointCount) ? dataChunkSize : (((chunkNumber * dataChunkSize) - dataPointCount) - 1);
 
-        int nextChunkSize = i + dataChunkSize < dataPointCount ? dataChunkSize : (dataPointCount - i) - 1;
+        // Calculate the number of bytes needed for the next chunk.
+        uint64_t dataChunkBytes = nextChunkSize * this->getDataPropertyCount() * sizeof(double);
 
         // Load another chunk of data.
         double *data = loadData(dataOffset, nextChunkSize);
         double *devData;
 
         // Allocate memory for the data on the GPU.
-        cudaMalloc((void**)&devData, nextChunkSize * this->getDataPropertyCount() * sizeof(double));
+        cudaMalloc((void**)&devData, dataChunkBytes);
 
         // Copy a chunk of data points to the GPU.
-        cudaMemcpy(devData, data, nextChunkSize * this->getDataPropertyCount() * sizeof(double), cudaMemcpyHostToDevice);
+        cudaMemcpy(devData, data, dataChunkBytes, cudaMemcpyHostToDevice);
 
         // Backtest all strategies against the current data point.
-        optimizer_backtest<<<blockCount, threadsPerBlock>>>(devData, devStrategies, i % dataChunkSize, configurationCount, investment, profitability);
+        // TODO? Loop through all data points in the chunk?
+        for (i=0; i<nextChunkSize; i++) {
+            // Show progress.
+            percentage = (++dataPointIndex / (double)dataPointCount) * 100.0;
+            printf("\rOptimizing...%0.4f%%", percentage);
+
+            optimizer_backtest<<<blockCount, threadsPerBlock>>>(devData, devStrategies, configurationCount, investment, profitability);
+        }
 
         // TODO: Determine if this is actually necessary.
-        cudaDeviceSynchronize();
+        // cudaDeviceSynchronize();
 
         // Free GPU and host memory;
         cudaFree(devData);
         delete data;
 
         dataOffset += nextChunkSize;
+        chunkNumber++;
     }
 
     // Copy strategies from the GPU to the host.

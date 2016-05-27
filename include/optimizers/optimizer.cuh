@@ -3,6 +3,7 @@
 
 #include <cstdlib>
 #include <cstdio>
+#include <cstdint>
 #include <string>
 #include <vector>
 #include <map>
@@ -23,7 +24,7 @@
 
 // CUDA kernel headers.
 __global__ void optimizer_initialize(Strategy *strategies, Configuration *configurations, int configurationCount);
-__global__ void optimizer_backtest(double *data, Strategy *strategies, int dataPointIndex, int configurationCount, double investment, double profitability);
+__global__ void optimizer_backtest(double *data, Strategy *strategies, int configurationCount, double investment, double profitability);
 
 class Optimizer {
     private:
@@ -32,7 +33,7 @@ class Optimizer {
         const char *symbol;
         int group;
         std::map<std::string, int> *dataIndexMap;
-        int propertyCount;
+        int dataPropertyCount;
         int getDataPropertyCount();
         bson_t *convertTickToBson(Tick *tick);
         std::map<std::string, int> *getDataIndexMap();

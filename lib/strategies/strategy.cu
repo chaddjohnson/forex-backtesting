@@ -74,16 +74,16 @@ void Strategy::closeExpiredPositions(double price, time_t timestamp) {
     }
 }
 
-std::map<std::string, double> *Strategy::getResults() {
-    std::map<std::string, double> *results = new std::map<std::string, double>();
+StrategyResults Strategy::getResults() {
+    StrategyResults results;
 
-    (*results)["profitLoss"] = this->profitLoss;
-    (*results)["winCount"] = (double)this->winCount;
-    (*results)["loseCount"] = (double)this->loseCount;
-    (*results)["winRate"] = getWinRate();
-    (*results)["tradeCount"] = (double)this->winCount + this->loseCount;
-    (*results)["maximumConsecutiveLosses"] = (double)this->maximumConsecutiveLosses;
-    (*results)["minimumProfitLoss"] = (double)this->minimumProfitLoss;
+    results.profitLoss = this->profitLoss;
+    results.winCount = this->winCount;
+    results.loseCount = this->loseCount;
+    results.winRate = getWinRate();
+    results.tradeCount = this->winCount + this->loseCount;
+    results.maximumConsecutiveLosses = this->maximumConsecutiveLosses;
+    results.minimumProfitLoss = this->minimumProfitLoss;
 
     return results;
 }

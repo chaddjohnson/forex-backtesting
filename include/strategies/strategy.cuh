@@ -7,6 +7,7 @@
 #include <algorithm>
 #include "positions/position.cuh"
 #include "types/configuration.cuh"
+#include "types/strategyResults.cuh"
 
 class Strategy {
     private:
@@ -33,7 +34,7 @@ class Strategy {
         virtual void backtest(double *dataPoint, double investment, double profitability) = 0;
         const char *getSymbol();
         void setProfitLoss(double profitLoss);
-        std::map<std::string, double> *getResults();
+        StrategyResults getResults();
 };
 
 #endif

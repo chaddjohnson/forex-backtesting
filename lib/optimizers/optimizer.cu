@@ -22,6 +22,7 @@ Optimizer::Optimizer(mongoc_client_t *dbClient, const char *strategyName, const 
     this->strategyName = strategyName;
     this->symbol = symbol;
     this->group = group;
+    this->propertyCount = 0;
     this->dataIndexMap = new std::map<std::string, int>();
 }
 
@@ -182,15 +183,51 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
 }
 
 int Optimizer::getDataPropertyCount() {
-    std::vector<Study*> studies = this->getStudies();
-    int basePropertyCount = 5;
-    int propertyCount = basePropertyCount;
-
-    for (std::vector<Study*>::iterator iterator = studies.begin(); iterator != studies.end(); ++iterator) {
-        propertyCount += (*iterator)->getOutputMap().size();
+    if (this->propertyCount) {
+        return this->propertyCount;
     }
 
-    return propertyCount;
+    std::vector<Study*> studies = this->getStudies();
+    this->propertyCount = 5;
+
+    for (std::vector<Study*>::iterator iterator = studies.begin(); iterator != studies.end(); ++iterator) {
+        this->propertyCount += (*iterator)->getOutputMap().size();
+    }
+
+    return this->propertyCount;
+}
+
+std::map<std::string, int> *Optimizer::getDataIndexMap() {
+    if (this->dataIndexMap->size() > 0) {
+        return this->dataIndexMap;
+    }
+
+    std::vector<std::string> properties;
+
+    // Add basic properties.
+    properties.push_back("timestamp");
+    properties.push_back("open");
+    properties.push_back("high");
+    properties.push_back("low");
+    properties.push_back("close");
+
+    std::vector<Study*> studies = this->getStudies();
+
+    for (std::vector<Study*>::iterator iterator = studies.begin(); iterator != studies.end(); ++iterator) {
+        std::map<std::string, std::string> outputMap = (*iterator)->getOutputMap();
+
+        for (std::map<std::string, std::string>::iterator outputMapIterator = outputMap.begin(); outputMapIterator != outputMap.end(); ++outputMapIterator) {
+            properties.push_back(outputMapIterator->second);
+        }
+    }
+
+    std::sort(properties.begin(), properties.end());
+
+    for (std::vector<std::string>::iterator propertyIterator = properties.begin(); propertyIterator != properties.end(); ++propertyIterator) {
+        (*this->dataIndexMap)[*propertyIterator] = std::distance(properties.begin(), propertyIterator);
+    }
+
+    return this->dataIndexMap;
 }
 
 double *Optimizer::loadData(int offset, int chunkSize) {
@@ -202,9 +239,7 @@ double *Optimizer::loadData(int offset, int chunkSize) {
     bson_iter_t documentIterator;
     bson_iter_t dataIterator;
     bson_error_t error;
-    const char *propertyName;
     const bson_value_t *propertyValue;
-    int dataPropertyCount = this->getDataPropertyCount();
     int dataPointCount;
     int dataPointIndex = 0;
     int propertyIndex = 0;
@@ -217,7 +252,7 @@ double *Optimizer::loadData(int offset, int chunkSize) {
     dataPointCount = mongoc_collection_count(collection, MONGOC_QUERY_NONE, countQuery, offset, chunkSize, NULL, &error);
 
     // Allocate memory for the flattened data store.
-    double *data = (double*)malloc(dataPointCount * dataPropertyCount * sizeof(double));
+    double *data = (double*)malloc(dataPointCount * this->getDataPropertyCount() * sizeof(double));
 
     if (dataPointCount < 0) {
         // No data points found.
@@ -247,17 +282,7 @@ double *Optimizer::loadData(int offset, int chunkSize) {
                     propertyValue = bson_iter_value(&dataIterator);
 
                     // Add the data property value to the flattened data store.
-                    data[dataPointIndex * dataPropertyCount + propertyIndex] = propertyValue->value.v_double;
-
-                    // For the first data point only (only need to do this once), build an
-                    // index of data item positions.
-                    if (dataPointCount == 0) {
-                        // Get the property name.
-                        propertyName = bson_iter_key(&dataIterator);
-
-                        // Add to the data index map.
-                        (*this->dataIndexMap)[propertyName] = propertyIndex;
-                    }
+                    data[dataPointIndex * this->getDataPropertyCount() + propertyIndex] = propertyValue->value.v_double;
 
                     propertyIndex++;
                 }
@@ -286,6 +311,7 @@ std::vector<MapConfiguration*> *Optimizer::buildMapConfigurations(
     std::vector<std::string> allKeys;
     std::string optionKey;
     ConfigurationOption configurationOptions;
+    std::map<std::string, int> *dataIndexMap = this->getDataIndexMap();
 
     // Get all options keys.
     for (std::map<std::string, ConfigurationOption>::iterator optionsIterator = options.begin(); optionsIterator != options.end(); ++optionsIterator) {
@@ -299,8 +325,10 @@ std::vector<MapConfiguration*> *Optimizer::buildMapConfigurations(
         // Iterate through configuration option values.
         for (std::map<std::string, boost::variant<std::string, double>>::iterator valuesIterator = configurationOptionsIterator->begin(); valuesIterator != configurationOptionsIterator->end(); ++valuesIterator) {
             if (valuesIterator->second.type() == typeid(std::string)) {
-                // Value points to a key.
-                (*current)[valuesIterator->first] = (*this->dataIndexMap)[boost::get<std::string>(valuesIterator->second)];
+                if (boost::get<std::string>(valuesIterator->second).length() > 0) {
+                    // Value points to a key.
+                    (*current)[valuesIterator->first] = (*dataIndexMap)[boost::get<std::string>(valuesIterator->second)];
+                }
             }
             else {
                 // Value is an actual value.
@@ -322,6 +350,7 @@ std::vector<MapConfiguration*> *Optimizer::buildMapConfigurations(
 std::vector<Configuration*> Optimizer::buildConfigurations(std::map<std::string, ConfigurationOption> options) {
     printf("Building configurations...");
 
+    std::map<std::string, int> *dataIndexMap = this->getDataIndexMap();
     std::vector<MapConfiguration*> *mapConfigurations = buildMapConfigurations(options);
     std::vector<Configuration*> configurations;
     Configuration *configuration = new Configuration();
@@ -335,11 +364,11 @@ std::vector<Configuration*> Optimizer::buildConfigurations(std::map<std::string,
         configuration = new Configuration();
 
         // Set basic properties.
-        configuration->timestamp = (*this->dataIndexMap)["timestamp"];
-        configuration->open = (*this->dataIndexMap)["open"];
-        configuration->high = (*this->dataIndexMap)["high"];
-        configuration->low = (*this->dataIndexMap)["low"];
-        configuration->close = (*this->dataIndexMap)["close"];
+        configuration->timestamp = (*dataIndexMap)["timestamp"];
+        configuration->open = (*dataIndexMap)["open"];
+        configuration->high = (*dataIndexMap)["high"];
+        configuration->low = (*dataIndexMap)["low"];
+        configuration->close = (*dataIndexMap)["close"];
 
         // Set index mappings.
         if ((*mapConfigurationIterator)->find("sma13") != (*mapConfigurationIterator)->end()) {
@@ -419,9 +448,9 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     bson_error_t error;
     int dataPointCount;
     int configurationCount = configurations.size();
-    int dataChunkSize = 500000;
+    int dataChunkSize = 100000;
     int dataOffset = 0;
-    int dataPropertyCount = this->getDataPropertyCount();
+    std::map<std::string, int> *dataIndexMap = this->getDataIndexMap();
     int i = 0;
 
     // Host data.
@@ -470,10 +499,10 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
         double *devData;
 
         // Allocate memory for the data on the GPU.
-        cudaMalloc((void**)&devData, nextChunkSize * dataPropertyCount * sizeof(double));
+        cudaMalloc((void**)&devData, nextChunkSize * this->getDataPropertyCount() * sizeof(double));
 
         // Copy a chunk of data points to the GPU.
-        cudaMemcpy(devData, data, nextChunkSize * dataPropertyCount * sizeof(double), cudaMemcpyHostToDevice);
+        cudaMemcpy(devData, data, nextChunkSize * this->getDataPropertyCount() * sizeof(double), cudaMemcpyHostToDevice);
 
         // Backtest all strategies against the current data point.
         optimizer_backtest<<<blockCount, threadsPerBlock>>>(devData, devStrategies, i % dataChunkSize, configurationCount, investment, profitability);
@@ -485,7 +514,7 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
         cudaFree(devData);
         delete data;
 
-        dataOffset += dataChunkSize;
+        dataOffset += nextChunkSize;
     }
 
     // Copy strategies from the GPU to the host.

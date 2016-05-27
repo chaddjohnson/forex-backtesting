@@ -32,8 +32,11 @@ class Optimizer {
         const char *symbol;
         int group;
         std::map<std::string, int> *dataIndexMap;
+        int propertyCount;
         int getDataPropertyCount();
         bson_t *convertTickToBson(Tick *tick);
+        std::map<std::string, int> *getDataIndexMap();
+        double *loadData(int offset, int chunkSize);
         void saveTicks(std::vector<Tick*> ticks);
         std::vector<MapConfiguration*> *buildMapConfigurations(
             std::map<std::string, ConfigurationOption> options,
@@ -51,7 +54,6 @@ class Optimizer {
         void prepareData(std::vector<Tick*> ticks);
         virtual std::map<std::string, ConfigurationOption> getConfigurationOptions() = 0;
         std::vector<Configuration*> buildConfigurations(std::map<std::string, ConfigurationOption> options);
-        double *loadData(int offset, int chunkSize);
         void optimize(std::vector<Configuration*> &configurations, double investment, double profitability);
 };
 

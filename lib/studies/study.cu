@@ -3,6 +3,8 @@
 Study::Study(std::map<std::string, double> inputs, std::map<std::string, std::string> outputMap) {
     this->inputs = inputs;
     this->outputMap = outputMap;
+
+    resetTickOutputs();
 }
 
 void Study::setData(std::vector<Tick*> *data) {

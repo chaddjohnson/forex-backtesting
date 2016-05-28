@@ -8,11 +8,12 @@
 #include "positions/position.cuh"
 #include "types/configuration.cuh"
 #include "types/strategyResults.cuh"
+#include "types/basicDataIndexMap.cuh"
 
 class Strategy {
     private:
         const char *symbol;
-        std::map<std::string, int> *dataIndexMap;
+        BasicDataIndexMap dataIndexMap;
         std::vector<Position*> openPositions;
         double profitLoss;
         int winCount;
@@ -22,7 +23,7 @@ class Strategy {
         double minimumProfitLoss;
 
     protected:
-        std::map<std::string, int> *getDataIndexMap();
+        BasicDataIndexMap getDataIndexMap();
         virtual void tick(double *dataPoint) = 0;
         double getWinRate();
         double getProfitLoss();
@@ -30,7 +31,7 @@ class Strategy {
         void addPosition(Position *position);
 
     public:
-        Strategy(const char *symbol, std::map<std::string, int> *dataIndexMap);
+        Strategy(const char *symbol, BasicDataIndexMap dataIndexMap);
         virtual void backtest(double *dataPoint, double investment, double profitability) = 0;
         const char *getSymbol();
         void setProfitLoss(double profitLoss);

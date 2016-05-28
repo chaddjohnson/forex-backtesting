@@ -8,6 +8,7 @@
 #include "positions/callPosition.cuh"
 #include "positions/putPosition.cuh"
 #include "types/configuration.cuh"
+#include "types/basicDataIndexMap.cuh"
 
 class ReversalsOptimizationStrategy : public OptimizationStrategy {
     private:
@@ -18,7 +19,7 @@ class ReversalsOptimizationStrategy : public OptimizationStrategy {
         int expirationMinutes;
 
     public:
-        ReversalsOptimizationStrategy(const char *symbol, std::map<std::string, int> *dataIndexMap, int group, Configuration *configuration);
+        ReversalsOptimizationStrategy(const char *symbol, BasicDataIndexMap dataIndexMap, int group, Configuration *configuration);
         ~ReversalsOptimizationStrategy();
         void backtest(double *dataPoint, double investment, double profitability);
 };

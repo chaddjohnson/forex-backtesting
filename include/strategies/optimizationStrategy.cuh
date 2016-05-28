@@ -4,6 +4,7 @@
 #include <string>
 #include "strategy.cuh"
 #include "types/configuration.cuh"
+#include "types/basicDataIndexMap.cuh"
 
 class OptimizationStrategy : public Strategy {
     private:
@@ -15,7 +16,7 @@ class OptimizationStrategy : public Strategy {
         void tick(double *dataPoint);
 
     public:
-        OptimizationStrategy(const char *symbol, std::map<std::string, int> *dataIndexMap, int group, Configuration *configuration);
+        OptimizationStrategy(const char *symbol, BasicDataIndexMap dataIndexMap, int group, Configuration *configuration);
         ~OptimizationStrategy();
         int getGroup();
         Configuration *getConfiguration();

@@ -1,6 +1,6 @@
 #include "strategies/reversalsOptimizationStrategy.cuh"
 
-ReversalsOptimizationStrategy::ReversalsOptimizationStrategy(const char *symbol, std::map<std::string, int> *dataIndexMap, int group, Configuration *configuration)
+ReversalsOptimizationStrategy::ReversalsOptimizationStrategy(const char *symbol, BasicDataIndexMap dataIndexMap, int group, Configuration *configuration)
         : OptimizationStrategy(symbol, dataIndexMap, group, configuration) {
     this->configuration = configuration;
     this->previousDataPoint = nullptr;

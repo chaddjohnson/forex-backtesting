@@ -1,6 +1,6 @@
 #include "optimizers/optimizer.cuh"
 
-__global__ void optimizer_initialize(Strategy *strategies, Configuration *configurations, int configurationCount) {
+__global__ void optimizer_initialize(Strategy *strategies, BasicDataIndexMap dataIndexMap, Configuration *configurations, int configurationCount) {
     int i = blockIdx.x * blockDim.x + threadIdx.x;
 
     if (i < configurationCount) {
@@ -235,6 +235,19 @@ std::map<std::string, int> *Optimizer::getDataIndexMap() {
     }
 
     return this->dataIndexMap;
+}
+
+BasicDataIndexMap Optimizer::getBasicDataIndexMap() {
+    std::map<std::string, int> *dataIndexMap = this->getDataIndexMap();
+    BasicDataIndexMap basicDataIndexMap;
+
+    basicDataIndexMap.timestamp = (*dataIndexMap)["timestamp"];
+    basicDataIndexMap.open = (*dataIndexMap)["open"];
+    basicDataIndexMap.high = (*dataIndexMap)["high"];
+    basicDataIndexMap.low = (*dataIndexMap)["low"];
+    basicDataIndexMap.close = (*dataIndexMap)["close"];
+
+    return basicDataIndexMap;
 }
 
 double *Optimizer::loadData(int offset, int chunkSize) {
@@ -495,7 +508,7 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     cudaMemcpy(devConfigurations, pConfigurations, configurationCount * sizeof(Configuration), cudaMemcpyHostToDevice);
 
     // Initialize strategies on the GPU.
-    optimizer_initialize<<<blockCount, threadsPerBlock>>>(devStrategies, devConfigurations, configurationCount);
+    optimizer_initialize<<<blockCount, threadsPerBlock>>>(devStrategies, getBasicDataIndexMap(), devConfigurations, configurationCount);
 
     while (dataOffset < dataPointCount) {
         // Calculate the next chunk's size.

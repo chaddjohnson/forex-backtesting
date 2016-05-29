@@ -4,7 +4,7 @@ __global__ void optimizer_backtest(double *data, Strategy *strategies, int strat
     int i = blockIdx.x * blockDim.x + threadIdx.x;
 
     if (i < strategyCount) {
-        // strategies[i]->backtest(data[dataPointIndex], investment, profitability);
+        strategies[i].backtest(data, investment, profitability);
 
         // TODO: Remove this.
         int j = 0;
@@ -530,7 +530,7 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
             percentage = (++dataPointIndex / (double)dataPointCount) * 100.0;
             printf("\rOptimizing...%0.4f%%", percentage);
 
-            optimizer_backtest<<<blockCount, threadsPerBlock>>>(devData, devStrategies, configurationCount, investment, profitability);
+            optimizer_backtest<<<blockCount, threadsPerBlock>>>(devData + dataPointIndex * this->getDataPropertyCount(), devStrategies, configurationCount, investment, profitability);
         }
 
         // TODO: Determine if this is actually necessary.

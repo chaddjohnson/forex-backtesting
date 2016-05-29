@@ -13,26 +13,24 @@ int main(int argc, char *argv[]) {
     double investment = 1000.0;
     double profitability = 0.76;
     int group = 1;
-    Optimizer *optimizer;
     std::vector<Configuration*> configurations;
 
     // Connect to the database
     mongoc_init();
     mongoc_client_t *dbClient = mongoc_client_new("mongodb://localhost:27017");
 
+    Optimizer optimizer = OptimizerFactory::create(optimizerName, dbClient, symbol, group);
+
     // Perform optimization.
     try {
-        optimizer = OptimizerFactory::create(optimizerName, dbClient, symbol, group);
-        configurations = optimizer->buildConfigurations(optimizer->getConfigurationOptions());
-        optimizer->optimize(configurations, investment, profitability);
+        configurations = optimizer.buildConfigurations(optimizer.getConfigurationOptions());
+        optimizer.optimize(configurations, investment, profitability);
     }
     catch (const std::exception &error) {
         std::cerr << error.what() << std::endl;
     }
 
     // Clean up.
-    // TODO
-    // delete optimizer;
     mongoc_cleanup();
 
     return 0;

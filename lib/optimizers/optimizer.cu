@@ -538,7 +538,7 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
 
         // Free GPU and host memory;
         cudaFree(devData);
-        delete data;
+        free(data);
 
         dataOffset += nextChunkSize;
         chunkNumber++;
@@ -547,14 +547,14 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     // Copy strategies from the GPU to the host.
     cudaMemcpy(strategies, devStrategies, configurationCount * sizeof(Strategy), cudaMemcpyDeviceToHost);
 
-    // Save results
+    // Save results.
     // TODO
 
     // Free memory on the GPU memory.
     cudaFree(devStrategies);
 
     // Free host memory.
-    delete strategies;
+    free(strategies);
 
     printf("\n");
 }

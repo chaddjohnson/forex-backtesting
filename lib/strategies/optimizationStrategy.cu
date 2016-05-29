@@ -1,13 +1,13 @@
 #include "strategies/optimizationStrategy.cuh"
 
-OptimizationStrategy::OptimizationStrategy(const char *symbol, BasicDataIndexMap dataIndexMap, int group, Configuration *configuration)
+__host__ OptimizationStrategy::OptimizationStrategy(const char *symbol, BasicDataIndexMap dataIndexMap, int group, Configuration *configuration)
         : Strategy(symbol, dataIndexMap) {
     this->group = group;
     this->configuration = configuration;
     this->tickPreviousDataPoint = nullptr;
 }
 
-OptimizationStrategy::~OptimizationStrategy() {
+__host__ OptimizationStrategy::~OptimizationStrategy() {
     delete configuration;
     delete tickPreviousDataPoint;
 }

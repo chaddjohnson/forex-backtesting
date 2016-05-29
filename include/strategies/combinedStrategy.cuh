@@ -16,7 +16,7 @@ class CombinedStrategy : public Strategy {
 
     public:
         __host__ CombinedStrategy(const char *symbol, BasicDataIndexMap dataIndexMap, std::vector<Configuration*> configurations);
-        __host__ virtual ~CombinedStrategy();
+        __host__ ~CombinedStrategy();
 };
 
 #endif

@@ -16,7 +16,7 @@ class OptimizationStrategy : public Strategy {
 
     public:
         __host__ OptimizationStrategy(const char *symbol, BasicDataIndexMap dataIndexMap, int group, Configuration *configuration);
-        __host__ virtual ~OptimizationStrategy();
+        __host__ ~OptimizationStrategy();
         __device__ int getGroup();
         __device__ Configuration *getConfiguration();
 };

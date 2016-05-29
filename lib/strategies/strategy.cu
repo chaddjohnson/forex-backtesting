@@ -1,6 +1,6 @@
 #include "strategies/strategy.cuh"
 
-Strategy::Strategy(const char *symbol, BasicDataIndexMap dataIndexMap) {
+__host__ Strategy::Strategy(const char *symbol, BasicDataIndexMap dataIndexMap) {
     this->symbol = symbol;
     this->dataIndexMap = dataIndexMap;
     this->profitLoss = 0.0;

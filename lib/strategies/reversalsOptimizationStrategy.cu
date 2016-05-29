@@ -1,6 +1,6 @@
 #include "strategies/reversalsOptimizationStrategy.cuh"
 
-ReversalsOptimizationStrategy::ReversalsOptimizationStrategy(const char *symbol, BasicDataIndexMap dataIndexMap, int group, Configuration *configuration)
+__host__ ReversalsOptimizationStrategy::ReversalsOptimizationStrategy(const char *symbol, BasicDataIndexMap dataIndexMap, int group, Configuration *configuration)
         : OptimizationStrategy(symbol, dataIndexMap, group, configuration) {
     this->configuration = configuration;
     this->previousDataPoint = nullptr;
@@ -9,16 +9,16 @@ ReversalsOptimizationStrategy::ReversalsOptimizationStrategy(const char *symbol,
     this->expirationMinutes = 5;
 }
 
-ReversalsOptimizationStrategy::~ReversalsOptimizationStrategy() {
+__host__ ReversalsOptimizationStrategy::~ReversalsOptimizationStrategy() {
     delete configuration;
     delete previousDataPoint;
 }
 
 __device__ void ReversalsOptimizationStrategy::backtest(double *dataPoint, double investment, double profitability) {
-    // // Tick the strategy.
+    // Tick the strategy.
     this->tick(dataPoint);
 
-    // // Do not create trades between 4pm - 11:30pm Central, as the payout is lower during these times.
+    // Do not create trades between 4pm - 11:30pm Central, as the payout is lower during these times.
     if (dataPoint[configuration->timestampHour] >= 16 && (dataPoint[configuration->timestampHour] < 23 || (dataPoint[configuration->timestampHour] == 23 && dataPoint[configuration->timestampMinute] < 30))) {
         previousDataPoint = dataPoint;
 

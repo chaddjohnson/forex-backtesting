@@ -48,13 +48,17 @@ class Optimizer {
         );
 
     protected:
-        virtual std::vector<Study*> getStudies() = 0;
+        virtual std::vector<Study*> getStudies() {
+            return std::vector<Study*>();
+        }
 
     public:
         Optimizer(mongoc_client_t *dbClient, const char *strategyName, const char *symbol, int group);
         virtual ~Optimizer() {}
         void prepareData(std::vector<Tick*> ticks);
-        virtual std::map<std::string, ConfigurationOption> getConfigurationOptions() = 0;
+        virtual std::map<std::string, ConfigurationOption> getConfigurationOptions() {
+            return std::map<std::string, ConfigurationOption>();
+        }
         std::vector<Configuration*> buildConfigurations(std::map<std::string, ConfigurationOption> options);
         void optimize(std::vector<Configuration*> &configurations, double investment, double profitability);
 };

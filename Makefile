@@ -16,11 +16,11 @@ all: prepareData optimize
 
 prepareData: src/prepareData.cu $(addprefix lib/,$(OBJ))
 	@mkdir -p $(BIN)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $(BIN)/$@ src/prepareData.cu $(LFLAGS) $(LIBS)
+	$(CC) $(CFLAGS) $(INCLUDES) -o $(BIN)/$@ src/prepareData.cu $(addprefix $(OBJDIR)/,$(addprefix lib/,$(OBJ))) $(LFLAGS) $(LIBS)
 
 optimize: src/optimize.cu $(addprefix lib/,$(OBJ))
 	@mkdir -p $(BIN)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $(BIN)/$@ src/optimize.cu $(LFLAGS) $(LIBS)
+	$(CC) $(CFLAGS) $(INCLUDES) -o $(BIN)/$@ src/optimize.cu $(addprefix $(OBJDIR)/,$(addprefix lib/,$(OBJ))) $(LFLAGS) $(LIBS)
 
 %.o: %.cu
 	@mkdir -p $(OBJDIR)/lib/strategies $(OBJDIR)/lib/positions $(OBJDIR)/lib/factories $(OBJDIR)/lib/optimizers $(OBJDIR)/lib/dataParsers $(OBJDIR)/lib/studies

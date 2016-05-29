@@ -495,7 +495,7 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
 
     // Set up one strategy instance per configuration.
     for (i=0; i<configurationCount; i++) {
-        strategies[i] = OptimizationStrategyFactory::create(this->strategyName, this->symbol, getBasicDataIndexMap(), this->group, configurations[i]);
+        strategies[i] = *OptimizationStrategyFactory::create(this->strategyName, this->symbol, getBasicDataIndexMap(), this->group, configurations[i]);
     }
 
     cudaSetDevice(0);

@@ -19,12 +19,12 @@ int main(int argc, char *argv[]) {
     mongoc_init();
     mongoc_client_t *dbClient = mongoc_client_new("mongodb://localhost:27017");
 
-    Optimizer optimizer = OptimizerFactory::create(optimizerName, dbClient, symbol, group);
+    Optimizer *optimizer = OptimizerFactory::create(optimizerName, dbClient, symbol, group);
 
     // Perform optimization.
     try {
-        configurations = optimizer.buildConfigurations(optimizer.getConfigurationOptions());
-        optimizer.optimize(configurations, investment, profitability);
+        configurations = optimizer->buildConfigurations(optimizer->getConfigurationOptions());
+        optimizer->optimize(configurations, investment, profitability);
     }
     catch (const std::exception &error) {
         std::cerr << error.what() << std::endl;

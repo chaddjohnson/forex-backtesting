@@ -12,7 +12,7 @@
 int main(int argc, char *argv[]) {
     // Data parser settings and objects.
     const char *dataParserName = "oanda";
-    std::string dataFilePath = "/Users/chad/development/desktop/forex-backtesting/data/oanda/k-fold/combined/AUDJPY.csv";
+    std::string dataFilePath = "/home/chad/development/desktop/forex-backtesting/data/oanda/k-fold/combined/AUDJPY.csv";
     std::vector<Tick*> ticks;
 
     // Optimizer settings.
@@ -25,14 +25,14 @@ int main(int argc, char *argv[]) {
     mongoc_client_t *dbClient = mongoc_client_new("mongodb://localhost:27017");
 
     // Parse the data file.
-    DataParser dataParser = DataParserFactory::create(dataParserName, dataFilePath);
-    ticks = dataParser.parse();
+    DataParser *dataParser = DataParserFactory::create(dataParserName, dataFilePath);
+    ticks = dataParser->parse();
 
     // Initialize the optimizer.
-    Optimizer optimizer = OptimizerFactory::create(optimizerName, dbClient, symbol, group);
+    Optimizer *optimizer = OptimizerFactory::create(optimizerName, dbClient, symbol, group);
 
     // Prepare the data.
-    optimizer.prepareData(ticks);
+    optimizer->prepareData(ticks);
 
     // Clean up.
     mongoc_cleanup();

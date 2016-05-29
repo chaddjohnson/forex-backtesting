@@ -1,18 +1,9 @@
 #include "optimizers/optimizer.cuh"
 
-__global__ void optimizer_initialize(Strategy *strategies, BasicDataIndexMap dataIndexMap, Configuration *configurations, int configurationCount) {
+__global__ void optimizer_backtest(double *data, Strategy *strategies, int strategyCount, double investment, double profitability) {
     int i = blockIdx.x * blockDim.x + threadIdx.x;
 
-    if (i < configurationCount) {
-        // Set up one strategy instance per configuration.
-        // strategies[i] = OptimizationStrategyFactory::create(strategyName, symbol, dataIndexMap, group, configurations[i]);
-    }
-}
-
-__global__ void optimizer_backtest(double *data, Strategy *strategies, int configurationCount, double investment, double profitability) {
-    int i = blockIdx.x * blockDim.x + threadIdx.x;
-
-    if (i < configurationCount) {
+    if (i < strategyCount) {
         // strategies[i]->backtest(data[dataPointIndex], investment, profitability);
 
         // TODO: Remove this.
@@ -213,6 +204,8 @@ std::map<std::string, int> *Optimizer::getDataIndexMap() {
 
     // Add basic properties.
     properties.push_back("timestamp");
+    properties.push_back("timestampHour");
+    properties.push_back("timestampMinute");
     properties.push_back("open");
     properties.push_back("high");
     properties.push_back("low");
@@ -263,6 +256,7 @@ double *Optimizer::loadData(int offset, int chunkSize) {
     int dataPointCount;
     int dataPointIndex = 0;
     int propertyIndex = 0;
+    std::map<std::string, int> *dataIndexMap = this->getDataIndexMap();
 
     // Get a reference to the database collection.
     collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting-test", "datapoints");
@@ -307,6 +301,12 @@ double *Optimizer::loadData(int offset, int chunkSize) {
 
                     propertyIndex++;
                 }
+
+                // Add additional timestamp-related data.
+                time_t utcTime = data[dataPointIndex * this->getDataPropertyCount() + (*dataIndexMap)["timestamp"]];
+                struct tm *localTime = localtime(&utcTime);
+                data[dataPointIndex * this->getDataPropertyCount() + (*dataIndexMap)["timestampHour"]] = localTime->tm_hour;
+                data[dataPointIndex * this->getDataPropertyCount() + (*dataIndexMap)["timestampMinute"]] = localTime->tm_min;
             }
         }
 
@@ -374,7 +374,7 @@ std::vector<Configuration*> Optimizer::buildConfigurations(std::map<std::string,
     std::map<std::string, int> *dataIndexMap = this->getDataIndexMap();
     std::vector<MapConfiguration*> *mapConfigurations = buildMapConfigurations(options);
     std::vector<Configuration*> configurations;
-    Configuration *configuration = new Configuration();
+    Configuration *configuration = nullptr;
 
     // Reserve space in advance for better performance.
     configurations.reserve(mapConfigurations->size());
@@ -386,6 +386,8 @@ std::vector<Configuration*> Optimizer::buildConfigurations(std::map<std::string,
 
         // Set basic properties.
         configuration->timestamp = (*dataIndexMap)["timestamp"];
+        configuration->timestampHour = (*dataIndexMap)["timestampHour"];
+        configuration->timestampMinute = (*dataIndexMap)["timestampMinute"];
         configuration->open = (*dataIndexMap)["open"];
         configuration->high = (*dataIndexMap)["high"];
         configuration->low = (*dataIndexMap)["low"];
@@ -482,33 +484,27 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
 
     // Host data.
     Strategy *strategies = (Strategy*)malloc(configurationCount * sizeof(Strategy));
-    Configuration *pConfigurations = (Configuration*)malloc(configurationCount * sizeof(Configuration));
 
     // GPU data.
     Strategy *devStrategies;
-    Configuration *devConfigurations;
 
     // Get a count of all data points for the symbol.
     collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting-test", "datapoints");
     countQuery = BCON_NEW("symbol", BCON_UTF8(this->symbol));
     dataPointCount = mongoc_collection_count(collection, MONGOC_QUERY_NONE, countQuery, 0, 0, NULL, &error);
 
-    // Copy configurations vector data to pointer.
-    for (std::vector<Configuration*>::iterator configurationIterator = configurations.begin(); configurationIterator != configurations.end(); ++configurationIterator) {
-        pConfigurations[chunkNumber] = **configurationIterator;
+    // Set up one strategy instance per configuration.
+    for (i=0; i<configurationCount; i++) {
+        strategies[i] = OptimizationStrategyFactory::create(this->strategyName, this->symbol, getBasicDataIndexMap(), this->group, configurations[i]);
     }
 
     cudaSetDevice(0);
 
     // Allocate memory on the GPU.
     cudaMalloc((void**)&devStrategies, configurationCount * sizeof(Strategy));
-    cudaMalloc((void**)&devConfigurations, configurationCount * sizeof(Configuration));
 
-    // Copy data to the GPU.
-    cudaMemcpy(devConfigurations, pConfigurations, configurationCount * sizeof(Configuration), cudaMemcpyHostToDevice);
-
-    // Initialize strategies on the GPU.
-    optimizer_initialize<<<blockCount, threadsPerBlock>>>(devStrategies, getBasicDataIndexMap(), devConfigurations, configurationCount);
+    // Copy strategies and data to the GPU.
+    cudaMemcpy(devStrategies, strategies, configurationCount * sizeof(Strategy), cudaMemcpyHostToDevice);
 
     while (dataOffset < dataPointCount) {
         // Calculate the next chunk's size.
@@ -556,11 +552,9 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
 
     // Free memory on the GPU memory.
     cudaFree(devStrategies);
-    cudaFree(devConfigurations);
 
     // Free host memory.
     delete strategies;
-    delete pConfigurations;
 
     printf("\n");
 }

@@ -1,10 +1,6 @@
 #ifndef STRATEGY_H
 #define STRATEGY_H
 
-#include <vector>
-#include <string>
-#include <map>
-#include <algorithm>
 #include "positions/position.cuh"
 #include "types/configuration.cuh"
 #include "types/strategyResults.cuh"
@@ -14,7 +10,7 @@ class Strategy {
     private:
         const char *symbol;
         BasicDataIndexMap dataIndexMap;
-        std::vector<Position*> openPositions;
+        // std::vector<Position*> openPositions;
         double profitLoss;
         int winCount;
         int loseCount;
@@ -23,19 +19,20 @@ class Strategy {
         double minimumProfitLoss;
 
     protected:
-        BasicDataIndexMap getDataIndexMap();
-        virtual void tick(double *dataPoint) = 0;
-        double getWinRate();
-        double getProfitLoss();
-        void closeExpiredPositions(double price, time_t timestamp);
-        void addPosition(Position *position);
+        __device__ BasicDataIndexMap getDataIndexMap();
+        __device__ virtual void tick(double *dataPoint) = 0;
+        __device__ double getWinRate();
+        __device__ double getProfitLoss();
+        __device__ void closeExpiredPositions(double price, time_t timestamp);
+        __device__ void addPosition(Position *position);
 
     public:
-        Strategy(const char *symbol, BasicDataIndexMap dataIndexMap);
-        virtual void backtest(double *dataPoint, double investment, double profitability) = 0;
-        const char *getSymbol();
-        void setProfitLoss(double profitLoss);
-        StrategyResults getResults();
+        __host__ Strategy(const char *symbol, BasicDataIndexMap dataIndexMap);
+        __host__ virtual ~Strategy() {}
+        __device__ virtual void backtest(double *dataPoint, double investment, double profitability);
+        __device__ const char *getSymbol();
+        __device__ void setProfitLoss(double profitLoss);
+        __device__ StrategyResults getResults();
 };
 
 #endif

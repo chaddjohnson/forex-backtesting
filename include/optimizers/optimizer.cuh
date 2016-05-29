@@ -9,6 +9,7 @@
 #include <map>
 #include <iterator>
 #include <exception>
+#include <ctime>
 #include <mongoc.h>
 #include <bson.h>
 #include <bcon.h>
@@ -23,7 +24,6 @@
 #include "types/configurationOption.cuh"
 
 // CUDA kernel headers.
-__global__ void optimizer_initialize(Strategy *strategies, Configuration *configurations, int configurationCount);
 __global__ void optimizer_backtest(double *data, Strategy *strategies, int configurationCount, double investment, double profitability);
 
 class Optimizer {

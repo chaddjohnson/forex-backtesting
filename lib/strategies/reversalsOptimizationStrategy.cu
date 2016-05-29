@@ -14,17 +14,12 @@ ReversalsOptimizationStrategy::~ReversalsOptimizationStrategy() {
     delete previousDataPoint;
 }
 
-void ReversalsOptimizationStrategy::backtest(double *dataPoint, double investment, double profitability) {
-    time_t utcTime = dataPoint[configuration->timestamp];
-    struct tm *localTime = localtime(&utcTime);
-    int timestampHour = localTime->tm_hour;
-    int timestampMinute = localTime->tm_min;
-
+__device__ void ReversalsOptimizationStrategy::backtest(double *dataPoint, double investment, double profitability) {
     // // Tick the strategy.
     this->tick(dataPoint);
 
     // // Do not create trades between 4pm - 11:30pm Central, as the payout is lower during these times.
-    if (timestampHour >= 16 && (timestampHour < 23 || (timestampHour == 23 && timestampMinute < 30))) {
+    if (dataPoint[configuration->timestampHour] >= 16 && (dataPoint[configuration->timestampHour] < 23 || (dataPoint[configuration->timestampHour] == 23 && dataPoint[configuration->timestampMinute] < 30))) {
         previousDataPoint = dataPoint;
 
         putNextTick = false;

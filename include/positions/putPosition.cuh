@@ -1,18 +1,17 @@
 #ifndef PUTPOSITION_H
 #define PUTPOSITION_H
 
-#include <string>
 #include "position.cuh"
 
 class PutPosition : public Position {
     protected:
-        const char *getTransactionType();
+        __device__ const char *getTransactionType();
 
     public:
-        PutPosition(const char *symbol, time_t timestamp, double price, double investment, double profitability, int expirationMinutes)
+        __device__ PutPosition(const char *symbol, time_t timestamp, double price, double investment, double profitability, int expirationMinutes)
             : Position(symbol, timestamp, price, investment, profitability, expirationMinutes) {}
-        ~PutPosition() {}
-        double getProfitLoss();
+        __device__ ~PutPosition() {}
+        __device__ double getProfitLoss();
 };
 
 #endif

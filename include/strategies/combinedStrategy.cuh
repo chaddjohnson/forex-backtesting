@@ -2,7 +2,6 @@
 #define COMBINEDSTRATEGY_H
 
 #include <vector>
-#include <string>
 #include "strategy.cuh"
 #include "types/basicDataIndexMap.cuh"
 
@@ -12,12 +11,12 @@ class CombinedStrategy : public Strategy {
         double *tickPreviousDataPoint;
 
     protected:
-        void tick(double *dataPoint);
-        std::vector<Configuration*> getConfigurations();
+        __device__ void tick(double *dataPoint);
+        __device__ std::vector<Configuration*> getConfigurations();
 
     public:
-        CombinedStrategy(const char *symbol, BasicDataIndexMap dataIndexMap, std::vector<Configuration*> configurations);
-        ~CombinedStrategy();
+        __host__ CombinedStrategy(const char *symbol, BasicDataIndexMap dataIndexMap, std::vector<Configuration*> configurations);
+        __host__ virtual ~CombinedStrategy();
 };
 
 #endif

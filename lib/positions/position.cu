@@ -1,6 +1,6 @@
 #include "positions/position.cuh"
 
-Position::Position(const char *symbol, time_t timestamp, double price, double investment, double profitability, int expirationMinutes) {
+__device__ Position::Position(const char *symbol, time_t timestamp, double price, double investment, double profitability, int expirationMinutes) {
     this->symbol = symbol;
     this->timestamp = timestamp;
     this->price = price;
@@ -11,47 +11,47 @@ Position::Position(const char *symbol, time_t timestamp, double price, double in
     this->expirationTimestamp = this->timestamp + (expirationMinutes * 60);
 }
 
-const char *Position::getSymbol() {
+__device__ const char *Position::getSymbol() {
     return this->symbol;
 }
 
-time_t Position::getTimestamp() {
+__device__ time_t Position::getTimestamp() {
     return this->timestamp;
 }
 
-double Position::getPrice() {
+__device__ double Position::getPrice() {
     return this->price;
 }
 
-double Position::getClosePrice() {
+__device__ double Position::getClosePrice() {
     return this->closePrice;
 }
 
-double Position::getInvestment() {
+__device__ double Position::getInvestment() {
     return this->investment;
 }
 
-double Position::getProfitability() {
+__device__ double Position::getProfitability() {
     return this->profitability;
 }
 
-time_t Position::getCloseTimestamp() {
+__device__ time_t Position::getCloseTimestamp() {
     return this->closeTimestamp;
 }
 
-time_t Position::getExpirationTimestamp() {
+__device__ time_t Position::getExpirationTimestamp() {
     return this->expirationTimestamp;
 }
 
-bool Position::getIsOpen() {
+__device__ bool Position::getIsOpen() {
     return this->isOpen;
 }
 
-bool Position::getHasExpired(time_t timestamp) {
+__device__ bool Position::getHasExpired(time_t timestamp) {
     return timestamp >= this->expirationTimestamp;
 }
 
-void Position::close(double price, time_t timestamp) {
+__device__ void Position::close(double price, time_t timestamp) {
     this->isOpen = false;
     this->closePrice = price;
     this->closeTimestamp = timestamp;

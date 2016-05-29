@@ -1,7 +1,6 @@
 #ifndef REVERSALSCOMBINEDSTRATEGY_H
 #define REVERSALSCOMBINEDSTRATEGY_H
 
-#include <string>
 #include "combinedStrategy.cuh"
 
 class ReversalsCombinedStrategy : public Strategy {
@@ -12,7 +11,8 @@ class ReversalsCombinedStrategy : public Strategy {
 
 
     public:
-        ReversalsCombinedStrategy();
+        __host__ ReversalsCombinedStrategy();
+        __host__ ~ReversalsCombinedStrategy() {}
 };
 
 #endif

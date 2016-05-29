@@ -1,9 +1,6 @@
 #ifndef REVERSALSOPTIMIZATIONSTRATEGY_H
 #define REVERSALSOPTIMIZATIONSTRATEGY_H
 
-#include <cstdlib>
-#include <string>
-#include <ctime>
 #include "optimizationStrategy.cuh"
 #include "positions/callPosition.cuh"
 #include "positions/putPosition.cuh"
@@ -19,9 +16,9 @@ class ReversalsOptimizationStrategy : public OptimizationStrategy {
         int expirationMinutes;
 
     public:
-        ReversalsOptimizationStrategy(const char *symbol, BasicDataIndexMap dataIndexMap, int group, Configuration *configuration);
-        ~ReversalsOptimizationStrategy();
-        void backtest(double *dataPoint, double investment, double profitability);
+        __host__ ReversalsOptimizationStrategy(const char *symbol, BasicDataIndexMap dataIndexMap, int group, Configuration *configuration);
+        __host__ ~ReversalsOptimizationStrategy();
+        __device__ void backtest(double *dataPoint, double investment, double profitability);
 };
 
 #endif

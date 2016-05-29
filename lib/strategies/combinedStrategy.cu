@@ -10,7 +10,7 @@ CombinedStrategy::~CombinedStrategy() {
     delete tickPreviousDataPoint;
 }
 
-void CombinedStrategy::tick(double *dataPoint) {
+__device__ void CombinedStrategy::tick(double *dataPoint) {
     BasicDataIndexMap dataIndexMap = this->getDataIndexMap();
 
     if (this->tickPreviousDataPoint) {

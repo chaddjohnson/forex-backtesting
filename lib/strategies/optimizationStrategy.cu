@@ -12,11 +12,11 @@ OptimizationStrategy::~OptimizationStrategy() {
     delete tickPreviousDataPoint;
 }
 
-int OptimizationStrategy::getGroup() {
+__device__ int OptimizationStrategy::getGroup() {
     return this->group;
 }
 
-void OptimizationStrategy::tick(double *dataPoint) {
+__device__ void OptimizationStrategy::tick(double *dataPoint) {
     BasicDataIndexMap dataIndexMap = this->getDataIndexMap();
 
     if (this->tickPreviousDataPoint) {
@@ -27,6 +27,6 @@ void OptimizationStrategy::tick(double *dataPoint) {
     this->tickPreviousDataPoint = dataPoint;
 }
 
-Configuration *OptimizationStrategy::getConfiguration() {
+__device__ Configuration *OptimizationStrategy::getConfiguration() {
     return this->configuration;
 }

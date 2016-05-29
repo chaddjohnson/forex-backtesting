@@ -9,7 +9,7 @@
 
 class OptimizationStrategyFactory {
     public:
-        static OptimizationStrategy *create(const char *name, const char *symbol, BasicDataIndexMap dataIndexMap, int group, Configuration *configuration);
+        static OptimizationStrategy create(const char *name, const char *symbol, BasicDataIndexMap dataIndexMap, int group, Configuration *configuration);
 };
 
 #endif

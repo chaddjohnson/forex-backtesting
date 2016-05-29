@@ -16,23 +16,23 @@ class Position {
         time_t expirationTimestamp;
 
     protected:
-        virtual const char *getTransactionType() = 0;
+        __device__ virtual const char *getTransactionType() = 0;
 
     public:
-        Position(const char *symbol, time_t timestamp, double price, double investment, double profitability, int expirationMinutes);
-        virtual ~Position() {}
-        const char *getSymbol();
-        time_t getTimestamp();
-        double getPrice();
-        double getClosePrice();
-        double getInvestment();
-        double getProfitability();
-        time_t getCloseTimestamp();
-        time_t getExpirationTimestamp();
-        bool getIsOpen();
-        bool getHasExpired(time_t timestamp);
-        void close(double price, time_t timestamp);
-        virtual double getProfitLoss() = 0;
+        __device__ Position(const char *symbol, time_t timestamp, double price, double investment, double profitability, int expirationMinutes);
+        __device__ virtual ~Position() {}
+        __device__ const char *getSymbol();
+        __device__ time_t getTimestamp();
+        __device__ double getPrice();
+        __device__ double getClosePrice();
+        __device__ double getInvestment();
+        __device__ double getProfitability();
+        __device__ time_t getCloseTimestamp();
+        __device__ time_t getExpirationTimestamp();
+        __device__ bool getIsOpen();
+        __device__ bool getHasExpired(time_t timestamp);
+        __device__ void close(double price, time_t timestamp);
+        __device__ virtual double getProfitLoss() = 0;
 };
 
 #endif

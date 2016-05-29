@@ -4,6 +4,8 @@
 typedef struct Configuration {
     // Index mappings
     int timestamp;
+    int timestampHour;
+    int timestampMinute;
     int open;
     int high;
     int low;

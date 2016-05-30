@@ -21,7 +21,7 @@ class Strategy {
     protected:
         __device__ BasicDataIndexMap getDataIndexMap();
         __device__ void tick(double *dataPoint) {}
-        __device__ double getWinRate();
+        __host__ double getWinRate();
         __host__ double getProfitLoss();
         __device__ void closeExpiredPositions(double price, time_t timestamp);
         __device__ void addPosition(Position *position);

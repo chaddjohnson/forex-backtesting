@@ -33,7 +33,7 @@ __host__ void Strategy::setProfitLoss(double profitLoss) {
     this->profitLoss = profitLoss;
 }
 
-__device__ double Strategy::getWinRate() {
+__host__ double Strategy::getWinRate() {
     if (this->winCount + this->loseCount == 0) {
         return 0;
     }

@@ -44,38 +44,40 @@ __device__ void Strategy::closeExpiredPositions(double price, time_t timestamp) 
     int i = 0;
 
     for (i=0; i<10; i++) {
-        Position position = *this->openPositions[i];
-        double positionProfitLoss = 0.0;
+        if (this->openPositions[i]) {
+            Position position = *this->openPositions[i];
+            double positionProfitLoss = 0.0;
 
-        if (position.getHasExpired(timestamp)) {
-            // Close the position since it is open and has expired.
-            position.close(price, timestamp);
+            if (position.getHasExpired(timestamp)) {
+                // Close the position since it is open and has expired.
+                position.close(price, timestamp);
 
-            // Remove the position's investment amount from the total profit/loss for this strategy.
-            this->profitLoss -= position.getInvestment();
+                // Remove the position's investment amount from the total profit/loss for this strategy.
+                this->profitLoss -= position.getInvestment();
 
-            // Add the profit/loss for this position to the profit/loss for this strategy.
-            positionProfitLoss = position.getProfitLoss();
-            this->profitLoss += positionProfitLoss;
+                // Add the profit/loss for this position to the profit/loss for this strategy.
+                positionProfitLoss = position.getProfitLoss();
+                this->profitLoss += positionProfitLoss;
 
-            if (positionProfitLoss > position.getInvestment()) {
-                this->winCount++;
-                this->consecutiveLosses = 0;
+                if (positionProfitLoss > position.getInvestment()) {
+                    this->winCount++;
+                    this->consecutiveLosses = 0;
+                }
+                if (profitLoss == 0) {
+                    this->loseCount++;
+                    this->consecutiveLosses++;
+                }
+
+                // Update the minimum profit/loss for this strategy if applicable.
+                if (this->consecutiveLosses > this->maximumConsecutiveLosses) {
+                    this->maximumConsecutiveLosses = this->consecutiveLosses;
+                }
+
+                // Remove the position from the list of open positions, and free memory.
+                // Delete the position.
+                delete this->openPositions[i];
+                this->openPositions[i] = nullptr;
             }
-            if (profitLoss == 0) {
-                this->loseCount++;
-                this->consecutiveLosses++;
-            }
-
-            // Update the minimum profit/loss for this strategy if applicable.
-            if (this->consecutiveLosses > this->maximumConsecutiveLosses) {
-                this->maximumConsecutiveLosses = this->consecutiveLosses;
-            }
-
-            // Remove the position from the list of open positions, and free memory.
-            // Delete the position.
-            delete this->openPositions[i];
-            this->openPositions[i] = nullptr;
         }
     }
 }

@@ -558,7 +558,8 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     // Save results.
     // TODO
     for (i=0; i<configurationCount; i++) {
-        printf("profit/loss = %f\n", strategies[i].getProfitLoss());
+        StrategyResults results = strategies[i].getResults();
+        printf("profit/loss = %f\n", results.profitLoss);
     }
 
     // Free memory on the GPU memory.

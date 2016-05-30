@@ -17,10 +17,6 @@ __host__ Strategy::Strategy(const char *symbol, BasicDataIndexMap dataIndexMap) 
     }
 }
 
-__host__ ~Strategy() {
-    delete[] this->openPositions;
-}
-
 __device__ BasicDataIndexMap Strategy::getDataIndexMap() {
     return this->dataIndexMap;
 }

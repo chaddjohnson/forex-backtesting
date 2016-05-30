@@ -28,7 +28,7 @@ class Strategy {
 
     public:
         __host__ Strategy(const char *symbol, BasicDataIndexMap dataIndexMap);
-        __host__ ~Strategy();
+        __host__ ~Strategy() {}
         __device__ void backtest(double *dataPoint, double investment, double profitability) {}
         __device__ const char *getSymbol();
         __host__ void setProfitLoss(double profitLoss);

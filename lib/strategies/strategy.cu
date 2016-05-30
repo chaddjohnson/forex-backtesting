@@ -98,7 +98,7 @@ __device__ void Strategy::addPosition(Position *position) {
     bool done = false;
     int i = 0;
 
-    while (!done) {
+    while (!done || i == 10) {
         // If there is an unused position slot, then use it.
         if (!this->openPositions[i]) {
             this->openPositions[i] = position;

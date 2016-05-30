@@ -22,7 +22,7 @@ class Strategy {
         __device__ BasicDataIndexMap getDataIndexMap();
         __device__ void tick(double *dataPoint) {}
         __device__ double getWinRate();
-        __device__ double getProfitLoss();
+        __host__ double getProfitLoss();
         __device__ void closeExpiredPositions(double price, time_t timestamp);
         __device__ void addPosition(Position *position);
 
@@ -31,8 +31,8 @@ class Strategy {
         __host__ ~Strategy() {}
         __device__ void backtest(double *dataPoint, double investment, double profitability) {}
         __device__ const char *getSymbol();
-        __device__ void setProfitLoss(double profitLoss);
-        __device__ StrategyResults getResults();
+        __host__ void setProfitLoss(double profitLoss);
+        __host__ StrategyResults getResults();
 };
 
 #endif

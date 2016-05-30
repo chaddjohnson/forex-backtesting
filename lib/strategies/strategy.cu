@@ -25,11 +25,11 @@ __device__ const char *Strategy::getSymbol() {
     return this->symbol;
 }
 
-__device__ double Strategy::getProfitLoss() {
+__host__ double Strategy::getProfitLoss() {
     return this->profitLoss;
 }
 
-__device__ void Strategy::setProfitLoss(double profitLoss) {
+__host__ void Strategy::setProfitLoss(double profitLoss) {
     this->profitLoss = profitLoss;
 }
 
@@ -80,7 +80,7 @@ __device__ void Strategy::closeExpiredPositions(double price, time_t timestamp) 
     }
 }
 
-__device__ StrategyResults Strategy::getResults() {
+__host__ StrategyResults Strategy::getResults() {
     StrategyResults results;
 
     results.profitLoss = this->profitLoss;

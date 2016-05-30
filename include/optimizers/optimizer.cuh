@@ -24,7 +24,7 @@
 #include "types/configurationOption.cuh"
 
 // CUDA kernel headers.
-__global__ void optimizer_backtest(double *data, Strategy *strategies, int configurationCount, double investment, double profitability);
+__global__ void optimizer_backtest(double *data, Strategy *strategies, int strategyCount, double investment, double profitability);
 
 class Optimizer {
     private:

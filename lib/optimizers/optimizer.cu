@@ -557,6 +557,9 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
 
     // Save results.
     // TODO
+    for (i=0; i<configurationCount; i++) {
+        printf("profit/loss = %f\n", strategies[i].getProfitLoss());
+    }
 
     // Free memory on the GPU memory.
     cudaFree(devStrategies);

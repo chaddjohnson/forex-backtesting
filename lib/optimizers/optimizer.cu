@@ -266,7 +266,7 @@ double *Optimizer::loadData(int offset, int chunkSize) {
     dataPointCount = mongoc_collection_count(collection, MONGOC_QUERY_NONE, countQuery, offset, chunkSize, NULL, &error);
 
     // Allocate memory for the flattened data store.
-    uint64_t dataChunkBytes = dataPointCount * this->getDataPropertyCount() * sizeof(double);
+    uint64_t dataChunkBytes = dataPointCount * getDataPropertyCount() * sizeof(double);
     double *data = (double*)malloc(dataChunkBytes);
 
     if (dataPointCount < 0) {
@@ -297,16 +297,16 @@ double *Optimizer::loadData(int offset, int chunkSize) {
                     propertyValue = bson_iter_value(&dataIterator);
 
                     // Add the data property value to the flattened data store.
-                    data[dataPointIndex * this->getDataPropertyCount() + propertyIndex] = propertyValue->value.v_double;
+                    data[dataPointIndex * getDataPropertyCount() + propertyIndex] = propertyValue->value.v_double;
 
                     propertyIndex++;
                 }
 
                 // Add additional timestamp-related data.
-                time_t utcTime = data[dataPointIndex * this->getDataPropertyCount() + (*dataIndexMap)["timestamp"]];
+                time_t utcTime = data[dataPointIndex * getDataPropertyCount() + (*dataIndexMap)["timestamp"]];
                 struct tm *localTime = localtime(&utcTime);
-                data[dataPointIndex * this->getDataPropertyCount() + (*dataIndexMap)["timestampHour"]] = localTime->tm_hour;
-                data[dataPointIndex * this->getDataPropertyCount() + (*dataIndexMap)["timestampMinute"]] = localTime->tm_min;
+                data[dataPointIndex * getDataPropertyCount() + (*dataIndexMap)["timestampHour"]] = localTime->tm_hour;
+                data[dataPointIndex * getDataPropertyCount() + (*dataIndexMap)["timestampMinute"]] = localTime->tm_min;
             }
         }
 
@@ -517,7 +517,7 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
         }
 
         // Calculate the number of bytes needed for the next chunk.
-        uint64_t dataChunkBytes = nextChunkSize * this->getDataPropertyCount() * sizeof(double);
+        uint64_t dataChunkBytes = nextChunkSize * getDataPropertyCount() * sizeof(double);
 
         // Load another chunk of data.
         double *data = loadData(dataOffset, nextChunkSize);
@@ -536,7 +536,7 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
             percentage = (dataPointIndex / (double)dataPointCount) * 100.0;
             printf("\rOptimizing...%0.4f%%", percentage);
 
-            optimizer_backtest<<<blockCount, threadsPerBlock>>>(devData + dataPointIndex * this->getDataPropertyCount(), devStrategies, configurationCount, investment, profitability);
+            optimizer_backtest<<<blockCount, threadsPerBlock>>>(devData + dataPointIndex * getDataPropertyCount(), devStrategies, configurationCount, investment, profitability);
 
             dataPointIndex++;
         }

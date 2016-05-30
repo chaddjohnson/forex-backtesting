@@ -474,8 +474,9 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     int dataChunkSize = 1000000;
     int dataOffset = 0;
     std::map<std::string, int> *dataIndexMap = this->getDataIndexMap();
-    int chunkNumber = 0;
+    int chunkNumber = 1;
     int dataPointIndex = 0;
+    int nextChunkSize;
     int i = 0;
 
     // GPU settings.
@@ -508,7 +509,12 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
 
     while (dataOffset < dataPointCount) {
         // Calculate the next chunk's size.
-        int nextChunkSize = (chunkNumber * dataChunkSize < dataPointCount) ? dataChunkSize : ((chunkNumber * dataChunkSize) - dataPointCount);
+        if (chunkNumber * dataChunkSize < dataPointCount) {
+            nextChunkSize = dataChunkSize;
+        }
+        else {
+            nextChunkSize = dataChunkSize - ((chunkNumber * dataChunkSize) - dataPointCount);
+        }
 
         // Calculate the number of bytes needed for the next chunk.
         uint64_t dataChunkBytes = nextChunkSize * this->getDataPropertyCount() * sizeof(double);
@@ -527,10 +533,12 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
         // TODO? Loop through all data points in the chunk?
         for (i=0; i<nextChunkSize; i++) {
             // Show progress.
-            percentage = (++dataPointIndex / (double)dataPointCount) * 100.0;
+            percentage = (dataPointIndex / (double)dataPointCount) * 100.0;
             printf("\rOptimizing...%0.4f%%", percentage);
 
             optimizer_backtest<<<blockCount, threadsPerBlock>>>(devData + dataPointIndex * this->getDataPropertyCount(), devStrategies, configurationCount, investment, profitability);
+
+            dataPointIndex++;
         }
 
         // TODO: Determine if this is actually necessary.
@@ -540,8 +548,8 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
         cudaFree(devData);
         free(data);
 
-        dataOffset += nextChunkSize;
         chunkNumber++;
+        dataOffset += nextChunkSize;
     }
 
     // Copy strategies from the GPU to the host.

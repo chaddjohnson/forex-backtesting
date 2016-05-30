@@ -10,7 +10,7 @@ class Strategy {
     private:
         const char *symbol;
         BasicDataIndexMap dataIndexMap;
-        // std::vector<Position*> openPositions;
+        Position *openPositions[10];
         double profitLoss;
         int winCount;
         int loseCount;

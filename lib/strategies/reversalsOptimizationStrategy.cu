@@ -119,6 +119,10 @@ __device__ void ReversalsOptimizationStrategy::backtest(double *dataPoint, doubl
             callNextTick = false;
         }
     }
+    if (!putNextTick && !callNextTick) {
+        previousDataPoint = dataPoint;
+        return;
+    }
     if (configuration->ema450 && configuration->ema400) {
         if (!dataPoint[configuration->ema450] || !dataPoint[configuration->ema400]) {
             putNextTick = false;
@@ -134,6 +138,10 @@ __device__ void ReversalsOptimizationStrategy::backtest(double *dataPoint, doubl
         if (callNextTick && dataPoint[configuration->ema450] > dataPoint[configuration->ema400]) {
             callNextTick = false;
         }
+    }
+    if (!putNextTick && !callNextTick) {
+        previousDataPoint = dataPoint;
+        return;
     }
     if (configuration->ema400 && configuration->ema350) {
         if (!dataPoint[configuration->ema400] || !dataPoint[configuration->ema350]) {
@@ -151,6 +159,10 @@ __device__ void ReversalsOptimizationStrategy::backtest(double *dataPoint, doubl
             callNextTick = false;
         }
     }
+    if (!putNextTick && !callNextTick) {
+        previousDataPoint = dataPoint;
+        return;
+    }
     if (configuration->ema350 && configuration->ema300) {
         if (!dataPoint[configuration->ema350] || !dataPoint[configuration->ema300]) {
             putNextTick = false;
@@ -166,6 +178,10 @@ __device__ void ReversalsOptimizationStrategy::backtest(double *dataPoint, doubl
         if (callNextTick && dataPoint[configuration->ema350] > dataPoint[configuration->ema300]) {
             callNextTick = false;
         }
+    }
+    if (!putNextTick && !callNextTick) {
+        previousDataPoint = dataPoint;
+        return;
     }
     if (configuration->ema300 && configuration->ema250) {
         if (!dataPoint[configuration->ema300] || !dataPoint[configuration->ema250]) {
@@ -183,6 +199,10 @@ __device__ void ReversalsOptimizationStrategy::backtest(double *dataPoint, doubl
             callNextTick = false;
         }
     }
+    if (!putNextTick && !callNextTick) {
+        previousDataPoint = dataPoint;
+        return;
+    }
     if (configuration->ema250 && configuration->ema200) {
         if (!dataPoint[configuration->ema250] || !dataPoint[configuration->ema200]) {
             putNextTick = false;
@@ -198,6 +218,10 @@ __device__ void ReversalsOptimizationStrategy::backtest(double *dataPoint, doubl
         if (callNextTick && dataPoint[configuration->ema250] > dataPoint[configuration->ema200]) {
             callNextTick = false;
         }
+    }
+    if (!putNextTick && !callNextTick) {
+        previousDataPoint = dataPoint;
+        return;
     }
     if (configuration->ema200 && configuration->ema100) {
         if (!dataPoint[configuration->ema200] || !dataPoint[configuration->ema100]) {

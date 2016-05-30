@@ -186,7 +186,7 @@ int Optimizer::getDataPropertyCount() {
     }
 
     std::vector<Study*> studies = this->getStudies();
-    this->dataPropertyCount = 5;
+    this->dataPropertyCount = 7;
 
     for (std::vector<Study*>::iterator iterator = studies.begin(); iterator != studies.end(); ++iterator) {
         this->dataPropertyCount += (*iterator)->getOutputMap().size();
@@ -252,10 +252,10 @@ double *Optimizer::loadData(int offset, int chunkSize) {
     bson_iter_t documentIterator;
     bson_iter_t dataIterator;
     bson_error_t error;
+    const char *propertyName;
     const bson_value_t *propertyValue;
     int dataPointCount;
     int dataPointIndex = 0;
-    int propertyIndex = 0;
     std::map<std::string, int> *dataIndexMap = this->getDataIndexMap();
 
     // Get a reference to the database collection.
@@ -284,8 +284,6 @@ double *Optimizer::loadData(int offset, int chunkSize) {
 
     // Go through query results, and convert each document into an array.
     while (mongoc_cursor_next(cursor, &document)) {
-        propertyIndex = 0;
-
         if (bson_iter_init(&documentIterator, document)) {
             // Find the "data" subdocument.
             if (bson_iter_init_find(&documentIterator, document, "data") &&
@@ -294,19 +292,19 @@ double *Optimizer::loadData(int offset, int chunkSize) {
 
                 // Iterate through the data properties.
                 while (bson_iter_next(&dataIterator)) {
+                    // Get the property nameand value.
+                    propertyName = bson_iter_key(&dataIterator);
                     propertyValue = bson_iter_value(&dataIterator);
 
                     // Add the data property value to the flattened data store.
-                    data[dataPointIndex * getDataPropertyCount() + propertyIndex] = propertyValue->value.v_double;
-
-                    propertyIndex++;
+                    data[dataPointIndex * getDataPropertyCount() + (*dataIndexMap)[propertyName]] = propertyValue->value.v_double;
                 }
 
                 // Add additional timestamp-related data.
                 time_t utcTime = data[dataPointIndex * getDataPropertyCount() + (*dataIndexMap)["timestamp"]];
                 struct tm *localTime = localtime(&utcTime);
-                data[dataPointIndex * getDataPropertyCount() + (*dataIndexMap)["timestampHour"]] = localTime->tm_hour;
-                data[dataPointIndex * getDataPropertyCount() + (*dataIndexMap)["timestampMinute"]] = localTime->tm_min;
+                data[dataPointIndex * getDataPropertyCount() + (*dataIndexMap)["timestampHour"]] = (double)localTime->tm_hour;
+                data[dataPointIndex * getDataPropertyCount() + (*dataIndexMap)["timestampMinute"]] = (double)localTime->tm_min;
             }
         }
 

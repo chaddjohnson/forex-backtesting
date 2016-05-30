@@ -2,6 +2,6 @@
 
 DataParser *DataParserFactory::create(const char *name, std::string filePath) {
     //if (name == "oanda") {
-        return new OandaDataParser::OandaDataParser(filePath);
+        return new OandaDataParser(filePath);
     //}
 }

@@ -473,7 +473,6 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     int configurationCount = configurations.size();
     int dataChunkSize = 1000000;
     int dataOffset = 0;
-    std::map<std::string, int> *dataIndexMap = this->getDataIndexMap();
     int chunkNumber = 1;
     int dataPointIndex = 0;
     int nextChunkSize;
@@ -565,8 +564,10 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     // Free memory on the GPU memory.
     cudaFree(devStrategies);
 
-    // Free host memory.
+    // Free host memory and cleanup.
     free(strategies);
+    bson_destroy(countQuery);
+    mongoc_collection_destroy(collection);
 
     printf("\n");
 }

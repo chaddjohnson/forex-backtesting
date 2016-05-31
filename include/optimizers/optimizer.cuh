@@ -16,15 +16,14 @@
 #include <boost/variant.hpp>
 #include "maginatics/threadpool/threadpool.h"
 #include "studies/study.cuh"
-#include "strategies/strategy.cuh"
-#include "factories/optimizationStrategyFactory.cuh"
+#include "strategies/reversalsOptimizationStrategy.cuh"
 #include "types/tick.cuh"
 #include "types/configuration.cuh"
 #include "types/mapConfiguration.cuh"
 #include "types/configurationOption.cuh"
 
 // CUDA kernel headers.
-__global__ void optimizer_backtest(double *data, Strategy *strategies, int strategyCount, double investment, double profitability);
+__global__ void optimizer_backtest(double *data, ReversalsOptimizationStrategy *strategies, int strategyCount, double investment, double profitability);
 
 class Optimizer {
     private:

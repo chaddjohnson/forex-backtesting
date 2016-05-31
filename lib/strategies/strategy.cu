@@ -10,6 +10,8 @@ __host__ Strategy::Strategy(const char *symbol, BasicDataIndexMap dataIndexMap) 
     this->maximumConsecutiveLosses = 0;
     this->minimumProfitLoss = 99999.0;
 
+    this->debugCount = 0;
+
     int i = 0;
 
     for (i=0; i<10; i++) {

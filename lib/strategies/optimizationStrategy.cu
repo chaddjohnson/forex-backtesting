@@ -8,8 +8,8 @@ __host__ OptimizationStrategy::OptimizationStrategy(const char *symbol, BasicDat
 }
 
 __host__ OptimizationStrategy::~OptimizationStrategy() {
-    delete configuration;
-    delete tickPreviousDataPoint;
+    // delete configuration;
+    // delete tickPreviousDataPoint;
 }
 
 __device__ int OptimizationStrategy::getGroup() {

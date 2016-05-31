@@ -1,9 +1,12 @@
 #include "optimizers/optimizer.cuh"
 
-__global__ void optimizer_backtest(double *data, Strategy *strategies, int strategyCount, double investment, double profitability) {
-    int i = blockIdx.x * blockDim.x + threadIdx.x;
-
-    if (i < strategyCount) {
+__global__ void optimizer_backtest(double *data, ReversalsOptimizationStrategy *strategies, int strategyCount, double investment, double profitability) {
+    // Use a grid-stride loop.
+    // Reference: https://devblogs.nvidia.com/parallelforall/cuda-pro-tip-write-flexible-kernels-grid-stride-loops/
+    for (int i = blockIdx.x * blockDim.x + threadIdx.x;
+         i < strategyCount;
+         i += blockDim.x * gridDim.x)
+    {
         strategies[i].backtest(data, investment, profitability);
     }
 }
@@ -470,14 +473,18 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     int i = 0;
 
     // GPU settings.
-    int blockCount = 32;
-    int threadsPerBlock = 1024;
+    // Reference: https://devblogs.nvidia.com/parallelforall/cuda-pro-tip-write-flexible-kernels-grid-stride-loops/
+    int gpuDeviceId = 0;
+    int gpuBlockCount = 32;
+    int gpuThreadsPerBlock = 1024;
+    int gpuMultiprocessorCount;
+    cudaDeviceGetAttribute(&gpuMultiprocessorCount, cudaDevAttrMultiProcessorCount, gpuDeviceId);
 
     // Host data.
-    Strategy *strategies = (Strategy*)malloc(configurationCount * sizeof(Strategy));
+    ReversalsOptimizationStrategy *strategies = (ReversalsOptimizationStrategy*)malloc(configurationCount * sizeof(ReversalsOptimizationStrategy));
 
     // GPU data.
-    Strategy *devStrategies;
+    ReversalsOptimizationStrategy *devStrategies;
 
     // Get a count of all data points for the symbol.
     collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting-test", "datapoints");
@@ -486,16 +493,16 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
 
     // Set up one strategy instance per configuration.
     for (i=0; i<configurationCount; i++) {
-        strategies[i] = *OptimizationStrategyFactory::create(this->strategyName, this->symbol, getBasicDataIndexMap(), this->group, configurations[i]);
+        strategies[i] = ReversalsOptimizationStrategy(this->symbol, getBasicDataIndexMap(), this->group, configurations[i]);
     }
 
-    cudaSetDevice(0);
+    cudaSetDevice(gpuDeviceId);
 
     // Allocate memory on the GPU.
-    cudaMalloc((void**)&devStrategies, configurationCount * sizeof(Strategy));
+    cudaMalloc((void**)&devStrategies, configurationCount * sizeof(ReversalsOptimizationStrategy));
 
     // Copy strategies and data to the GPU.
-    cudaMemcpy(devStrategies, strategies, configurationCount * sizeof(Strategy), cudaMemcpyHostToDevice);
+    cudaMemcpy(devStrategies, strategies, configurationCount * sizeof(ReversalsOptimizationStrategy), cudaMemcpyHostToDevice);
 
     while (dataOffset < dataPointCount) {
         // Calculate the next chunk's size.
@@ -524,15 +531,12 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
         for (i=0; i<nextChunkSize; i++) {
             // Show progress.
             percentage = (dataPointIndex / (double)dataPointCount) * 100.0;
-            printf("\rOptimizing...%0.4f%%", percentage);
+            // printf("\rOptimizing...%0.4f%%", percentage);
 
-            optimizer_backtest<<<blockCount, threadsPerBlock>>>(devData + dataPointIndex * getDataPropertyCount(), devStrategies, configurationCount, investment, profitability);
+            optimizer_backtest<<<gpuBlockCount*gpuMultiprocessorCount, gpuThreadsPerBlock>>>(devData + dataPointIndex * getDataPropertyCount(), devStrategies, configurationCount, investment, profitability);
 
             dataPointIndex++;
         }
-
-        // TODO: Determine if this is actually necessary.
-        // cudaDeviceSynchronize();
 
         // Free GPU and host memory;
         cudaFree(devData);
@@ -543,13 +547,13 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     }
 
     // Copy strategies from the GPU to the host.
-    cudaMemcpy(strategies, devStrategies, configurationCount * sizeof(Strategy), cudaMemcpyDeviceToHost);
+    cudaMemcpy(strategies, devStrategies, configurationCount * sizeof(ReversalsOptimizationStrategy), cudaMemcpyDeviceToHost);
 
     // Save results.
     // TODO
     for (i=0; i<configurationCount; i++) {
         StrategyResults results = strategies[i].getResults();
-        printf("profit/loss = %f, trade count = %i\n", results.profitLoss, results.tradeCount);
+        printf("profit/loss = %f, trade count = %i, debug count = %i\n", results.profitLoss, results.tradeCount, strategies[i].getDebugCount());
     }
 
     // Free memory on the GPU memory.

@@ -25,6 +25,7 @@ class Strategy {
         __host__ double getProfitLoss();
         __device__ void closeExpiredPositions(double price, time_t timestamp);
         __device__ void addPosition(Position *position);
+        int debugCount;
 
     public:
         __host__ Strategy(const char *symbol, BasicDataIndexMap dataIndexMap);
@@ -33,6 +34,9 @@ class Strategy {
         __device__ const char *getSymbol();
         __host__ void setProfitLoss(double profitLoss);
         __host__ StrategyResults getResults();
+        __host__ int getDebugCount() {
+            return this->debugCount;
+        }
 };
 
 #endif

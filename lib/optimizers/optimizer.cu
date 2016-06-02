@@ -472,20 +472,26 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     int nextChunkSize;
     std::vector<StrategyResults> results;
     int i = 0;
+    int j = 0;
+    int k = 0;
 
     // GPU settings.
     // Reference: https://devblogs.nvidia.com/parallelforall/cuda-pro-tip-write-flexible-kernels-grid-stride-loops/
-    int gpuDeviceId = 0;  // TODO: Get GPU count instead.
     int gpuBlockCount = 32;
     int gpuThreadsPerBlock = 1024;
+    int gpuCount;
     int gpuMultiprocessorCount;
-    cudaDeviceGetAttribute(&gpuMultiprocessorCount, cudaDevAttrMultiProcessorCount, gpuDeviceId);  // TODO: Do this for each GPU.
+
+    // Get GPU specs.
+    cudaGetDeviceCount(&gpuCount);
+    cudaDeviceGetAttribute(&gpuMultiprocessorCount, cudaDevAttrMultiProcessorCount, 0);
 
     // Host data.
-    ReversalsOptimizationStrategy *strategies = (ReversalsOptimizationStrategy*)malloc(configurationCount * sizeof(ReversalsOptimizationStrategy));
+    ReversalsOptimizationStrategy *strategies[gpuCount];
+    int configurationCounts[gpuCount];
 
     // GPU data.
-    ReversalsOptimizationStrategy *devStrategies;
+    ReversalsOptimizationStrategy *devStrategies[gpuCount];
 
     // Get a count of all data points for the symbol.
     collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting-test", "datapoints");
@@ -493,18 +499,30 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     dataPointCount = mongoc_collection_count(collection, MONGOC_QUERY_NONE, countQuery, 0, 2000, NULL, &error);
     dataPointCount = 2000;
 
-    // Set up one strategy instance per configuration.
-    for (i=0; i<configurationCount; i++) {
-        strategies[i] = ReversalsOptimizationStrategy(this->symbol, getBasicDataIndexMap(), this->group, *configurations[i]);
+    for (i=0; i<gpuCount; i++) {
+        // Allocate data for strategies.
+        strategies[i] = (ReversalsOptimizationStrategy*)malloc(configurationCount * sizeof(ReversalsOptimizationStrategy));
+        configurationCounts[i] = 0;
     }
 
-    cudaSetDevice(gpuDeviceId);
+    // Set up one strategy instance per configuration, and keep track of strategy counts.
+    for (i=0; i<configurationCount; i++) {
+        int gpuDeviceId = i % gpuCount;
+        int gpuConfigurationIndex = configurationCounts[gpuDeviceId];
 
-    // Allocate memory on the GPU.
-    cudaMalloc((void**)&devStrategies, configurationCount * sizeof(ReversalsOptimizationStrategy));
+        strategies[gpuDeviceId][gpuConfigurationIndex] = ReversalsOptimizationStrategy(this->symbol, getBasicDataIndexMap(), this->group, *configurations[i]);
+        configurationCounts[gpuDeviceId]++;
+    }
 
-    // Copy strategies and data to the GPU.
-    cudaMemcpy(devStrategies, strategies, configurationCount * sizeof(ReversalsOptimizationStrategy), cudaMemcpyHostToDevice);
+    for (i=0; i<gpuCount; i++) {
+        cudaSetDevice(i);
+
+        // Allocate memory on the GPU for strategies.
+        cudaMalloc((void**)&devStrategies[i], configurationCounts[i] * sizeof(ReversalsOptimizationStrategy));
+
+        // Copy strategies to the GPU.
+        cudaMemcpy(devStrategies[i], strategies[i], configurationCounts[i] * sizeof(ReversalsOptimizationStrategy), cudaMemcpyHostToDevice);
+    }
 
     while (dataOffset < dataPointCount) {
         // Calculate the next chunk's size.
@@ -522,11 +540,15 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
         double *data = loadData(dataOffset, nextChunkSize);
         double *devData;
 
-        // Allocate memory for the data on the GPU.
-        cudaMalloc((void**)&devData, dataChunkBytes);
+        for (i=0; i<gpuCount; i++) {
+            cudaSetDevice(i);
 
-        // Copy a chunk of data points to the GPU.
-        cudaMemcpy(devData, data, dataChunkBytes, cudaMemcpyHostToDevice);
+            // Allocate memory for the data on the GPU.
+            cudaMalloc((void**)&devData, dataChunkBytes);
+
+            // Copy a chunk of data points to the GPU.
+            cudaMemcpy(devData, data, dataChunkBytes, cudaMemcpyHostToDevice);
+        }
 
         // Backtest all strategies against all data points in the chunk.
         for (i=0; i<nextChunkSize; i++) {
@@ -534,8 +556,10 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
             percentage = (dataPointIndex / (double)dataPointCount) * 100.0;
             printf("\rOptimizing...%0.4f%%", percentage);
 
-            optimizer_backtest<<<gpuBlockCount*gpuMultiprocessorCount, gpuThreadsPerBlock>>>(devData + dataPointIndex * getDataPropertyCount(), devStrategies, configurationCount, investment, profitability);
-            cudaDeviceSynchronize();
+            for (j=0; j<gpuCount; j++) {
+                cudaSetDevice(j);
+                optimizer_backtest<<<gpuBlockCount*gpuMultiprocessorCount, gpuThreadsPerBlock>>>(devData + dataPointIndex * getDataPropertyCount(), devStrategies[j], configurationCounts[j], investment, profitability);
+            }
 
             dataPointIndex++;
         }
@@ -549,24 +573,36 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     }
 
     // Copy strategies from the GPU to the host.
-    cudaMemcpy(strategies, devStrategies, configurationCount * sizeof(ReversalsOptimizationStrategy), cudaMemcpyDeviceToHost);
+    for (i=0; i<gpuCount; i++) {
+        cudaSetDevice(i);
+        cudaMemcpy(strategies[i], devStrategies[i], configurationCounts[i] * sizeof(ReversalsOptimizationStrategy), cudaMemcpyDeviceToHost);
+    }
 
     printf("\rOptimizing...100%%     \n");
 
     // Save the results to the database.
-    for (i=0; i<configurationCount; i++) {
-        StrategyResults result = strategies[i].getResults();
-        result.configuration = configurations[i];
+    k = 0;
+    for (i=0; i<gpuCount; i++) {
+        for (j=0; j<configurationCounts[i]; j++) {
+            StrategyResults result = strategies[i][j].getResults();
+            result.configuration = configurations[k];
+            k++;
 
-        results.push_back(result);
+            results.push_back(result);
+        }
     }
     saveResults(results);
 
-    // Free memory on the GPU memory.
-    cudaFree(devStrategies);
+    // Free memory on the GPUs.
+    for (i=0; i<gpuCount; i++) {
+        cudaSetDevice(i);
+        cudaFree(devStrategies[i]);
+    }
 
     // Free host memory and cleanup.
-    free(strategies);
+    for (i=0; i<gpuCount; i++) {
+        free(strategies[i]);
+    }
     bson_destroy(countQuery);
     mongoc_collection_destroy(collection);
 }

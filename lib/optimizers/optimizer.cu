@@ -535,7 +535,7 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
             printf("\rOptimizing...%0.4f%%", percentage);
 
             optimizer_backtest<<<gpuBlockCount*gpuMultiprocessorCount, gpuThreadsPerBlock>>>(devData + dataPointIndex * getDataPropertyCount(), devStrategies, configurationCount, investment, profitability);
-            // cudaDeviceSynchronize();
+            cudaDeviceSynchronize();
 
             dataPointIndex++;
         }

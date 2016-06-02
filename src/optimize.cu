@@ -14,6 +14,7 @@ int main(int argc, char *argv[]) {
     double profitability = 0.76;
     int group = 1;
     std::vector<Configuration*> configurations;
+    int returnValue = 0;
 
     // Connect to the database
     mongoc_init();
@@ -28,10 +29,11 @@ int main(int argc, char *argv[]) {
     }
     catch (const std::exception &error) {
         std::cerr << error.what() << std::endl;
+        returnValue = 1;
     }
 
     // Clean up.
     mongoc_cleanup();
 
-    return 0;
+    return returnValue;
 }

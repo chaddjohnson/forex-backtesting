@@ -11,8 +11,8 @@ class ReversalsCombinedStrategy : public Strategy {
 
 
     public:
-        __host__ ReversalsCombinedStrategy();
-        __host__ ~ReversalsCombinedStrategy() {}
+        __device__ __host__ ReversalsCombinedStrategy();
+        __device__ __host__ ~ReversalsCombinedStrategy() {}
 };
 
 #endif

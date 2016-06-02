@@ -1,22 +1,22 @@
 #include "strategies/optimizationStrategy.cuh"
 
-__host__ OptimizationStrategy::OptimizationStrategy(const char *symbol, BasicDataIndexMap dataIndexMap, int group, Configuration *configuration)
+__device__ __host__ OptimizationStrategy::OptimizationStrategy(const char *symbol, BasicDataIndexMap dataIndexMap, int group, Configuration configuration)
         : Strategy(symbol, dataIndexMap) {
     this->group = group;
     this->configuration = configuration;
     this->tickPreviousDataPoint = nullptr;
 }
 
-__host__ OptimizationStrategy::~OptimizationStrategy() {
+__device__ __host__ OptimizationStrategy::~OptimizationStrategy() {
     // delete configuration;
     // delete tickPreviousDataPoint;
 }
 
-__device__ int OptimizationStrategy::getGroup() {
+__device__ __host__ int OptimizationStrategy::getGroup() {
     return this->group;
 }
 
-__device__ void OptimizationStrategy::tick(double *dataPoint) {
+__device__ __host__ void OptimizationStrategy::tick(double *dataPoint) {
     BasicDataIndexMap dataIndexMap = this->getDataIndexMap();
 
     if (this->tickPreviousDataPoint) {
@@ -27,6 +27,6 @@ __device__ void OptimizationStrategy::tick(double *dataPoint) {
     this->tickPreviousDataPoint = dataPoint;
 }
 
-__device__ Configuration *OptimizationStrategy::getConfiguration() {
+__device__ __host__ Configuration OptimizationStrategy::getConfiguration() {
     return this->configuration;
 }

@@ -11,12 +11,12 @@ class CombinedStrategy : public Strategy {
         double *tickPreviousDataPoint;
 
     protected:
-        __device__ void tick(double *dataPoint);
-        __device__ std::vector<Configuration*> getConfigurations();
+        __device__ __host__ void tick(double *dataPoint);
+        __device__ __host__ std::vector<Configuration*> getConfigurations();
 
     public:
-        __host__ CombinedStrategy(const char *symbol, BasicDataIndexMap dataIndexMap, std::vector<Configuration*> configurations);
-        __host__ ~CombinedStrategy();
+        __device__ __host__ CombinedStrategy(const char *symbol, BasicDataIndexMap dataIndexMap, std::vector<Configuration*> configurations);
+        __device__ __host__ ~CombinedStrategy();
 };
 
 #endif

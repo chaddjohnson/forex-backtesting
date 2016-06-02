@@ -19,24 +19,20 @@ class Strategy {
         double minimumProfitLoss;
 
     protected:
-        __device__ BasicDataIndexMap getDataIndexMap();
-        __device__ void tick(double *dataPoint) {}
-        __host__ double getWinRate();
-        __host__ double getProfitLoss();
-        __device__ void closeExpiredPositions(double price, time_t timestamp);
-        __device__ void addPosition(Position *position);
-        int debugCount;
+        __device__ __host__ BasicDataIndexMap getDataIndexMap();
+        __device__ __host__ void tick(double *dataPoint) {}
+        __device__ __host__ double getWinRate();
+        __device__ __host__ double getProfitLoss();
+        __device__ __host__ void closeExpiredPositions(double price, time_t timestamp);
+        __device__ __host__ void addPosition(Position *position);
 
     public:
-        __host__ Strategy(const char *symbol, BasicDataIndexMap dataIndexMap);
-        __host__ ~Strategy() {}
-        __device__ void backtest(double *dataPoint, double investment, double profitability) {}
-        __device__ const char *getSymbol();
-        __host__ void setProfitLoss(double profitLoss);
-        __host__ StrategyResults getResults();
-        __host__ int getDebugCount() {
-            return this->debugCount;
-        }
+        __device__ __host__ Strategy(const char *symbol, BasicDataIndexMap dataIndexMap);
+        __device__ __host__ ~Strategy() {}
+        __device__ __host__ void backtest(double *dataPoint, double investment, double profitability) {}
+        __device__ __host__ const char *getSymbol();
+        __device__ __host__ void setProfitLoss(double profitLoss);
+        __device__ __host__ StrategyResults getResults();
 };
 
 #endif

@@ -1,16 +1,16 @@
 #include "strategies/combinedStrategy.cuh"
 
-__host__ CombinedStrategy::CombinedStrategy(const char *symbol, BasicDataIndexMap dataIndexMap, std::vector<Configuration*> configurations)
+__device__ __host__ CombinedStrategy::CombinedStrategy(const char *symbol, BasicDataIndexMap dataIndexMap, std::vector<Configuration*> configurations)
         : Strategy(symbol, dataIndexMap) {
     this->configurations = configurations;
 }
 
-__host__ CombinedStrategy::~CombinedStrategy() {
+__device__ __host__ CombinedStrategy::~CombinedStrategy() {
     delete configurations;
     delete tickPreviousDataPoint;
 }
 
-__device__ void CombinedStrategy::tick(double *dataPoint) {
+__device__ __host__ void CombinedStrategy::tick(double *dataPoint) {
     BasicDataIndexMap dataIndexMap = this->getDataIndexMap();
 
     if (this->tickPreviousDataPoint) {

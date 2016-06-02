@@ -227,14 +227,14 @@ std::map<std::string, int> *Optimizer::getDataIndexMap() {
 }
 
 BasicDataIndexMap Optimizer::getBasicDataIndexMap() {
-    std::map<std::string, int> *dataIndexMap = this->getDataIndexMap();
+    std::map<std::string, int> *tempDataIndexMap = this->getDataIndexMap();
     BasicDataIndexMap basicDataIndexMap;
 
-    basicDataIndexMap.timestamp = (*dataIndexMap)["timestamp"];
-    basicDataIndexMap.open = (*dataIndexMap)["open"];
-    basicDataIndexMap.high = (*dataIndexMap)["high"];
-    basicDataIndexMap.low = (*dataIndexMap)["low"];
-    basicDataIndexMap.close = (*dataIndexMap)["close"];
+    basicDataIndexMap.timestamp = (*tempDataIndexMap)["timestamp"];
+    basicDataIndexMap.open = (*tempDataIndexMap)["open"];
+    basicDataIndexMap.high = (*tempDataIndexMap)["high"];
+    basicDataIndexMap.low = (*tempDataIndexMap)["low"];
+    basicDataIndexMap.close = (*tempDataIndexMap)["close"];
 
     return basicDataIndexMap;
 }
@@ -252,7 +252,7 @@ double *Optimizer::loadData(int offset, int chunkSize) {
     const bson_value_t *propertyValue;
     int dataPointCount;
     int dataPointIndex = 0;
-    std::map<std::string, int> *dataIndexMap = this->getDataIndexMap();
+    std::map<std::string, int> *tempDataIndexMap = this->getDataIndexMap();
 
     // Get a reference to the database collection.
     collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting-test", "datapoints");
@@ -293,14 +293,14 @@ double *Optimizer::loadData(int offset, int chunkSize) {
                     propertyValue = bson_iter_value(&dataIterator);
 
                     // Add the data property value to the flattened data store.
-                    data[dataPointIndex * getDataPropertyCount() + (*dataIndexMap)[propertyName]] = propertyValue->value.v_double;
+                    data[dataPointIndex * getDataPropertyCount() + (*tempDataIndexMap)[propertyName]] = propertyValue->value.v_double;
                 }
 
                 // Add additional timestamp-related data.
-                time_t utcTime = data[dataPointIndex * getDataPropertyCount() + (*dataIndexMap)["timestamp"]];
+                time_t utcTime = data[dataPointIndex * getDataPropertyCount() + (*tempDataIndexMap)["timestamp"]];
                 struct tm *localTime = localtime(&utcTime);
-                data[dataPointIndex * getDataPropertyCount() + (*dataIndexMap)["timestampHour"]] = (double)localTime->tm_hour;
-                data[dataPointIndex * getDataPropertyCount() + (*dataIndexMap)["timestampMinute"]] = (double)localTime->tm_min;
+                data[dataPointIndex * getDataPropertyCount() + (*tempDataIndexMap)["timestampHour"]] = (double)localTime->tm_hour;
+                data[dataPointIndex * getDataPropertyCount() + (*tempDataIndexMap)["timestampMinute"]] = (double)localTime->tm_min;
             }
         }
 
@@ -317,16 +317,15 @@ double *Optimizer::loadData(int offset, int chunkSize) {
     return data;
 }
 
-std::vector<MapConfiguration*> *Optimizer::buildMapConfigurations(
+std::vector<MapConfiguration> *Optimizer::buildMapConfigurations(
     std::map<std::string, ConfigurationOption> options,
-    int optionIndex,
-    std::vector<MapConfiguration*> *results,
+    unsigned int optionIndex,
+    std::vector<MapConfiguration> *results,
     MapConfiguration *current
 ) {
     std::vector<std::string> allKeys;
     std::string optionKey;
     ConfigurationOption configurationOptions;
-    std::map<std::string, int> *dataIndexMap = this->getDataIndexMap();
 
     // Get all options keys.
     for (std::map<std::string, ConfigurationOption>::iterator optionsIterator = options.begin(); optionsIterator != options.end(); ++optionsIterator) {
@@ -342,7 +341,7 @@ std::vector<MapConfiguration*> *Optimizer::buildMapConfigurations(
             if (valuesIterator->second.type() == typeid(std::string)) {
                 if (boost::get<std::string>(valuesIterator->second).length() > 0) {
                     // Value points to a key.
-                    (*current)[valuesIterator->first] = (*dataIndexMap)[boost::get<std::string>(valuesIterator->second)];
+                    (*current)[valuesIterator->first] = (*this->dataIndexMap)[boost::get<std::string>(valuesIterator->second)];
                 }
             }
             else {
@@ -355,7 +354,8 @@ std::vector<MapConfiguration*> *Optimizer::buildMapConfigurations(
             buildMapConfigurations(options, optionIndex + 1, results, current);
         }
         else {
-            results->push_back(current);
+            // Dereference the pointer so that every configuration is not the same.
+            results->push_back(*current);
         }
     }
 
@@ -365,8 +365,8 @@ std::vector<MapConfiguration*> *Optimizer::buildMapConfigurations(
 std::vector<Configuration*> Optimizer::buildConfigurations(std::map<std::string, ConfigurationOption> options) {
     printf("Building configurations...");
 
-    std::map<std::string, int> *dataIndexMap = this->getDataIndexMap();
-    std::vector<MapConfiguration*> *mapConfigurations = buildMapConfigurations(options);
+    std::map<std::string, int> *tempDataIndexMap = this->getDataIndexMap();
+    std::vector<MapConfiguration> *mapConfigurations = buildMapConfigurations(options);
     std::vector<Configuration*> configurations;
     Configuration *configuration = nullptr;
 
@@ -374,78 +374,78 @@ std::vector<Configuration*> Optimizer::buildConfigurations(std::map<std::string,
     configurations.reserve(mapConfigurations->size());
 
     // Convert map representations of maps into structs of type Configuration.
-    for (std::vector<MapConfiguration*>::iterator mapConfigurationIterator = mapConfigurations->begin(); mapConfigurationIterator != mapConfigurations->end(); ++mapConfigurationIterator) {
+    for (std::vector<MapConfiguration>::iterator mapConfigurationIterator = mapConfigurations->begin(); mapConfigurationIterator != mapConfigurations->end(); ++mapConfigurationIterator) {
         // Set up a new, empty configuration.
         configuration = new Configuration();
 
         // Set basic properties.
-        configuration->timestamp = (*dataIndexMap)["timestamp"];
-        configuration->timestampHour = (*dataIndexMap)["timestampHour"];
-        configuration->timestampMinute = (*dataIndexMap)["timestampMinute"];
-        configuration->open = (*dataIndexMap)["open"];
-        configuration->high = (*dataIndexMap)["high"];
-        configuration->low = (*dataIndexMap)["low"];
-        configuration->close = (*dataIndexMap)["close"];
+        configuration->timestamp = (*tempDataIndexMap)["timestamp"];
+        configuration->timestampHour = (*tempDataIndexMap)["timestampHour"];
+        configuration->timestampMinute = (*tempDataIndexMap)["timestampMinute"];
+        configuration->open = (*tempDataIndexMap)["open"];
+        configuration->high = (*tempDataIndexMap)["high"];
+        configuration->low = (*tempDataIndexMap)["low"];
+        configuration->close = (*tempDataIndexMap)["close"];
 
         // Set index mappings.
-        if ((*mapConfigurationIterator)->find("sma13") != (*mapConfigurationIterator)->end()) {
-            configuration->sma13 = boost::get<int>((**mapConfigurationIterator)["sma13"]);
+        if ((*mapConfigurationIterator).find("sma13") != (*mapConfigurationIterator).end()) {
+            configuration->sma13 = boost::get<int>((*mapConfigurationIterator)["sma13"]);
         }
-        if ((*mapConfigurationIterator)->find("ema50") != (*mapConfigurationIterator)->end()) {
-            configuration->ema50 = boost::get<int>((**mapConfigurationIterator)["ema50"]);
+        if ((*mapConfigurationIterator).find("ema50") != (*mapConfigurationIterator).end()) {
+            configuration->ema50 = boost::get<int>((*mapConfigurationIterator)["ema50"]);
         }
-        if ((*mapConfigurationIterator)->find("ema100") != (*mapConfigurationIterator)->end()) {
-            configuration->ema100 = boost::get<int>((**mapConfigurationIterator)["ema100"]);
+        if ((*mapConfigurationIterator).find("ema100") != (*mapConfigurationIterator).end()) {
+            configuration->ema100 = boost::get<int>((*mapConfigurationIterator)["ema100"]);
         }
-        if ((*mapConfigurationIterator)->find("ema200") != (*mapConfigurationIterator)->end()) {
-            configuration->ema200 = boost::get<int>((**mapConfigurationIterator)["ema200"]);
+        if ((*mapConfigurationIterator).find("ema200") != (*mapConfigurationIterator).end()) {
+            configuration->ema200 = boost::get<int>((*mapConfigurationIterator)["ema200"]);
         }
-        if ((*mapConfigurationIterator)->find("ema250") != (*mapConfigurationIterator)->end()) {
-            configuration->ema250 = boost::get<int>((**mapConfigurationIterator)["ema250"]);
+        if ((*mapConfigurationIterator).find("ema250") != (*mapConfigurationIterator).end()) {
+            configuration->ema250 = boost::get<int>((*mapConfigurationIterator)["ema250"]);
         }
-        if ((*mapConfigurationIterator)->find("ema300") != (*mapConfigurationIterator)->end()) {
-            configuration->ema300 = boost::get<int>((**mapConfigurationIterator)["ema300"]);
+        if ((*mapConfigurationIterator).find("ema300") != (*mapConfigurationIterator).end()) {
+            configuration->ema300 = boost::get<int>((*mapConfigurationIterator)["ema300"]);
         }
-        if ((*mapConfigurationIterator)->find("ema350") != (*mapConfigurationIterator)->end()) {
-            configuration->ema350 = boost::get<int>((**mapConfigurationIterator)["ema350"]);
+        if ((*mapConfigurationIterator).find("ema350") != (*mapConfigurationIterator).end()) {
+            configuration->ema350 = boost::get<int>((*mapConfigurationIterator)["ema350"]);
         }
-        if ((*mapConfigurationIterator)->find("ema400") != (*mapConfigurationIterator)->end()) {
-            configuration->ema400 = boost::get<int>((**mapConfigurationIterator)["ema400"]);
+        if ((*mapConfigurationIterator).find("ema400") != (*mapConfigurationIterator).end()) {
+            configuration->ema400 = boost::get<int>((*mapConfigurationIterator)["ema400"]);
         }
-        if ((*mapConfigurationIterator)->find("ema450") != (*mapConfigurationIterator)->end()) {
-            configuration->ema450 = boost::get<int>((**mapConfigurationIterator)["ema450"]);
+        if ((*mapConfigurationIterator).find("ema450") != (*mapConfigurationIterator).end()) {
+            configuration->ema450 = boost::get<int>((*mapConfigurationIterator)["ema450"]);
         }
-        if ((*mapConfigurationIterator)->find("ema500") != (*mapConfigurationIterator)->end()) {
-            configuration->ema500 = boost::get<int>((**mapConfigurationIterator)["ema500"]);
+        if ((*mapConfigurationIterator).find("ema500") != (*mapConfigurationIterator).end()) {
+            configuration->ema500 = boost::get<int>((*mapConfigurationIterator)["ema500"]);
         }
-        if ((*mapConfigurationIterator)->find("rsi") != (*mapConfigurationIterator)->end()) {
-            configuration->rsi = boost::get<int>((**mapConfigurationIterator)["rsi"]);
+        if ((*mapConfigurationIterator).find("rsi") != (*mapConfigurationIterator).end()) {
+            configuration->rsi = boost::get<int>((*mapConfigurationIterator)["rsi"]);
         }
-        if ((*mapConfigurationIterator)->find("stochasticD") != (*mapConfigurationIterator)->end()) {
-            configuration->stochasticD = boost::get<int>((**mapConfigurationIterator)["stochasticD"]);
+        if ((*mapConfigurationIterator).find("stochasticD") != (*mapConfigurationIterator).end()) {
+            configuration->stochasticD = boost::get<int>((*mapConfigurationIterator)["stochasticD"]);
         }
-        if ((*mapConfigurationIterator)->find("stochasticK") != (*mapConfigurationIterator)->end()) {
-            configuration->stochasticK = boost::get<int>((**mapConfigurationIterator)["stochasticK"]);
+        if ((*mapConfigurationIterator).find("stochasticK") != (*mapConfigurationIterator).end()) {
+            configuration->stochasticK = boost::get<int>((*mapConfigurationIterator)["stochasticK"]);
         }
-        if ((*mapConfigurationIterator)->find("prChannelUpper") != (*mapConfigurationIterator)->end()) {
-            configuration->prChannelUpper = boost::get<int>((**mapConfigurationIterator)["prChannelUpper"]);
+        if ((*mapConfigurationIterator).find("prChannelUpper") != (*mapConfigurationIterator).end()) {
+            configuration->prChannelUpper = boost::get<int>((*mapConfigurationIterator)["prChannelUpper"]);
         }
-        if ((*mapConfigurationIterator)->find("prChannelLower") != (*mapConfigurationIterator)->end()) {
-            configuration->prChannelLower = boost::get<int>((**mapConfigurationIterator)["prChannelLower"]);
+        if ((*mapConfigurationIterator).find("prChannelLower") != (*mapConfigurationIterator).end()) {
+            configuration->prChannelLower = boost::get<int>((*mapConfigurationIterator)["prChannelLower"]);
         }
 
         // Set values.
-        if ((*mapConfigurationIterator)->find("rsiOverbought") != (*mapConfigurationIterator)->end()) {
-            configuration->rsiOverbought = boost::get<double>((**mapConfigurationIterator)["rsiOverbought"]);
+        if ((*mapConfigurationIterator).find("rsiOverbought") != (*mapConfigurationIterator).end()) {
+            configuration->rsiOverbought = boost::get<double>((*mapConfigurationIterator)["rsiOverbought"]);
         }
-        if ((*mapConfigurationIterator)->find("rsiOversold") != (*mapConfigurationIterator)->end()) {
-            configuration->rsiOversold = boost::get<double>((**mapConfigurationIterator)["rsiOversold"]);
+        if ((*mapConfigurationIterator).find("rsiOversold") != (*mapConfigurationIterator).end()) {
+            configuration->rsiOversold = boost::get<double>((*mapConfigurationIterator)["rsiOversold"]);
         }
-        if ((*mapConfigurationIterator)->find("stochasticOverbought") != (*mapConfigurationIterator)->end()) {
-            configuration->stochasticOverbought = boost::get<double>((**mapConfigurationIterator)["stochasticOverbought"]);
+        if ((*mapConfigurationIterator).find("stochasticOverbought") != (*mapConfigurationIterator).end()) {
+            configuration->stochasticOverbought = boost::get<double>((*mapConfigurationIterator)["stochasticOverbought"]);
         }
-        if ((*mapConfigurationIterator)->find("stochasticOversold") != (*mapConfigurationIterator)->end()) {
-            configuration->stochasticOversold = boost::get<double>((**mapConfigurationIterator)["stochasticOversold"]);
+        if ((*mapConfigurationIterator).find("stochasticOversold") != (*mapConfigurationIterator).end()) {
+            configuration->stochasticOversold = boost::get<double>((*mapConfigurationIterator)["stochasticOversold"]);
         }
 
         configurations.push_back(configuration);
@@ -465,7 +465,7 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     bson_error_t error;
     int dataPointCount;
     int configurationCount = configurations.size();
-    int dataChunkSize = 1000000;
+    int dataChunkSize = 1000;
     int dataOffset = 0;
     int chunkNumber = 1;
     int dataPointIndex = 0;
@@ -489,11 +489,12 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     // Get a count of all data points for the symbol.
     collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting-test", "datapoints");
     countQuery = BCON_NEW("symbol", BCON_UTF8(this->symbol));
-    dataPointCount = mongoc_collection_count(collection, MONGOC_QUERY_NONE, countQuery, 0, 0, NULL, &error);
+    dataPointCount = mongoc_collection_count(collection, MONGOC_QUERY_NONE, countQuery, 0, 10000, NULL, &error);
+    dataPointCount = 10000;
 
     // Set up one strategy instance per configuration.
     for (i=0; i<configurationCount; i++) {
-        strategies[i] = ReversalsOptimizationStrategy(this->symbol, getBasicDataIndexMap(), this->group, configurations[i]);
+        strategies[i] = ReversalsOptimizationStrategy(this->symbol, getBasicDataIndexMap(), this->group, *configurations[i]);
     }
 
     cudaSetDevice(gpuDeviceId);
@@ -551,10 +552,6 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
 
     // Save results.
     // TODO
-    for (i=0; i<configurationCount; i++) {
-        StrategyResults results = strategies[i].getResults();
-        printf("profit/loss = %f, trade count = %i, debug count = %i\n", results.profitLoss, results.tradeCount, strategies[i].getDebugCount());
-    }
 
     // Free memory on the GPU memory.
     cudaFree(devStrategies);

@@ -1,10 +1,10 @@
 #include "positions/putPosition.cuh"
 
-__device__ const char *PutPosition::getTransactionType() {
+__device__ __host__ const char *PutPosition::getTransactionType() {
     return "PUT";
 }
 
-__device__ double PutPosition::getProfitLoss() {
+__device__ __host__ double PutPosition::getProfitLoss() {
     if (getIsOpen()) {
         return 0.0;
     }

@@ -8,17 +8,17 @@
 class OptimizationStrategy : public Strategy {
     private:
         int group;
-        Configuration *configuration;
+        Configuration configuration;
         double *tickPreviousDataPoint;
 
     protected:
-        __device__ void tick(double *dataPoint);
+        __device__ __host__ void tick(double *dataPoint);
 
     public:
-        __host__ OptimizationStrategy(const char *symbol, BasicDataIndexMap dataIndexMap, int group, Configuration *configuration);
-        __host__ ~OptimizationStrategy();
-        __device__ int getGroup();
-        __device__ Configuration *getConfiguration();
+        __device__ __host__ OptimizationStrategy(const char *symbol, BasicDataIndexMap dataIndexMap, int group, Configuration configuration);
+        __device__ __host__ ~OptimizationStrategy();
+        __device__ __host__ int getGroup();
+        __device__ __host__ Configuration getConfiguration();
 };
 
 #endif

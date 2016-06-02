@@ -9,16 +9,16 @@
 
 class ReversalsOptimizationStrategy : public OptimizationStrategy {
     private:
-        Configuration *configuration;
+        Configuration configuration;
         double *previousDataPoint;
         bool putNextTick;
         bool callNextTick;
         int expirationMinutes;
 
     public:
-        __host__ ReversalsOptimizationStrategy(const char *symbol, BasicDataIndexMap dataIndexMap, int group, Configuration *configuration);
-        __host__ ~ReversalsOptimizationStrategy();
-        __device__ void backtest(double *dataPoint, double investment, double profitability);
+        __device__ __host__ ReversalsOptimizationStrategy(const char *symbol, BasicDataIndexMap dataIndexMap, int group, Configuration configuration);
+        __device__ __host__ ~ReversalsOptimizationStrategy();
+        __device__ __host__ void backtest(double *dataPoint, double investment, double profitability);
 };
 
 #endif

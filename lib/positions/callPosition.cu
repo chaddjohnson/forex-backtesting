@@ -1,10 +1,10 @@
 #include "positions/callPosition.cuh"
 
-__device__ const char *CallPosition::getTransactionType() {
+__device__ __host__ const char *CallPosition::getTransactionType() {
     return "CALL";
 }
 
-__device__ double CallPosition::getProfitLoss() {
+__device__ __host__ double CallPosition::getProfitLoss() {
     if (getIsOpen()) {
         return 0.0;
     }

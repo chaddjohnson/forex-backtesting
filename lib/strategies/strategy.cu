@@ -1,6 +1,6 @@
 #include "strategies/strategy.cuh"
 
-__host__ Strategy::Strategy(const char *symbol, BasicDataIndexMap dataIndexMap) {
+__device__ __host__ Strategy::Strategy(const char *symbol, BasicDataIndexMap dataIndexMap) {
     this->symbol = symbol;
     this->dataIndexMap = dataIndexMap;
     this->profitLoss = 0.0;
@@ -10,8 +10,6 @@ __host__ Strategy::Strategy(const char *symbol, BasicDataIndexMap dataIndexMap) 
     this->maximumConsecutiveLosses = 0;
     this->minimumProfitLoss = 99999.0;
 
-    this->debugCount = 0;
-
     int i = 0;
 
     for (i=0; i<10; i++) {
@@ -19,30 +17,30 @@ __host__ Strategy::Strategy(const char *symbol, BasicDataIndexMap dataIndexMap) 
     }
 }
 
-__device__ BasicDataIndexMap Strategy::getDataIndexMap() {
+__device__ __host__ BasicDataIndexMap Strategy::getDataIndexMap() {
     return this->dataIndexMap;
 }
 
-__device__ const char *Strategy::getSymbol() {
+__device__ __host__ const char *Strategy::getSymbol() {
     return this->symbol;
 }
 
-__host__ double Strategy::getProfitLoss() {
+__device__ __host__ double Strategy::getProfitLoss() {
     return this->profitLoss;
 }
 
-__host__ void Strategy::setProfitLoss(double profitLoss) {
+__device__ __host__ void Strategy::setProfitLoss(double profitLoss) {
     this->profitLoss = profitLoss;
 }
 
-__host__ double Strategy::getWinRate() {
+__device__ __host__ double Strategy::getWinRate() {
     if (this->winCount + this->loseCount == 0) {
         return 0;
     }
     return this->winCount / (this->winCount + this->loseCount);
 }
 
-__device__ void Strategy::closeExpiredPositions(double price, time_t timestamp) {
+__device__ __host__ void Strategy::closeExpiredPositions(double price, time_t timestamp) {
     int i = 0;
 
     for (i=0; i<10; i++) {
@@ -84,7 +82,7 @@ __device__ void Strategy::closeExpiredPositions(double price, time_t timestamp) 
     }
 }
 
-__host__ StrategyResults Strategy::getResults() {
+__device__ __host__ StrategyResults Strategy::getResults() {
     StrategyResults results;
 
     results.profitLoss = this->profitLoss;
@@ -98,7 +96,7 @@ __host__ StrategyResults Strategy::getResults() {
     return results;
 }
 
-__device__ void Strategy::addPosition(Position *position) {
+__device__ __host__ void Strategy::addPosition(Position *position) {
     bool done = false;
     int i = 0;
 

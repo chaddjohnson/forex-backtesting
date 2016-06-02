@@ -39,10 +39,10 @@ class Optimizer {
         BasicDataIndexMap getBasicDataIndexMap();
         double *loadData(int offset, int chunkSize);
         void saveTicks(std::vector<Tick*> ticks);
-        std::vector<MapConfiguration*> *buildMapConfigurations(
+        std::vector<MapConfiguration> *buildMapConfigurations(
             std::map<std::string, ConfigurationOption> options,
-            int optionIndex = 0,
-            std::vector<MapConfiguration*> *results = new std::vector<MapConfiguration*>(),
+            unsigned int optionIndex = 0,
+            std::vector<MapConfiguration> *results = new std::vector<MapConfiguration>(),
             MapConfiguration *current = new MapConfiguration()
         );
 

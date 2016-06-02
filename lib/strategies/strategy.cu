@@ -10,9 +10,7 @@ __device__ __host__ Strategy::Strategy(const char *symbol, BasicDataIndexMap dat
     this->maximumConsecutiveLosses = 0;
     this->minimumProfitLoss = 99999.0;
 
-    int i = 0;
-
-    for (i=0; i<10; i++) {
+    for (int i=0; i<10; i++) {
         this->openPositions[i] = nullptr;
     }
 }
@@ -41,31 +39,31 @@ __device__ __host__ double Strategy::getWinRate() {
 }
 
 __device__ __host__ void Strategy::closeExpiredPositions(double price, time_t timestamp) {
-    int i = 0;
-
-    for (i=0; i<10; i++) {
+    for (int i=0; i<10; i++) {
         if (this->openPositions[i]) {
-            Position position = *this->openPositions[i];
-            double positionProfitLoss = 0.0;
-
-            if (position.getHasExpired(timestamp)) {
+            if (this->openPositions[i]->getHasExpired(timestamp)) {
                 // Close the position since it is open and has expired.
-                position.close(price, timestamp);
+                this->openPositions[i]->close(price, timestamp);
 
                 // Remove the position's investment amount from the total profit/loss for this strategy.
-                this->profitLoss -= position.getInvestment();
+                this->profitLoss -= this->openPositions[i]->getInvestment();
 
                 // Add the profit/loss for this position to the profit/loss for this strategy.
-                positionProfitLoss = position.getProfitLoss();
+                double positionProfitLoss = this->openPositions[i]->getProfitLoss();
                 this->profitLoss += positionProfitLoss;
 
-                if (positionProfitLoss > position.getInvestment()) {
+                if (positionProfitLoss > this->openPositions[i]->getInvestment()) {
                     this->winCount++;
                     this->consecutiveLosses = 0;
                 }
-                if (profitLoss == 0) {
+                if (positionProfitLoss == 0) {
                     this->loseCount++;
                     this->consecutiveLosses++;
+                }
+
+                // Track minimum profit/loss.
+                if (this->profitLoss < this->minimumProfitLoss) {
+                    this->minimumProfitLoss = this->profitLoss;
                 }
 
                 // Update the minimum profit/loss for this strategy if applicable.
@@ -97,16 +95,11 @@ __device__ __host__ StrategyResults Strategy::getResults() {
 }
 
 __device__ __host__ void Strategy::addPosition(Position *position) {
-    bool done = false;
-    int i = 0;
-
-    while (!done && i < 10) {
+    for (int i=0; i<10; i++) {
         // If there is an unused position slot, then use it.
-        if (!this->openPositions[i]) {
+        if (this->openPositions[i] == nullptr) {
             this->openPositions[i] = position;
-            done = true;
+            break;
         }
-
-        i++;
     }
 }

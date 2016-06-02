@@ -58,7 +58,7 @@ void Optimizer::saveTicks(std::vector<Tick*> ticks) {
     collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting-test", "datapoints");
 
     // Begin a bulk operation.
-    bulkOperation = mongoc_collection_create_bulk_operation(collection, true, NULL);
+    bulkOperation = mongoc_collection_create_bulk_operation(collection, false, NULL);
 
     // Reference: http://api.mongodb.org/c/current/bulk.html
     for (std::vector<Tick*>::iterator insertionIterator = ticks.begin(); insertionIterator != ticks.end(); ++insertionIterator) {
@@ -470,15 +470,16 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     int chunkNumber = 1;
     int dataPointIndex = 0;
     int nextChunkSize;
+    std::vector<StrategyResults> results;
     int i = 0;
 
     // GPU settings.
     // Reference: https://devblogs.nvidia.com/parallelforall/cuda-pro-tip-write-flexible-kernels-grid-stride-loops/
-    int gpuDeviceId = 0;
+    int gpuDeviceId = 0;  // TODO: Get GPU count instead.
     int gpuBlockCount = 32;
     int gpuThreadsPerBlock = 1024;
     int gpuMultiprocessorCount;
-    cudaDeviceGetAttribute(&gpuMultiprocessorCount, cudaDevAttrMultiProcessorCount, gpuDeviceId);
+    cudaDeviceGetAttribute(&gpuMultiprocessorCount, cudaDevAttrMultiProcessorCount, gpuDeviceId);  // TODO: Do this for each GPU.
 
     // Host data.
     ReversalsOptimizationStrategy *strategies = (ReversalsOptimizationStrategy*)malloc(configurationCount * sizeof(ReversalsOptimizationStrategy));
@@ -489,8 +490,8 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     // Get a count of all data points for the symbol.
     collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting-test", "datapoints");
     countQuery = BCON_NEW("symbol", BCON_UTF8(this->symbol));
-    dataPointCount = mongoc_collection_count(collection, MONGOC_QUERY_NONE, countQuery, 0, 10000, NULL, &error);
-    dataPointCount = 10000;
+    dataPointCount = mongoc_collection_count(collection, MONGOC_QUERY_NONE, countQuery, 0, 2000, NULL, &error);
+    dataPointCount = 2000;
 
     // Set up one strategy instance per configuration.
     for (i=0; i<configurationCount; i++) {
@@ -527,14 +528,14 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
         // Copy a chunk of data points to the GPU.
         cudaMemcpy(devData, data, dataChunkBytes, cudaMemcpyHostToDevice);
 
-        // Backtest all strategies against the current data point.
-        // TODO? Loop through all data points in the chunk?
+        // Backtest all strategies against all data points in the chunk.
         for (i=0; i<nextChunkSize; i++) {
             // Show progress.
             percentage = (dataPointIndex / (double)dataPointCount) * 100.0;
-            // printf("\rOptimizing...%0.4f%%", percentage);
+            printf("\rOptimizing...%0.4f%%", percentage);
 
             optimizer_backtest<<<gpuBlockCount*gpuMultiprocessorCount, gpuThreadsPerBlock>>>(devData + dataPointIndex * getDataPropertyCount(), devStrategies, configurationCount, investment, profitability);
+            // cudaDeviceSynchronize();
 
             dataPointIndex++;
         }
@@ -550,8 +551,16 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     // Copy strategies from the GPU to the host.
     cudaMemcpy(strategies, devStrategies, configurationCount * sizeof(ReversalsOptimizationStrategy), cudaMemcpyDeviceToHost);
 
-    // Save results.
-    // TODO
+    printf("\rOptimizing...100%%     \n");
+
+    // Save the results to the database.
+    for (i=0; i<configurationCount; i++) {
+        StrategyResults result = strategies[i].getResults();
+        result.configuration = configurations[i];
+
+        results.push_back(result);
+    }
+    saveResults(results);
 
     // Free memory on the GPU memory.
     cudaFree(devStrategies);
@@ -560,6 +569,124 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     free(strategies);
     bson_destroy(countQuery);
     mongoc_collection_destroy(collection);
+}
 
-    printf("\n");
+std::string Optimizer::findDataIndexMapKeyByValue(int value) {
+    std::map<std::string, int> *tempDataIndexMap = getDataIndexMap();
+    std::string key = "";
+
+    for (std::map<std::string, int>::iterator iterator = tempDataIndexMap->begin(); iterator != tempDataIndexMap->end(); ++iterator) {
+        if (iterator->second == value) {
+            key = iterator->first;
+            break;
+        }
+    }
+
+    return key;
+};
+
+bson_t *Optimizer::convertResultToBson(StrategyResults &result) {
+    bson_t *document;
+    bson_t configurationDocument;
+
+    document = bson_new();
+
+    // Include basic information.
+    BSON_APPEND_UTF8(document, "symbol", this->symbol);
+    BSON_APPEND_INT32(document, "group", this->group);
+    BSON_APPEND_UTF8(document, "strategyName", this->strategyName);
+
+    // Include stats.
+    BSON_APPEND_DOUBLE(document, "profitLoss", result.profitLoss);
+    BSON_APPEND_INT32(document, "winCount", result.winCount);
+    BSON_APPEND_INT32(document, "loseCount", result.loseCount);
+    BSON_APPEND_INT32(document, "tradeCount", result.tradeCount);
+    BSON_APPEND_DOUBLE(document, "winRate", result.winRate);
+    BSON_APPEND_INT32(document, "maximumConsecutiveLosses", result.maximumConsecutiveLosses);
+    BSON_APPEND_INT32(document, "minimumProfitLoss", result.minimumProfitLoss);
+    BSON_APPEND_DOCUMENT_BEGIN(document, "configuration", &configurationDocument);
+
+    // Include study settings.
+    BSON_APPEND_BOOL(&configurationDocument, "sma13", result.configuration->sma13 > 0);
+    BSON_APPEND_BOOL(&configurationDocument, "ema50", result.configuration->ema50 > 0);
+    BSON_APPEND_BOOL(&configurationDocument, "ema100", result.configuration->ema100 > 0);
+    BSON_APPEND_BOOL(&configurationDocument, "ema200", result.configuration->ema200 > 0);
+    BSON_APPEND_BOOL(&configurationDocument, "ema250", result.configuration->ema250 > 0);
+    BSON_APPEND_BOOL(&configurationDocument, "ema300", result.configuration->ema300 > 0);
+    BSON_APPEND_BOOL(&configurationDocument, "ema350", result.configuration->ema350 > 0);
+    BSON_APPEND_BOOL(&configurationDocument, "ema400", result.configuration->ema400 > 0);
+    BSON_APPEND_BOOL(&configurationDocument, "ema450", result.configuration->ema450 > 0);
+    BSON_APPEND_BOOL(&configurationDocument, "ema500", result.configuration->ema500 > 0);
+    if (result.configuration->rsi > 0) {
+        BSON_APPEND_UTF8(&configurationDocument, "rsi", findDataIndexMapKeyByValue(result.configuration->rsi).c_str());
+    }
+    else {
+        BSON_APPEND_BOOL(&configurationDocument, "rsi", false);
+    }
+    if (result.configuration->stochasticD > 0) {
+        BSON_APPEND_UTF8(&configurationDocument, "stochasticD", findDataIndexMapKeyByValue(result.configuration->stochasticD).c_str());
+    }
+    else {
+        BSON_APPEND_BOOL(&configurationDocument, "stochasticD", false);
+    }
+    if (result.configuration->stochasticK > 0) {
+        BSON_APPEND_UTF8(&configurationDocument, "stochasticK", findDataIndexMapKeyByValue(result.configuration->stochasticK).c_str());
+    }
+    else {
+        BSON_APPEND_BOOL(&configurationDocument, "stochasticK", false);
+    }
+    BSON_APPEND_UTF8(&configurationDocument, "prChannelUpper", findDataIndexMapKeyByValue(result.configuration->prChannelUpper).c_str());
+    BSON_APPEND_UTF8(&configurationDocument, "prChannelLower", findDataIndexMapKeyByValue(result.configuration->prChannelLower).c_str());
+    if (result.configuration->rsi > 0) {
+        BSON_APPEND_DOUBLE(&configurationDocument, "rsiOverbought", result.configuration->rsiOverbought);
+    }
+    if (result.configuration->rsi > 0) {
+        BSON_APPEND_DOUBLE(&configurationDocument, "rsiOversold", result.configuration->rsiOversold);
+    }
+    if (result.configuration->stochasticD > 0 && result.configuration->stochasticK > 0) {
+        BSON_APPEND_DOUBLE(&configurationDocument, "stochasticOverbought", result.configuration->stochasticOverbought);
+    }
+    if (result.configuration->stochasticD > 0 && result.configuration->stochasticK > 0) {
+        BSON_APPEND_DOUBLE(&configurationDocument, "stochasticOversold", result.configuration->stochasticOversold);
+    }
+
+    bson_append_document_end(document, &configurationDocument);
+
+    return document;
+}
+
+void Optimizer::saveResults(std::vector<StrategyResults> &results) {
+    if (results.size() == 0) {
+        return;
+    }
+
+    printf("Saving results...");
+
+    mongoc_collection_t *collection;
+    mongoc_bulk_operation_t *bulkOperation;
+    bson_t bulkOperationReply;
+    bson_error_t bulkOperationError;
+
+    // Get a reference to the database collection.
+    collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting-test", "tests");
+
+    // Begin a bulk operation.
+    bulkOperation = mongoc_collection_create_bulk_operation(collection, false, NULL);
+
+    // Reference: http://api.mongodb.org/c/current/bulk.html
+    for (std::vector<StrategyResults>::iterator insertionIterator = results.begin(); insertionIterator != results.end(); ++insertionIterator) {
+        bson_t *document = convertResultToBson(*insertionIterator);
+        mongoc_bulk_operation_insert(bulkOperation, document);
+        bson_destroy(document);
+    }
+
+    // Execute the bulk operation.
+    mongoc_bulk_operation_execute(bulkOperation, &bulkOperationReply, &bulkOperationError);
+
+    // Cleanup.
+    mongoc_collection_destroy(collection);
+    mongoc_bulk_operation_destroy(bulkOperation);
+    bson_destroy(&bulkOperationReply);
+
+    printf("done\n");
 }

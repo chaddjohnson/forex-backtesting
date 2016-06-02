@@ -2,8 +2,6 @@
 #define REVERSALSOPTIMIZATIONSTRATEGY_H
 
 #include "optimizationStrategy.cuh"
-#include "positions/callPosition.cuh"
-#include "positions/putPosition.cuh"
 #include "types/configuration.cuh"
 #include "types/basicDataIndexMap.cuh"
 

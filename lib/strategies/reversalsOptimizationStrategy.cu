@@ -57,12 +57,10 @@ __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoi
             callNextTick = false;
         }
     }
-
     if (!putNextTick && !callNextTick) {
         previousDataPoint = dataPoint;
         return;
     }
-
     if (!configuration.stochasticK && configuration.stochasticD) {
         if (dataPoint[configuration.stochasticK] && dataPoint[configuration.stochasticD]) {
             // Determine if stochastic is not above the overbought line.

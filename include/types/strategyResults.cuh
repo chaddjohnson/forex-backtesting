@@ -2,13 +2,17 @@
 #define STRATEGYRESULTS_H
 
 typedef struct StrategyResults {
+    // Resulting stats
     double profitLoss;
     int winCount;
     int loseCount;
-    double winRate;
     int tradeCount;
+    double winRate;
     int maximumConsecutiveLosses;
     int minimumProfitLoss;
+
+    // Configuration used
+    Configuration *configuration;
 } StrategyResults;
 
 #endif

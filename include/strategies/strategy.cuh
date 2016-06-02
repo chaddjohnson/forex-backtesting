@@ -2,6 +2,8 @@
 #define STRATEGY_H
 
 #include "positions/position.cuh"
+#include "positions/callPosition.cuh"
+#include "positions/putPosition.cuh"
 #include "types/configuration.cuh"
 #include "types/strategyResults.cuh"
 #include "types/basicDataIndexMap.cuh"

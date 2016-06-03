@@ -20,7 +20,7 @@ class Position {
 
     public:
         __device__ __host__ Position(const char *symbol, time_t timestamp, double price, double investment, double profitability, int expirationMinutes);
-        __device__ __host__ virtual ~Position() {}
+        __device__ __host__ ~Position() {};
         __device__ __host__ const char *getSymbol();
         __device__ __host__ time_t getTimestamp();
         __device__ __host__ double getPrice();

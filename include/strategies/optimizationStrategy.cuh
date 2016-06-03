@@ -3,7 +3,6 @@
 
 #include "strategy.cuh"
 #include "types/configuration.cuh"
-#include "types/basicDataIndexMap.cuh"
 
 class OptimizationStrategy : public Strategy {
     private:
@@ -15,10 +14,10 @@ class OptimizationStrategy : public Strategy {
         __device__ __host__ void tick(double *dataPoint);
 
     public:
-        __device__ __host__ OptimizationStrategy(const char *symbol, BasicDataIndexMap dataIndexMap, int group, Configuration configuration);
-        __device__ __host__ ~OptimizationStrategy();
+        __device__ __host__ OptimizationStrategy(const char *symbol, int group, Configuration configuration);
+        __device__ __host__ ~OptimizationStrategy() {}
         __device__ __host__ int getGroup();
-        __device__ __host__ Configuration getConfiguration();
+        __device__ __host__ Configuration &getConfiguration();
 };
 
 #endif

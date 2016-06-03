@@ -226,19 +226,6 @@ std::map<std::string, int> *Optimizer::getDataIndexMap() {
     return this->dataIndexMap;
 }
 
-BasicDataIndexMap Optimizer::getBasicDataIndexMap() {
-    std::map<std::string, int> *tempDataIndexMap = this->getDataIndexMap();
-    BasicDataIndexMap basicDataIndexMap;
-
-    basicDataIndexMap.timestamp = (*tempDataIndexMap)["timestamp"];
-    basicDataIndexMap.open = (*tempDataIndexMap)["open"];
-    basicDataIndexMap.high = (*tempDataIndexMap)["high"];
-    basicDataIndexMap.low = (*tempDataIndexMap)["low"];
-    basicDataIndexMap.close = (*tempDataIndexMap)["close"];
-
-    return basicDataIndexMap;
-}
-
 double *Optimizer::loadData(int offset, int chunkSize) {
     mongoc_collection_t *collection;
     mongoc_cursor_t *cursor;
@@ -319,7 +306,7 @@ double *Optimizer::loadData(int offset, int chunkSize) {
 
 std::vector<MapConfiguration> *Optimizer::buildMapConfigurations(
     std::map<std::string, ConfigurationOption> options,
-    unsigned int optionIndex,
+    int optionIndex,
     std::vector<MapConfiguration> *results,
     MapConfiguration *current
 ) {
@@ -465,15 +452,13 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     bson_error_t error;
     int dataPointCount;
     int configurationCount = configurations.size();
-    int dataChunkSize = 1000000;
+    int dataChunkSize = 100000;
     int dataOffset = 0;
     int chunkNumber = 1;
-    int dataPointIndex = 0;
-    int nextChunkSize;
+    int dataPointIndexCumulative = 0;
     std::vector<StrategyResults> results;
     int i = 0;
     int j = 0;
-    int k = 0;
 
     // GPU settings.
     // Reference: https://devblogs.nvidia.com/parallelforall/cuda-pro-tip-write-flexible-kernels-grid-stride-loops/
@@ -496,7 +481,7 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     // Get a count of all data points for the symbol.
     collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting-test", "datapoints");
     countQuery = BCON_NEW("symbol", BCON_UTF8(this->symbol));
-    dataPointCount = mongoc_collection_count(collection, MONGOC_QUERY_NONE, countQuery, 0, 0, NULL, &error);
+    dataPointCount = mongoc_collection_count(collection, MONGOC_QUERY_NONE, countQuery, 0, 200000, NULL, &error);
 
     for (i=0; i<gpuCount; i++) {
         // Allocate data for strategies.
@@ -509,7 +494,7 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
         int gpuDeviceId = i % gpuCount;
         int gpuConfigurationIndex = configurationCounts[gpuDeviceId];
 
-        strategies[gpuDeviceId][gpuConfigurationIndex] = ReversalsOptimizationStrategy(this->symbol, getBasicDataIndexMap(), this->group, *configurations[i]);
+        strategies[gpuDeviceId][gpuConfigurationIndex] = ReversalsOptimizationStrategy(this->symbol, this->group, *configurations[i]);
         configurationCounts[gpuDeviceId]++;
     }
 
@@ -524,6 +509,8 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     }
 
     while (dataOffset < dataPointCount) {
+        int nextChunkSize;
+
         // Calculate the next chunk's size.
         if (chunkNumber * dataChunkSize < dataPointCount) {
             nextChunkSize = dataChunkSize;
@@ -537,34 +524,42 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
 
         // Load another chunk of data.
         double *data = loadData(dataOffset, nextChunkSize);
-        double *devData;
+        double *devData[gpuCount];
+
+        int dataPointIndex = 0;
 
         for (i=0; i<gpuCount; i++) {
             cudaSetDevice(i);
 
             // Allocate memory for the data on the GPU.
-            cudaMalloc((void**)&devData, dataChunkBytes);
+            cudaMalloc((void**)&devData[i], dataChunkBytes);
 
             // Copy a chunk of data points to the GPU.
-            cudaMemcpy(devData, data, dataChunkBytes, cudaMemcpyHostToDevice);
+            cudaMemcpy(devData[i], data, dataChunkBytes, cudaMemcpyHostToDevice);
         }
 
         // Backtest all strategies against all data points in the chunk.
         for (i=0; i<nextChunkSize; i++) {
+            // Calculate the data pointer offset.
+            unsigned int dataPointerOffset = dataPointIndex * getDataPropertyCount();
+
             // Show progress.
-            percentage = (dataPointIndex / (double)dataPointCount) * 100.0;
+            percentage = (dataPointIndexCumulative / (double)dataPointCount) * 100.0;
             printf("\rOptimizing...%0.4f%%", percentage);
 
             for (j=0; j<gpuCount; j++) {
                 cudaSetDevice(j);
-                optimizer_backtest<<<gpuBlockCount*gpuMultiprocessorCount, gpuThreadsPerBlock>>>(devData + dataPointIndex * getDataPropertyCount(), devStrategies[j], configurationCounts[j], investment, profitability);
+                optimizer_backtest<<<gpuBlockCount*gpuMultiprocessorCount, gpuThreadsPerBlock>>>(devData[j] + dataPointerOffset, devStrategies[j], configurationCounts[j], investment, profitability);
             }
 
             dataPointIndex++;
+            dataPointIndexCumulative++;
         }
 
         // Free GPU and host memory;
-        cudaFree(devData);
+        for (i=0; i<gpuCount; i++) {
+            cudaFree(devData[i]);
+        }
         free(data);
 
         chunkNumber++;
@@ -580,12 +575,10 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     printf("\rOptimizing...100%%     \n");
 
     // Save the results to the database.
-    k = 0;
     for (i=0; i<gpuCount; i++) {
         for (j=0; j<configurationCounts[i]; j++) {
             StrategyResults result = strategies[i][j].getResults();
-            result.configuration = configurations[k];
-            k++;
+            result.configuration = &strategies[i][j].getConfiguration();
 
             results.push_back(result);
         }
@@ -654,35 +647,29 @@ bson_t *Optimizer::convertResultToBson(StrategyResults &result) {
     BSON_APPEND_BOOL(&configurationDocument, "ema500", result.configuration->ema500 > 0);
     if (result.configuration->rsi > 0) {
         BSON_APPEND_UTF8(&configurationDocument, "rsi", findDataIndexMapKeyByValue(result.configuration->rsi).c_str());
+        BSON_APPEND_DOUBLE(&configurationDocument, "rsiOverbought", result.configuration->rsiOverbought);
+        BSON_APPEND_DOUBLE(&configurationDocument, "rsiOversold", result.configuration->rsiOversold);
     }
     else {
         BSON_APPEND_BOOL(&configurationDocument, "rsi", false);
     }
-    if (result.configuration->stochasticD > 0) {
+    if (result.configuration->stochasticD > 0 && result.configuration->stochasticK > 0) {
         BSON_APPEND_UTF8(&configurationDocument, "stochasticD", findDataIndexMapKeyByValue(result.configuration->stochasticD).c_str());
+        BSON_APPEND_UTF8(&configurationDocument, "stochasticK", findDataIndexMapKeyByValue(result.configuration->stochasticK).c_str());
+        BSON_APPEND_DOUBLE(&configurationDocument, "stochasticOverbought", result.configuration->stochasticOverbought);
+        BSON_APPEND_DOUBLE(&configurationDocument, "stochasticOversold", result.configuration->stochasticOversold);
     }
     else {
         BSON_APPEND_BOOL(&configurationDocument, "stochasticD", false);
-    }
-    if (result.configuration->stochasticK > 0) {
-        BSON_APPEND_UTF8(&configurationDocument, "stochasticK", findDataIndexMapKeyByValue(result.configuration->stochasticK).c_str());
-    }
-    else {
         BSON_APPEND_BOOL(&configurationDocument, "stochasticK", false);
     }
-    BSON_APPEND_UTF8(&configurationDocument, "prChannelUpper", findDataIndexMapKeyByValue(result.configuration->prChannelUpper).c_str());
-    BSON_APPEND_UTF8(&configurationDocument, "prChannelLower", findDataIndexMapKeyByValue(result.configuration->prChannelLower).c_str());
-    if (result.configuration->rsi > 0) {
-        BSON_APPEND_DOUBLE(&configurationDocument, "rsiOverbought", result.configuration->rsiOverbought);
+    if (result.configuration->prChannelUpper > 0 && result.configuration->prChannelLower > 0) {
+        BSON_APPEND_UTF8(&configurationDocument, "prChannelUpper", findDataIndexMapKeyByValue(result.configuration->prChannelUpper).c_str());
+        BSON_APPEND_UTF8(&configurationDocument, "prChannelLower", findDataIndexMapKeyByValue(result.configuration->prChannelLower).c_str());
     }
-    if (result.configuration->rsi > 0) {
-        BSON_APPEND_DOUBLE(&configurationDocument, "rsiOversold", result.configuration->rsiOversold);
-    }
-    if (result.configuration->stochasticD > 0 && result.configuration->stochasticK > 0) {
-        BSON_APPEND_DOUBLE(&configurationDocument, "stochasticOverbought", result.configuration->stochasticOverbought);
-    }
-    if (result.configuration->stochasticD > 0 && result.configuration->stochasticK > 0) {
-        BSON_APPEND_DOUBLE(&configurationDocument, "stochasticOversold", result.configuration->stochasticOversold);
+    else {
+        BSON_APPEND_BOOL(&configurationDocument, "prChannelUpper", false);
+        BSON_APPEND_BOOL(&configurationDocument, "prChannelLower", false);
     }
 
     bson_append_document_end(document, &configurationDocument);

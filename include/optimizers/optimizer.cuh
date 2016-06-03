@@ -37,12 +37,11 @@ class Optimizer {
         int getDataPropertyCount();
         bson_t *convertTickToBson(Tick *tick);
         std::map<std::string, int> *getDataIndexMap();
-        BasicDataIndexMap getBasicDataIndexMap();
         double *loadData(int offset, int chunkSize);
         void saveTicks(std::vector<Tick*> ticks);
         std::vector<MapConfiguration> *buildMapConfigurations(
             std::map<std::string, ConfigurationOption> options,
-            unsigned int optionIndex = 0,
+            int optionIndex = 0,
             std::vector<MapConfiguration> *results = new std::vector<MapConfiguration>(),
             MapConfiguration *current = new MapConfiguration()
         );

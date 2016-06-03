@@ -1,8 +1,7 @@
 #include "strategies/strategy.cuh"
 
-__device__ __host__ Strategy::Strategy(const char *symbol, BasicDataIndexMap dataIndexMap) {
+__device__ __host__ Strategy::Strategy(const char *symbol) {
     this->symbol = symbol;
-    this->dataIndexMap = dataIndexMap;
     this->profitLoss = 0.0;
     this->winCount = 0;
     this->loseCount = 0;
@@ -13,10 +12,6 @@ __device__ __host__ Strategy::Strategy(const char *symbol, BasicDataIndexMap dat
     for (int i=0; i<10; i++) {
         this->openPositions[i] = nullptr;
     }
-}
-
-__device__ __host__ BasicDataIndexMap Strategy::getDataIndexMap() {
-    return this->dataIndexMap;
 }
 
 __device__ __host__ const char *Strategy::getSymbol() {
@@ -35,10 +30,14 @@ __device__ __host__ double Strategy::getWinRate() {
     if (this->winCount + this->loseCount == 0) {
         return 0;
     }
-    return this->winCount / (this->winCount + this->loseCount);
+    return (double)this->winCount / ((double)this->winCount + (double)this->loseCount);
 }
 
 __device__ __host__ void Strategy::closeExpiredPositions(double price, time_t timestamp) {
+    if (!price || !timestamp) {
+        return;
+    }
+
     for (int i=0; i<10; i++) {
         if (this->openPositions[i]) {
             if (this->openPositions[i]->getHasExpired(timestamp)) {
@@ -71,8 +70,8 @@ __device__ __host__ void Strategy::closeExpiredPositions(double price, time_t ti
                     this->maximumConsecutiveLosses = this->consecutiveLosses;
                 }
 
-                // Remove the position from the list of open positions, and free memory.
-                // Delete the position.
+                // Remove the position from the list of open positions, and free memory
+                // by deleting the position.
                 delete this->openPositions[i];
                 this->openPositions[i] = nullptr;
             }

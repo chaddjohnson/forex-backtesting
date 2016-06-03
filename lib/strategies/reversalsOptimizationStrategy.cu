@@ -1,17 +1,12 @@
 #include "strategies/reversalsOptimizationStrategy.cuh"
 
-__device__ __host__ ReversalsOptimizationStrategy::ReversalsOptimizationStrategy(const char *symbol, BasicDataIndexMap dataIndexMap, int group, Configuration configuration)
-        : OptimizationStrategy(symbol, dataIndexMap, group, configuration) {
+__device__ __host__ ReversalsOptimizationStrategy::ReversalsOptimizationStrategy(const char *symbol, int group, Configuration configuration)
+        : OptimizationStrategy(symbol, group, configuration) {
     this->configuration = configuration;
-    this->previousDataPoint = nullptr;
     this->putNextTick = false;
     this->callNextTick = false;
     this->expirationMinutes = 5;
-}
-
-__device__ __host__ ReversalsOptimizationStrategy::~ReversalsOptimizationStrategy() {
-    // delete configuration;
-    // delete previousDataPoint;
+    this->previousDataPoint = nullptr;
 }
 
 __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoint, double investment, double profitability) {
@@ -281,6 +276,5 @@ __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoi
         }
     }
 
-    // Track the current data point as the previous data point for the next tick.
     previousDataPoint = dataPoint;
 }

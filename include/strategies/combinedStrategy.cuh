@@ -3,7 +3,6 @@
 
 #include <vector>
 #include "strategy.cuh"
-#include "types/basicDataIndexMap.cuh"
 
 class CombinedStrategy : public Strategy {
     private:
@@ -15,8 +14,8 @@ class CombinedStrategy : public Strategy {
         __device__ __host__ std::vector<Configuration*> getConfigurations();
 
     public:
-        __device__ __host__ CombinedStrategy(const char *symbol, BasicDataIndexMap dataIndexMap, std::vector<Configuration*> configurations);
-        __device__ __host__ ~CombinedStrategy();
+        __device__ __host__ CombinedStrategy(const char *symbol, std::vector<Configuration*> configurations);
+        __device__ __host__ ~CombinedStrategy() {}
 };
 
 #endif

@@ -5,7 +5,7 @@
 #include "positions/callPosition.cuh"
 #include "positions/putPosition.cuh"
 #include "types/configuration.cuh"
-#include "types/strategyResults.cuh"
+#include "types/strategyResult.cuh"
 
 class Strategy {
     private:
@@ -31,7 +31,7 @@ class Strategy {
         __device__ __host__ void backtest(double *dataPoint, double investment, double profitability) {}
         __device__ __host__ const char *getSymbol();
         __device__ __host__ void setProfitLoss(double profitLoss);
-        __device__ __host__ StrategyResults getResults();
+        __device__ __host__ StrategyResult getResult();
 };
 
 #endif

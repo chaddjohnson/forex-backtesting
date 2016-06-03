@@ -21,7 +21,7 @@
 #include "types/configuration.cuh"
 #include "types/mapConfiguration.cuh"
 #include "types/configurationOption.cuh"
-#include "types/strategyResults.cuh"
+#include "types/strategyResult.cuh"
 
 // CUDA kernel headers.
 __global__ void optimizer_backtest(double *data, ReversalsOptimizationStrategy *strategies, int strategyCount, double investment, double profitability);
@@ -46,8 +46,8 @@ class Optimizer {
             MapConfiguration *current = new MapConfiguration()
         );
         std::string findDataIndexMapKeyByValue(int value);
-        bson_t *convertResultToBson(StrategyResults &result);
-        void saveResults(std::vector<StrategyResults> &results);
+        bson_t *convertResultToBson(StrategyResult &result);
+        void saveResults(std::vector<StrategyResult> &results);
 
     protected:
         virtual std::vector<Study*> getStudies() {

@@ -79,18 +79,18 @@ __device__ __host__ void Strategy::closeExpiredPositions(double price, time_t ti
     }
 }
 
-__device__ __host__ StrategyResults Strategy::getResults() {
-    StrategyResults results;
+__device__ __host__ StrategyResult Strategy::getResult() {
+    StrategyResult result;
 
-    results.profitLoss = this->profitLoss;
-    results.winCount = this->winCount;
-    results.loseCount = this->loseCount;
-    results.winRate = getWinRate();
-    results.tradeCount = this->winCount + this->loseCount;
-    results.maximumConsecutiveLosses = this->maximumConsecutiveLosses;
-    results.minimumProfitLoss = this->minimumProfitLoss;
+    result.profitLoss = this->profitLoss;
+    result.winCount = this->winCount;
+    result.loseCount = this->loseCount;
+    result.winRate = getWinRate();
+    result.tradeCount = this->winCount + this->loseCount;
+    result.maximumConsecutiveLosses = this->maximumConsecutiveLosses;
+    result.minimumProfitLoss = this->minimumProfitLoss;
 
-    return results;
+    return result;
 }
 
 __device__ __host__ void Strategy::addPosition(Position *position) {

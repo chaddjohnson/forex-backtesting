@@ -1,7 +1,7 @@
-#ifndef STRATEGYRESULTS_H
-#define STRATEGYRESULTS_H
+#ifndef STRATEGYRESULT_H
+#define STRATEGYRESULT_H
 
-typedef struct StrategyResults {
+typedef struct StrategyResult {
     // Resulting stats
     double profitLoss;
     int winCount;
@@ -13,6 +13,6 @@ typedef struct StrategyResults {
 
     // Configuration used
     Configuration *configuration;
-} StrategyResults;
+} StrategyResult;
 
 #endif

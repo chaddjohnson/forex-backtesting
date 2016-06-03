@@ -456,7 +456,7 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     int dataOffset = 0;
     int chunkNumber = 1;
     int dataPointIndexCumulative = 0;
-    std::vector<StrategyResults> results;
+    std::vector<StrategyResult> results;
     int i = 0;
     int j = 0;
 
@@ -577,7 +577,7 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     // Save the results to the database.
     for (i=0; i<gpuCount; i++) {
         for (j=0; j<configurationCounts[i]; j++) {
-            StrategyResults result = strategies[i][j].getResults();
+            StrategyResult result = strategies[i][j].getResult();
             result.configuration = &strategies[i][j].getConfiguration();
 
             results.push_back(result);
@@ -613,7 +613,7 @@ std::string Optimizer::findDataIndexMapKeyByValue(int value) {
     return key;
 };
 
-bson_t *Optimizer::convertResultToBson(StrategyResults &result) {
+bson_t *Optimizer::convertResultToBson(StrategyResult &result) {
     bson_t *document;
     bson_t configurationDocument;
 
@@ -677,7 +677,7 @@ bson_t *Optimizer::convertResultToBson(StrategyResults &result) {
     return document;
 }
 
-void Optimizer::saveResults(std::vector<StrategyResults> &results) {
+void Optimizer::saveResults(std::vector<StrategyResult> &results) {
     if (results.size() == 0) {
         return;
     }
@@ -696,7 +696,7 @@ void Optimizer::saveResults(std::vector<StrategyResults> &results) {
     bulkOperation = mongoc_collection_create_bulk_operation(collection, false, NULL);
 
     // Reference: http://api.mongodb.org/c/current/bulk.html
-    for (std::vector<StrategyResults>::iterator insertionIterator = results.begin(); insertionIterator != results.end(); ++insertionIterator) {
+    for (std::vector<StrategyResult>::iterator insertionIterator = results.begin(); insertionIterator != results.end(); ++insertionIterator) {
         bson_t *document = convertResultToBson(*insertionIterator);
         mongoc_bulk_operation_insert(bulkOperation, document);
         bson_destroy(document);

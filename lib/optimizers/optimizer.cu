@@ -452,7 +452,7 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     bson_error_t error;
     int dataPointCount;
     int configurationCount = configurations.size();
-    int dataChunkSize = 100000;
+    int dataChunkSize = 250000;
     int dataOffset = 0;
     int chunkNumber = 1;
     int dataPointIndexCumulative = 0;
@@ -481,7 +481,7 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     // Get a count of all data points for the symbol.
     collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting-test", "datapoints");
     countQuery = BCON_NEW("symbol", BCON_UTF8(this->symbol));
-    dataPointCount = mongoc_collection_count(collection, MONGOC_QUERY_NONE, countQuery, 0, 200000, NULL, &error);
+    dataPointCount = mongoc_collection_count(collection, MONGOC_QUERY_NONE, countQuery, 0, 0, NULL, &error);
 
     for (i=0; i<gpuCount; i++) {
         // Allocate data for strategies.

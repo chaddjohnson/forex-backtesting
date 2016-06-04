@@ -452,7 +452,7 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     bson_error_t error;
     int dataPointCount;
     int configurationCount = configurations.size();
-    int dataChunkSize = 250000;
+    int dataChunkSize = 500000;
     int dataOffset = 0;
     int chunkNumber = 1;
     int dataPointIndexCumulative = 0;

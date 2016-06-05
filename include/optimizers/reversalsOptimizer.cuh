@@ -20,6 +20,8 @@ class ReversalsOptimizer : public Optimizer {
     protected:
         std::vector<Study*> getStudies();
         std::map<std::string, ConfigurationOption> getConfigurationOptions();
+        std::vector<Configuration*> buildConfigurations();
+        bson_t *convertResultToBson(StrategyResult &result);
 
     public:
         ReversalsOptimizer(mongoc_client_t *dbClient, std::string symbol, int group = 0)

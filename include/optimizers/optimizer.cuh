@@ -38,27 +38,34 @@ class Optimizer {
         int dataPropertyCount;
         int getDataPropertyCount();
         bson_t *convertTickToBson(Tick *tick);
-        std::map<std::string, int> *getDataIndexMap();
         double *loadData(int offset, int chunkSize);
         void saveTicks(std::vector<Tick*> ticks);
+        void saveResults(std::vector<StrategyResult> &results);
+
+    protected:
+        std::string getStrategyName();
+        std::string getSymbol();
+        int getGroup();
+        std::map<std::string, int> *getDataIndexMap();
+        std::string findDataIndexMapKeyByValue(int value);
+        virtual std::vector<Study*> getStudies() {
+            return std::vector<Study*>();
+        }
         std::vector<MapConfiguration> *buildMapConfigurations(
             std::map<std::string, ConfigurationOption> options,
             int optionIndex = 0,
             std::vector<MapConfiguration> *results = new std::vector<MapConfiguration>(),
             MapConfiguration *current = new MapConfiguration()
         );
-        std::string findDataIndexMapKeyByValue(int value);
-        bson_t *convertResultToBson(StrategyResult &result);
-        void saveResults(std::vector<StrategyResult> &results);
-
-    protected:
-        virtual std::vector<Study*> getStudies() {
-            return std::vector<Study*>();
-        }
         virtual std::map<std::string, ConfigurationOption> getConfigurationOptions() {
             return std::map<std::string, ConfigurationOption>();
         }
-        std::vector<Configuration*> buildConfigurations();
+        virtual std::vector<Configuration*> buildConfigurations() {
+            return std::vector<Configuration*>();
+        }
+        virtual bson_t *convertResultToBson(StrategyResult &result) {
+            return nullptr;
+        }
 
     public:
         Optimizer(mongoc_client_t *dbClient, std::string strategyName, std::string symbol, int group = 0);

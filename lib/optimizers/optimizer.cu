@@ -21,6 +21,18 @@ Optimizer::Optimizer(mongoc_client_t *dbClient, std::string strategyName, std::s
     this->dataIndexMap = new std::map<std::string, int>();
 }
 
+std::string Optimizer::getStrategyName() {
+    return this->strategyName;
+}
+
+std::string Optimizer::getSymbol() {
+    return this->symbol;
+}
+
+int Optimizer::getGroup() {
+    return this->group;
+}
+
 bson_t *Optimizer::convertTickToBson(Tick *tick) {
     bson_t *document;
     bson_t dataDocument;
@@ -365,101 +377,6 @@ std::vector<MapConfiguration> *Optimizer::buildMapConfigurations(
     return results;
 }
 
-std::vector<Configuration*> Optimizer::buildConfigurations() {
-    printf("Building configurations...");
-
-    std::map<std::string, ConfigurationOption> options = this->getConfigurationOptions();
-    std::map<std::string, int> *tempDataIndexMap = this->getDataIndexMap();
-    std::vector<MapConfiguration> *mapConfigurations = buildMapConfigurations(options);
-    std::vector<Configuration*> configurations;
-    Configuration *configuration = nullptr;
-
-    // Reserve space in advance for better performance.
-    configurations.reserve(mapConfigurations->size());
-
-    // Convert map representations of maps into structs of type Configuration.
-    for (std::vector<MapConfiguration>::iterator mapConfigurationIterator = mapConfigurations->begin(); mapConfigurationIterator != mapConfigurations->end(); ++mapConfigurationIterator) {
-        // Set up a new, empty configuration.
-        configuration = new Configuration();
-
-        // Set basic properties.
-        configuration->timestamp = (*tempDataIndexMap)["timestamp"];
-        configuration->timestampHour = (*tempDataIndexMap)["timestampHour"];
-        configuration->timestampMinute = (*tempDataIndexMap)["timestampMinute"];
-        configuration->open = (*tempDataIndexMap)["open"];
-        configuration->high = (*tempDataIndexMap)["high"];
-        configuration->low = (*tempDataIndexMap)["low"];
-        configuration->close = (*tempDataIndexMap)["close"];
-
-        // Set index mappings.
-        if ((*mapConfigurationIterator).find("sma13") != (*mapConfigurationIterator).end()) {
-            configuration->sma13 = boost::get<int>((*mapConfigurationIterator)["sma13"]);
-        }
-        if ((*mapConfigurationIterator).find("ema50") != (*mapConfigurationIterator).end()) {
-            configuration->ema50 = boost::get<int>((*mapConfigurationIterator)["ema50"]);
-        }
-        if ((*mapConfigurationIterator).find("ema100") != (*mapConfigurationIterator).end()) {
-            configuration->ema100 = boost::get<int>((*mapConfigurationIterator)["ema100"]);
-        }
-        if ((*mapConfigurationIterator).find("ema200") != (*mapConfigurationIterator).end()) {
-            configuration->ema200 = boost::get<int>((*mapConfigurationIterator)["ema200"]);
-        }
-        // if ((*mapConfigurationIterator).find("ema250") != (*mapConfigurationIterator).end()) {
-        //     configuration->ema250 = boost::get<int>((*mapConfigurationIterator)["ema250"]);
-        // }
-        // if ((*mapConfigurationIterator).find("ema300") != (*mapConfigurationIterator).end()) {
-        //     configuration->ema300 = boost::get<int>((*mapConfigurationIterator)["ema300"]);
-        // }
-        // if ((*mapConfigurationIterator).find("ema350") != (*mapConfigurationIterator).end()) {
-        //     configuration->ema350 = boost::get<int>((*mapConfigurationIterator)["ema350"]);
-        // }
-        // if ((*mapConfigurationIterator).find("ema400") != (*mapConfigurationIterator).end()) {
-        //     configuration->ema400 = boost::get<int>((*mapConfigurationIterator)["ema400"]);
-        // }
-        // if ((*mapConfigurationIterator).find("ema450") != (*mapConfigurationIterator).end()) {
-        //     configuration->ema450 = boost::get<int>((*mapConfigurationIterator)["ema450"]);
-        // }
-        // if ((*mapConfigurationIterator).find("ema500") != (*mapConfigurationIterator).end()) {
-        //     configuration->ema500 = boost::get<int>((*mapConfigurationIterator)["ema500"]);
-        // }
-        if ((*mapConfigurationIterator).find("rsi") != (*mapConfigurationIterator).end()) {
-            configuration->rsi = boost::get<int>((*mapConfigurationIterator)["rsi"]);
-        }
-        if ((*mapConfigurationIterator).find("stochasticD") != (*mapConfigurationIterator).end()) {
-            configuration->stochasticD = boost::get<int>((*mapConfigurationIterator)["stochasticD"]);
-        }
-        if ((*mapConfigurationIterator).find("stochasticK") != (*mapConfigurationIterator).end()) {
-            configuration->stochasticK = boost::get<int>((*mapConfigurationIterator)["stochasticK"]);
-        }
-        if ((*mapConfigurationIterator).find("prChannelUpper") != (*mapConfigurationIterator).end()) {
-            configuration->prChannelUpper = boost::get<int>((*mapConfigurationIterator)["prChannelUpper"]);
-        }
-        if ((*mapConfigurationIterator).find("prChannelLower") != (*mapConfigurationIterator).end()) {
-            configuration->prChannelLower = boost::get<int>((*mapConfigurationIterator)["prChannelLower"]);
-        }
-
-        // Set values.
-        if ((*mapConfigurationIterator).find("rsiOverbought") != (*mapConfigurationIterator).end()) {
-            configuration->rsiOverbought = boost::get<double>((*mapConfigurationIterator)["rsiOverbought"]);
-        }
-        if ((*mapConfigurationIterator).find("rsiOversold") != (*mapConfigurationIterator).end()) {
-            configuration->rsiOversold = boost::get<double>((*mapConfigurationIterator)["rsiOversold"]);
-        }
-        if ((*mapConfigurationIterator).find("stochasticOverbought") != (*mapConfigurationIterator).end()) {
-            configuration->stochasticOverbought = boost::get<double>((*mapConfigurationIterator)["stochasticOverbought"]);
-        }
-        if ((*mapConfigurationIterator).find("stochasticOversold") != (*mapConfigurationIterator).end()) {
-            configuration->stochasticOversold = boost::get<double>((*mapConfigurationIterator)["stochasticOversold"]);
-        }
-
-        configurations.push_back(configuration);
-    }
-
-    printf("%i configurations built\n", (int)configurations.size());
-
-    return configurations;
-}
-
 void Optimizer::optimize(double investment, double profitability) {
     printf("Optimizing...");
 
@@ -633,70 +550,6 @@ std::string Optimizer::findDataIndexMapKeyByValue(int value) {
 
     return key;
 };
-
-bson_t *Optimizer::convertResultToBson(StrategyResult &result) {
-    bson_t *document;
-    bson_t configurationDocument;
-
-    document = bson_new();
-
-    // Include basic information.
-    BSON_APPEND_UTF8(document, "symbol", this->symbol.c_str());
-    BSON_APPEND_INT32(document, "group", this->group);
-    BSON_APPEND_UTF8(document, "strategyName", this->strategyName.c_str());
-
-    // Include stats.
-    BSON_APPEND_DOUBLE(document, "profitLoss", result.profitLoss);
-    BSON_APPEND_INT32(document, "winCount", result.winCount);
-    BSON_APPEND_INT32(document, "loseCount", result.loseCount);
-    BSON_APPEND_INT32(document, "tradeCount", result.tradeCount);
-    BSON_APPEND_DOUBLE(document, "winRate", result.winRate);
-    BSON_APPEND_INT32(document, "maximumConsecutiveLosses", result.maximumConsecutiveLosses);
-    BSON_APPEND_INT32(document, "minimumProfitLoss", result.minimumProfitLoss);
-    BSON_APPEND_DOCUMENT_BEGIN(document, "configuration", &configurationDocument);
-
-    // Include study settings.
-    BSON_APPEND_BOOL(&configurationDocument, "sma13", result.configuration->sma13 > 0);
-    BSON_APPEND_BOOL(&configurationDocument, "ema50", result.configuration->ema50 > 0);
-    BSON_APPEND_BOOL(&configurationDocument, "ema100", result.configuration->ema100 > 0);
-    BSON_APPEND_BOOL(&configurationDocument, "ema200", result.configuration->ema200 > 0);
-    BSON_APPEND_BOOL(&configurationDocument, "ema250", result.configuration->ema250 > 0);
-    BSON_APPEND_BOOL(&configurationDocument, "ema300", result.configuration->ema300 > 0);
-    BSON_APPEND_BOOL(&configurationDocument, "ema350", result.configuration->ema350 > 0);
-    BSON_APPEND_BOOL(&configurationDocument, "ema400", result.configuration->ema400 > 0);
-    BSON_APPEND_BOOL(&configurationDocument, "ema450", result.configuration->ema450 > 0);
-    BSON_APPEND_BOOL(&configurationDocument, "ema500", result.configuration->ema500 > 0);
-    if (result.configuration->rsi > 0) {
-        BSON_APPEND_UTF8(&configurationDocument, "rsi", findDataIndexMapKeyByValue(result.configuration->rsi).c_str());
-        BSON_APPEND_DOUBLE(&configurationDocument, "rsiOverbought", result.configuration->rsiOverbought);
-        BSON_APPEND_DOUBLE(&configurationDocument, "rsiOversold", result.configuration->rsiOversold);
-    }
-    else {
-        BSON_APPEND_BOOL(&configurationDocument, "rsi", false);
-    }
-    if (result.configuration->stochasticD > 0 && result.configuration->stochasticK > 0) {
-        BSON_APPEND_UTF8(&configurationDocument, "stochasticD", findDataIndexMapKeyByValue(result.configuration->stochasticD).c_str());
-        BSON_APPEND_UTF8(&configurationDocument, "stochasticK", findDataIndexMapKeyByValue(result.configuration->stochasticK).c_str());
-        BSON_APPEND_DOUBLE(&configurationDocument, "stochasticOverbought", result.configuration->stochasticOverbought);
-        BSON_APPEND_DOUBLE(&configurationDocument, "stochasticOversold", result.configuration->stochasticOversold);
-    }
-    else {
-        BSON_APPEND_BOOL(&configurationDocument, "stochasticD", false);
-        BSON_APPEND_BOOL(&configurationDocument, "stochasticK", false);
-    }
-    if (result.configuration->prChannelUpper > 0 && result.configuration->prChannelLower > 0) {
-        BSON_APPEND_UTF8(&configurationDocument, "prChannelUpper", findDataIndexMapKeyByValue(result.configuration->prChannelUpper).c_str());
-        BSON_APPEND_UTF8(&configurationDocument, "prChannelLower", findDataIndexMapKeyByValue(result.configuration->prChannelLower).c_str());
-    }
-    else {
-        BSON_APPEND_BOOL(&configurationDocument, "prChannelUpper", false);
-        BSON_APPEND_BOOL(&configurationDocument, "prChannelLower", false);
-    }
-
-    bson_append_document_end(document, &configurationDocument);
-
-    return document;
-}
 
 void Optimizer::saveResults(std::vector<StrategyResult> &results) {
     if (results.size() == 0) {

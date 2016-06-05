@@ -378,8 +378,6 @@ std::vector<MapConfiguration> *Optimizer::buildMapConfigurations(
 }
 
 void Optimizer::optimize(double investment, double profitability) {
-    printf("Optimizing...");
-
     std::vector<Configuration*> configurations;
 
     // if (this->group == 1) {
@@ -420,6 +418,8 @@ void Optimizer::optimize(double investment, double profitability) {
 
     // GPU data.
     ReversalsOptimizationStrategy *devStrategies[gpuCount];
+
+    printf("Optimizing...");
 
     // Get a count of all data points for the symbol.
     collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting", "datapoints");

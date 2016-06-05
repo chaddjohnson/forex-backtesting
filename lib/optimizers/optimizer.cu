@@ -380,12 +380,20 @@ std::vector<MapConfiguration> *Optimizer::buildMapConfigurations(
 void Optimizer::optimize(double investment, double profitability) {
     printf("Optimizing...");
 
+    std::vector<Configuration*> configurations;
+
+    // if (this->group == 1) {
+        configurations = buildBaseConfigurations();
+    // }
+    // else {
+        // configurations = buildGroupConfigurations();
+    // }
+
     double percentage;
     mongoc_collection_t *collection;
     bson_t *countQuery;
     bson_error_t error;
     int dataPointCount;
-    std::vector<Configuration*> configurations = this->buildConfigurations();
     int configurationCount = configurations.size();
     int dataChunkSize = 500000;
     int dataOffset = 0;

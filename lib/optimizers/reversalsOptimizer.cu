@@ -669,7 +669,7 @@ std::map<std::string, ConfigurationOption> ReversalsOptimizer::getConfigurationO
     return configurationOptions;
 }
 
-std::vector<Configuration*> ReversalsOptimizer::buildConfigurations() {
+std::vector<Configuration*> ReversalsOptimizer::buildBaseConfigurations() {
     printf("Building configurations...");
 
     std::map<std::string, ConfigurationOption> options = getConfigurationOptions();
@@ -760,6 +760,38 @@ std::vector<Configuration*> ReversalsOptimizer::buildConfigurations() {
     }
 
     printf("%i configurations built\n", (int)configurations.size());
+
+    return configurations;
+}
+
+std::vector<Configuration*> ReversalsOptimizer::buildGroupConfigurations() {
+    std::vector<Configuration*> configurations;
+
+    // Pull all "configuration" values
+    //     if testing, pull configurations for group - 1
+
+    //     if validating, pull configurations for group
+
+    // Iterate over group - 1 configurations
+    //     Configuration *resultConfiguration = new Configuration()
+
+    //     Set timestamp, timestampHour, and timestampMinute using dataIndexMap
+
+    //     if rsi != false
+    //         set rsi using dataIndexMap based on variable value
+    //         set rsiOverbought using value
+    //         set rsiOversold using value
+
+    //     if stochasticD != false && stochasticK != false
+    //         set stochasticD using dataIndexMap based on variable value
+    //         set stochasticK using dataIndexMap based on variable value
+    //         set stochasticOverbought using value
+    //         set stochasticOversold using value
+
+    // buildConfigurations should do all this
+    //     return base configurations if group == 1
+
+    //     return filtered configurations if group > 1
 
     return configurations;
 }

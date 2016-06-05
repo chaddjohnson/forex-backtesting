@@ -48,24 +48,17 @@ class Optimizer {
         int getGroup();
         std::map<std::string, int> *getDataIndexMap();
         std::string findDataIndexMapKeyByValue(int value);
-        virtual std::vector<Study*> getStudies() {
-            return std::vector<Study*>();
-        }
+        virtual std::vector<Study*> getStudies() = 0;
         std::vector<MapConfiguration> *buildMapConfigurations(
             std::map<std::string, ConfigurationOption> options,
             int optionIndex = 0,
             std::vector<MapConfiguration> *results = new std::vector<MapConfiguration>(),
             MapConfiguration *current = new MapConfiguration()
         );
-        virtual std::map<std::string, ConfigurationOption> getConfigurationOptions() {
-            return std::map<std::string, ConfigurationOption>();
-        }
-        virtual std::vector<Configuration*> buildConfigurations() {
-            return std::vector<Configuration*>();
-        }
-        virtual bson_t *convertResultToBson(StrategyResult &result) {
-            return nullptr;
-        }
+        virtual std::map<std::string, ConfigurationOption> getConfigurationOptions() = 0;
+        virtual std::vector<Configuration*> buildBaseConfigurations() = 0;
+        virtual std::vector<Configuration*> buildGroupConfigurations() = 0;
+        virtual bson_t *convertResultToBson(StrategyResult &result) = 0;
 
     public:
         Optimizer(mongoc_client_t *dbClient, std::string strategyName, std::string symbol, int group = 0);

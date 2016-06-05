@@ -16,7 +16,6 @@ int main(int argc, char *argv[]) {
     std::string symbol;
     std::string type;
     int group;
-    std::string parserName;
     std::string optimizerName;
     double investment;
     double profitability;
@@ -25,54 +24,54 @@ int main(int argc, char *argv[]) {
     for (i=0; i<argc; i++) {
         std::string arg = std::string(argv[i]);
 
-        if (arg == std::string("--symbol")) {
+        if (arg == "--symbol") {
             if (i + 1 < argc) {
-                symbol = arg;
+                symbol = std::string(argv[i + 1]);
             }
             else {
                 std::cerr << "--symbol option requires one argument.";
                 return 1;
             }
         }
-        if (arg == std::string("--type")) {
+        if (arg == "--type") {
             if (i + 1 < argc) {
-                type = arg;
+                type = std::string(argv[i + 1]);
             }
             else {
                 std::cerr << "--type option requires one argument.";
                 return 1;
             }
         }
-        if (arg == std::string("--group")) {
+        if (arg == "--group") {
             if (i + 1 < argc) {
-                group = atoi(arg.c_str());
+                group = atoi(argv[i + 1]);
             }
             else {
                 std::cerr << "--group option requires one argument.";
                 return 1;
             }
         }
-        if (arg == std::string("--optimizer")) {
+        if (arg == "--optimizer") {
             if (i + 1 < argc) {
-                optimizerName = arg;
+                optimizerName = std::string(argv[i + 1]);
             }
             else {
                 std::cerr << "--optimizer option requires one argument.";
                 return 1;
             }
         }
-        if (arg == std::string("--investment")) {
+        if (arg == "--investment") {
             if (i + 1 < argc) {
-                investment = atof(arg.c_str());
+                investment = atof(argv[i + 1]);
             }
             else {
                 std::cerr << "--investment option requires one argument.";
                 return 1;
             }
         }
-        if (arg == std::string("--profitability")) {
+        if (arg == "--profitability") {
             if (i + 1 < argc) {
-                profitability = atof(arg.c_str());
+                profitability = atof(argv[i + 1]);
             }
             else {
                 std::cerr << "--profitability option requires one argument.";

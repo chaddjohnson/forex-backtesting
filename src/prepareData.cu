@@ -23,36 +23,36 @@ int main(int argc, char *argv[]) {
     for (i=0; i<argc; i++) {
         std::string arg = std::string(argv[i]);
 
-        if (arg == std::string("--symbol")) {
+        if (arg == "--symbol") {
             if (i + 1 < argc) {
-                symbol = arg;
+                symbol = std::string(argv[i + 1]);
             }
             else {
                 std::cerr << "--symbol option requires one argument.";
                 return 1;
             }
         }
-        if (arg == std::string("--parser")) {
+        if (arg == "--parser") {
             if (i + 1 < argc) {
-                parserName = arg;
+                parserName = std::string(argv[i + 1]);
             }
             else {
                 std::cerr << "--parser option requires one argument.";
                 return 1;
             }
         }
-        if (arg == std::string("--optimizer")) {
+        if (arg == "--optimizer") {
             if (i + 1 < argc) {
-                optimizerName = arg;
+                optimizerName = std::string(argv[i + 1]);
             }
             else {
                 std::cerr << "--optimizer option requires one argument.";
                 return 1;
             }
         }
-        if (arg == std::string("--file")) {
+        if (arg == "--file") {
             if (i + 1 < argc) {
-                filePath = arg;
+                filePath = std::string(argv[i + 1]);
             }
             else {
                 std::cerr << "--file option requires one argument.";

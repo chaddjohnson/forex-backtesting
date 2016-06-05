@@ -89,8 +89,7 @@ int main(int argc, char *argv[]) {
 
     // Perform optimization.
     try {
-        configurations = optimizer->buildConfigurations(optimizer->getConfigurationOptions());
-        optimizer->optimize(configurations, investment, profitability);
+        optimizer->optimize(investment, profitability);
     }
     catch (const std::exception &error) {
         std::cerr << error.what() << std::endl;

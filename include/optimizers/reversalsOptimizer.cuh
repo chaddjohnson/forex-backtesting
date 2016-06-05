@@ -19,12 +19,12 @@ class ReversalsOptimizer : public Optimizer {
 
     protected:
         std::vector<Study*> getStudies();
+        std::map<std::string, ConfigurationOption> getConfigurationOptions();
 
     public:
         ReversalsOptimizer(mongoc_client_t *dbClient, std::string symbol, int group = 0)
             : Optimizer(dbClient, "ReversalsOptimization", symbol, group) {}
         ~ReversalsOptimizer() {}
-        std::map<std::string, ConfigurationOption> getConfigurationOptions();
 };
 
 #endif

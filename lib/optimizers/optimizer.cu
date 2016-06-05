@@ -365,9 +365,10 @@ std::vector<MapConfiguration> *Optimizer::buildMapConfigurations(
     return results;
 }
 
-std::vector<Configuration*> Optimizer::buildConfigurations(std::map<std::string, ConfigurationOption> options) {
+std::vector<Configuration*> Optimizer::buildConfigurations() {
     printf("Building configurations...");
 
+    std::map<std::string, ConfigurationOption> options = this->getConfigurationOptions();
     std::map<std::string, int> *tempDataIndexMap = this->getDataIndexMap();
     std::vector<MapConfiguration> *mapConfigurations = buildMapConfigurations(options);
     std::vector<Configuration*> configurations;
@@ -459,7 +460,7 @@ std::vector<Configuration*> Optimizer::buildConfigurations(std::map<std::string,
     return configurations;
 }
 
-void Optimizer::optimize(std::vector<Configuration*> &configurations, double investment, double profitability) {
+void Optimizer::optimize(double investment, double profitability) {
     printf("Optimizing...");
 
     double percentage;
@@ -467,6 +468,7 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     bson_t *countQuery;
     bson_error_t error;
     int dataPointCount;
+    std::vector<Configuration*> configurations = this->buildConfigurations();
     int configurationCount = configurations.size();
     int dataChunkSize = 500000;
     int dataOffset = 0;

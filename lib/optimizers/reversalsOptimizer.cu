@@ -672,8 +672,8 @@ std::map<std::string, ConfigurationOption> ReversalsOptimizer::getConfigurationO
 std::vector<Configuration*> ReversalsOptimizer::buildConfigurations() {
     printf("Building configurations...");
 
-    std::map<std::string, ConfigurationOption> options = this->getConfigurationOptions();
-    std::map<std::string, int> *tempDataIndexMap = this->getDataIndexMap();
+    std::map<std::string, ConfigurationOption> options = getConfigurationOptions();
+    std::map<std::string, int> *tempDataIndexMap = getDataIndexMap();
     std::vector<MapConfiguration> *mapConfigurations = buildMapConfigurations(options);
     std::vector<Configuration*> configurations;
     Configuration *configuration = nullptr;
@@ -771,9 +771,9 @@ bson_t *ReversalsOptimizer::convertResultToBson(StrategyResult &result) {
     document = bson_new();
 
     // Include basic information.
-    BSON_APPEND_UTF8(document, "symbol", this->getSymbol().c_str());
-    BSON_APPEND_INT32(document, "group", this->getGroup());
-    BSON_APPEND_UTF8(document, "strategyName", this->getStrategyName().c_str());
+    BSON_APPEND_UTF8(document, "symbol", getSymbol().c_str());
+    BSON_APPEND_INT32(document, "group", getGroup());
+    BSON_APPEND_UTF8(document, "strategyName", getStrategyName().c_str());
 
     // Include stats.
     BSON_APPEND_DOUBLE(document, "profitLoss", result.profitLoss);

@@ -56,7 +56,7 @@ void Optimizer::saveTicks(std::vector<Tick*> ticks) {
     bson_error_t bulkOperationError;
 
     // Get a reference to the database collection.
-    collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting-test", "datapoints");
+    collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting", "datapoints");
 
     // Begin a bulk operation.
     bulkOperation = mongoc_collection_create_bulk_operation(collection, false, NULL);
@@ -255,7 +255,7 @@ double *Optimizer::loadData(int offset, int chunkSize) {
     std::map<std::string, int> *tempDataIndexMap = this->getDataIndexMap();
 
     // Get a reference to the database collection.
-    collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting-test", "datapoints");
+    collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting", "datapoints");
 
     // Query for the number of data points.
     countQuery = BCON_NEW("symbol", BCON_UTF8(this->symbol.c_str()));
@@ -495,7 +495,7 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
     ReversalsOptimizationStrategy *devStrategies[gpuCount];
 
     // Get a count of all data points for the symbol.
-    collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting-test", "datapoints");
+    collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting", "datapoints");
     countQuery = BCON_NEW(
         "symbol", BCON_UTF8(this->symbol.c_str()),
         this->groupFilter.c_str(), "{", "$bitsAnySet", BCON_INT32(pow(2, this->group)), "}"
@@ -708,8 +708,10 @@ void Optimizer::saveResults(std::vector<StrategyResult> &results) {
     bson_t bulkOperationReply;
     bson_error_t bulkOperationError;
 
+    std::string collectionName = this->groupFilter == "testingGroups" ? "tests" : "validations";
+
     // Get a reference to the database collection.
-    collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting-test", "tests");
+    collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting", collectionName.c_str());
 
     // Begin a bulk operation.
     bulkOperation = mongoc_collection_create_bulk_operation(collection, false, NULL);

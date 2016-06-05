@@ -10,6 +10,7 @@
 #include <iterator>
 #include <exception>
 #include <ctime>
+#include <cmath>
 #include <mongoc.h>
 #include <bson.h>
 #include <bcon.h>
@@ -29,8 +30,9 @@ __global__ void optimizer_backtest(double *data, ReversalsOptimizationStrategy *
 class Optimizer {
     private:
         mongoc_client_t *dbClient;
-        const char *strategyName;
-        const char *symbol;
+        std::string strategyName;
+        std::string symbol;
+        std::string groupFilter;
         int group;
         std::map<std::string, int> *dataIndexMap;
         int dataPropertyCount;
@@ -55,9 +57,10 @@ class Optimizer {
         }
 
     public:
-        Optimizer(mongoc_client_t *dbClient, const char *strategyName, const char *symbol, int group);
+        Optimizer(mongoc_client_t *dbClient, std::string strategyName, std::string symbol, int group = 0);
         virtual ~Optimizer() {}
         void prepareData(std::vector<Tick*> ticks);
+        void setType(std::string type);
         virtual std::map<std::string, ConfigurationOption> getConfigurationOptions() {
             return std::map<std::string, ConfigurationOption>();
         }

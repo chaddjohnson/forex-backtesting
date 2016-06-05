@@ -11,10 +11,11 @@ __global__ void optimizer_backtest(double *data, ReversalsOptimizationStrategy *
     }
 }
 
-Optimizer::Optimizer(mongoc_client_t *dbClient, const char *strategyName, const char *symbol, int group) {
+Optimizer::Optimizer(mongoc_client_t *dbClient, std::string strategyName, std::string symbol, int group) {
     this->dbClient = dbClient;
     this->strategyName = strategyName;
     this->symbol = symbol;
+    this->groupFilter = "testingGroups";
     this->group = group;
     this->dataPropertyCount = 0;
     this->dataIndexMap = new std::map<std::string, int>();
@@ -25,7 +26,7 @@ bson_t *Optimizer::convertTickToBson(Tick *tick) {
     bson_t dataDocument;
 
     document = bson_new();
-    BSON_APPEND_UTF8(document, "symbol", this->symbol);
+    BSON_APPEND_UTF8(document, "symbol", this->symbol.c_str());
     BSON_APPEND_INT32(document, "testingGroups", tick->at("testingGroups"));
     BSON_APPEND_INT32(document, "validationGroups", tick->at("validationGroups"));
     BSON_APPEND_DOCUMENT_BEGIN(document, "data", &dataDocument);
@@ -176,6 +177,18 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
     printf("\n");
 }
 
+void Optimizer::setType(std::string type) {
+    if (type == "testing") {
+        this->groupFilter = "testingGroups";
+    }
+    else if (type == "validation") {
+        this->groupFilter = "validationGroups";
+    }
+    else {
+        throw std::runtime_error("Invalid optimization type");
+    }
+}
+
 int Optimizer::getDataPropertyCount() {
     if (this->dataPropertyCount) {
         return this->dataPropertyCount;
@@ -245,7 +258,7 @@ double *Optimizer::loadData(int offset, int chunkSize) {
     collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting-test", "datapoints");
 
     // Query for the number of data points.
-    countQuery = BCON_NEW("symbol", BCON_UTF8(this->symbol));
+    countQuery = BCON_NEW("symbol", BCON_UTF8(this->symbol.c_str()));
     dataPointCount = mongoc_collection_count(collection, MONGOC_QUERY_NONE, countQuery, offset, chunkSize, NULL, &error);
 
     // Allocate memory for the flattened data store.
@@ -259,7 +272,10 @@ double *Optimizer::loadData(int offset, int chunkSize) {
 
     // Query the database.
     query = BCON_NEW(
-        "$query", "{", "symbol", BCON_UTF8(this->symbol), "}",
+        "$query", "{",
+            "symbol", BCON_UTF8(this->symbol.c_str()),
+            this->groupFilter.c_str(), "{", "$bitsAnySet", BCON_INT32(pow(2, this->group)), "}"
+        "}",
         "$orderby", "{", "data.timestamp", BCON_INT32(1), "}",
         "$hint", "{", "data.timestamp", BCON_INT32(1), "}"
     );
@@ -480,7 +496,10 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
 
     // Get a count of all data points for the symbol.
     collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting-test", "datapoints");
-    countQuery = BCON_NEW("symbol", BCON_UTF8(this->symbol));
+    countQuery = BCON_NEW(
+        "symbol", BCON_UTF8(this->symbol.c_str()),
+        this->groupFilter.c_str(), "{", "$bitsAnySet", BCON_INT32(pow(2, this->group)), "}"
+    );
     dataPointCount = mongoc_collection_count(collection, MONGOC_QUERY_NONE, countQuery, 0, 0, NULL, &error);
 
     for (i=0; i<gpuCount; i++) {
@@ -494,7 +513,7 @@ void Optimizer::optimize(std::vector<Configuration*> &configurations, double inv
         int gpuDeviceId = i % gpuCount;
         int gpuConfigurationIndex = configurationCounts[gpuDeviceId];
 
-        strategies[gpuDeviceId][gpuConfigurationIndex] = ReversalsOptimizationStrategy(this->symbol, this->group, *configurations[i]);
+        strategies[gpuDeviceId][gpuConfigurationIndex] = ReversalsOptimizationStrategy(this->symbol.c_str(), this->group, *configurations[i]);
         configurationCounts[gpuDeviceId]++;
     }
 
@@ -620,9 +639,9 @@ bson_t *Optimizer::convertResultToBson(StrategyResult &result) {
     document = bson_new();
 
     // Include basic information.
-    BSON_APPEND_UTF8(document, "symbol", this->symbol);
+    BSON_APPEND_UTF8(document, "symbol", this->symbol.c_str());
     BSON_APPEND_INT32(document, "group", this->group);
-    BSON_APPEND_UTF8(document, "strategyName", this->strategyName);
+    BSON_APPEND_UTF8(document, "strategyName", this->strategyName.c_str());
 
     // Include stats.
     BSON_APPEND_DOUBLE(document, "profitLoss", result.profitLoss);

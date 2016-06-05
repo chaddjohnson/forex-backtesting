@@ -10,26 +10,67 @@
 #include "factories/optimizerFactory.cuh"
 
 int main(int argc, char *argv[]) {
-    // Data parser settings and objects.
-    const char *dataParserName = "oanda";
-    std::string dataFilePath = "/home/chad/development/desktop/forex-backtesting/data/oanda/k-fold/combined/AUDJPY.csv";
     std::vector<Tick*> ticks;
+    int i = 0;
 
-    // Optimizer settings.
-    const char *optimizerName = "reversals";
-    const char *symbol = "AUDJPY";
-    int group = 1;
+    // Settings
+    std::string symbol;
+    std::string filePath;
+    std::string parserName;
+    std::string optimizerName;
+
+    // Parse command line arguments.
+    for (i=0; i<argc; i++) {
+        std::string arg = std::string(argv[i]);
+
+        if (arg == std::string("--symbol")) {
+            if (i + 1 < argc) {
+                symbol = arg;
+            }
+            else {
+                std::cerr << "--symbol option requires one argument.";
+                return 1;
+            }
+        }
+        if (arg == std::string("--parser")) {
+            if (i + 1 < argc) {
+                parserName = arg;
+            }
+            else {
+                std::cerr << "--parser option requires one argument.";
+                return 1;
+            }
+        }
+        if (arg == std::string("--optimizer")) {
+            if (i + 1 < argc) {
+                optimizerName = arg;
+            }
+            else {
+                std::cerr << "--optimizer option requires one argument.";
+                return 1;
+            }
+        }
+        if (arg == std::string("--file")) {
+            if (i + 1 < argc) {
+                filePath = arg;
+            }
+            else {
+                std::cerr << "--file option requires one argument.";
+                return 1;
+            }
+        }
+    }
 
     // Connect to the database
     mongoc_init();
     mongoc_client_t *dbClient = mongoc_client_new("mongodb://localhost:27017");
 
     // Parse the data file.
-    DataParser *dataParser = DataParserFactory::create(dataParserName, dataFilePath);
+    DataParser *dataParser = DataParserFactory::create(parserName, filePath);
     ticks = dataParser->parse();
 
     // Initialize the optimizer.
-    Optimizer *optimizer = OptimizerFactory::create(optimizerName, dbClient, symbol, group);
+    Optimizer *optimizer = OptimizerFactory::create(optimizerName, dbClient, symbol);
 
     // Prepare the data.
     optimizer->prepareData(ticks);

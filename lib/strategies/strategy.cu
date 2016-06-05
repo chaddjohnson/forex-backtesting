@@ -33,7 +33,7 @@ __device__ __host__ double Strategy::getWinRate() {
     return (double)this->winCount / ((double)this->winCount + (double)this->loseCount);
 }
 
-__device__ __host__ void Strategy::closeExpiredPositions(double price, time_t timestamp) {
+__device__ __host__ void Strategy::closeExpiredPositions(double price, double timestamp) {
     if (!price || !timestamp) {
         return;
     }

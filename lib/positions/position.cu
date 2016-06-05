@@ -1,6 +1,6 @@
 #include "positions/position.cuh"
 
-__device__ __host__ Position::Position(const char *symbol, time_t timestamp, double price, double investment, double profitability, int expirationMinutes) {
+__device__ __host__ Position::Position(const char *symbol, double timestamp, double price, double investment, double profitability, int expirationMinutes) {
     this->symbol = symbol;
     this->timestamp = timestamp;
     this->price = price;
@@ -15,7 +15,7 @@ __device__ __host__ const char *Position::getSymbol() {
     return this->symbol;
 }
 
-__device__ __host__ time_t Position::getTimestamp() {
+__device__ __host__ double Position::getTimestamp() {
     return this->timestamp;
 }
 
@@ -35,11 +35,11 @@ __device__ __host__ double Position::getProfitability() {
     return this->profitability;
 }
 
-__device__ __host__ time_t Position::getCloseTimestamp() {
+__device__ __host__ double Position::getCloseTimestamp() {
     return this->closeTimestamp;
 }
 
-__device__ __host__ time_t Position::getExpirationTimestamp() {
+__device__ __host__ double Position::getExpirationTimestamp() {
     return this->expirationTimestamp;
 }
 
@@ -47,11 +47,11 @@ __device__ __host__ bool Position::getIsOpen() {
     return this->isOpen;
 }
 
-__device__ __host__ bool Position::getHasExpired(time_t timestamp) {
+__device__ __host__ bool Position::getHasExpired(double timestamp) {
     return timestamp >= this->expirationTimestamp;
 }
 
-__device__ __host__ void Position::close(double price, time_t timestamp) {
+__device__ __host__ void Position::close(double price, double timestamp) {
     this->isOpen = false;
     this->closePrice = price;
     this->closeTimestamp = timestamp;

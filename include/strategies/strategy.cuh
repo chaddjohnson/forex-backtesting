@@ -22,7 +22,7 @@ class Strategy {
         __device__ __host__ void tick(double *dataPoint) {}
         __device__ __host__ double getWinRate();
         __device__ __host__ double getProfitLoss();
-        __device__ __host__ void closeExpiredPositions(double price, time_t timestamp);
+        __device__ __host__ void closeExpiredPositions(double price, double timestamp);
         __device__ __host__ void addPosition(Position *position);
 
     public:

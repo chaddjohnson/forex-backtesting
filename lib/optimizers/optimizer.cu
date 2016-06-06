@@ -296,7 +296,7 @@ double *Optimizer::loadData(int offset, int chunkSize) {
     query = BCON_NEW(
         "$query", "{",
             "symbol", BCON_UTF8(this->symbol.c_str()),
-            this->groupFilter.c_str(), "{", "$bitsAnySet", BCON_INT32(pow(2, this->group)), "}"
+            this->groupFilter.c_str(), "{", "$bitsAnySet", BCON_INT32((int)pow(2, this->group)), "}",
         "}",
         "$orderby", "{", "data.timestamp", BCON_INT32(1), "}",
         "$hint", "{", "data.timestamp", BCON_INT32(1), "}"
@@ -435,7 +435,7 @@ void Optimizer::optimize(double investment, double profitability) {
     collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting", "datapoints");
     countQuery = BCON_NEW(
         "symbol", BCON_UTF8(this->symbol.c_str()),
-        this->groupFilter.c_str(), "{", "$bitsAnySet", BCON_INT32(pow(2, this->group)), "}"
+        this->groupFilter.c_str(), "{", "$bitsAnySet", BCON_INT32((int)pow(2, this->group)), "}"
     );
     dataPointCount = mongoc_collection_count(collection, MONGOC_QUERY_NONE, countQuery, 0, 0, NULL, &error);
 

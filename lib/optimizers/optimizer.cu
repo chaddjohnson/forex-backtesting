@@ -309,11 +309,11 @@ double *Optimizer::loadData(int offset, int chunkSize) {
             // Find the "data" subdocument.
             if (bson_iter_init_find(&documentIterator, document, "data") &&
                 BSON_ITER_HOLDS_DOCUMENT(&documentIterator) &&
-                bson_iter_recurse(&documentIterator, &dataIterator)) {
-
+                bson_iter_recurse(&documentIterator, &dataIterator))
+            {
                 // Iterate through the data properties.
                 while (bson_iter_next(&dataIterator)) {
-                    // Get the property nameand value.
+                    // Get the property name and value.
                     propertyName = bson_iter_key(&dataIterator);
                     propertyValue = bson_iter_value(&dataIterator);
 

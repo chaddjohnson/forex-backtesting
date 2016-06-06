@@ -772,7 +772,8 @@ std::vector<Configuration*> ReversalsOptimizer::buildGroupConfigurations() {
     bson_t *query;
     const bson_t *document;
     bson_iter_t documentIterator;
-    bson_iter_t valueIterator;
+    bson_iter_t configurationIterator;
+    std::string propertyName;
     const bson_value_t *propertyValue;
 
     // Default to using the current group.
@@ -803,79 +804,78 @@ std::vector<Configuration*> ReversalsOptimizer::buildGroupConfigurations() {
 
     while (mongoc_cursor_next(cursor, &document)) {
         if (bson_iter_init(&documentIterator, document)) {
-            Configuration *resultConfiguration = new Configuration();
+            // Find the "data" subdocument.
+            if (bson_iter_init_find(&documentIterator, document, "configuration") &&
+                BSON_ITER_HOLDS_DOCUMENT(&documentIterator) &&
+                bson_iter_recurse(&documentIterator, &configurationIterator))
+            {
+                Configuration *resultConfiguration = new Configuration();
 
-            // timestamp
-            resultConfiguration->timestamp = (*tempDataIndexMap)["timestamp"];
-            resultConfiguration->timestampHour = (*tempDataIndexMap)["timestampHour"];
-            resultConfiguration->timestampMinute = (*tempDataIndexMap)["timestampMinute"];
+                // basic fields
+                resultConfiguration->timestamp = (*tempDataIndexMap)["timestamp"];
+                resultConfiguration->timestampHour = (*tempDataIndexMap)["timestampHour"];
+                resultConfiguration->timestampMinute = (*tempDataIndexMap)["timestampMinute"];
+                resultConfiguration->open = (*tempDataIndexMap)["open"];
+                resultConfiguration->high = (*tempDataIndexMap)["high"];
+                resultConfiguration->low = (*tempDataIndexMap)["low"];
+                resultConfiguration->close = (*tempDataIndexMap)["close"];
 
-            // rsi
-            if (bson_iter_find_descendant(&documentIterator, "configuration.rsi", &valueIterator)) {
-                propertyValue = bson_iter_value(&valueIterator);
+                // moving averages
+                resultConfiguration->sma13 = (*tempDataIndexMap)["sma13"];
+                resultConfiguration->ema50 = (*tempDataIndexMap)["ema50"];
+                resultConfiguration->ema100 = (*tempDataIndexMap)["ema100"];
+                resultConfiguration->ema200 = (*tempDataIndexMap)["ema200"];
+                resultConfiguration->ema250 = (*tempDataIndexMap)["ema250"];
+                resultConfiguration->ema300 = (*tempDataIndexMap)["ema300"];
+                resultConfiguration->ema350 = (*tempDataIndexMap)["ema350"];
+                resultConfiguration->ema400 = (*tempDataIndexMap)["ema400"];
+                resultConfiguration->ema450 = (*tempDataIndexMap)["ema450"];
+                resultConfiguration->ema500 = (*tempDataIndexMap)["ema500"];
 
-                if (propertyValue->value_type != BSON_TYPE_BOOL) {
-                    // rsi
-                    resultConfiguration->rsi = (*tempDataIndexMap)[propertyValue->value.v_utf8.str];
+                // Iterate through the configuration properties.
+                while (bson_iter_next(&configurationIterator)) {
+                    // Get the property name and value.
+                    propertyName = std::string(bson_iter_key(&configurationIterator));
+                    propertyValue = bson_iter_value(&configurationIterator);
 
-                    // rsiOverbought
-                    if (bson_iter_find_descendant(&documentIterator, "configuration.rsiOverbought", &valueIterator)) {
-                        propertyValue = bson_iter_value(&valueIterator);
+                    if (propertyName == "rsi") {
+                        if (propertyValue->value_type != BSON_TYPE_BOOL) {
+                            resultConfiguration->rsi = (*tempDataIndexMap)[propertyValue->value.v_utf8.str];
+                        }
+                    }
+                    else if (propertyName == "rsiOverbought") {
                         resultConfiguration->rsiOverbought = propertyValue->value.v_double;
                     }
-
-                    // rsiOversold
-                    if (bson_iter_find_descendant(&documentIterator, "configuration.rsiOversold", &valueIterator)) {
-                        propertyValue = bson_iter_value(&valueIterator);
+                    else if (propertyName == "rsiOversold") {
                         resultConfiguration->rsiOversold = propertyValue->value.v_double;
                     }
-                }
-            }
-
-            // stochastic
-            if (bson_iter_find_descendant(&documentIterator, "configuration.stochasticD", &valueIterator)) {
-                propertyValue = bson_iter_value(&valueIterator);
-
-                if (propertyValue->value_type != BSON_TYPE_BOOL) {
-                    // stochasticD
-                    resultConfiguration->stochasticD = (*tempDataIndexMap)[propertyValue->value.v_utf8.str];
-
-                    // stochasticK
-                    bson_iter_find_descendant(&documentIterator, "configuration.stochasticK", &valueIterator);
-                    propertyValue = bson_iter_value(&valueIterator);
-                    resultConfiguration->stochasticK = (*tempDataIndexMap)[propertyValue->value.v_utf8.str];
-
-                    // stochasticOverbought
-                    if (bson_iter_find_descendant(&documentIterator, "configuration.stochasticOverbought", &valueIterator)) {
-                        propertyValue = bson_iter_value(&valueIterator);
+                    else if (propertyName == "stochasticD") {
+                        if (propertyValue->value_type != BSON_TYPE_BOOL) {
+                            resultConfiguration->stochasticD = (*tempDataIndexMap)[propertyValue->value.v_utf8.str];
+                        }
+                    }
+                    else if (propertyName == "stochasticK") {
+                        if (propertyValue->value_type != BSON_TYPE_BOOL) {
+                            resultConfiguration->stochasticK = (*tempDataIndexMap)[propertyValue->value.v_utf8.str];
+                        }
+                    }
+                    else if (propertyName == "stochasticOverbought") {
                         resultConfiguration->stochasticOverbought = propertyValue->value.v_double;
                     }
-
-                    // stochasticOversold
-                    if (bson_iter_find_descendant(&documentIterator, "configuration.stochasticOversold", &valueIterator)) {
-                        propertyValue = bson_iter_value(&valueIterator);
+                    else if (propertyName == "stochasticOversold") {
                         resultConfiguration->stochasticOversold = propertyValue->value.v_double;
                     }
+                    else if (propertyName == "prChannelUpper") {
+                        resultConfiguration->prChannelUpper = (*tempDataIndexMap)[propertyValue->value.v_utf8.str];
+                    }
+                    else if (propertyName == "prChannelLower") {
+                        resultConfiguration->prChannelLower = (*tempDataIndexMap)[propertyValue->value.v_utf8.str];
+                    }
                 }
+
+                // Add the configuration to the list of configurations.
+                configurations.push_back(resultConfiguration);
             }
-
-            // prChannel
-            if (bson_iter_find_descendant(&documentIterator, "configuration.prChannelUpper", &valueIterator)) {
-                propertyValue = bson_iter_value(&valueIterator);
-
-                if (propertyValue->value_type != BSON_TYPE_BOOL) {
-                    // prChannelUpper
-                    resultConfiguration->prChannelUpper = (*tempDataIndexMap)[propertyValue->value.v_utf8.str];
-
-                    // prChannelLower
-                    bson_iter_find_descendant(&documentIterator, "configuration.prChannelLower", &valueIterator);
-                    propertyValue = bson_iter_value(&valueIterator);
-                    resultConfiguration->prChannelLower = (*tempDataIndexMap)[propertyValue->value.v_utf8.str];
-                }
-            }
-
-            // Add the configuration to the list of configurations.
-            configurations.push_back(resultConfiguration);
         }
     }
 

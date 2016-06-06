@@ -63,6 +63,7 @@ int main(int argc, char *argv[]) {
 
     if (argc < 8) {
         std::cerr << "Too few arguments provided." << std::endl;
+        return 0;
     }
 
     // Connect to the database

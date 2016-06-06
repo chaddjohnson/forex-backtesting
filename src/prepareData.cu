@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
                 symbol = std::string(argv[i + 1]);
             }
             else {
-                std::cerr << "--symbol option requires one argument.";
+                std::cerr << "--symbol option requires one argument." << std::endl;
                 return 1;
             }
         }
@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
                 parserName = std::string(argv[i + 1]);
             }
             else {
-                std::cerr << "--parser option requires one argument.";
+                std::cerr << "--parser option requires one argument." << std::endl;
                 return 1;
             }
         }
@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
                 optimizerName = std::string(argv[i + 1]);
             }
             else {
-                std::cerr << "--optimizer option requires one argument.";
+                std::cerr << "--optimizer option requires one argument." << std::endl;
                 return 1;
             }
         }
@@ -55,10 +55,14 @@ int main(int argc, char *argv[]) {
                 filePath = std::string(argv[i + 1]);
             }
             else {
-                std::cerr << "--file option requires one argument.";
+                std::cerr << "--file option requires one argument." << std::endl;
                 return 1;
             }
         }
+    }
+
+    if (argc < 8) {
+        std::cerr << "Too few arguments provided." << std::endl;
     }
 
     // Connect to the database

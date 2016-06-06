@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
                 symbol = std::string(argv[i + 1]);
             }
             else {
-                std::cerr << "--symbol option requires one argument.";
+                std::cerr << "--symbol option requires one argument." << std::endl;
                 return 1;
             }
         }
@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
                 type = std::string(argv[i + 1]);
             }
             else {
-                std::cerr << "--type option requires one argument.";
+                std::cerr << "--type option requires one argument." << std::endl;
                 return 1;
             }
         }
@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
                 group = atoi(argv[i + 1]);
             }
             else {
-                std::cerr << "--group option requires one argument.";
+                std::cerr << "--group option requires one argument." << std::endl;
                 return 1;
             }
         }
@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
                 optimizerName = std::string(argv[i + 1]);
             }
             else {
-                std::cerr << "--optimizer option requires one argument.";
+                std::cerr << "--optimizer option requires one argument." << std::endl;
                 return 1;
             }
         }
@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
                 investment = atof(argv[i + 1]);
             }
             else {
-                std::cerr << "--investment option requires one argument.";
+                std::cerr << "--investment option requires one argument." << std::endl;
                 return 1;
             }
         }
@@ -74,10 +74,14 @@ int main(int argc, char *argv[]) {
                 profitability = atof(argv[i + 1]);
             }
             else {
-                std::cerr << "--profitability option requires one argument.";
+                std::cerr << "--profitability option requires one argument." << std::endl;
                 return 1;
             }
         }
+    }
+
+    if (argc < 12) {
+        std::cerr << "Too few arguments provided." << std::endl;
     }
 
     // Connect to the database

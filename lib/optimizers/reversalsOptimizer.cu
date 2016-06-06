@@ -811,7 +811,7 @@ std::vector<Configuration*> ReversalsOptimizer::buildGroupConfigurations() {
             {
                 Configuration *resultConfiguration = new Configuration();
 
-                // basic fields
+                // basic properties
                 resultConfiguration->timestamp = (*tempDataIndexMap)["timestamp"];
                 resultConfiguration->timestampHour = (*tempDataIndexMap)["timestampHour"];
                 resultConfiguration->timestampMinute = (*tempDataIndexMap)["timestampMinute"];
@@ -820,25 +820,63 @@ std::vector<Configuration*> ReversalsOptimizer::buildGroupConfigurations() {
                 resultConfiguration->low = (*tempDataIndexMap)["low"];
                 resultConfiguration->close = (*tempDataIndexMap)["close"];
 
-                // moving averages
-                resultConfiguration->sma13 = (*tempDataIndexMap)["sma13"];
-                resultConfiguration->ema50 = (*tempDataIndexMap)["ema50"];
-                resultConfiguration->ema100 = (*tempDataIndexMap)["ema100"];
-                resultConfiguration->ema200 = (*tempDataIndexMap)["ema200"];
-                resultConfiguration->ema250 = (*tempDataIndexMap)["ema250"];
-                resultConfiguration->ema300 = (*tempDataIndexMap)["ema300"];
-                resultConfiguration->ema350 = (*tempDataIndexMap)["ema350"];
-                resultConfiguration->ema400 = (*tempDataIndexMap)["ema400"];
-                resultConfiguration->ema450 = (*tempDataIndexMap)["ema450"];
-                resultConfiguration->ema500 = (*tempDataIndexMap)["ema500"];
-
                 // Iterate through the configuration properties.
                 while (bson_iter_next(&configurationIterator)) {
                     // Get the property name and value.
                     propertyName = std::string(bson_iter_key(&configurationIterator));
                     propertyValue = bson_iter_value(&configurationIterator);
 
-                    if (propertyName == "rsi") {
+                    if (propertyName == "sma13") {
+                        if (propertyValue->value.v_bool) {
+                            resultConfiguration->sma13 = (*tempDataIndexMap)["sma13"];
+                        }
+                    }
+                    else if (propertyName == "ema50") {
+                        if (propertyValue->value.v_bool) {
+                            resultConfiguration->ema50 = (*tempDataIndexMap)["ema50"];
+                        }
+                    }
+                    else if (propertyName == "ema100") {
+                        if (propertyValue->value.v_bool) {
+                            resultConfiguration->ema100 = (*tempDataIndexMap)["ema100"];
+                        }
+                    }
+                    else if (propertyName == "ema200") {
+                        if (propertyValue->value.v_bool) {
+                            resultConfiguration->ema200 = (*tempDataIndexMap)["ema200"];
+                        }
+                    }
+                    // else if (propertyName == "ema250") {
+                    //     if (propertyValue->value.v_bool) {
+                    //         resultConfiguration->ema250 = (*tempDataIndexMap)["ema250"];
+                    //     }
+                    // }
+                    // else if (propertyName == "ema300") {
+                    //     if (propertyValue->value.v_bool) {
+                    //         resultConfiguration->ema300 = (*tempDataIndexMap)["ema300"];
+                    //     }
+                    // }
+                    // else if (propertyName == "ema350") {
+                    //     if (propertyValue->value.v_bool) {
+                    //         resultConfiguration->ema350 = (*tempDataIndexMap)["ema350"];
+                    //     }
+                    // }
+                    // else if (propertyName == "ema400") {
+                    //     if (propertyValue->value.v_bool) {
+                    //         resultConfiguration->ema400 = (*tempDataIndexMap)["ema400"];
+                    //     }
+                    // }
+                    // else if (propertyName == "ema450") {
+                    //     if (propertyValue->value.v_bool) {
+                    //         resultConfiguration->ema450 = (*tempDataIndexMap)["ema450"];
+                    //     }
+                    // }
+                    // else if (propertyName == "ema500") {
+                    //     if (propertyValue->value.v_bool) {
+                    //         resultConfiguration->ema500 = (*tempDataIndexMap)["ema500"];
+                    //     }
+                    // }
+                    else if (propertyName == "rsi") {
                         if (propertyValue->value_type != BSON_TYPE_BOOL) {
                             resultConfiguration->rsi = (*tempDataIndexMap)[propertyValue->value.v_utf8.str];
                         }

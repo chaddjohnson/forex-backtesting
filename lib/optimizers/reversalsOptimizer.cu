@@ -670,7 +670,7 @@ std::map<std::string, ConfigurationOption> ReversalsOptimizer::getConfigurationO
 }
 
 std::vector<Configuration*> ReversalsOptimizer::buildBaseConfigurations() {
-    printf("Building configurations...");
+    printf("Building base configurations...");
 
     std::map<std::string, ConfigurationOption> options = getConfigurationOptions();
     std::map<std::string, int> *tempDataIndexMap = getDataIndexMap();
@@ -785,6 +785,8 @@ std::vector<Configuration*> ReversalsOptimizer::buildGroupConfigurations() {
         group = group - 1;
     }
 
+    printf("Building group %i configurations...", group);
+
     // Get a reference to the database collection.
     collection = mongoc_client_get_collection(getDbClient(), "forex-backtesting", "tests");
 
@@ -880,6 +882,8 @@ std::vector<Configuration*> ReversalsOptimizer::buildGroupConfigurations() {
     bson_destroy(query);
     mongoc_cursor_destroy(cursor);
     mongoc_collection_destroy(collection);
+
+    printf("%i configurations built\n", (int)configurations.size());
 
     return configurations;
 }

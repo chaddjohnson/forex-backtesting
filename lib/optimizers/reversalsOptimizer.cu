@@ -796,6 +796,7 @@ std::vector<Configuration*> ReversalsOptimizer::buildGroupConfigurations() {
             "symbol", BCON_UTF8(getSymbol().c_str()),
             "group", BCON_INT32(group),
             "strategyName", BCON_UTF8(getStrategyName().c_str()),
+            "winRate", "{", "$gte", BCON_DOUBLE(0.58) "}",
         "}"
     );
     cursor = mongoc_collection_find(collection, MONGOC_QUERY_NONE, 0, 0, 1000, query, NULL, NULL);

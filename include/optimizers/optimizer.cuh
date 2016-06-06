@@ -32,6 +32,7 @@ class Optimizer {
         mongoc_client_t *dbClient;
         std::string strategyName;
         std::string symbol;
+        std::string type;
         std::string groupFilter;
         int group;
         std::map<std::string, int> *dataIndexMap;
@@ -43,8 +44,10 @@ class Optimizer {
         void saveResults(std::vector<StrategyResult> &results);
 
     protected:
+        mongoc_client_t *getDbClient();
         std::string getStrategyName();
         std::string getSymbol();
+        std::string getType();
         int getGroup();
         std::map<std::string, int> *getDataIndexMap();
         std::string findDataIndexMapKeyByValue(int value);

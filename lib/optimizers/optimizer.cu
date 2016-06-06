@@ -21,6 +21,10 @@ Optimizer::Optimizer(mongoc_client_t *dbClient, std::string strategyName, std::s
     this->dataIndexMap = new std::map<std::string, int>();
 }
 
+mongoc_client_t *Optimizer::getDbClient() {
+    return this->dbClient;
+}
+
 std::string Optimizer::getStrategyName() {
     return this->strategyName;
 }
@@ -199,6 +203,12 @@ void Optimizer::setType(std::string type) {
     else {
         throw std::runtime_error("Invalid optimization type");
     }
+
+    this->type = type;
+}
+
+std::string Optimizer::getType() {
+    return this->type;
 }
 
 int Optimizer::getDataPropertyCount() {
@@ -380,12 +390,12 @@ std::vector<MapConfiguration> *Optimizer::buildMapConfigurations(
 void Optimizer::optimize(double investment, double profitability) {
     std::vector<Configuration*> configurations;
 
-    // if (this->group == 1) {
+    if (this->group == 1) {
         configurations = buildBaseConfigurations();
-    // }
-    // else {
-        // configurations = buildGroupConfigurations();
-    // }
+    }
+    else {
+        configurations = buildGroupConfigurations();
+    }
 
     double percentage;
     mongoc_collection_t *collection;

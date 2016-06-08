@@ -309,7 +309,7 @@ double *Optimizer::loadData(int offset, int chunkSize) {
             this->groupFilter.c_str(), "{", "$bitsAnySet", BCON_INT32((int)pow(2, this->group)), "}",
         "}",
         "$orderby", "{", "data.timestamp", BCON_INT32(1), "}",
-        "$hint", "{", "data.timestamp", BCON_INT32(1), "}"
+        "$hint", "{", this->groupFilter.c_str(), BCON_INT32(1), "data.timestamp", BCON_INT32(1), "}"
     );
     cursor = mongoc_collection_find(collection, MONGOC_QUERY_NONE, offset, chunkSize, 1000, query, NULL, NULL);
 
@@ -421,7 +421,6 @@ void Optimizer::optimize(double investment, double profitability) {
     std::vector<StrategyResult> results;
     int i = 0;
     int j = 0;
-    std::map<std::string, int> *tempDataIndexMap = getDataIndexMap();
 
     // GPU settings.
     // Reference: https://devblogs.nvidia.com/parallelforall/cuda-pro-tip-write-flexible-kernels-grid-stride-loops/
@@ -510,8 +509,8 @@ void Optimizer::optimize(double investment, double profitability) {
             unsigned int dataPointerOffset = i * dataPropertyCount;
 
             // Show progress.
-            percentage = (dataPointIndex / (double)dataPointCount) * 100.0;
-            printf("\rOptimizing...%0.4f%%, %i of %i, timestamp %f", percentage, dataPointIndex, dataPointCount, data[dataPointerOffset + (*tempDataIndexMap)["timestamp"]]);
+            percentage = ((dataPointIndex + 1) / (double)dataPointCount) * 100.0;
+            printf("\rOptimizing...%0.4f%%", percentage);
 
             for (j=0; j<gpuCount; j++) {
                 cudaSetDevice(j);

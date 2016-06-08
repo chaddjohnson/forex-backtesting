@@ -10,7 +10,6 @@ class ReversalsOptimizationStrategy : public OptimizationStrategy {
         bool putNextTick;
         bool callNextTick;
         int expirationMinutes;
-        double *previousDataPoint;
 
     public:
         __device__ __host__ ReversalsOptimizationStrategy(const char *symbol, int group, Configuration configuration);

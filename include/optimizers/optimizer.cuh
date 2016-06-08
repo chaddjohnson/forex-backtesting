@@ -24,9 +24,6 @@
 #include "types/configurationOption.cuh"
 #include "types/strategyResult.cuh"
 
-// CUDA kernel headers.
-__global__ void optimizer_backtest(double *data, ReversalsOptimizationStrategy *strategies, int strategyCount, double investment, double profitability);
-
 class Optimizer {
     private:
         mongoc_client_t *dbClient;

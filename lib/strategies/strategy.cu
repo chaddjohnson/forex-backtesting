@@ -8,6 +8,8 @@ __device__ __host__ Strategy::Strategy(const char *symbol) {
     this->consecutiveLosses = 0;
     this->maximumConsecutiveLosses = 0;
     this->minimumProfitLoss = 99999.0;
+    this->previousClose = 0.0;
+    this->previousTimestamp = 0.0;
 
     for (int i=0; i<10; i++) {
         this->openPositions[i] = nullptr;
@@ -33,6 +35,11 @@ __device__ __host__ double Strategy::getWinRate() {
     return (double)this->winCount / ((double)this->winCount + (double)this->loseCount);
 }
 
+__device__ __host__ void Strategy::tick(double *dataPoint) {
+    // Simulate expiry of and profit/loss related to positions held.
+    closeExpiredPositions(this->previousClose, this->previousTimestamp - 1);
+}
+
 __device__ __host__ void Strategy::closeExpiredPositions(double price, double timestamp) {
     if (!price || !timestamp) {
         return;
@@ -44,14 +51,21 @@ __device__ __host__ void Strategy::closeExpiredPositions(double price, double ti
                 // Close the position since it is open and has expired.
                 this->openPositions[i]->close(price, timestamp);
 
+                double positionProfitLoss = this->openPositions[i]->getProfitLoss();
+                double positionInvestment = this->openPositions[i]->getInvestment();
+
+                // Remove the position from the list of open positions, and free memory
+                // by deleting the position.
+                delete this->openPositions[i];
+                this->openPositions[i] = nullptr;
+
                 // Remove the position's investment amount from the total profit/loss for this strategy.
-                this->profitLoss -= this->openPositions[i]->getInvestment();
+                this->profitLoss -= positionInvestment;
 
                 // Add the profit/loss for this position to the profit/loss for this strategy.
-                double positionProfitLoss = this->openPositions[i]->getProfitLoss();
                 this->profitLoss += positionProfitLoss;
 
-                if (positionProfitLoss > this->openPositions[i]->getInvestment()) {
+                if (positionProfitLoss > positionInvestment) {
                     this->winCount++;
                     this->consecutiveLosses = 0;
                 }
@@ -69,11 +83,6 @@ __device__ __host__ void Strategy::closeExpiredPositions(double price, double ti
                 if (this->consecutiveLosses > this->maximumConsecutiveLosses) {
                     this->maximumConsecutiveLosses = this->consecutiveLosses;
                 }
-
-                // Remove the position from the list of open positions, and free memory
-                // by deleting the position.
-                delete this->openPositions[i];
-                this->openPositions[i] = nullptr;
             }
         }
     }

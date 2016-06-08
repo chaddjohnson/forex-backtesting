@@ -6,7 +6,6 @@ __device__ __host__ ReversalsOptimizationStrategy::ReversalsOptimizationStrategy
     this->putNextTick = false;
     this->callNextTick = false;
     this->expirationMinutes = 5;
-    this->previousDataPoint = nullptr;
 }
 
 __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoint, double investment, double profitability) {
@@ -15,7 +14,8 @@ __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoi
 
     // Do not create trades between 4pm - 11:30pm Central, as the payout is lower during these times.
     if (dataPoint[configuration.timestampHour] >= 16 && (dataPoint[configuration.timestampHour] < 23 || (dataPoint[configuration.timestampHour] == 23 && dataPoint[configuration.timestampMinute] < 30))) {
-        previousDataPoint = dataPoint;
+        setPreviousClose(dataPoint[configuration.close]);
+        setPreviousTimestamp(dataPoint[configuration.timestamp]);
 
         putNextTick = false;
         callNextTick = false;
@@ -23,12 +23,12 @@ __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoi
         return;
     }
 
-    if (previousDataPoint) {
+    if (getPreviousClose() && getPreviousTimestamp()) {
         if (putNextTick) {
-            addPosition(new PutPosition(getSymbol(), (dataPoint[configuration.timestamp] - 1), previousDataPoint[configuration.close], investment, profitability, expirationMinutes));
+            addPosition(new PutPosition(getSymbol(), (dataPoint[configuration.timestamp] - 1), getPreviousClose(), investment, profitability, expirationMinutes));
         }
         if (callNextTick) {
-            addPosition(new CallPosition(getSymbol(), (dataPoint[configuration.timestamp] - 1), previousDataPoint[configuration.close], investment, profitability, expirationMinutes));
+            addPosition(new CallPosition(getSymbol(), (dataPoint[configuration.timestamp] - 1), getPreviousClose(), investment, profitability, expirationMinutes));
         }
     }
 
@@ -53,7 +53,8 @@ __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoi
         }
     }
     if (!putNextTick && !callNextTick) {
-        previousDataPoint = dataPoint;
+        setPreviousClose(dataPoint[configuration.close]);
+        setPreviousTimestamp(dataPoint[configuration.timestamp]);
         return;
     }
     if (!configuration.stochasticK && configuration.stochasticD) {
@@ -74,7 +75,8 @@ __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoi
         }
     }
     if (!putNextTick && !callNextTick) {
-        previousDataPoint = dataPoint;
+        setPreviousClose(dataPoint[configuration.close]);
+        setPreviousTimestamp(dataPoint[configuration.timestamp]);
         return;
     }
     if (!configuration.rsi) {
@@ -95,7 +97,8 @@ __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoi
         }
     }
     if (!putNextTick && !callNextTick) {
-        previousDataPoint = dataPoint;
+        setPreviousClose(dataPoint[configuration.close]);
+        setPreviousTimestamp(dataPoint[configuration.timestamp]);
         return;
     }
     if (configuration.ema500 && configuration.ema450) {
@@ -115,7 +118,8 @@ __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoi
         }
     }
     if (!putNextTick && !callNextTick) {
-        previousDataPoint = dataPoint;
+        setPreviousClose(dataPoint[configuration.close]);
+        setPreviousTimestamp(dataPoint[configuration.timestamp]);
         return;
     }
     if (configuration.ema450 && configuration.ema400) {
@@ -135,7 +139,8 @@ __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoi
         }
     }
     if (!putNextTick && !callNextTick) {
-        previousDataPoint = dataPoint;
+        setPreviousClose(dataPoint[configuration.close]);
+        setPreviousTimestamp(dataPoint[configuration.timestamp]);
         return;
     }
     if (configuration.ema400 && configuration.ema350) {
@@ -155,7 +160,8 @@ __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoi
         }
     }
     if (!putNextTick && !callNextTick) {
-        previousDataPoint = dataPoint;
+        setPreviousClose(dataPoint[configuration.close]);
+        setPreviousTimestamp(dataPoint[configuration.timestamp]);
         return;
     }
     if (configuration.ema350 && configuration.ema300) {
@@ -175,7 +181,8 @@ __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoi
         }
     }
     if (!putNextTick && !callNextTick) {
-        previousDataPoint = dataPoint;
+        setPreviousClose(dataPoint[configuration.close]);
+        setPreviousTimestamp(dataPoint[configuration.timestamp]);
         return;
     }
     if (configuration.ema300 && configuration.ema250) {
@@ -195,7 +202,8 @@ __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoi
         }
     }
     if (!putNextTick && !callNextTick) {
-        previousDataPoint = dataPoint;
+        setPreviousClose(dataPoint[configuration.close]);
+        setPreviousTimestamp(dataPoint[configuration.timestamp]);
         return;
     }
     if (configuration.ema250 && configuration.ema200) {
@@ -215,7 +223,8 @@ __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoi
         }
     }
     if (!putNextTick && !callNextTick) {
-        previousDataPoint = dataPoint;
+        setPreviousClose(dataPoint[configuration.close]);
+        setPreviousTimestamp(dataPoint[configuration.timestamp]);
         return;
     }
 
@@ -236,7 +245,8 @@ __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoi
         }
     }
     if (!putNextTick && !callNextTick) {
-        previousDataPoint = dataPoint;
+        setPreviousClose(dataPoint[configuration.close]);
+        setPreviousTimestamp(dataPoint[configuration.timestamp]);
         return;
     }
     if (configuration.ema100 && configuration.ema50) {
@@ -256,7 +266,8 @@ __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoi
         }
     }
     if (!putNextTick && !callNextTick) {
-        previousDataPoint = dataPoint;
+        setPreviousClose(dataPoint[configuration.close]);
+        setPreviousTimestamp(dataPoint[configuration.timestamp]);
         return;
     }
     if (configuration.ema50 && configuration.sma13) {
@@ -276,5 +287,6 @@ __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoi
         }
     }
 
-    previousDataPoint = dataPoint;
+    setPreviousClose(dataPoint[configuration.close]);
+    setPreviousTimestamp(dataPoint[configuration.timestamp]);
 }

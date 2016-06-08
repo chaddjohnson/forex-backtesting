@@ -1,13 +1,22 @@
 #include "optimizers/optimizer.cuh"
 
+// CUDA kernel for backtesting strategies.
 __global__ void optimizer_backtest(double *data, ReversalsOptimizationStrategy *strategies, int strategyCount, double investment, double profitability) {
+    __shared__ double sharedData[840];
+
+    if (threadIdx.x < 840) {
+        sharedData[threadIdx.x] = data[threadIdx.x];
+    }
+
+    __syncthreads();
+
     // Use a grid-stride loop.
     // Reference: https://devblogs.nvidia.com/parallelforall/cuda-pro-tip-write-flexible-kernels-grid-stride-loops/
     for (int i = blockIdx.x * blockDim.x + threadIdx.x;
          i < strategyCount;
          i += blockDim.x * gridDim.x)
     {
-        strategies[i].backtest(data, investment, profitability);
+        strategies[i].backtest(sharedData, investment, profitability);
     }
 }
 
@@ -272,6 +281,7 @@ double *Optimizer::loadData(int offset, int chunkSize) {
     bson_error_t error;
     const char *propertyName;
     const bson_value_t *propertyValue;
+    int dataPropertyCount = getDataPropertyCount();
     int dataPointCount;
     int dataPointIndex = 0;
     std::map<std::string, int> *tempDataIndexMap = this->getDataIndexMap();
@@ -284,7 +294,7 @@ double *Optimizer::loadData(int offset, int chunkSize) {
     dataPointCount = mongoc_collection_count(collection, MONGOC_QUERY_NONE, countQuery, offset, chunkSize, NULL, &error);
 
     // Allocate memory for the flattened data store.
-    uint64_t dataChunkBytes = dataPointCount * getDataPropertyCount() * sizeof(double);
+    uint64_t dataChunkBytes = dataPointCount * dataPropertyCount * sizeof(double);
     double *data = (double*)malloc(dataChunkBytes);
 
     if (dataPointCount < 0) {
@@ -318,14 +328,14 @@ double *Optimizer::loadData(int offset, int chunkSize) {
                     propertyValue = bson_iter_value(&dataIterator);
 
                     // Add the data property value to the flattened data store.
-                    data[dataPointIndex * getDataPropertyCount() + (*tempDataIndexMap)[propertyName]] = propertyValue->value.v_double;
+                    data[dataPointIndex * dataPropertyCount + (*tempDataIndexMap)[propertyName]] = propertyValue->value.v_double;
                 }
 
                 // Add additional timestamp-related data.
-                time_t utcTime = data[dataPointIndex * getDataPropertyCount() + (*tempDataIndexMap)["timestamp"]];
+                time_t utcTime = data[dataPointIndex * dataPropertyCount + (*tempDataIndexMap)["timestamp"]];
                 struct tm *localTime = localtime(&utcTime);
-                data[dataPointIndex * getDataPropertyCount() + (*tempDataIndexMap)["timestampHour"]] = (double)localTime->tm_hour;
-                data[dataPointIndex * getDataPropertyCount() + (*tempDataIndexMap)["timestampMinute"]] = (double)localTime->tm_min;
+                data[dataPointIndex * dataPropertyCount + (*tempDataIndexMap)["timestampHour"]] = (double)localTime->tm_hour;
+                data[dataPointIndex * dataPropertyCount + (*tempDataIndexMap)["timestampMinute"]] = (double)localTime->tm_min;
             }
         }
 
@@ -401,15 +411,17 @@ void Optimizer::optimize(double investment, double profitability) {
     mongoc_collection_t *collection;
     bson_t *countQuery;
     bson_error_t error;
+    int dataPropertyCount = getDataPropertyCount();
     int dataPointCount;
     int configurationCount = configurations.size();
     int dataChunkSize = 500000;
     int dataOffset = 0;
     int chunkNumber = 1;
-    int dataPointIndexCumulative = 0;
+    int dataPointIndex = 0;
     std::vector<StrategyResult> results;
     int i = 0;
     int j = 0;
+    std::map<std::string, int> *tempDataIndexMap = getDataIndexMap();
 
     // GPU settings.
     // Reference: https://devblogs.nvidia.com/parallelforall/cuda-pro-tip-write-flexible-kernels-grid-stride-loops/
@@ -476,13 +488,11 @@ void Optimizer::optimize(double investment, double profitability) {
         }
 
         // Calculate the number of bytes needed for the next chunk.
-        uint64_t dataChunkBytes = nextChunkSize * getDataPropertyCount() * sizeof(double);
+        uint64_t dataChunkBytes = nextChunkSize * dataPropertyCount * sizeof(double);
 
         // Load another chunk of data.
         double *data = loadData(dataOffset, nextChunkSize);
         double *devData[gpuCount];
-
-        int dataPointIndex = 0;
 
         for (i=0; i<gpuCount; i++) {
             cudaSetDevice(i);
@@ -497,11 +507,11 @@ void Optimizer::optimize(double investment, double profitability) {
         // Backtest all strategies against all data points in the chunk.
         for (i=0; i<nextChunkSize; i++) {
             // Calculate the data pointer offset.
-            unsigned int dataPointerOffset = dataPointIndex * getDataPropertyCount();
+            unsigned int dataPointerOffset = i * dataPropertyCount;
 
             // Show progress.
-            percentage = (dataPointIndexCumulative / (double)dataPointCount) * 100.0;
-            printf("\rOptimizing...%0.4f%%", percentage);
+            percentage = (dataPointIndex / (double)dataPointCount) * 100.0;
+            printf("\rOptimizing...%0.4f%%, %i of %i, timestamp %f", percentage, dataPointIndex, dataPointCount, data[dataPointerOffset + (*tempDataIndexMap)["timestamp"]]);
 
             for (j=0; j<gpuCount; j++) {
                 cudaSetDevice(j);
@@ -509,7 +519,6 @@ void Optimizer::optimize(double investment, double profitability) {
             }
 
             dataPointIndex++;
-            dataPointIndexCumulative++;
         }
 
         // Free GPU and host memory;

@@ -102,6 +102,7 @@ int main(int argc, char *argv[]) {
     }
 
     // Clean up.
+    mongoc_client_destroy(dbClient);
     mongoc_cleanup();
 
     return returnValue;

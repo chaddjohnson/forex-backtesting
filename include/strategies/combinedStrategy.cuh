@@ -7,10 +7,8 @@
 class CombinedStrategy : public Strategy {
     private:
         std::vector<Configuration*> configurations;
-        double *tickPreviousDataPoint;
 
     protected:
-        __device__ __host__ void tick(double *dataPoint);
         __device__ __host__ std::vector<Configuration*> getConfigurations();
 
     public:

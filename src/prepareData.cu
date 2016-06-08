@@ -81,6 +81,7 @@ int main(int argc, char *argv[]) {
     optimizer->prepareData(ticks);
 
     // Clean up.
+    mongoc_client_destroy(dbClient);
     mongoc_cleanup();
 
     return 0;

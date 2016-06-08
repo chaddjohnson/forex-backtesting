@@ -8,10 +8,6 @@ class OptimizationStrategy : public Strategy {
     private:
         int group;
         Configuration configuration;
-        double *tickPreviousDataPoint;
-
-    protected:
-        __device__ __host__ void tick(double *dataPoint);
 
     public:
         __device__ __host__ OptimizationStrategy(const char *symbol, int group, Configuration configuration);

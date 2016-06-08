@@ -17,13 +17,27 @@ class Strategy {
         int consecutiveLosses;
         int maximumConsecutiveLosses;
         double minimumProfitLoss;
+        double previousClose;
+        double previousTimestamp;
 
     protected:
-        __device__ __host__ void tick(double *dataPoint) {}
+        __device__ __host__ void tick(double *dataPoint);
         __device__ __host__ double getWinRate();
         __device__ __host__ double getProfitLoss();
         __device__ __host__ void closeExpiredPositions(double price, double timestamp);
         __device__ __host__ void addPosition(Position *position);
+        __device__ __host__ __forceinline__ double getPreviousClose() {
+            return this->previousClose;
+        }
+        __device__ __host__ __forceinline__ double getPreviousTimestamp() {
+            return this->previousTimestamp;
+        }
+        __device__ __host__ __forceinline__ void setPreviousClose(double close) {
+            this->previousClose = close;
+        }
+        __device__ __host__ __forceinline__ void setPreviousTimestamp(double timestamp) {
+            this->previousTimestamp = timestamp;
+        }
 
     public:
         __device__ __host__ Strategy(const char *symbol);

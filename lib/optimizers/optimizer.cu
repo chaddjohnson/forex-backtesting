@@ -273,7 +273,6 @@ std::map<std::string, int> *Optimizer::getDataIndexMap() {
 double *Optimizer::loadData(int offset, int chunkSize) {
     mongoc_collection_t *collection;
     mongoc_cursor_t *cursor;
-    bson_t *countQuery;
     bson_t *query;
     const bson_t *document;
     bson_iter_t documentIterator;
@@ -282,25 +281,15 @@ double *Optimizer::loadData(int offset, int chunkSize) {
     const char *propertyName;
     const bson_value_t *propertyValue;
     int dataPropertyCount = getDataPropertyCount();
-    int dataPointCount;
     int dataPointIndex = 0;
     std::map<std::string, int> *tempDataIndexMap = this->getDataIndexMap();
 
     // Get a reference to the database collection.
     collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting", "datapoints");
 
-    // Query for the number of data points.
-    countQuery = BCON_NEW("symbol", BCON_UTF8(this->symbol.c_str()));
-    dataPointCount = mongoc_collection_count(collection, MONGOC_QUERY_NONE, countQuery, offset, chunkSize, NULL, &error);
-
     // Allocate memory for the flattened data store.
-    uint64_t dataChunkBytes = dataPointCount * dataPropertyCount * sizeof(double);
+    uint64_t dataChunkBytes = chunkSize * dataPropertyCount * sizeof(double);
     double *data = (double*)malloc(dataChunkBytes);
-
-    if (dataPointCount < 0) {
-        // No data points found.
-        throw std::runtime_error(error.message);
-    }
 
     // Query the database.
     query = BCON_NEW(
@@ -309,7 +298,7 @@ double *Optimizer::loadData(int offset, int chunkSize) {
             this->groupFilter.c_str(), "{", "$bitsAnySet", BCON_INT32((int)pow(2, this->group)), "}",
         "}",
         "$orderby", "{", "data.timestamp", BCON_INT32(1), "}",
-        "$hint", "{", this->groupFilter.c_str(), BCON_INT32(1), "data.timestamp", BCON_INT32(1), "}"
+        "$hint", "{", "data.timestamp", BCON_INT32(1), "}"
     );
     cursor = mongoc_collection_find(collection, MONGOC_QUERY_NONE, offset, chunkSize, 1000, query, NULL, NULL);
 
@@ -327,6 +316,11 @@ double *Optimizer::loadData(int offset, int chunkSize) {
                     propertyName = bson_iter_key(&dataIterator);
                     propertyValue = bson_iter_value(&dataIterator);
 
+                    // Ignore the property if it is not in the data index map.
+                    if (tempDataIndexMap->find(propertyName) == tempDataIndexMap->end()) {
+                        continue;
+                    }
+
                     // Add the data property value to the flattened data store.
                     data[dataPointIndex * dataPropertyCount + (*tempDataIndexMap)[propertyName]] = propertyValue->value.v_double;
                 }
@@ -343,7 +337,6 @@ double *Optimizer::loadData(int offset, int chunkSize) {
     }
 
     // Cleanup.
-    bson_destroy(countQuery);
     bson_destroy(query);
     mongoc_cursor_destroy(cursor);
     mongoc_collection_destroy(collection);
@@ -520,11 +513,12 @@ void Optimizer::optimize(double investment, double profitability) {
             dataPointIndex++;
         }
 
-        // Free GPU and host memory;
+        // Free GPU and host memory. Make SURE to set data to nullptr, or some shit will ensue.
         for (i=0; i<gpuCount; i++) {
             cudaFree(devData[i]);
         }
         free(data);
+        data = nullptr;
 
         chunkNumber++;
         dataOffset += nextChunkSize;
@@ -536,7 +530,7 @@ void Optimizer::optimize(double investment, double profitability) {
         cudaMemcpy(strategies[i], devStrategies[i], configurationCounts[i] * sizeof(ReversalsOptimizationStrategy), cudaMemcpyDeviceToHost);
     }
 
-    printf("\rOptimizing...100%%     \n");
+    printf("\rOptimizing...100%%          \n");
 
     // Save the results to the database.
     for (i=0; i<gpuCount; i++) {
@@ -558,6 +552,7 @@ void Optimizer::optimize(double investment, double profitability) {
     // Free host memory and cleanup.
     for (i=0; i<gpuCount; i++) {
         free(strategies[i]);
+        strategies[i] = nullptr;
     }
     bson_destroy(countQuery);
     mongoc_collection_destroy(collection);

@@ -19,7 +19,6 @@ __device__ __host__ double CallPosition::getProfitLoss() {
     else if (getClosePrice() == getPrice()) {
         return getInvestment();
     }
-    else {
-        return 0.0;
-    }
+
+    return 0.0;
 }

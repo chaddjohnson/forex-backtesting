@@ -1,22 +1,14 @@
 #include "optimizers/optimizer.cuh"
 
 // CUDA kernel for backtesting strategies.
-__global__ void optimizer_backtest(double *data, int dataPropertyCount, ReversalsOptimizationStrategy *strategies, int strategyCount, double investment, double profitability) {
-    extern __shared__ double sharedData[];
-
-    if (threadIdx.x < dataPropertyCount) {
-        sharedData[threadIdx.x] = data[threadIdx.x];
-    }
-
-    __syncthreads();
-
+__global__ void optimizer_backtest(double *data, ReversalsOptimizationStrategy *strategies, int strategyCount, double investment, double profitability) {
     // Use a grid-stride loop.
     // Reference: https://devblogs.nvidia.com/parallelforall/cuda-pro-tip-write-flexible-kernels-grid-stride-loops/
     for (int i = blockIdx.x * blockDim.x + threadIdx.x;
          i < strategyCount;
          i += blockDim.x * gridDim.x)
     {
-        strategies[i].backtest(sharedData, investment, profitability);
+        strategies[i].backtest(data, investment, profitability);
     }
 }
 
@@ -510,7 +502,16 @@ void Optimizer::optimize(double investment, double profitability) {
 
             for (j=0; j<gpuCount; j++) {
                 cudaSetDevice(j);
-                optimizer_backtest<<<gpuBlockCount*gpuMultiprocessorCount, gpuThreadsPerBlock, dataPropertyCount>>>(devData[j] + dataPointerOffset, dataPropertyCount, devStrategies[j], configurationCounts[j], investment, profitability);
+                optimizer_backtest<<<gpuBlockCount*gpuMultiprocessorCount, gpuThreadsPerBlock>>>(devData[j] + dataPointerOffset, devStrategies[j], configurationCounts[j], investment, profitability);
+
+                cudaError_t errSync  = cudaGetLastError();
+                cudaError_t errAsync = cudaDeviceSynchronize();
+                if (errSync != cudaSuccess) {
+                    printf("Sync kernel error: %s\n", cudaGetErrorString(errSync));
+                }
+                if (errAsync != cudaSuccess) {
+                    printf("Async kernel error: %s\n", cudaGetErrorString(errAsync));
+                }
             }
 
             dataPointIndex++;

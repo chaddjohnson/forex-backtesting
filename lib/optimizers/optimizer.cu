@@ -1,10 +1,10 @@
 #include "optimizers/optimizer.cuh"
 
 // CUDA kernel for backtesting strategies.
-__global__ void optimizer_backtest(double *data, ReversalsOptimizationStrategy *strategies, int strategyCount, double investment, double profitability) {
-    __shared__ double sharedData[840];
+__global__ void optimizer_backtest(double *data, int dataPropertyCount, ReversalsOptimizationStrategy *strategies, int strategyCount, double investment, double profitability) {
+    extern __shared__ double sharedData[];
 
-    if (threadIdx.x < 840) {
+    if (threadIdx.x < dataPropertyCount) {
         sharedData[threadIdx.x] = data[threadIdx.x];
     }
 
@@ -507,7 +507,7 @@ void Optimizer::optimize(double investment, double profitability) {
 
             for (j=0; j<gpuCount; j++) {
                 cudaSetDevice(j);
-                optimizer_backtest<<<gpuBlockCount*gpuMultiprocessorCount, gpuThreadsPerBlock>>>(devData[j] + dataPointerOffset, devStrategies[j], configurationCounts[j], investment, profitability);
+                optimizer_backtest<<<gpuBlockCount*gpuMultiprocessorCount, gpuThreadsPerBlock, dataPropertyCount>>>(devData[j] + dataPointerOffset, dataPropertyCount, devStrategies[j], configurationCounts[j], investment, profitability);
             }
 
             dataPointIndex++;

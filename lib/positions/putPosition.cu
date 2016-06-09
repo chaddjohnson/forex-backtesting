@@ -13,7 +13,7 @@ __device__ __host__ double PutPosition::getProfitLoss() {
         return getInvestment();
     }
 
-    if (getClosePrice() > getPrice()) {
+    if (getClosePrice() < getPrice()) {
         return getInvestment() + (getProfitability() * getInvestment());
     }
     else if (getClosePrice() == getPrice()) {

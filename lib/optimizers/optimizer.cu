@@ -401,7 +401,7 @@ void Optimizer::optimize(Real investment, Real profitability) {
     int dataPropertyCount = getDataPropertyCount();
     int dataPointCount;
     int configurationCount = configurations.size();
-    int dataChunkSize = 500000;
+    int dataChunkSize = sizeof(Real) == sizeof(double) ? 500000 : 1000000;
     int dataOffset = 0;
     int chunkNumber = 1;
     int dataPointIndex = 0;

@@ -57,28 +57,6 @@ __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoi
         setPreviousTimestamp(dataPoint[configuration.timestamp]);
         return;
     }
-    if (!configuration.stochasticK && configuration.stochasticD) {
-        if (dataPoint[configuration.stochasticK] && dataPoint[configuration.stochasticD]) {
-            // Determine if stochastic is not above the overbought line.
-            if (putNextTick && (dataPoint[configuration.stochasticK] <= configuration.stochasticOverbought || dataPoint[configuration.stochasticD] <= configuration.stochasticOverbought)) {
-                putNextTick = false;
-            }
-
-            // Determine if stochastic is not below the oversold line.
-            if (callNextTick && (dataPoint[configuration.stochasticK] >= configuration.stochasticOversold || dataPoint[configuration.stochasticD] >= configuration.stochasticOversold)) {
-                callNextTick = false;
-            }
-        }
-        else {
-            putNextTick = false;
-            callNextTick = false;
-        }
-    }
-    if (!putNextTick && !callNextTick) {
-        setPreviousClose(dataPoint[configuration.close]);
-        setPreviousTimestamp(dataPoint[configuration.timestamp]);
-        return;
-    }
     if (!configuration.rsi) {
         if (dataPoint[configuration.rsi]) {
             // Determine if RSI is not above the overbought line.
@@ -101,19 +79,20 @@ __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoi
         setPreviousTimestamp(dataPoint[configuration.timestamp]);
         return;
     }
-    if (configuration.ema500 && configuration.ema450) {
-        if (!dataPoint[configuration.ema500] || !dataPoint[configuration.ema450]) {
-            putNextTick = false;
-            callNextTick = false;
-        }
+    if (!configuration.stochasticK && configuration.stochasticD) {
+        if (dataPoint[configuration.stochasticK] && dataPoint[configuration.stochasticD]) {
+            // Determine if stochastic is not above the overbought line.
+            if (putNextTick && (dataPoint[configuration.stochasticK] <= configuration.stochasticOverbought || dataPoint[configuration.stochasticD] <= configuration.stochasticOverbought)) {
+                putNextTick = false;
+            }
 
-        // Determine if a downtrend is not occurring.
-        if (putNextTick && dataPoint[configuration.ema500] < dataPoint[configuration.ema450]) {
-            putNextTick = false;
+            // Determine if stochastic is not below the oversold line.
+            if (callNextTick && (dataPoint[configuration.stochasticK] >= configuration.stochasticOversold || dataPoint[configuration.stochasticD] >= configuration.stochasticOversold)) {
+                callNextTick = false;
+            }
         }
-
-        // Determine if an uptrend is not occurring.
-        if (callNextTick && dataPoint[configuration.ema500] > dataPoint[configuration.ema450]) {
+        else {
+            putNextTick = false;
             callNextTick = false;
         }
     }
@@ -122,19 +101,19 @@ __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoi
         setPreviousTimestamp(dataPoint[configuration.timestamp]);
         return;
     }
-    if (configuration.ema450 && configuration.ema400) {
-        if (!dataPoint[configuration.ema450] || !dataPoint[configuration.ema400]) {
+    if (configuration.ema50 && configuration.sma13) {
+        if (!dataPoint[configuration.ema50] || !dataPoint[configuration.sma13]) {
             putNextTick = false;
             callNextTick = false;
         }
 
         // Determine if a downtrend is not occurring.
-        if (putNextTick && dataPoint[configuration.ema450] < dataPoint[configuration.ema400]) {
+        if (putNextTick && dataPoint[configuration.ema50] < dataPoint[configuration.sma13]) {
             putNextTick = false;
         }
 
         // Determine if an uptrend is not occurring.
-        if (callNextTick && dataPoint[configuration.ema450] > dataPoint[configuration.ema400]) {
+        if (callNextTick && dataPoint[configuration.ema50] > dataPoint[configuration.sma13]) {
             callNextTick = false;
         }
     }
@@ -143,82 +122,19 @@ __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoi
         setPreviousTimestamp(dataPoint[configuration.timestamp]);
         return;
     }
-    if (configuration.ema400 && configuration.ema350) {
-        if (!dataPoint[configuration.ema400] || !dataPoint[configuration.ema350]) {
+    if (configuration.ema100 && configuration.ema50) {
+        if (!dataPoint[configuration.ema100] || !dataPoint[configuration.ema50]) {
             putNextTick = false;
             callNextTick = false;
         }
 
         // Determine if a downtrend is not occurring.
-        if (putNextTick && dataPoint[configuration.ema400] < dataPoint[configuration.ema350]) {
+        if (putNextTick && dataPoint[configuration.ema100] < dataPoint[configuration.ema50]) {
             putNextTick = false;
         }
 
         // Determine if an uptrend is not occurring.
-        if (callNextTick && dataPoint[configuration.ema400] > dataPoint[configuration.ema350]) {
-            callNextTick = false;
-        }
-    }
-    if (!putNextTick && !callNextTick) {
-        setPreviousClose(dataPoint[configuration.close]);
-        setPreviousTimestamp(dataPoint[configuration.timestamp]);
-        return;
-    }
-    if (configuration.ema350 && configuration.ema300) {
-        if (!dataPoint[configuration.ema350] || !dataPoint[configuration.ema300]) {
-            putNextTick = false;
-            callNextTick = false;
-        }
-
-        // Determine if a downtrend is not occurring.
-        if (putNextTick && dataPoint[configuration.ema350] < dataPoint[configuration.ema300]) {
-            putNextTick = false;
-        }
-
-        // Determine if an uptrend is not occurring.
-        if (callNextTick && dataPoint[configuration.ema350] > dataPoint[configuration.ema300]) {
-            callNextTick = false;
-        }
-    }
-    if (!putNextTick && !callNextTick) {
-        setPreviousClose(dataPoint[configuration.close]);
-        setPreviousTimestamp(dataPoint[configuration.timestamp]);
-        return;
-    }
-    if (configuration.ema300 && configuration.ema250) {
-        if (!dataPoint[configuration.ema300] || !dataPoint[configuration.ema250]) {
-            putNextTick = false;
-            callNextTick = false;
-        }
-
-        // Determine if a downtrend is not occurring.
-        if (putNextTick && dataPoint[configuration.ema300] < dataPoint[configuration.ema250]) {
-            putNextTick = false;
-        }
-
-        // Determine if an uptrend is not occurring.
-        if (callNextTick && dataPoint[configuration.ema300] > dataPoint[configuration.ema250]) {
-            callNextTick = false;
-        }
-    }
-    if (!putNextTick && !callNextTick) {
-        setPreviousClose(dataPoint[configuration.close]);
-        setPreviousTimestamp(dataPoint[configuration.timestamp]);
-        return;
-    }
-    if (configuration.ema250 && configuration.ema200) {
-        if (!dataPoint[configuration.ema250] || !dataPoint[configuration.ema200]) {
-            putNextTick = false;
-            callNextTick = false;
-        }
-
-        // Determine if a downtrend is not occurring.
-        if (putNextTick && dataPoint[configuration.ema250] < dataPoint[configuration.ema200]) {
-            putNextTick = false;
-        }
-
-        // Determine if an uptrend is not occurring.
-        if (callNextTick && dataPoint[configuration.ema250] > dataPoint[configuration.ema200]) {
+        if (callNextTick && dataPoint[configuration.ema100] > dataPoint[configuration.ema50]) {
             callNextTick = false;
         }
     }
@@ -249,19 +165,19 @@ __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoi
         setPreviousTimestamp(dataPoint[configuration.timestamp]);
         return;
     }
-    if (configuration.ema100 && configuration.ema50) {
-        if (!dataPoint[configuration.ema100] || !dataPoint[configuration.ema50]) {
+    if (configuration.ema250 && configuration.ema200) {
+        if (!dataPoint[configuration.ema250] || !dataPoint[configuration.ema200]) {
             putNextTick = false;
             callNextTick = false;
         }
 
         // Determine if a downtrend is not occurring.
-        if (putNextTick && dataPoint[configuration.ema100] < dataPoint[configuration.ema50]) {
+        if (putNextTick && dataPoint[configuration.ema250] < dataPoint[configuration.ema200]) {
             putNextTick = false;
         }
 
         // Determine if an uptrend is not occurring.
-        if (callNextTick && dataPoint[configuration.ema100] > dataPoint[configuration.ema50]) {
+        if (callNextTick && dataPoint[configuration.ema250] > dataPoint[configuration.ema200]) {
             callNextTick = false;
         }
     }
@@ -270,19 +186,103 @@ __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoi
         setPreviousTimestamp(dataPoint[configuration.timestamp]);
         return;
     }
-    if (configuration.ema50 && configuration.sma13) {
-        if (!dataPoint[configuration.ema50] || !dataPoint[configuration.sma13]) {
+    if (configuration.ema300 && configuration.ema250) {
+        if (!dataPoint[configuration.ema300] || !dataPoint[configuration.ema250]) {
             putNextTick = false;
             callNextTick = false;
         }
 
         // Determine if a downtrend is not occurring.
-        if (putNextTick && dataPoint[configuration.ema50] < dataPoint[configuration.sma13]) {
+        if (putNextTick && dataPoint[configuration.ema300] < dataPoint[configuration.ema250]) {
             putNextTick = false;
         }
 
         // Determine if an uptrend is not occurring.
-        if (callNextTick && dataPoint[configuration.ema50] > dataPoint[configuration.sma13]) {
+        if (callNextTick && dataPoint[configuration.ema300] > dataPoint[configuration.ema250]) {
+            callNextTick = false;
+        }
+    }
+    if (!putNextTick && !callNextTick) {
+        setPreviousClose(dataPoint[configuration.close]);
+        setPreviousTimestamp(dataPoint[configuration.timestamp]);
+        return;
+    }
+    if (configuration.ema350 && configuration.ema300) {
+        if (!dataPoint[configuration.ema350] || !dataPoint[configuration.ema300]) {
+            putNextTick = false;
+            callNextTick = false;
+        }
+
+        // Determine if a downtrend is not occurring.
+        if (putNextTick && dataPoint[configuration.ema350] < dataPoint[configuration.ema300]) {
+            putNextTick = false;
+        }
+
+        // Determine if an uptrend is not occurring.
+        if (callNextTick && dataPoint[configuration.ema350] > dataPoint[configuration.ema300]) {
+            callNextTick = false;
+        }
+    }
+    if (!putNextTick && !callNextTick) {
+        setPreviousClose(dataPoint[configuration.close]);
+        setPreviousTimestamp(dataPoint[configuration.timestamp]);
+        return;
+    }
+    if (configuration.ema400 && configuration.ema350) {
+        if (!dataPoint[configuration.ema400] || !dataPoint[configuration.ema350]) {
+            putNextTick = false;
+            callNextTick = false;
+        }
+
+        // Determine if a downtrend is not occurring.
+        if (putNextTick && dataPoint[configuration.ema400] < dataPoint[configuration.ema350]) {
+            putNextTick = false;
+        }
+
+        // Determine if an uptrend is not occurring.
+        if (callNextTick && dataPoint[configuration.ema400] > dataPoint[configuration.ema350]) {
+            callNextTick = false;
+        }
+    }
+    if (!putNextTick && !callNextTick) {
+        setPreviousClose(dataPoint[configuration.close]);
+        setPreviousTimestamp(dataPoint[configuration.timestamp]);
+        return;
+    }
+    if (configuration.ema450 && configuration.ema400) {
+        if (!dataPoint[configuration.ema450] || !dataPoint[configuration.ema400]) {
+            putNextTick = false;
+            callNextTick = false;
+        }
+
+        // Determine if a downtrend is not occurring.
+        if (putNextTick && dataPoint[configuration.ema450] < dataPoint[configuration.ema400]) {
+            putNextTick = false;
+        }
+
+        // Determine if an uptrend is not occurring.
+        if (callNextTick && dataPoint[configuration.ema450] > dataPoint[configuration.ema400]) {
+            callNextTick = false;
+        }
+    }
+    if (!putNextTick && !callNextTick) {
+        setPreviousClose(dataPoint[configuration.close]);
+        setPreviousTimestamp(dataPoint[configuration.timestamp]);
+        return;
+    }
+    if (configuration.ema500 && configuration.ema450) {
+        if (!dataPoint[configuration.ema500] || !dataPoint[configuration.ema450]) {
+            putNextTick = false;
+            callNextTick = false;
+        }
+
+        // Determine if a downtrend is not occurring.
+        if (putNextTick && dataPoint[configuration.ema500] < dataPoint[configuration.ema450]) {
+            putNextTick = false;
+        }
+
+        // Determine if an uptrend is not occurring.
+        if (callNextTick && dataPoint[configuration.ema500] > dataPoint[configuration.ema450]) {
             callNextTick = false;
         }
     }

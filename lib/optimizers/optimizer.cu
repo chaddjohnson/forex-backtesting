@@ -270,7 +270,7 @@ std::map<std::string, int> *Optimizer::getDataIndexMap() {
     return this->dataIndexMap;
 }
 
-double *Optimizer::loadData(int offset, int chunkSize) {
+double *Optimizer::loadData(double lastTimestamp, int chunkSize) {
     mongoc_collection_t *collection;
     mongoc_cursor_t *cursor;
     bson_t *query;
@@ -294,13 +294,14 @@ double *Optimizer::loadData(int offset, int chunkSize) {
     // Query the database.
     query = BCON_NEW(
         "$query", "{",
+            "data.timestamp", "{", "$gt", BCON_DOUBLE(lastTimestamp), "}",
             "symbol", BCON_UTF8(this->symbol.c_str()),
             this->groupFilter.c_str(), "{", "$bitsAnySet", BCON_INT32((int)pow(2, this->group)), "}",
         "}",
         "$orderby", "{", "data.timestamp", BCON_INT32(1), "}",
         "$hint", "{", "data.timestamp", BCON_INT32(1), "}"
     );
-    cursor = mongoc_collection_find(collection, MONGOC_QUERY_NONE, offset, chunkSize, 1000, query, NULL, NULL);
+    cursor = mongoc_collection_find(collection, MONGOC_QUERY_NONE, 0, chunkSize, 1000, query, NULL, NULL);
 
     // Go through query results, and convert each document into an array.
     while (mongoc_cursor_next(cursor, &document)) {
@@ -404,6 +405,7 @@ void Optimizer::optimize(double investment, double profitability) {
     mongoc_collection_t *collection;
     bson_t *countQuery;
     bson_error_t error;
+    std::map<std::string, int> *tempDataIndexMap = getDataIndexMap();
     int dataPropertyCount = getDataPropertyCount();
     int dataPointCount;
     int configurationCount = configurations.size();
@@ -411,6 +413,7 @@ void Optimizer::optimize(double investment, double profitability) {
     int dataOffset = 0;
     int chunkNumber = 1;
     int dataPointIndex = 0;
+    double lastTimestamp = 0.0;
     std::vector<StrategyResult> results;
     int i = 0;
     int j = 0;
@@ -483,7 +486,7 @@ void Optimizer::optimize(double investment, double profitability) {
         uint64_t dataChunkBytes = nextChunkSize * dataPropertyCount * sizeof(double);
 
         // Load another chunk of data.
-        double *data = loadData(dataOffset, nextChunkSize);
+        double *data = loadData(lastTimestamp, nextChunkSize);
         double *devData[gpuCount];
 
         for (i=0; i<gpuCount; i++) {
@@ -512,6 +515,9 @@ void Optimizer::optimize(double investment, double profitability) {
 
             dataPointIndex++;
         }
+
+        // Update the last timestamp (used for fast querying).
+        lastTimestamp = data[(nextChunkSize - 1) * dataPropertyCount + (*tempDataIndexMap)["timestamp"]];
 
         // Free GPU and host memory. Make SURE to set data to nullptr, or some shit will ensue.
         for (i=0; i<gpuCount; i++) {

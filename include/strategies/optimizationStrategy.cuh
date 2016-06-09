@@ -3,6 +3,7 @@
 
 #include "strategy.cuh"
 #include "types/configuration.cuh"
+#include "types/real.cuh"
 
 class OptimizationStrategy : public Strategy {
     private:

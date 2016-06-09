@@ -6,17 +6,18 @@
 #include <string>
 #include "types/tick.cuh"
 #include "study.cuh"
+#include "types/real.cuh"
 
 class RsiStudy : public Study {
     private:
         int dataSegmentLength;
-        double previousAverageGain;
-        double previousAverageLoss;
+        Real previousAverageGain;
+        Real previousAverageLoss;
 
     public:
-        RsiStudy(std::map<std::string, double> inputs, std::map<std::string, std::string> outputMap);
-        double calculateInitialAverageGain(Tick *initialTick, std::vector<Tick*> *dataSegment);
-        double calculateInitialAverageLoss(Tick *initialTick, std::vector<Tick*> *dataSegment);
+        RsiStudy(std::map<std::string, Real> inputs, std::map<std::string, std::string> outputMap);
+        Real calculateInitialAverageGain(Tick *initialTick, std::vector<Tick*> *dataSegment);
+        Real calculateInitialAverageLoss(Tick *initialTick, std::vector<Tick*> *dataSegment);
         void tick();
 };
 

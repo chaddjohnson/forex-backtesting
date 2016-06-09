@@ -12,6 +12,7 @@
 #include "studies/rsiStudy.cuh"
 #include "studies/stochasticOscillatorStudy.cuh"
 #include "studies/polynomialRegressionChannelStudy.cuh"
+#include "types/real.cuh"
 
 class ReversalsOptimizer : public Optimizer {
     private:

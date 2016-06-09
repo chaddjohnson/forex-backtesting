@@ -4,7 +4,7 @@ __device__ __host__ const char *CallPosition::getTransactionType() {
     return "CALL";
 }
 
-__device__ __host__ double CallPosition::getProfitLoss() {
+__device__ __host__ Real CallPosition::getProfitLoss() {
     if (getIsOpen()) {
         return 0.0;
     }

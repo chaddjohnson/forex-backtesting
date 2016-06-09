@@ -1,13 +1,15 @@
 #ifndef STRATEGYRESULT_H
 #define STRATEGYRESULT_H
 
+#include "types/real.cuh"
+
 typedef struct StrategyResult {
     // Resulting stats
-    double profitLoss;
+    Real profitLoss;
     int winCount;
     int loseCount;
     int tradeCount;
-    double winRate;
+    Real winRate;
     int maximumConsecutiveLosses;
     int minimumProfitLoss;
 

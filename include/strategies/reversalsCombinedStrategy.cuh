@@ -2,6 +2,7 @@
 #define REVERSALSCOMBINEDSTRATEGY_H
 
 #include "combinedStrategy.cuh"
+#include "types/real.cuh"
 
 class ReversalsCombinedStrategy : public Strategy {
     private:

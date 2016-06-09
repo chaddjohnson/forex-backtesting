@@ -3,6 +3,7 @@
 
 #include "optimizationStrategy.cuh"
 #include "types/configuration.cuh"
+#include "types/real.cuh"
 
 class ReversalsOptimizationStrategy : public OptimizationStrategy {
     private:
@@ -14,7 +15,7 @@ class ReversalsOptimizationStrategy : public OptimizationStrategy {
     public:
         __device__ __host__ ReversalsOptimizationStrategy(const char *symbol, int group, Configuration configuration);
         __device__ __host__ ~ReversalsOptimizationStrategy() {}
-        __device__ __host__ void backtest(double *dataPoint, double investment, double profitability);
+        __device__ __host__ void backtest(Real *dataPoint, Real investment, Real profitability);
 };
 
 #endif

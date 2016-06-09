@@ -744,16 +744,16 @@ std::vector<Configuration*> ReversalsOptimizer::buildBaseConfigurations() {
 
         // Set values.
         if ((*mapvalueIterator).find("rsiOverbought") != (*mapvalueIterator).end()) {
-            configuration->rsiOverbought = boost::get<double>((*mapvalueIterator)["rsiOverbought"]);
+            configuration->rsiOverbought = boost::get<Real>((*mapvalueIterator)["rsiOverbought"]);
         }
         if ((*mapvalueIterator).find("rsiOversold") != (*mapvalueIterator).end()) {
-            configuration->rsiOversold = boost::get<double>((*mapvalueIterator)["rsiOversold"]);
+            configuration->rsiOversold = boost::get<Real>((*mapvalueIterator)["rsiOversold"]);
         }
         if ((*mapvalueIterator).find("stochasticOverbought") != (*mapvalueIterator).end()) {
-            configuration->stochasticOverbought = boost::get<double>((*mapvalueIterator)["stochasticOverbought"]);
+            configuration->stochasticOverbought = boost::get<Real>((*mapvalueIterator)["stochasticOverbought"]);
         }
         if ((*mapvalueIterator).find("stochasticOversold") != (*mapvalueIterator).end()) {
-            configuration->stochasticOversold = boost::get<double>((*mapvalueIterator)["stochasticOversold"]);
+            configuration->stochasticOversold = boost::get<Real>((*mapvalueIterator)["stochasticOversold"]);
         }
 
         configurations.push_back(configuration);

@@ -1,7 +1,7 @@
 #include "optimizers/optimizer.cuh"
 
 // CUDA kernel for backtesting strategies.
-__global__ void optimizer_backtest(double *data, ReversalsOptimizationStrategy *strategies, int strategyCount, double investment, double profitability) {
+__global__ void optimizer_backtest(Real *data, ReversalsOptimizationStrategy *strategies, int strategyCount, Real investment, Real profitability) {
     // Use a grid-stride loop.
     // Reference: https://devblogs.nvidia.com/parallelforall/cuda-pro-tip-write-flexible-kernels-grid-stride-loops/
     for (int i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -95,7 +95,7 @@ void Optimizer::saveTicks(std::vector<Tick*> ticks) {
 }
 
 void Optimizer::prepareData(std::vector<Tick*> ticks) {
-    double percentage;
+    Real percentage;
     int tickCount = ticks.size();
     std::vector<Tick*> cumulativeTicks;
     int cumulativeTickCount;
@@ -113,7 +113,7 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
     // Go through the data and run studies for each data item.
     for (std::vector<Tick*>::iterator tickIterator = ticks.begin(); tickIterator != ticks.end(); ++tickIterator) {
         // Show progress.
-        percentage = (++i / (double)tickCount) * 100.0;
+        percentage = (++i / (Real)tickCount) * 100.0;
         printf("\rPreparing data...%0.4f%%", percentage);
 
         Tick *tick = *tickIterator;
@@ -161,9 +161,9 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
 
         // Merge tick output values from the studies into the current tick.
         for (std::vector<Study*>::iterator studyIterator = studies.begin(); studyIterator != studies.end(); ++studyIterator) {
-            std::map<std::string, double> studyOutputs = (*studyIterator)->getTickOutputs();
+            std::map<std::string, Real> studyOutputs = (*studyIterator)->getTickOutputs();
 
-            for (std::map<std::string, double>::iterator outputIterator = studyOutputs.begin(); outputIterator != studyOutputs.end(); ++outputIterator) {
+            for (std::map<std::string, Real>::iterator outputIterator = studyOutputs.begin(); outputIterator != studyOutputs.end(); ++outputIterator) {
                 (*tick)[outputIterator->first] = outputIterator->second;
             }
         }
@@ -262,7 +262,7 @@ std::map<std::string, int> *Optimizer::getDataIndexMap() {
     return this->dataIndexMap;
 }
 
-double *Optimizer::loadData(double lastTimestamp, int chunkSize) {
+Real *Optimizer::loadData(Real lastTimestamp, int chunkSize) {
     mongoc_collection_t *collection;
     mongoc_cursor_t *cursor;
     bson_t *query;
@@ -280,8 +280,8 @@ double *Optimizer::loadData(double lastTimestamp, int chunkSize) {
     collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting", "datapoints");
 
     // Allocate memory for the flattened data store.
-    uint64_t dataChunkBytes = chunkSize * dataPropertyCount * sizeof(double);
-    double *data = (double*)malloc(dataChunkBytes);
+    uint64_t dataChunkBytes = chunkSize * dataPropertyCount * sizeof(Real);
+    Real *data = (Real*)malloc(dataChunkBytes);
 
     // Query the database.
     query = BCON_NEW(
@@ -321,8 +321,8 @@ double *Optimizer::loadData(double lastTimestamp, int chunkSize) {
                 // Add additional timestamp-related data.
                 time_t utcTime = data[dataPointIndex * dataPropertyCount + (*tempDataIndexMap)["timestamp"]];
                 struct tm *localTime = localtime(&utcTime);
-                data[dataPointIndex * dataPropertyCount + (*tempDataIndexMap)["timestampHour"]] = (double)localTime->tm_hour;
-                data[dataPointIndex * dataPropertyCount + (*tempDataIndexMap)["timestampMinute"]] = (double)localTime->tm_min;
+                data[dataPointIndex * dataPropertyCount + (*tempDataIndexMap)["timestampHour"]] = (Real)localTime->tm_hour;
+                data[dataPointIndex * dataPropertyCount + (*tempDataIndexMap)["timestampMinute"]] = (Real)localTime->tm_min;
             }
         }
 
@@ -358,7 +358,7 @@ std::vector<MapConfiguration> *Optimizer::buildMapConfigurations(
 
     for (ConfigurationOption::iterator configurationOptionsIterator = configurationOptions.begin(); configurationOptionsIterator != configurationOptions.end(); ++configurationOptionsIterator) {
         // Iterate through configuration option values.
-        for (std::map<std::string, boost::variant<std::string, double>>::iterator valuesIterator = configurationOptionsIterator->begin(); valuesIterator != configurationOptionsIterator->end(); ++valuesIterator) {
+        for (std::map<std::string, boost::variant<std::string, Real>>::iterator valuesIterator = configurationOptionsIterator->begin(); valuesIterator != configurationOptionsIterator->end(); ++valuesIterator) {
             if (valuesIterator->second.type() == typeid(std::string)) {
                 if (boost::get<std::string>(valuesIterator->second).length() > 0) {
                     // Value points to a key.
@@ -367,7 +367,7 @@ std::vector<MapConfiguration> *Optimizer::buildMapConfigurations(
             }
             else {
                 // Value is an actual value.
-                (*current)[valuesIterator->first] = boost::get<double>(valuesIterator->second);
+                (*current)[valuesIterator->first] = boost::get<Real>(valuesIterator->second);
             }
         }
 
@@ -383,7 +383,7 @@ std::vector<MapConfiguration> *Optimizer::buildMapConfigurations(
     return results;
 }
 
-void Optimizer::optimize(double investment, double profitability) {
+void Optimizer::optimize(Real investment, Real profitability) {
     std::vector<Configuration*> configurations;
 
     if (this->group == 1) {
@@ -393,7 +393,7 @@ void Optimizer::optimize(double investment, double profitability) {
         configurations = buildGroupConfigurations();
     }
 
-    double percentage;
+    Real percentage;
     mongoc_collection_t *collection;
     bson_t *countQuery;
     bson_error_t error;
@@ -405,7 +405,7 @@ void Optimizer::optimize(double investment, double profitability) {
     int dataOffset = 0;
     int chunkNumber = 1;
     int dataPointIndex = 0;
-    double lastTimestamp = 0.0;
+    Real lastTimestamp = 0.0;
     std::vector<StrategyResult> results;
     int i = 0;
     int j = 0;
@@ -475,11 +475,11 @@ void Optimizer::optimize(double investment, double profitability) {
         }
 
         // Calculate the number of bytes needed for the next chunk.
-        uint64_t dataChunkBytes = nextChunkSize * dataPropertyCount * sizeof(double);
+        uint64_t dataChunkBytes = nextChunkSize * dataPropertyCount * sizeof(Real);
 
         // Load another chunk of data.
-        double *data = loadData(lastTimestamp, nextChunkSize);
-        double *devData[gpuCount];
+        Real *data = loadData(lastTimestamp, nextChunkSize);
+        Real *devData[gpuCount];
 
         for (i=0; i<gpuCount; i++) {
             cudaSetDevice(i);
@@ -497,7 +497,7 @@ void Optimizer::optimize(double investment, double profitability) {
             unsigned int dataPointerOffset = i * dataPropertyCount;
 
             // Show progress.
-            percentage = ((dataPointIndex + 1) / (double)dataPointCount) * 100.0;
+            percentage = ((dataPointIndex + 1) / (Real)dataPointCount) * 100.0;
             printf("\rOptimizing...%0.4f%%", percentage);
 
             for (j=0; j<gpuCount; j++) {

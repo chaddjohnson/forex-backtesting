@@ -3,8 +3,8 @@
 void SmaStudy::tick() {
     std::vector<Tick*> *dataSegment = nullptr;
     int dataSegmentLength = 0;
-    Real sum = 0.0;
-    Real sma = 0.0;
+    double sum = 0.0;
+    double sma = 0.0;
 
     resetTickOutputs();
 

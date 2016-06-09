@@ -3,7 +3,6 @@
 
 #include <vector>
 #include "strategy.cuh"
-#include "types/real.cuh"
 
 class CombinedStrategy : public Strategy {
     private:

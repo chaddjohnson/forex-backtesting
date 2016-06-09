@@ -8,7 +8,7 @@ __device__ __host__ ReversalsOptimizationStrategy::ReversalsOptimizationStrategy
     this->expirationMinutes = 5;
 }
 
-__device__ __host__ void ReversalsOptimizationStrategy::backtest(Real *dataPoint, Real investment, Real profitability) {
+__device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoint, double investment, double profitability) {
     // Tick the strategy.
     this->tick(dataPoint);
 

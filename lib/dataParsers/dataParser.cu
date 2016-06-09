@@ -8,8 +8,8 @@ std::string DataParser::getFilePath() {
     return filePath;
 }
 
-Real DataParser::parseGroups(std::string groupString) {
-    Real value = 0;
+double DataParser::parseGroups(std::string groupString) {
+    double value = 0;
 
     std::stringstream stream(groupString);
     std::string groupItem;

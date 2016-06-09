@@ -4,7 +4,7 @@ __device__ __host__ const char *PutPosition::getTransactionType() {
     return "PUT";
 }
 
-__device__ __host__ Real PutPosition::getProfitLoss() {
+__device__ __host__ double PutPosition::getProfitLoss() {
     if (getIsOpen()) {
         return 0.0;
     }

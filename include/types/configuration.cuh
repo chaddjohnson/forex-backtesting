@@ -1,8 +1,6 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
-#include "types/real.cuh"
-
 typedef struct Configuration {
     // Index mappings
     int timestamp;
@@ -29,10 +27,10 @@ typedef struct Configuration {
     int prChannelLower;
 
     // Values
-    Real rsiOverbought;
-    Real rsiOversold;
-    Real stochasticOverbought;
-    Real stochasticOversold;
+    double rsiOverbought;
+    double rsiOversold;
+    double stochasticOverbought;
+    double stochasticOversold;
 } Configuration;
 
 #endif

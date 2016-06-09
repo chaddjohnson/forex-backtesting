@@ -20,27 +20,27 @@ __device__ __host__ const char *Strategy::getSymbol() {
     return this->symbol;
 }
 
-__device__ __host__ Real Strategy::getProfitLoss() {
+__device__ __host__ double Strategy::getProfitLoss() {
     return this->profitLoss;
 }
 
-__device__ __host__ void Strategy::setProfitLoss(Real profitLoss) {
+__device__ __host__ void Strategy::setProfitLoss(double profitLoss) {
     this->profitLoss = profitLoss;
 }
 
-__device__ __host__ Real Strategy::getWinRate() {
+__device__ __host__ double Strategy::getWinRate() {
     if (this->winCount + this->loseCount == 0) {
         return 0;
     }
-    return (Real)this->winCount / ((Real)this->winCount + (Real)this->loseCount);
+    return (double)this->winCount / ((double)this->winCount + (double)this->loseCount);
 }
 
-__device__ __host__ void Strategy::tick(Real *dataPoint) {
+__device__ __host__ void Strategy::tick(double *dataPoint) {
     // Simulate expiry of and profit/loss related to positions held.
     closeExpiredPositions(this->previousClose, this->previousTimestamp - 1);
 }
 
-__device__ __host__ void Strategy::closeExpiredPositions(Real price, Real timestamp) {
+__device__ __host__ void Strategy::closeExpiredPositions(double price, double timestamp) {
     if (!price || !timestamp) {
         return;
     }
@@ -51,8 +51,8 @@ __device__ __host__ void Strategy::closeExpiredPositions(Real price, Real timest
                 // Close the position since it is open and has expired.
                 this->openPositions[i]->close(price, timestamp);
 
-                Real positionProfitLoss = this->openPositions[i]->getProfitLoss();
-                Real positionInvestment = this->openPositions[i]->getInvestment();
+                double positionProfitLoss = this->openPositions[i]->getProfitLoss();
+                double positionInvestment = this->openPositions[i]->getInvestment();
 
                 // Remove the position from the list of open positions, and free memory
                 // by deleting the position.

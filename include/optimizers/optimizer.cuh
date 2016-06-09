@@ -23,7 +23,6 @@
 #include "types/mapConfiguration.cuh"
 #include "types/configurationOption.cuh"
 #include "types/strategyResult.cuh"
-#include "types/real.cuh"
 
 class Optimizer {
     private:
@@ -37,7 +36,7 @@ class Optimizer {
         int dataPropertyCount;
         int getDataPropertyCount();
         bson_t *convertTickToBson(Tick *tick);
-        Real *loadData(Real lastTimestamp, int chunkSize);
+        double *loadData(double lastTimestamp, int chunkSize);
         void saveTicks(std::vector<Tick*> ticks);
         void saveResults(std::vector<StrategyResult> &results);
 
@@ -66,7 +65,7 @@ class Optimizer {
         virtual ~Optimizer() {}
         void prepareData(std::vector<Tick*> ticks);
         void setType(std::string type);
-        void optimize(Real investment, Real profitability);
+        void optimize(double investment, double profitability);
 };
 
 #endif

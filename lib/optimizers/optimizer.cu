@@ -95,7 +95,7 @@ void Optimizer::saveTicks(std::vector<Tick*> ticks) {
 }
 
 void Optimizer::prepareData(std::vector<Tick*> ticks) {
-    Real percentage;
+    double percentage;
     int tickCount = ticks.size();
     std::vector<Tick*> cumulativeTicks;
     int cumulativeTickCount;
@@ -113,7 +113,7 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
     // Go through the data and run studies for each data item.
     for (std::vector<Tick*>::iterator tickIterator = ticks.begin(); tickIterator != ticks.end(); ++tickIterator) {
         // Show progress.
-        percentage = (++i / (Real)tickCount) * 100.0;
+        percentage = (++i / (double)tickCount) * 100.0;
         printf("\rPreparing data...%0.4f%%", percentage);
 
         Tick *tick = *tickIterator;
@@ -161,9 +161,9 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
 
         // Merge tick output values from the studies into the current tick.
         for (std::vector<Study*>::iterator studyIterator = studies.begin(); studyIterator != studies.end(); ++studyIterator) {
-            std::map<std::string, Real> studyOutputs = (*studyIterator)->getTickOutputs();
+            std::map<std::string, double> studyOutputs = (*studyIterator)->getTickOutputs();
 
-            for (std::map<std::string, Real>::iterator outputIterator = studyOutputs.begin(); outputIterator != studyOutputs.end(); ++outputIterator) {
+            for (std::map<std::string, double>::iterator outputIterator = studyOutputs.begin(); outputIterator != studyOutputs.end(); ++outputIterator) {
                 (*tick)[outputIterator->first] = outputIterator->second;
             }
         }
@@ -393,7 +393,7 @@ void Optimizer::optimize(Real investment, Real profitability) {
         configurations = buildGroupConfigurations();
     }
 
-    Real percentage;
+    double percentage;
     mongoc_collection_t *collection;
     bson_t *countQuery;
     bson_error_t error;
@@ -497,7 +497,7 @@ void Optimizer::optimize(Real investment, Real profitability) {
             unsigned int dataPointerOffset = i * dataPropertyCount;
 
             // Show progress.
-            percentage = ((dataPointIndex + 1) / (Real)dataPointCount) * 100.0;
+            percentage = ((dataPointIndex + 1) / (double)dataPointCount) * 100.0;
             printf("\rOptimizing...%0.4f%%", percentage);
 
             for (j=0; j<gpuCount; j++) {

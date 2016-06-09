@@ -6,15 +6,14 @@
 #include <string>
 #include "types/tick.cuh"
 #include "study.cuh"
-#include "types/real.cuh"
 
 class StochasticOscillatorStudy : public Study {
     private:
-        Real getLowestLow(std::vector<Tick*> *dataSegment);
-        Real getHighestHigh(std::vector<Tick*> *dataSegment);
+        double getLowestLow(std::vector<Tick*> *dataSegment);
+        double getHighestHigh(std::vector<Tick*> *dataSegment);
 
     public:
-        StochasticOscillatorStudy(std::map<std::string, Real> inputs, std::map<std::string, std::string> outputMap)
+        StochasticOscillatorStudy(std::map<std::string, double> inputs, std::map<std::string, std::string> outputMap)
             : Study(inputs, outputMap) {}
         void tick();
 };

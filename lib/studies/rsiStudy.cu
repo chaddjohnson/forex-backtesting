@@ -1,16 +1,16 @@
 #include "studies/rsiStudy.cuh"
 
-RsiStudy::RsiStudy(std::map<std::string, Real> inputs, std::map<std::string, std::string> outputMap)
+RsiStudy::RsiStudy(std::map<std::string, double> inputs, std::map<std::string, std::string> outputMap)
         : Study(inputs, outputMap) {
     this->dataSegmentLength = 0;
     this->previousAverageGain = -1.0;
     this->previousAverageLoss = -1.0;
 }
 
-Real RsiStudy::calculateInitialAverageGain(Tick *initialTick, std::vector<Tick*> *dataSegment) {
+double RsiStudy::calculateInitialAverageGain(Tick *initialTick, std::vector<Tick*> *dataSegment) {
     Tick *previousTick = initialTick;
-    Real sum = 0.0;
-    Real average = 0.0;
+    double sum = 0.0;
+    double average = 0.0;
 
     for (std::vector<Tick*>::iterator iterator = dataSegment->begin(); iterator != dataSegment->end(); ++iterator) {
         sum += (*iterator)->at("close") > previousTick->at("close") ? (*iterator)->at("close") - previousTick->at("close") : 0;
@@ -22,10 +22,10 @@ Real RsiStudy::calculateInitialAverageGain(Tick *initialTick, std::vector<Tick*>
     return average;
 }
 
-Real RsiStudy::calculateInitialAverageLoss(Tick *initialTick, std::vector<Tick*> *dataSegment) {
+double RsiStudy::calculateInitialAverageLoss(Tick *initialTick, std::vector<Tick*> *dataSegment) {
     Tick *previousTick = initialTick;
-    Real sum = 0.0;
-    Real average = 0.0;
+    double sum = 0.0;
+    double average = 0.0;
 
     for (std::vector<Tick*>::iterator iterator = dataSegment->begin(); iterator != dataSegment->end(); ++iterator) {
         sum += (*iterator)->at("close") < previousTick->at("close") ? previousTick->at("close") - (*iterator)->at("close") : 0;
@@ -41,12 +41,12 @@ void RsiStudy::tick() {
     Tick *lastTick = getLastTick();
     std::vector<Tick*> *dataSegment = nullptr;
     Tick *previousTick = getPreviousTick();
-    Real currentGain = 0.0;
-    Real currentLoss = 0.0;
-    Real averageGain = 0.0;
-    Real averageLoss = 0.0;
-    Real RS = 0.0;
-    Real rsi = 0.0;
+    double currentGain = 0.0;
+    double currentLoss = 0.0;
+    double averageGain = 0.0;
+    double averageLoss = 0.0;
+    double RS = 0.0;
+    double rsi = 0.0;
 
     resetTickOutputs();
 

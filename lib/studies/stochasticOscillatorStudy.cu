@@ -1,8 +1,8 @@
 #include "studies/stochasticOscillatorStudy.cuh"
 
-Real StochasticOscillatorStudy::getLowestLow(std::vector<Tick*> *dataSegment) {
-    Real lowest = 99999.0;
-    Real current;
+double StochasticOscillatorStudy::getLowestLow(std::vector<Tick*> *dataSegment) {
+    double lowest = 99999.0;
+    double current;
 
     for (std::vector<Tick*>::iterator iterator = dataSegment->begin(); iterator != dataSegment->end(); ++iterator) {
         current = (*iterator)->at("low");
@@ -15,9 +15,9 @@ Real StochasticOscillatorStudy::getLowestLow(std::vector<Tick*> *dataSegment) {
     return lowest;
 }
 
-Real StochasticOscillatorStudy::getHighestHigh(std::vector<Tick*> *dataSegment) {
-    Real highest = 0.0;
-    Real current;
+double StochasticOscillatorStudy::getHighestHigh(std::vector<Tick*> *dataSegment) {
+    double highest = 0.0;
+    double current;
 
     for (std::vector<Tick*>::iterator iterator = dataSegment->begin(); iterator != dataSegment->end(); ++iterator) {
         current = (*iterator)->at("high");
@@ -35,12 +35,12 @@ void StochasticOscillatorStudy::tick() {
     std::vector<Tick*> *dataSegment = nullptr;
     int dataSegmentLength = 0;
     std::vector<Tick*> averageLengthDataSegment;
-    Real low = 0.0;
-    Real high = 0.0;
-    Real highLowDifference = 0.0;
-    Real K = 0.0;
-    Real DSum = 0.0;
-    Real D = 0.0;
+    double low = 0.0;
+    double high = 0.0;
+    double highLowDifference = 0.0;
+    double K = 0.0;
+    double DSum = 0.0;
+    double D = 0.0;
     std::string KOutputName = getOutputMapping("K");
 
     resetTickOutputs();

@@ -16,7 +16,7 @@ class DataParser {
 
     protected:
         std::string getFilePath();
-        Real parseGroups(std::string groupString);
+        double parseGroups(std::string groupString);
 
     public:
         DataParser(std::string filePath);

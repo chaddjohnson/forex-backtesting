@@ -5,14 +5,13 @@
 #include <string>
 #include "types/tick.cuh"
 #include "study.cuh"
-#include "types/real.cuh"
 
 class EmaStudy : public Study {
     private:
-        Real previousEma;
+        double previousEma;
 
     public:
-        EmaStudy(std::map<std::string, Real> inputs, std::map<std::string, std::string> outputMap);
+        EmaStudy(std::map<std::string, double> inputs, std::map<std::string, std::string> outputMap);
         void tick();
 };
 

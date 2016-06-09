@@ -1,6 +1,6 @@
 #include "studies/emaStudy.cuh"
 
-EmaStudy::EmaStudy(std::map<std::string, Real> inputs, std::map<std::string, std::string> outputMap)
+EmaStudy::EmaStudy(std::map<std::string, double> inputs, std::map<std::string, std::string> outputMap)
         : Study(inputs, outputMap) {
     this->previousEma = 0.0;
 }
@@ -9,8 +9,8 @@ void EmaStudy::tick() {
     Tick *lastTick = getLastTick();
     std::vector<Tick*> *dataSegment = nullptr;
     int dataSegmentLength = 0;
-    Real K = 0.0;
-    Real ema = 0.0;
+    double K = 0.0;
+    double ema = 0.0;
 
     resetTickOutputs();
 

@@ -21,7 +21,7 @@ class Strategy {
         double previousTimestamp;
 
     protected:
-        __device__ __host__ void tick(double *dataPoint);
+        __device__ __host__ void tick(double *dataPoint, double close, double timestamp);
         __device__ __host__ double getWinRate();
         __device__ __host__ double getProfitLoss();
         __device__ __host__ void closeExpiredPositions(double price, double timestamp);

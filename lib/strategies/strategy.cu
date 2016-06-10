@@ -35,9 +35,9 @@ __device__ __host__ double Strategy::getWinRate() {
     return (double)this->winCount / ((double)this->winCount + (double)this->loseCount);
 }
 
-__device__ __host__ void Strategy::tick(double *dataPoint) {
+__device__ __host__ void Strategy::tick(double *dataPoint, double close, double timestamp) {
     // Simulate expiry of and profit/loss related to positions held.
-    closeExpiredPositions(this->previousClose, this->previousTimestamp - 1);
+    closeExpiredPositions(close, timestamp);
 }
 
 __device__ __host__ void Strategy::closeExpiredPositions(double price, double timestamp) {

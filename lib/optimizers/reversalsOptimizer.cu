@@ -807,7 +807,7 @@ std::vector<Configuration*> ReversalsOptimizer::buildGroupConfigurations() {
             "$query", "{",
                 "symbol", BCON_UTF8(getSymbol().c_str()),
                 "group", BCON_INT32(group),
-                "strategyName", BCON_UTF8(getStrategyName().c_str())
+                "strategyName", BCON_UTF8(getStrategyName().c_str()),
             "}"
         );
     }

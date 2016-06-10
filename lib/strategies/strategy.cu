@@ -9,7 +9,6 @@ __device__ __host__ Strategy::Strategy(const char *symbol) {
     this->maximumConsecutiveLosses = 0;
     this->minimumProfitLoss = 99999.0;
     this->previousClose = 0.0;
-    this->previousTimestamp = 0.0;
 
     for (int i=0; i<10; i++) {
         this->openPositions[i] = nullptr;

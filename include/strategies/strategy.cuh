@@ -18,7 +18,6 @@ class Strategy {
         int maximumConsecutiveLosses;
         double minimumProfitLoss;
         double previousClose;
-        double previousTimestamp;
 
     protected:
         __device__ __host__ void tick(double *dataPoint, double close, double timestamp);
@@ -29,14 +28,8 @@ class Strategy {
         __device__ __host__ __forceinline__ double getPreviousClose() {
             return this->previousClose;
         }
-        __device__ __host__ __forceinline__ double getPreviousTimestamp() {
-            return this->previousTimestamp;
-        }
         __device__ __host__ __forceinline__ void setPreviousClose(double close) {
             this->previousClose = close;
-        }
-        __device__ __host__ __forceinline__ void setPreviousTimestamp(double timestamp) {
-            this->previousTimestamp = timestamp;
         }
 
     public:

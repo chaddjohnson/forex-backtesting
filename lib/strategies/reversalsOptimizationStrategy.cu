@@ -55,7 +55,7 @@ __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoi
         setPreviousClose(dataPoint[configuration.close]);
         return;
     }
-    if (!configuration.rsi) {
+    if (configuration.rsi) {
         if (dataPoint[configuration.rsi]) {
             // Determine if RSI is not above the overbought line.
             if (putNextTick && dataPoint[configuration.rsi] <= configuration.rsiOverbought) {
@@ -76,7 +76,7 @@ __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoi
         setPreviousClose(dataPoint[configuration.close]);
         return;
     }
-    if (!configuration.stochasticK && configuration.stochasticD) {
+    if (configuration.stochasticK && configuration.stochasticD) {
         if (dataPoint[configuration.stochasticK] && dataPoint[configuration.stochasticD]) {
             // Determine if stochastic is not above the overbought line.
             if (putNextTick && (dataPoint[configuration.stochasticK] <= configuration.stochasticOverbought || dataPoint[configuration.stochasticD] <= configuration.stochasticOverbought)) {

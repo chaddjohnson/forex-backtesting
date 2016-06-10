@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ "$#" -ne 1 ]; then
+  echo "Symbol must be provided."
+  exit 1
+fi
+
 # Prepare data.
 ./bin/prepareData --symbol $1 --parser oanda --optimizer reversals --file /home/chad/development/desktop/forex-backtesting/data/oanda/k-fold/combined/$1.csv
 

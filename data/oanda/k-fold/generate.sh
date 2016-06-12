@@ -15,8 +15,12 @@ done
 mkdir -p final
 mkdir -p combined
 
+# Get a count of the CSV files (each representing a week of data), and determine how many should be in each group.
+count=`ls ./*.csv | wc -l`
+groupCount=$(expr $(expr $count + 10) / 11)
+
 # Group CSV files for final validation data.
-for f in `ls ./*.csv | sort | tail -n 59`
+for f in `ls ./*.csv | sort | tail -n $groupCount`
 do
     cat $f >> ./final/$1.csv
     rm $f
@@ -51,7 +55,7 @@ do
     validation_groups=`echo $validation_groups | sed 's/^;//'`
 
     # Testing data.
-    for f in `ls ./*.csv | awk -v start=$((((i-1)*57)+1)) -v end=$((i*57)) 'NR >= start && NR <= end'`
+    for f in `ls ./*.csv | awk -v start=$((((i-1)*$groupCount)+1)) -v end=$((i*$groupCount)) 'NR >= start && NR <= end'`
     do
         cat $f >> ./combined/$1-temp.csv
 

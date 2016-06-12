@@ -12,8 +12,8 @@ do
     mv $f $RANDOM$RANDOM.csv
 done
 
-mkdir final
-mkdir combined
+mkdir -p final
+mkdir -p combined
 
 # Group CSV files for final validation data.
 for f in `ls ./*.csv | sort | tail -n 59`

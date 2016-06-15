@@ -13,17 +13,20 @@
 class DataParser {
     private:
         std::string filePath;
+        int type;
 
     protected:
         std::string getFilePath();
+        int getType();
         double parseGroups(std::string groupString);
 
     public:
-        DataParser(std::string filePath);
+        DataParser(std::string filePath, int type);
         virtual ~DataParser() {}
         virtual std::vector<Tick*> parse() {
             return std::vector<Tick*>();
         }
+        enum types { BACKTEST, FORWARDTEST };
 };
 
 #endif

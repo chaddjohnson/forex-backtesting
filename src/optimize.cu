@@ -1,8 +1,7 @@
 #include <string>
-#include <iostream>
-#include <cstdlib>
-#include <mongoc.h>
 #include <vector>
+#include <iostream>
+#include <mongoc.h>
 #include "optimizers/optimizer.cuh"
 #include "factories/optimizerFactory.cuh"
 #include "types/configuration.cuh"
@@ -89,11 +88,11 @@ int main(int argc, char *argv[]) {
     mongoc_init();
     mongoc_client_t *dbClient = mongoc_client_new("mongodb://localhost:27017");
 
-    Optimizer *optimizer = OptimizerFactory::create(optimizerName, dbClient, symbol, group);
-    optimizer->setType(type);
-
-    // Perform optimization.
     try {
+        // Initialize the optimizer.
+        Optimizer *optimizer = OptimizerFactory::create(optimizerName, dbClient, symbol, Optimizer::getTypeId(type), group);
+
+        // Perform optimization.
         optimizer->optimize(investment, profitability);
     }
     catch (const std::exception &error) {

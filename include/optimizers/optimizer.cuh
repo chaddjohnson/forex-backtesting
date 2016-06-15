@@ -29,7 +29,7 @@ class Optimizer {
         mongoc_client_t *dbClient;
         std::string strategyName;
         std::string symbol;
-        std::string type;
+        int type;
         std::string groupFilter;
         int group;
         std::map<std::string, int> *dataIndexMap;
@@ -44,7 +44,7 @@ class Optimizer {
         mongoc_client_t *getDbClient();
         std::string getStrategyName();
         std::string getSymbol();
-        std::string getType();
+        int getType();
         int getGroup();
         std::map<std::string, int> *getDataIndexMap();
         std::string findDataIndexMapKeyByValue(int value);
@@ -58,14 +58,16 @@ class Optimizer {
         virtual std::map<std::string, ConfigurationOption> getConfigurationOptions() = 0;
         virtual std::vector<Configuration*> buildBaseConfigurations() = 0;
         virtual std::vector<Configuration*> buildGroupConfigurations() = 0;
+        virtual std::vector<Configuration*> loadConfigurations() = 0;
         virtual bson_t *convertResultToBson(StrategyResult &result) = 0;
 
     public:
-        Optimizer(mongoc_client_t *dbClient, std::string strategyName, std::string symbol, int group = 0);
+        Optimizer(mongoc_client_t *dbClient, std::string strategyName, std::string symbol, int type = 0, int group = 0);
         virtual ~Optimizer() {}
         void prepareData(std::vector<Tick*> ticks);
-        void setType(std::string type);
         void optimize(double investment, double profitability);
+        static int getTypeId(std::string name);
+        enum types { TEST, VALIDATION, FORWARDTEST };
 };
 
 #endif

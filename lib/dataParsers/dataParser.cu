@@ -1,11 +1,16 @@
 #include "dataParsers/dataParser.cuh"
 
-DataParser::DataParser(std::string filePath) {
+DataParser::DataParser(std::string filePath, int type) {
     this->filePath = filePath;
+    this->type = type;
 }
 
 std::string DataParser::getFilePath() {
-    return filePath;
+    return this->filePath;
+}
+
+int DataParser::getType() {
+    return this->type;
 }
 
 double DataParser::parseGroups(std::string groupString) {

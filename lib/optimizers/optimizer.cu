@@ -20,14 +20,25 @@ __global__ void optimizer_backtest(double *data, int dataPropertyCount, Reversal
     }
 }
 
-Optimizer::Optimizer(mongoc_client_t *dbClient, std::string strategyName, std::string symbol, int group) {
+Optimizer::Optimizer(mongoc_client_t *dbClient, std::string strategyName, std::string symbol, int type, int group) {
     this->dbClient = dbClient;
     this->strategyName = strategyName;
     this->symbol = symbol;
     this->groupFilter = "testingGroups";
+    this->type = type;
     this->group = group;
     this->dataPropertyCount = 0;
     this->dataIndexMap = new std::map<std::string, int>();
+
+    if (type == Optimizer::types::TEST) {
+        this->groupFilter = "testingGroups";
+    }
+    else if (type == Optimizer::types::VALIDATION) {
+        this->groupFilter = "validationGroups";
+    }
+    else if (type != Optimizer::types::FORWARDTEST) {
+        throw std::runtime_error("Invalid optimization type");
+    }
 }
 
 mongoc_client_t *Optimizer::getDbClient() {
@@ -202,22 +213,23 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
     printf("\n");
 }
 
-void Optimizer::setType(std::string type) {
-    if (type == "testing") {
-        this->groupFilter = "testingGroups";
+int Optimizer::getType() {
+    return this->type;
+}
+
+int Optimizer::getTypeId(std::string name) {
+    if (name == "test") {
+        return Optimizer::types::TEST;
     }
-    else if (type == "validation") {
-        this->groupFilter = "validationGroups";
+    else if (name == "validation") {
+        return Optimizer::types::VALIDATION;
+    }
+    else if (name == "forwardTest") {
+        return Optimizer::types::FORWARDTEST;
     }
     else {
         throw std::runtime_error("Invalid optimization type");
     }
-
-    this->type = type;
-}
-
-std::string Optimizer::getType() {
-    return this->type;
 }
 
 int Optimizer::getDataPropertyCount() {
@@ -392,14 +404,6 @@ std::vector<MapConfiguration> *Optimizer::buildMapConfigurations(
 
 void Optimizer::optimize(double investment, double profitability) {
     std::vector<Configuration*> configurations;
-
-    if (this->group == 1) {
-        configurations = buildBaseConfigurations();
-    }
-    else {
-        configurations = buildGroupConfigurations();
-    }
-
     double percentage;
     mongoc_collection_t *collection;
     bson_t *countQuery;
@@ -407,7 +411,7 @@ void Optimizer::optimize(double investment, double profitability) {
     std::map<std::string, int> *tempDataIndexMap = getDataIndexMap();
     int dataPropertyCount = getDataPropertyCount();
     int dataPointCount;
-    int configurationCount = configurations.size();
+    int configurationCount;
     int dataChunkSize = 500000;
     int dataOffset = 0;
     int chunkNumber = 1;
@@ -416,6 +420,24 @@ void Optimizer::optimize(double investment, double profitability) {
     std::vector<StrategyResult> results;
     int i = 0;
     int j = 0;
+
+    // Build or load configurations.
+    if (getType() == Optimizer::types::TEST || getType() == Optimizer::types::VALIDATION) {
+        if (getGroup() == 1) {
+            configurations = buildBaseConfigurations();
+        }
+        else {
+            configurations = buildGroupConfigurations();
+        }
+    }
+    else if (getType() == Optimizer::types::FORWARDTEST) {
+        configurations = loadConfigurations();
+    }
+    else {
+        throw std::runtime_error("Invalid optimization type");
+    }
+
+    configurationCount = configurations.size();
 
     // GPU settings.
     // Reference: https://devblogs.nvidia.com/parallelforall/cuda-pro-tip-write-flexible-kernels-grid-stride-loops/

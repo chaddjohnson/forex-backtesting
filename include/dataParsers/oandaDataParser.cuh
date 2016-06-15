@@ -12,7 +12,7 @@
 
 class OandaDataParser : public DataParser {
     public:
-        OandaDataParser(std::string filePath) : DataParser(filePath) {}
+        OandaDataParser(std::string filePath, int type) : DataParser(filePath, type) {}
         ~OandaDataParser() {}
         std::vector<Tick*> parse();
 };

@@ -779,7 +779,7 @@ std::vector<Configuration*> ReversalsOptimizer::buildGroupConfigurations() {
     // Default to using the current group.
     int group = getGroup();
 
-    if (getType() == "testing") {
+    if (getType() == Optimizer::types::TEST) {
         // Testing is being performed, so use configurations from the previous test.
         // If validation is being performed, on the other hand, then we want to
         // validate the current group rather than the previous group.
@@ -792,7 +792,7 @@ std::vector<Configuration*> ReversalsOptimizer::buildGroupConfigurations() {
     collection = mongoc_client_get_collection(getDbClient(), "forex-backtesting", "tests");
 
     // Query the database for configurations belonging to the previous (testing) or current (validation) group.
-    if (getType() == "testing") {
+    if (getType() == Optimizer::types::TEST) {
         query = BCON_NEW(
             "$query", "{",
                 "symbol", BCON_UTF8(getSymbol().c_str()),
@@ -934,6 +934,14 @@ std::vector<Configuration*> ReversalsOptimizer::buildGroupConfigurations() {
     mongoc_collection_destroy(collection);
 
     printf("%i configurations built\n", (int)configurations.size());
+
+    return configurations;
+}
+
+std::vector<Configuration*> ReversalsOptimizer::loadConfigurations() {
+    std::vector<Configuration*> configurations;
+
+
 
     return configurations;
 }

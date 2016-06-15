@@ -7,7 +7,7 @@
 
 class DataParserFactory {
     public:
-        static DataParser *create(std::string name, std::string filePath);
+        static DataParser *create(std::string name, std::string filePath, int type);
 };
 
 #endif

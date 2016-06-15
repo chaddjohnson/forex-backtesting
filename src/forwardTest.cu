@@ -6,8 +6,10 @@
 #include "optimizers/optimizer.cuh"
 #include "factories/dataParserFactory.cuh"
 #include "factories/optimizerFactory.cuh"
+#include "types/configuration.cuh"
 
 int main(int argc, char *argv[]) {
+    std::vector<Configuration*> configurations;
     std::vector<Tick*> ticks;
     int returnValue = 0;
     int i = 0;
@@ -17,6 +19,8 @@ int main(int argc, char *argv[]) {
     std::string filePath;
     std::string parserName;
     std::string optimizerName;
+    double investment;
+    double profitability;
 
     // Parse command line arguments.
     for (i=0; i<argc; i++) {
@@ -49,6 +53,24 @@ int main(int argc, char *argv[]) {
                 return 1;
             }
         }
+        if (arg == "--investment") {
+            if (i + 1 < argc) {
+                investment = atof(argv[i + 1]);
+            }
+            else {
+                std::cerr << "--investment option requires one argument." << std::endl;
+                return 1;
+            }
+        }
+        if (arg == "--profitability") {
+            if (i + 1 < argc) {
+                profitability = atof(argv[i + 1]);
+            }
+            else {
+                std::cerr << "--profitability option requires one argument." << std::endl;
+                return 1;
+            }
+        }
         if (arg == "--file") {
             if (i + 1 < argc) {
                 filePath = std::string(argv[i + 1]);
@@ -60,7 +82,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    if (argc < 8) {
+    if (argc < 12) {
         std::cerr << "Too few arguments provided." << std::endl;
         return 0;
     }
@@ -71,14 +93,17 @@ int main(int argc, char *argv[]) {
 
     try {
         // Parse the data file.
-        DataParser *dataParser = DataParserFactory::create(parserName, filePath, DataParser::types::BACKTEST);
+        DataParser *dataParser = DataParserFactory::create(parserName, filePath, DataParser::types::FORWARDTEST);
         ticks = dataParser->parse();
 
         // Initialize the optimizer.
-        Optimizer *optimizer = OptimizerFactory::create(optimizerName, dbClient, symbol);
+        Optimizer *optimizer = OptimizerFactory::create(optimizerName, dbClient, symbol, Optimizer::types::FORWARDTEST);
 
         // Prepare the data.
         optimizer->prepareData(ticks);
+
+        // Perform optimization.
+        optimizer->optimize(investment, profitability);
     }
     catch (const std::exception &error) {
         std::cerr << error.what() << std::endl;

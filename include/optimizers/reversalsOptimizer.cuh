@@ -22,11 +22,12 @@ class ReversalsOptimizer : public Optimizer {
         std::map<std::string, ConfigurationOption> getConfigurationOptions();
         std::vector<Configuration*> buildBaseConfigurations();
         std::vector<Configuration*> buildGroupConfigurations();
+        std::vector<Configuration*> loadConfigurations();
         bson_t *convertResultToBson(StrategyResult &result);
 
     public:
-        ReversalsOptimizer(mongoc_client_t *dbClient, std::string symbol, int group = 0)
-            : Optimizer(dbClient, "reversals", symbol, group) {}
+        ReversalsOptimizer(mongoc_client_t *dbClient, std::string symbol, int type = 0, int group = 0)
+            : Optimizer(dbClient, "reversals", symbol, type, group) {}
         ~ReversalsOptimizer() {}
 };
 

@@ -12,7 +12,7 @@ OBJ = factories/optimizationStrategyFactory.o positions/callPosition.o positions
       studies/study.o studies/smaStudy.o studies/emaStudy.o studies/rsiStudy.o \
       studies/stochasticOscillatorStudy.o studies/polynomialRegressionChannelStudy.o
 
-all: prepareData optimize
+all: prepareData optimize forwardTest
 
 prepareData: src/prepareData.cu $(addprefix lib/,$(OBJ))
 	@mkdir -p $(BIN)
@@ -21,6 +21,10 @@ prepareData: src/prepareData.cu $(addprefix lib/,$(OBJ))
 optimize: src/optimize.cu $(addprefix lib/,$(OBJ))
 	@mkdir -p $(BIN)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(BIN)/$@ src/optimize.cu $(addprefix $(OBJDIR)/,$(addprefix lib/,$(OBJ))) $(LFLAGS) $(LIBS)
+
+forwardTest: src/forwardTest.cu $(addprefix lib/,$(OBJ))
+	@mkdir -p $(BIN)
+	$(CC) $(CFLAGS) $(INCLUDES) -o $(BIN)/$@ src/forwardTest.cu $(addprefix $(OBJDIR)/,$(addprefix lib/,$(OBJ))) $(LFLAGS) $(LIBS)
 
 %.o: %.cu
 	@mkdir -p $(OBJDIR)/lib/strategies $(OBJDIR)/lib/positions $(OBJDIR)/lib/factories $(OBJDIR)/lib/optimizers $(OBJDIR)/lib/dataParsers $(OBJDIR)/lib/studies

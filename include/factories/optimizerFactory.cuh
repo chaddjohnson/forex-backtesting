@@ -8,7 +8,7 @@
 
 class OptimizerFactory {
     public:
-        static Optimizer *create(std::string name, mongoc_client_t *dbClient, std::string symbol, int group = 0);
+        static Optimizer *create(std::string name, mongoc_client_t *dbClient, std::string symbol, int type = 0, int group = 0);
 };
 
 #endif

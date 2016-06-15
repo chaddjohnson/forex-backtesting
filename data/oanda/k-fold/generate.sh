@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Remove existing CSV files.
-rm -rf ./*.csv ./part*/**/$1.csv ./final/$1.csv ./combined/$1.csv
+rm -rf ./*.csv ./part*/**/$1.csv ./combined/$1.csv
 
 # Generate new CSV files.
 node generate $1
@@ -12,19 +12,11 @@ do
     mv $f $RANDOM$RANDOM.csv
 done
 
-mkdir -p final
 mkdir -p combined
 
 # Get a count of the CSV files (each representing a week of data), and determine how many should be in each group.
 count=`ls ./*.csv | wc -l`
-groupCount=$(expr $(expr $count + 10) / 11)
-
-# Group CSV files for final validation data.
-for f in `ls ./*.csv | sort | tail -n $groupCount`
-do
-    cat $f >> ./final/$1.csv
-    rm $f
-done
+groupCount=$(expr $(expr $count + 9) / 10)
 
 # Remaining groups.
 for i in {1..10}

@@ -7,7 +7,7 @@ fi
 
 for symbol in $@; do
     # Prepare data.
-    # ./bin/prepareData --symbol $symbol --parser oanda --optimizer reversals --file /home/chad/development/desktop/forex-backtesting/data/oanda/k-fold/combined/$symbol.csv
+    # ./bin/prepare-data --symbol $symbol --parser oanda --optimizer reversals --file /home/chad/development/desktop/forex-backtesting/data/oanda/k-fold/combined/$symbol.csv
 
     # Perform k-fold testing for group 1.
     echo; echo "$symbol k-fold group 1 testing..."; time ./bin/optimize --symbol $symbol --type test --group 1 --optimizer reversals --investment 1000 --profitability 0.76

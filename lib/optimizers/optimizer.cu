@@ -64,8 +64,12 @@ bson_t *Optimizer::convertTickToBson(Tick *tick) {
     document = bson_new();
     BSON_APPEND_UTF8(document, "symbol", this->symbol.c_str());
     BSON_APPEND_INT32(document, "type", tick->at("type"));
-    BSON_APPEND_INT32(document, "testingGroups", tick->at("testingGroups"));
-    BSON_APPEND_INT32(document, "validationGroups", tick->at("validationGroups"));
+
+    if (getType() == Optimizer::types::TEST || getType() == Optimizer::types::VALIDATION) {
+        BSON_APPEND_INT32(document, "testingGroups", tick->at("testingGroups"));
+        BSON_APPEND_INT32(document, "validationGroups", tick->at("validationGroups"));
+    }
+
     BSON_APPEND_DOCUMENT_BEGIN(document, "data", &dataDocument);
 
     // Remove type and group keys as they are no longer needed.
@@ -310,7 +314,7 @@ double *Optimizer::loadData(double lastTimestamp, int chunkSize) {
             "$query", "{",
                 "data.timestamp", "{", "$gt", BCON_DOUBLE(lastTimestamp), "}",
                 "symbol", BCON_UTF8(this->symbol.c_str()),
-                "type", BCON_INT32(getType()),
+                "type", BCON_INT32(DataParser::types::BACKTEST),
                 this->groupFilter.c_str(), "{", "$bitsAnySet", BCON_INT32((int)pow(2, this->group)), "}",
             "}",
             "$orderby", "{", "data.timestamp", BCON_INT32(1), "}",
@@ -322,7 +326,7 @@ double *Optimizer::loadData(double lastTimestamp, int chunkSize) {
             "$query", "{",
                 "data.timestamp", "{", "$gt", BCON_DOUBLE(lastTimestamp), "}",
                 "symbol", BCON_UTF8(this->symbol.c_str()),
-                "type", BCON_INT32(getType()),
+                "type", BCON_INT32(DataParser::types::FORWARDTEST),
             "}",
             "$orderby", "{", "data.timestamp", BCON_INT32(1), "}",
             "$hint", "{", "data.timestamp", BCON_INT32(1), "}"
@@ -426,7 +430,7 @@ void Optimizer::optimize(double investment, double profitability) {
     double percentage;
     mongoc_collection_t *collection;
     bson_t *countQuery;
-    bson_error_t error;
+    bson_error_t countQueryError;
     std::map<std::string, int> *tempDataIndexMap = getDataIndexMap();
     int dataPropertyCount = getDataPropertyCount();
     int dataPointCount;
@@ -483,21 +487,21 @@ void Optimizer::optimize(double investment, double profitability) {
     if (getType() == Optimizer::types::TEST || getType() == Optimizer::types::VALIDATION) {
         countQuery = BCON_NEW(
             "symbol", BCON_UTF8(this->symbol.c_str()),
-            "type", BCON_INT32(getType()),
+            "type", BCON_INT32(DataParser::types::BACKTEST),
             this->groupFilter.c_str(), "{", "$bitsAnySet", BCON_INT32((int)pow(2, this->group)), "}"
         );
     }
     else if (getType() == Optimizer::types::FORWARDTEST) {
         countQuery = BCON_NEW(
             "symbol", BCON_UTF8(this->symbol.c_str()),
-            "type", BCON_INT32(getType())
+            "type", BCON_INT32(DataParser::types::FORWARDTEST)
         );
     }
     else {
         throw std::runtime_error("Invalid optimization type");
     }
 
-    dataPointCount = mongoc_collection_count(collection, MONGOC_QUERY_NONE, countQuery, 0, 0, NULL, &error);
+    dataPointCount = mongoc_collection_count(collection, MONGOC_QUERY_NONE, countQuery, 0, 0, NULL, &countQueryError);
 
     for (i=0; i<gpuCount; i++) {
         // Allocate data for strategies.

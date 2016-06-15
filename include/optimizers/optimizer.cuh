@@ -16,6 +16,7 @@
 #include <bcon.h>
 #include <boost/variant.hpp>
 #include "maginatics/threadpool/threadpool.h"
+#include "dataParsers/dataParser.cuh"
 #include "studies/study.cuh"
 #include "strategies/reversalsOptimizationStrategy.cuh"
 #include "types/tick.cuh"

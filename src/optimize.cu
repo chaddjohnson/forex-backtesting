@@ -7,7 +7,6 @@
 #include "types/configuration.cuh"
 
 int main(int argc, char *argv[]) {
-    std::vector<Configuration*> configurations;
     int returnValue = 0;
     int i = 0;
 

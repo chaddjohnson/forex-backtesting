@@ -17,6 +17,7 @@ std::vector<Tick*> OandaDataParser::parse() {
         std::stringstream line(*iterator);
         std::string lineItem;
         std::vector<std::string> lineItems;
+        int i = 0;
 
         // Break the line into data items.
         while(std::getline(line, lineItem, ',')) {
@@ -29,14 +30,14 @@ std::vector<Tick*> OandaDataParser::parse() {
         // Translate the data items.
         (*translatedLine)["type"] = (double)getType();
         if (getType() == DataParser::types::BACKTEST) {
-            (*translatedLine)["testingGroups"] = parseGroups(lineItems.at(0));
-            (*translatedLine)["validationGroups"] = parseGroups(lineItems.at(1));
+            (*translatedLine)["testingGroups"] = parseGroups(lineItems.at(i++));
+            (*translatedLine)["validationGroups"] = parseGroups(lineItems.at(i++));
         }
-        (*translatedLine)["timestamp"] = std::atof(lineItems.at(2).c_str());
-        (*translatedLine)["open"] = std::atof(lineItems.at(3).c_str());
-        (*translatedLine)["high"] = std::atof(lineItems.at(4).c_str());
-        (*translatedLine)["low"] = std::atof(lineItems.at(5).c_str());
-        (*translatedLine)["close"] = std::atof(lineItems.at(6).c_str());
+        (*translatedLine)["timestamp"] = std::atof(lineItems.at(i++).c_str());
+        (*translatedLine)["open"] = std::atof(lineItems.at(i++).c_str());
+        (*translatedLine)["high"] = std::atof(lineItems.at(i++).c_str());
+        (*translatedLine)["low"] = std::atof(lineItems.at(i++).c_str());
+        (*translatedLine)["close"] = std::atof(lineItems.at(i++).c_str());
 
         // Add the translated line to the list of translated lines.
         translatedLines.push_back(translatedLine);

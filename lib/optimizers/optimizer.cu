@@ -68,14 +68,14 @@ bson_t *Optimizer::convertTickToBson(Tick *tick) {
     if (getType() == Optimizer::types::TEST || getType() == Optimizer::types::VALIDATION) {
         BSON_APPEND_INT32(document, "testingGroups", tick->at("testingGroups"));
         BSON_APPEND_INT32(document, "validationGroups", tick->at("validationGroups"));
+
+        // Remove type and group keys as they are no longer needed.
+        tick->erase("type");
+        tick->erase("testingGroups");
+        tick->erase("validationGroups");
     }
 
     BSON_APPEND_DOCUMENT_BEGIN(document, "data", &dataDocument);
-
-    // Remove type and group keys as they are no longer needed.
-    tick->erase("type");
-    tick->erase("testingGroups");
-    tick->erase("validationGroups");
 
     // Add tick properties to document.
     for (Tick::iterator propertyIterator = tick->begin(); propertyIterator != tick->end(); ++propertyIterator) {

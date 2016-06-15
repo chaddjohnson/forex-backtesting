@@ -31,190 +31,10 @@ Array.prototype.slice = function(begin, end) {
 
 scheduleGarbageCollection();
 
-gulp.task('preparedata', function(done) {
-    function showUsageInfo() {
-        console.log('Example usage:\n');
-        console.log('gulp data --symbol AUDJPY --parser metatrader --data ./data/metatrader/three-year/AUDJPY.csv --optimizer Reversals --database forex-backtesting\n');
-    }
-
-    function handleInputError(message) {
-        gutil.log(gutil.colors.red(message));
-        showUsageInfo();
-        process.exit(1);
-    }
-
-    var db = require('./db');
-    var dataParsers = require('./src/dataParsers');
-    var optimizers = require('./src/optimizers');
-
-    var optimizerFn;
-    var dataParser;
-
-    // Find the symbol based on the command line argument.
-    if (!argv.symbol) {
-        handleInputError('No symbol provided');
-    }
-
-    // Find the raw data parser based on command line argument.
-    dataParser = dataParsers[argv.parser]
-    if (!dataParser) {
-        handleInputError('Invalid data parser');
-    }
-
-    // Find the strategy based on the command line argument.
-    optimizerFn = optimizers[argv.optimizer]
-    if (!optimizerFn) {
-        handleInputError('Invalid strategy optimizer');
-    }
-
-    if (!argv.database) {
-        handleInputError('No database provided');
-    }
-
-    // Set up database connection.
-    db.initialize(argv.database);
-
-    try {
-        // Parse the raw data file.
-        dataParser.parse(argv.data).then(function(parsedData) {
-            // Prepare the strategy.
-            var optimizer = new optimizerFn(argv.symbol);
-
-            // Backtest the strategy against the parsed data.
-            optimizer.prepareStudyData(parsedData, function() {
-                db.disconnect();
-                done();
-                process.exit(0);
-            });
-        });
-    }
-    catch (error) {
-        console.error(error.message || error);
-        process.exit(1);
-    }
-});
-
-gulp.task('test', function(done) {
-    function showUsageInfo() {
-        console.log('Example usage:\n');
-        console.log('gulp test --symbol AUDJPY --group 4 --type testing --investment 1000 --profitability 0.7 --database forex-backtesting\n');
-    }
-
-    function handleInputError(message) {
-        gutil.log(gutil.colors.red(message));
-        showUsageInfo();
-        process.exit(1);
-    }
-
-    var db = require('./db');
-    var DataPoint = require('./src/models/DataPoint');
-    var Forwardtest = require('./src/models/Forwardtest');
-    var Validation = require('./src/models/Validation');
-    var optimizerFn = require('./src/optimizers/Reversals');
-    var strategyFn = require('./src/strategies/combined/Reversals');
-    var optimizer;
-    var group = 0;
-    var investment = 0.0;
-    var profitability = 0.0;
-    var typeKey = '';
-    var dataConstraints = {};
-    var forwardtestConstraints;
-    var tasks = [];
-
-    // Find the symbol based on the command line argument.
-    if (!argv.symbol) {
-        handleInputError('No symbol provided');
-    }
-
-    if (!argv.type) {
-        handleInputError('No type provided');
-    }
-
-    group = parseInt(argv.group);
-    if (!group) {
-        handleInputError('No group provided');
-    }
-
-    investment = parseFloat(argv.investment)
-    if (!investment) {
-        handleInputError('Invalid investment');
-    }
-
-    profitability = parseFloat(argv.profitability)
-    if (!profitability) {
-        handleInputError('No profitability provided');
-    }
-
-    if (!argv.database) {
-        handleInputError('No database provided');
-    }
-
-    if (argv.type === 'testing') {
-        forwardtestConstraints = {
-            symbol: argv.symbol,
-            group: group - 1,
-            winRate: {'$gte': 0.57}
-        };
-    }
-    else {
-        forwardtestConstraints = {
-            symbol: argv.symbol,
-            group: group
-        };
-    }
-
-    typeKey = 'data.groups.' + argv.type;
-    dataConstraints.symbol = argv.symbol;
-    dataConstraints[typeKey] = group;
-
-    optimizer = new optimizerFn(argv.symbol, group);
-
-    // Set up database connection.
-    db.initialize(argv.database);
-
-    // Get configurations.
-    tasks.push(function(taskCallback) {
-        if (group === 1) {
-            // Just let optimizer use its own configurations.
-            taskCallback();
-        }
-        else {
-            Forwardtest.find(forwardtestConstraints, function(error, forwardtests) {
-                // Override configurations used by optimizer.
-                optimizer.configurations = _.pluck(forwardtests, 'configuration');
-                taskCallback();
-            });
-        }
-    });
-
-    tasks.push(function(taskCallback) {
-        try {
-            // Override the data query for the optimizer.
-            optimizer.setQuery(dataConstraints);
-            optimizer.setType(argv.type);
-
-            // Run optimization.
-            optimizer.optimize([], investment, profitability, function() {
-                taskCallback();
-            });
-        }
-        catch (error) {
-            console.error(error.message || error);
-            process.exit(1);
-        }
-    });
-
-    async.series(tasks, function() {
-        db.disconnect();
-        done();
-        process.exit(0);
-    });
-});
-
 gulp.task('average', function(done) {
     function showUsageInfo() {
         console.log('Example usage:\n');
-        console.log('gulp average --symbol AUDJPY --database forex-backtesting\n');
+        console.log('gulp average --symbol AUDNZD --database forex-backtesting\n');
     }
 
     function handleInputError(message) {
@@ -224,7 +44,7 @@ gulp.task('average', function(done) {
     }
 
     var db = require('./db');
-    var Forwardtest = require('./src/models/Forwardtest');
+    var Test = require('./src/models/Test');
     var Validation = require('./src/models/Validation');
     var ValidationAverage = require('./src/models/ValidationAverage');
 
@@ -241,18 +61,18 @@ gulp.task('average', function(done) {
     db.initialize(argv.database);
 
     // Find the forward tests for group 10.
-    Forwardtest.find({symbol: argv.symbol, group: 10}, function(error, forwardtests) {
+    Test.find({symbol: argv.symbol, group: 10}, function(error, tests) {
         var tasks = [];
-        var forwardtestCount = forwardtests.length;
+        var testCount = tests.length;
         var percentage = 0.0;
         var validationAverages = [];
 
         process.stdout.write('Calculating validation averages...');
 
-        forwardtests.forEach(function(forwardtest, index) {
+        tests.forEach(function(test, index) {
             tasks.push(function(taskCallback) {
-                // For each forward test, find the validation results for each round given the forward test's configuration.
-                Validation.find({symbol: argv.symbol, configuration: forwardtest.configuration}, function(error, validations) {
+                // For each test, find the validation results for each round given the test's configuration.
+                Validation.find({symbol: argv.symbol, configuration: test.configuration}, function(error, validations) {
                     var validationCount = validations.length;
 
                     // Calculate averages for all properties.
@@ -279,7 +99,8 @@ gulp.task('average', function(done) {
                     // Add to averages to be saved.
                     validationAverages.push({
                         symbol: argv.symbol,
-                        configuration: forwardtest.configuration,
+                        strategyName: 'reversals',
+                        configuration: test.configuration,
                         profitLoss: averageProfitLoss,
                         tradeCount: averageTradeCount,
                         winRate: averageWinRate,
@@ -287,7 +108,7 @@ gulp.task('average', function(done) {
                         minimumProfitLoss: averageMinimumProfitLoss
                     });
 
-                    percentage = ((index / forwardtestCount) * 100).toFixed(5);
+                    percentage = ((index / testCount) * 100).toFixed(5);
                     process.stdout.cursorTo(34);
                     process.stdout.write(percentage + '%');
 

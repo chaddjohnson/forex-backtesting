@@ -58,7 +58,8 @@ class Optimizer {
         virtual std::map<std::string, ConfigurationOption> getConfigurationOptions() = 0;
         virtual std::vector<Configuration*> buildBaseConfigurations() = 0;
         virtual std::vector<Configuration*> buildGroupConfigurations() = 0;
-        virtual std::vector<Configuration*> loadConfigurations() = 0;
+        virtual std::vector<Configuration*> buildSavedConfigurations() = 0;
+        virtual std::vector<Configuration*> loadConfigurations(const char *collectionName, bson_t *query) = 0;
         virtual bson_t *convertResultToBson(StrategyResult &result) = 0;
 
     public:

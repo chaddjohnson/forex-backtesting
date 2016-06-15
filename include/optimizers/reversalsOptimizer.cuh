@@ -22,7 +22,8 @@ class ReversalsOptimizer : public Optimizer {
         std::map<std::string, ConfigurationOption> getConfigurationOptions();
         std::vector<Configuration*> buildBaseConfigurations();
         std::vector<Configuration*> buildGroupConfigurations();
-        std::vector<Configuration*> loadConfigurations();
+        std::vector<Configuration*> buildSavedConfigurations();
+        std::vector<Configuration*> loadConfigurations(const char *collectionName, bson_t *query);
         bson_t *convertResultToBson(StrategyResult &result);
 
     public:

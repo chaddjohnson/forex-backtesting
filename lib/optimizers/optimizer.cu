@@ -63,11 +63,13 @@ bson_t *Optimizer::convertTickToBson(Tick *tick) {
 
     document = bson_new();
     BSON_APPEND_UTF8(document, "symbol", this->symbol.c_str());
+    BSON_APPEND_INT32(document, "type", tick->at("type"));
     BSON_APPEND_INT32(document, "testingGroups", tick->at("testingGroups"));
     BSON_APPEND_INT32(document, "validationGroups", tick->at("validationGroups"));
     BSON_APPEND_DOCUMENT_BEGIN(document, "data", &dataDocument);
 
-    // Remove group keys as they are no longer needed.
+    // Remove type and group keys as they are no longer needed.
+    tick->erase("type");
     tick->erase("testingGroups");
     tick->erase("validationGroups");
 
@@ -303,15 +305,32 @@ double *Optimizer::loadData(double lastTimestamp, int chunkSize) {
     double *data = (double*)malloc(dataChunkBytes);
 
     // Query the database.
-    query = BCON_NEW(
-        "$query", "{",
-            "data.timestamp", "{", "$gt", BCON_DOUBLE(lastTimestamp), "}",
-            "symbol", BCON_UTF8(this->symbol.c_str()),
-            this->groupFilter.c_str(), "{", "$bitsAnySet", BCON_INT32((int)pow(2, this->group)), "}",
-        "}",
-        "$orderby", "{", "data.timestamp", BCON_INT32(1), "}",
-        "$hint", "{", "data.timestamp", BCON_INT32(1), "}"
-    );
+    if (getType() == Optimizer::types::TEST || getType() == Optimizer::types::VALIDATION) {
+        query = BCON_NEW(
+            "$query", "{",
+                "data.timestamp", "{", "$gt", BCON_DOUBLE(lastTimestamp), "}",
+                "symbol", BCON_UTF8(this->symbol.c_str()),
+                "type", BCON_INT32(getType()),
+                this->groupFilter.c_str(), "{", "$bitsAnySet", BCON_INT32((int)pow(2, this->group)), "}",
+            "}",
+            "$orderby", "{", "data.timestamp", BCON_INT32(1), "}",
+            "$hint", "{", "data.timestamp", BCON_INT32(1), "}"
+        );
+    }
+    else if (getType() == Optimizer::types::FORWARDTEST) {
+        query = BCON_NEW(
+            "$query", "{",
+                "data.timestamp", "{", "$gt", BCON_DOUBLE(lastTimestamp), "}",
+                "symbol", BCON_UTF8(this->symbol.c_str()),
+                "type", BCON_INT32(getType()),
+            "}",
+            "$orderby", "{", "data.timestamp", BCON_INT32(1), "}",
+            "$hint", "{", "data.timestamp", BCON_INT32(1), "}"
+        );
+    }
+    else {
+        throw std::runtime_error("Invalid optimization type");
+    }
     cursor = mongoc_collection_find(collection, MONGOC_QUERY_NONE, 0, chunkSize, 1000, query, NULL, NULL);
 
     // Go through query results, and convert each document into an array.
@@ -431,7 +450,7 @@ void Optimizer::optimize(double investment, double profitability) {
         }
     }
     else if (getType() == Optimizer::types::FORWARDTEST) {
-        configurations = loadConfigurations();
+        configurations = buildSavedConfigurations();
     }
     else {
         throw std::runtime_error("Invalid optimization type");
@@ -461,10 +480,23 @@ void Optimizer::optimize(double investment, double profitability) {
 
     // Get a count of all data points for the symbol.
     collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting", "datapoints");
-    countQuery = BCON_NEW(
-        "symbol", BCON_UTF8(this->symbol.c_str()),
-        this->groupFilter.c_str(), "{", "$bitsAnySet", BCON_INT32((int)pow(2, this->group)), "}"
-    );
+    if (getType() == Optimizer::types::TEST || getType() == Optimizer::types::VALIDATION) {
+        countQuery = BCON_NEW(
+            "symbol", BCON_UTF8(this->symbol.c_str()),
+            "type", BCON_INT32(getType()),
+            this->groupFilter.c_str(), "{", "$bitsAnySet", BCON_INT32((int)pow(2, this->group)), "}"
+        );
+    }
+    else if (getType() == Optimizer::types::FORWARDTEST) {
+        countQuery = BCON_NEW(
+            "symbol", BCON_UTF8(this->symbol.c_str()),
+            "type", BCON_INT32(getType())
+        );
+    }
+    else {
+        throw std::runtime_error("Invalid optimization type");
+    }
+
     dataPointCount = mongoc_collection_count(collection, MONGOC_QUERY_NONE, countQuery, 0, 0, NULL, &error);
 
     for (i=0; i<gpuCount; i++) {
@@ -618,7 +650,20 @@ void Optimizer::saveResults(std::vector<StrategyResult> &results) {
     bson_t bulkOperationReply;
     bson_error_t bulkOperationError;
 
-    std::string collectionName = this->groupFilter == "testingGroups" ? "tests" : "validations";
+    std::string collectionName;
+
+    if (getType() == Optimizer::types::TEST) {
+        collectionName = "tests";
+    }
+    else if (getType() == Optimizer::types::VALIDATION) {
+        collectionName = "validations";
+    }
+    else if (getType() == Optimizer::types::FORWARDTEST) {
+        collectionName = "forwardtests";
+    }
+    else {
+        throw std::runtime_error("Invalid optimization type");
+    }
 
     // Get a reference to the database collection.
     collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting", collectionName.c_str());

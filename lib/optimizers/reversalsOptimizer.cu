@@ -766,15 +766,7 @@ std::vector<Configuration*> ReversalsOptimizer::buildBaseConfigurations() {
 
 std::vector<Configuration*> ReversalsOptimizer::buildGroupConfigurations() {
     std::vector<Configuration*> configurations;
-    std::map<std::string, int> *tempDataIndexMap = getDataIndexMap();
-    mongoc_collection_t *collection;
-    mongoc_cursor_t *cursor;
     bson_t *query;
-    const bson_t *document;
-    bson_iter_t documentIterator;
-    bson_iter_t configurationIterator;
-    std::string propertyName;
-    const bson_value_t *propertyValue;
 
     // Default to using the current group.
     int group = getGroup();
@@ -787,9 +779,6 @@ std::vector<Configuration*> ReversalsOptimizer::buildGroupConfigurations() {
     }
 
     printf("Building group %i configurations...", group);
-
-    // Get a reference to the database collection.
-    collection = mongoc_client_get_collection(getDbClient(), "forex-backtesting", "tests");
 
     // Query the database for configurations belonging to the previous (testing) or current (validation) group.
     if (getType() == Optimizer::types::TEST) {
@@ -811,6 +800,65 @@ std::vector<Configuration*> ReversalsOptimizer::buildGroupConfigurations() {
             "}"
         );
     }
+
+    configurations = loadConfigurations("tests", query);
+
+    // Cleanup.
+    bson_destroy(query);
+
+    printf("%i configurations built\n", (int)configurations.size());
+
+    return configurations;
+}
+
+std::vector<Configuration*> ReversalsOptimizer::buildSavedConfigurations() {
+    std::vector<Configuration*> configurations;
+    bson_t *query;
+
+    // Default to using the current group.
+    int group = getGroup();
+
+    if (getType() == Optimizer::types::TEST) {
+        // Testing is being performed, so use configurations from the previous test.
+        // If validation is being performed, on the other hand, then we want to
+        // validate the current group rather than the previous group.
+        group = group - 1;
+    }
+
+    printf("Building saved configurations...");
+
+    // Query the database for configurations belonging to the previous (testing) or current (validation) group.
+    query = BCON_NEW(
+        "$query", "{",
+            "symbol", BCON_UTF8(getSymbol().c_str()),
+            "strategyName", BCON_UTF8(getStrategyName().c_str()),
+        "}"
+    );
+    configurations = loadConfigurations("configurations", query);
+
+    // Cleanup.
+    bson_destroy(query);
+
+    printf("%i configurations built\n", (int)configurations.size());
+
+    return configurations;
+}
+
+std::vector<Configuration*> ReversalsOptimizer::loadConfigurations(const char *collectionName, bson_t *query) {
+    std::vector<Configuration*> configurations;
+    std::map<std::string, int> *tempDataIndexMap = getDataIndexMap();
+    mongoc_collection_t *collection;
+    mongoc_cursor_t *cursor;
+    const bson_t *document;
+    bson_iter_t documentIterator;
+    bson_iter_t configurationIterator;
+    std::string propertyName;
+    const bson_value_t *propertyValue;
+
+    // Get a reference to the database collection.
+    collection = mongoc_client_get_collection(getDbClient(), "forex-backtesting", collectionName);
+
+    // Run the query and get a cursor.
     cursor = mongoc_collection_find(collection, MONGOC_QUERY_NONE, 0, 0, 1000, query, NULL, NULL);
 
     while (mongoc_cursor_next(cursor, &document)) {
@@ -929,19 +977,8 @@ std::vector<Configuration*> ReversalsOptimizer::buildGroupConfigurations() {
     }
 
     // Cleanup.
-    bson_destroy(query);
-    mongoc_cursor_destroy(cursor);
     mongoc_collection_destroy(collection);
-
-    printf("%i configurations built\n", (int)configurations.size());
-
-    return configurations;
-}
-
-std::vector<Configuration*> ReversalsOptimizer::loadConfigurations() {
-    std::vector<Configuration*> configurations;
-
-
+    mongoc_cursor_destroy(cursor);
 
     return configurations;
 }
@@ -954,8 +991,11 @@ bson_t *ReversalsOptimizer::convertResultToBson(StrategyResult &result) {
 
     // Include basic information.
     BSON_APPEND_UTF8(document, "symbol", getSymbol().c_str());
-    BSON_APPEND_INT32(document, "group", getGroup());
     BSON_APPEND_UTF8(document, "strategyName", getStrategyName().c_str());
+
+    if (getType() == Optimizer::types::TEST || getType() == Optimizer::types::VALIDATION) {
+        BSON_APPEND_INT32(document, "group", getGroup());
+    }
 
     // Include stats.
     BSON_APPEND_DOUBLE(document, "profitLoss", result.profitLoss);

@@ -69,11 +69,13 @@ bson_t *Optimizer::convertTickToBson(Tick *tick) {
         BSON_APPEND_INT32(document, "testingGroups", tick->at("testingGroups"));
         BSON_APPEND_INT32(document, "validationGroups", tick->at("validationGroups"));
 
-        // Remove type and group keys as they are no longer needed.
-        tick->erase("type");
+        // Remove group keys as they are no longer needed.
         tick->erase("testingGroups");
         tick->erase("validationGroups");
     }
+
+    // Remove type key as it is no longer needed.
+    tick->erase("type");
 
     BSON_APPEND_DOCUMENT_BEGIN(document, "data", &dataDocument);
 

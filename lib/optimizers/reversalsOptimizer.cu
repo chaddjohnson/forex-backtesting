@@ -941,10 +941,10 @@ std::vector<Configuration*> ReversalsOptimizer::loadConfigurations(const char *c
                         }
                     }
                     else if (propertyName == "rsiOverbought") {
-                        resultConfiguration->rsiOverbought = propertyValue->value.v_double;
+                        resultConfiguration->rsiOverbought = (double)propertyValue->value.v_int32;
                     }
                     else if (propertyName == "rsiOversold") {
-                        resultConfiguration->rsiOversold = propertyValue->value.v_double;
+                        resultConfiguration->rsiOversold = (double)propertyValue->value.v_int32;
                     }
                     else if (propertyName == "stochasticD") {
                         if (propertyValue->value_type != BSON_TYPE_BOOL) {
@@ -957,10 +957,10 @@ std::vector<Configuration*> ReversalsOptimizer::loadConfigurations(const char *c
                         }
                     }
                     else if (propertyName == "stochasticOverbought") {
-                        resultConfiguration->stochasticOverbought = propertyValue->value.v_double;
+                        resultConfiguration->stochasticOverbought = (double)propertyValue->value.v_int32;
                     }
                     else if (propertyName == "stochasticOversold") {
-                        resultConfiguration->stochasticOversold = propertyValue->value.v_double;
+                        resultConfiguration->stochasticOversold = (double)propertyValue->value.v_int32;
                     }
                     else if (propertyName == "prChannelUpper") {
                         resultConfiguration->prChannelUpper = (*tempDataIndexMap)[propertyValue->value.v_utf8.str];

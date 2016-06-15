@@ -13,14 +13,14 @@ __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoi
     this->tick(dataPoint, getPreviousClose(), dataPoint[configuration.timestamp] - 1);
 
     // Do not create trades between 4pm - 11:30pm Central, as the payout is lower during these times.
-    if (dataPoint[configuration.timestampHour] >= 16 && (dataPoint[configuration.timestampHour] < 23 || (dataPoint[configuration.timestampHour] == 23 && dataPoint[configuration.timestampMinute] < 30))) {
-        setPreviousClose(dataPoint[configuration.close]);
+    // if (dataPoint[configuration.timestampHour] >= 16 && (dataPoint[configuration.timestampHour] < 23 || (dataPoint[configuration.timestampHour] == 23 && dataPoint[configuration.timestampMinute] < 30))) {
+    //     setPreviousClose(dataPoint[configuration.close]);
 
-        putNextTick = false;
-        callNextTick = false;
+    //     putNextTick = false;
+    //     callNextTick = false;
 
-        return;
-    }
+    //     return;
+    // }
 
     if (getPreviousClose()) {
         if (putNextTick) {

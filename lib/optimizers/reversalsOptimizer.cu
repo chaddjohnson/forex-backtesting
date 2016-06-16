@@ -306,25 +306,25 @@ std::map<std::string, ConfigurationOption> ReversalsOptimizer::getConfigurationO
 
     // SMA 13
     ConfigurationOption sma13Options;
-    sma13Options.push_back({{}});
+    sma13Options.push_back({{"sma13", 0}});
     sma13Options.push_back({{"sma13", "sma13"}});
     configurationOptions["sma13"] = sma13Options;
 
     // EMA 50
     ConfigurationOption ema50Options;
-    ema50Options.push_back({{}});
+    ema50Options.push_back({{"ema50", 0}});
     ema50Options.push_back({{"ema50", "ema50"}});
     configurationOptions["ema50"] = ema50Options;
 
     // EMA 100
     ConfigurationOption ema100Options;
-    ema100Options.push_back({{}});
+    ema100Options.push_back({{"ema100", 0}});
     ema100Options.push_back({{"ema100", "ema100"}});
     configurationOptions["ema100"] = ema100Options;
 
     // EMA 200
     ConfigurationOption ema200Options;
-    ema200Options.push_back({{}});
+    ema200Options.push_back({{"ema200", 0}});
     ema200Options.push_back({{"ema200", "ema200"}});
     configurationOptions["ema200"] = ema200Options;
 
@@ -366,7 +366,7 @@ std::map<std::string, ConfigurationOption> ReversalsOptimizer::getConfigurationO
 
     // RSI
     ConfigurationOption rsiOptions;
-    rsiOptions.push_back({{}});
+    rsiOptions.push_back({{"rsi", 0}, {"rsiOverbought", 0.0}, {"rsiOversold", 0.0}});
     rsiOptions.push_back({{"rsi", "rsi2"}, {"rsiOverbought", 95.0}, {"rsiOversold", 5.0}});
     rsiOptions.push_back({{"rsi", "rsi5"}, {"rsiOverbought", 80.0}, {"rsiOversold", 20.0}});
     rsiOptions.push_back({{"rsi", "rsi7"}, {"rsiOverbought", 77.0}, {"rsiOversold", 23.0}});
@@ -378,7 +378,7 @@ std::map<std::string, ConfigurationOption> ReversalsOptimizer::getConfigurationO
 
     // Stochastic Oscillator
     ConfigurationOption stochasticOptions;
-    stochasticOptions.push_back({{}});
+    stochasticOptions.push_back({{"stochasticK", 0}, {"stochasticD", 0}, {"stochasticOverbought", 0.0}, {"stochasticOversold", 0.0}});
     stochasticOptions.push_back({{"stochasticK", "stochastic5K"}, {"stochasticD", "stochastic5D"}, {"stochasticOverbought", 77.0}, {"stochasticOversold", 23.0}});
     stochasticOptions.push_back({{"stochasticK", "stochastic5K"}, {"stochasticD", "stochastic5D"}, {"stochasticOverbought", 80.0}, {"stochasticOversold", 20.0}});
     stochasticOptions.push_back({{"stochasticK", "stochastic5K"}, {"stochasticD", "stochastic5D"}, {"stochasticOverbought", 95.0}, {"stochasticOversold", 5.0}});
@@ -676,15 +676,14 @@ std::vector<Configuration*> ReversalsOptimizer::buildBaseConfigurations() {
     std::map<std::string, int> *tempDataIndexMap = getDataIndexMap();
     std::vector<MapConfiguration> *mapConfigurations = buildMapConfigurations(options);
     std::vector<Configuration*> configurations;
-    Configuration *configuration = nullptr;
 
     // Reserve space in advance for better performance.
     configurations.reserve(mapConfigurations->size());
 
     // Convert map representations of maps into structs of type Configuration.
-    for (std::vector<MapConfiguration>::iterator mapvalueIterator = mapConfigurations->begin(); mapvalueIterator != mapConfigurations->end(); ++mapvalueIterator) {
+    for (std::vector<MapConfiguration>::iterator mapValueIterator = mapConfigurations->begin(); mapValueIterator != mapConfigurations->end(); ++mapValueIterator) {
         // Set up a new, empty configuration.
-        configuration = new Configuration();
+        Configuration *configuration = new Configuration();
 
         // Set basic properties.
         configuration->timestamp = (*tempDataIndexMap)["timestamp"];
@@ -696,64 +695,64 @@ std::vector<Configuration*> ReversalsOptimizer::buildBaseConfigurations() {
         configuration->close = (*tempDataIndexMap)["close"];
 
         // Set index mappings.
-        if ((*mapvalueIterator).find("sma13") != (*mapvalueIterator).end()) {
-            configuration->sma13 = boost::get<int>((*mapvalueIterator)["sma13"]);
+        if ((*mapValueIterator).find("sma13") != (*mapValueIterator).end()) {
+            configuration->sma13 = boost::get<int>((*mapValueIterator)["sma13"]);
         }
-        if ((*mapvalueIterator).find("ema50") != (*mapvalueIterator).end()) {
-            configuration->ema50 = boost::get<int>((*mapvalueIterator)["ema50"]);
+        if ((*mapValueIterator).find("ema50") != (*mapValueIterator).end()) {
+            configuration->ema50 = boost::get<int>((*mapValueIterator)["ema50"]);
         }
-        if ((*mapvalueIterator).find("ema100") != (*mapvalueIterator).end()) {
-            configuration->ema100 = boost::get<int>((*mapvalueIterator)["ema100"]);
+        if ((*mapValueIterator).find("ema100") != (*mapValueIterator).end()) {
+            configuration->ema100 = boost::get<int>((*mapValueIterator)["ema100"]);
         }
-        if ((*mapvalueIterator).find("ema200") != (*mapvalueIterator).end()) {
-            configuration->ema200 = boost::get<int>((*mapvalueIterator)["ema200"]);
+        if ((*mapValueIterator).find("ema200") != (*mapValueIterator).end()) {
+            configuration->ema200 = boost::get<int>((*mapValueIterator)["ema200"]);
         }
-        // if ((*mapvalueIterator).find("ema250") != (*mapvalueIterator).end()) {
-        //     configuration->ema250 = boost::get<int>((*mapvalueIterator)["ema250"]);
+        // if ((*mapValueIterator).find("ema250") != (*mapValueIterator).end()) {
+        //     configuration->ema250 = boost::get<int>((*mapValueIterator)["ema250"]);
         // }
-        // if ((*mapvalueIterator).find("ema300") != (*mapvalueIterator).end()) {
-        //     configuration->ema300 = boost::get<int>((*mapvalueIterator)["ema300"]);
+        // if ((*mapValueIterator).find("ema300") != (*mapValueIterator).end()) {
+        //     configuration->ema300 = boost::get<int>((*mapValueIterator)["ema300"]);
         // }
-        // if ((*mapvalueIterator).find("ema350") != (*mapvalueIterator).end()) {
-        //     configuration->ema350 = boost::get<int>((*mapvalueIterator)["ema350"]);
+        // if ((*mapValueIterator).find("ema350") != (*mapValueIterator).end()) {
+        //     configuration->ema350 = boost::get<int>((*mapValueIterator)["ema350"]);
         // }
-        // if ((*mapvalueIterator).find("ema400") != (*mapvalueIterator).end()) {
-        //     configuration->ema400 = boost::get<int>((*mapvalueIterator)["ema400"]);
+        // if ((*mapValueIterator).find("ema400") != (*mapValueIterator).end()) {
+        //     configuration->ema400 = boost::get<int>((*mapValueIterator)["ema400"]);
         // }
-        // if ((*mapvalueIterator).find("ema450") != (*mapvalueIterator).end()) {
-        //     configuration->ema450 = boost::get<int>((*mapvalueIterator)["ema450"]);
+        // if ((*mapValueIterator).find("ema450") != (*mapValueIterator).end()) {
+        //     configuration->ema450 = boost::get<int>((*mapValueIterator)["ema450"]);
         // }
-        // if ((*mapvalueIterator).find("ema500") != (*mapvalueIterator).end()) {
-        //     configuration->ema500 = boost::get<int>((*mapvalueIterator)["ema500"]);
+        // if ((*mapValueIterator).find("ema500") != (*mapValueIterator).end()) {
+        //     configuration->ema500 = boost::get<int>((*mapValueIterator)["ema500"]);
         // }
-        if ((*mapvalueIterator).find("rsi") != (*mapvalueIterator).end()) {
-            configuration->rsi = boost::get<int>((*mapvalueIterator)["rsi"]);
+        if ((*mapValueIterator).find("rsi") != (*mapValueIterator).end()) {
+            configuration->rsi = boost::get<int>((*mapValueIterator)["rsi"]);
         }
-        if ((*mapvalueIterator).find("stochasticD") != (*mapvalueIterator).end()) {
-            configuration->stochasticD = boost::get<int>((*mapvalueIterator)["stochasticD"]);
+        if ((*mapValueIterator).find("stochasticD") != (*mapValueIterator).end()) {
+            configuration->stochasticD = boost::get<int>((*mapValueIterator)["stochasticD"]);
         }
-        if ((*mapvalueIterator).find("stochasticK") != (*mapvalueIterator).end()) {
-            configuration->stochasticK = boost::get<int>((*mapvalueIterator)["stochasticK"]);
+        if ((*mapValueIterator).find("stochasticK") != (*mapValueIterator).end()) {
+            configuration->stochasticK = boost::get<int>((*mapValueIterator)["stochasticK"]);
         }
-        if ((*mapvalueIterator).find("prChannelUpper") != (*mapvalueIterator).end()) {
-            configuration->prChannelUpper = boost::get<int>((*mapvalueIterator)["prChannelUpper"]);
+        if ((*mapValueIterator).find("prChannelUpper") != (*mapValueIterator).end()) {
+            configuration->prChannelUpper = boost::get<int>((*mapValueIterator)["prChannelUpper"]);
         }
-        if ((*mapvalueIterator).find("prChannelLower") != (*mapvalueIterator).end()) {
-            configuration->prChannelLower = boost::get<int>((*mapvalueIterator)["prChannelLower"]);
+        if ((*mapValueIterator).find("prChannelLower") != (*mapValueIterator).end()) {
+            configuration->prChannelLower = boost::get<int>((*mapValueIterator)["prChannelLower"]);
         }
 
         // Set values.
-        if ((*mapvalueIterator).find("rsiOverbought") != (*mapvalueIterator).end()) {
-            configuration->rsiOverbought = boost::get<double>((*mapvalueIterator)["rsiOverbought"]);
+        if ((*mapValueIterator).find("rsiOverbought") != (*mapValueIterator).end()) {
+            configuration->rsiOverbought = boost::get<double>((*mapValueIterator)["rsiOverbought"]);
         }
-        if ((*mapvalueIterator).find("rsiOversold") != (*mapvalueIterator).end()) {
-            configuration->rsiOversold = boost::get<double>((*mapvalueIterator)["rsiOversold"]);
+        if ((*mapValueIterator).find("rsiOversold") != (*mapValueIterator).end()) {
+            configuration->rsiOversold = boost::get<double>((*mapValueIterator)["rsiOversold"]);
         }
-        if ((*mapvalueIterator).find("stochasticOverbought") != (*mapvalueIterator).end()) {
-            configuration->stochasticOverbought = boost::get<double>((*mapvalueIterator)["stochasticOverbought"]);
+        if ((*mapValueIterator).find("stochasticOverbought") != (*mapValueIterator).end()) {
+            configuration->stochasticOverbought = boost::get<double>((*mapValueIterator)["stochasticOverbought"]);
         }
-        if ((*mapvalueIterator).find("stochasticOversold") != (*mapvalueIterator).end()) {
-            configuration->stochasticOversold = boost::get<double>((*mapvalueIterator)["stochasticOversold"]);
+        if ((*mapValueIterator).find("stochasticOversold") != (*mapValueIterator).end()) {
+            configuration->stochasticOversold = boost::get<double>((*mapValueIterator)["stochasticOversold"]);
         }
 
         configurations.push_back(configuration);
@@ -931,10 +930,10 @@ std::vector<Configuration*> ReversalsOptimizer::loadConfigurations(const char *c
                         }
                     }
                     else if (propertyName == "rsiOverbought") {
-                        resultConfiguration->rsiOverbought = (double)propertyValue->value.v_int32;
+                        resultConfiguration->rsiOverbought = propertyValue->value.v_double;
                     }
                     else if (propertyName == "rsiOversold") {
-                        resultConfiguration->rsiOversold = (double)propertyValue->value.v_int32;
+                        resultConfiguration->rsiOversold = propertyValue->value.v_double;
                     }
                     else if (propertyName == "stochasticD") {
                         if (propertyValue->value_type != BSON_TYPE_BOOL) {
@@ -947,10 +946,10 @@ std::vector<Configuration*> ReversalsOptimizer::loadConfigurations(const char *c
                         }
                     }
                     else if (propertyName == "stochasticOverbought") {
-                        resultConfiguration->stochasticOverbought = (double)propertyValue->value.v_int32;
+                        resultConfiguration->stochasticOverbought = propertyValue->value.v_double;
                     }
                     else if (propertyName == "stochasticOversold") {
-                        resultConfiguration->stochasticOversold = (double)propertyValue->value.v_int32;
+                        resultConfiguration->stochasticOversold = propertyValue->value.v_double;
                     }
                     else if (propertyName == "prChannelUpper") {
                         resultConfiguration->prChannelUpper = (*tempDataIndexMap)[propertyValue->value.v_utf8.str];
@@ -1008,6 +1007,7 @@ bson_t *ReversalsOptimizer::convertResultToBson(StrategyResult &result) {
     BSON_APPEND_BOOL(&configurationDocument, "ema400", result.configuration->ema400 > 0);
     BSON_APPEND_BOOL(&configurationDocument, "ema450", result.configuration->ema450 > 0);
     BSON_APPEND_BOOL(&configurationDocument, "ema500", result.configuration->ema500 > 0);
+
     if (result.configuration->rsi > 0) {
         BSON_APPEND_UTF8(&configurationDocument, "rsi", findDataIndexMapKeyByValue(result.configuration->rsi).c_str());
         BSON_APPEND_DOUBLE(&configurationDocument, "rsiOverbought", result.configuration->rsiOverbought);

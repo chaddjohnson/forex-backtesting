@@ -401,16 +401,22 @@ std::vector<MapConfiguration> *Optimizer::buildMapConfigurations(
 
     for (ConfigurationOption::iterator configurationOptionsIterator = configurationOptions.begin(); configurationOptionsIterator != configurationOptions.end(); ++configurationOptionsIterator) {
         // Iterate through configuration option values.
-        for (std::map<std::string, boost::variant<std::string, double>>::iterator valuesIterator = configurationOptionsIterator->begin(); valuesIterator != configurationOptionsIterator->end(); ++valuesIterator) {
+        for (std::map<std::string, boost::variant<std::string, double, int>>::iterator valuesIterator = configurationOptionsIterator->begin(); valuesIterator != configurationOptionsIterator->end(); ++valuesIterator) {
             if (valuesIterator->second.type() == typeid(std::string)) {
                 if (boost::get<std::string>(valuesIterator->second).length() > 0) {
                     // Value points to a key.
                     (*current)[valuesIterator->first] = (*this->dataIndexMap)[boost::get<std::string>(valuesIterator->second)];
                 }
             }
-            else {
+            else if (valuesIterator->second.type() == typeid(double)) {
                 // Value is an actual value.
                 (*current)[valuesIterator->first] = boost::get<double>(valuesIterator->second);
+            }
+            else if (valuesIterator->second.type() == typeid(int)) {
+                // Value is an int. In this case, it will always be 0 (like false but not actually
+                // bool for technical reasons) designating it's not used. So, set the value to 0
+                // designating no index map value.
+                (*current)[valuesIterator->first] = boost::get<int>(valuesIterator->second);
             }
         }
 

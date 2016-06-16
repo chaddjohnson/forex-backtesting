@@ -92,14 +92,14 @@ int main(int argc, char *argv[]) {
 
     try {
         // Parse the data file.
-        DataParser *dataParser = DataParserFactory::create(parserName, filePath, DataParser::types::FORWARDTEST);
-        ticks = dataParser->parse();
+        // DataParser *dataParser = DataParserFactory::create(parserName, filePath, DataParser::types::FORWARDTEST);
+        // ticks = dataParser->parse();
 
         // Initialize the optimizer.
         Optimizer *optimizer = OptimizerFactory::create(optimizerName, dbClient, symbol, Optimizer::types::FORWARDTEST);
 
         // Prepare the data.
-        optimizer->prepareData(ticks);
+        // optimizer->prepareData(ticks);
 
         // Perform optimization.
         optimizer->optimize(investment, profitability);

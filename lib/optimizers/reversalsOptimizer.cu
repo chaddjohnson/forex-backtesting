@@ -815,19 +815,9 @@ std::vector<Configuration*> ReversalsOptimizer::buildSavedConfigurations() {
     std::vector<Configuration*> configurations;
     bson_t *query;
 
-    // Default to using the current group.
-    int group = getGroup();
-
-    if (getType() == Optimizer::types::TEST) {
-        // Testing is being performed, so use configurations from the previous test.
-        // If validation is being performed, on the other hand, then we want to
-        // validate the current group rather than the previous group.
-        group = group - 1;
-    }
-
     printf("Building saved configurations...");
 
-    // Query the database for configurations belonging to the previous (testing) or current (validation) group.
+    // Query the database for saved configurations.
     query = BCON_NEW(
         "$query", "{",
             "symbol", BCON_UTF8(getSymbol().c_str()),

@@ -24,7 +24,6 @@ Optimizer::Optimizer(mongoc_client_t *dbClient, std::string strategyName, std::s
     this->dbClient = dbClient;
     this->strategyName = strategyName;
     this->symbol = symbol;
-    this->groupFilter = "testingGroups";
     this->type = type;
     this->group = group;
     this->dataPropertyCount = 0;

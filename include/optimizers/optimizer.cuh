@@ -37,7 +37,7 @@ class Optimizer {
         int dataPropertyCount;
         int getDataPropertyCount();
         bson_t *convertTickToBson(Tick *tick);
-        double *loadData(double lastTimestamp, int chunkSize);
+        double *loadData(int lastTimestamp, int chunkSize);
         void saveTicks(std::vector<Tick*> ticks);
         void saveResults(std::vector<StrategyResult> &results);
 

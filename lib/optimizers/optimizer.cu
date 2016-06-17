@@ -289,7 +289,7 @@ std::map<std::string, int> *Optimizer::getDataIndexMap() {
     return this->dataIndexMap;
 }
 
-double *Optimizer::loadData(double lastTimestamp, int chunkSize) {
+double *Optimizer::loadData(int lastTimestamp, int chunkSize) {
     mongoc_collection_t *collection;
     mongoc_cursor_t *cursor;
     bson_t *query;
@@ -313,7 +313,7 @@ double *Optimizer::loadData(double lastTimestamp, int chunkSize) {
     if (getType() == Optimizer::types::TEST || getType() == Optimizer::types::VALIDATION) {
         query = BCON_NEW(
             "$query", "{",
-                "data.timestamp", "{", "$gt", BCON_DOUBLE(lastTimestamp), "}",
+                "data.timestamp", "{", "$gt", BCON_DOUBLE((double)lastTimestamp), "}",
                 "symbol", BCON_UTF8(this->symbol.c_str()),
                 "type", BCON_INT32(DataParser::types::BACKTEST),
                 this->groupFilter.c_str(), "{", "$bitsAnySet", BCON_INT32((int)pow(2, this->group)), "}",
@@ -325,7 +325,7 @@ double *Optimizer::loadData(double lastTimestamp, int chunkSize) {
     else if (getType() == Optimizer::types::FORWARDTEST) {
         query = BCON_NEW(
             "$query", "{",
-                "data.timestamp", "{", "$gt", BCON_DOUBLE(lastTimestamp), "}",
+                "data.timestamp", "{", "$gt", BCON_DOUBLE((double)lastTimestamp), "}",
                 "symbol", BCON_UTF8(this->symbol.c_str()),
                 "type", BCON_INT32(DataParser::types::FORWARDTEST),
             "}",
@@ -446,7 +446,7 @@ void Optimizer::optimize(double investment, double profitability) {
     int dataOffset = 0;
     int chunkNumber = 1;
     int dataPointIndex = 0;
-    double lastTimestamp = 0.0;
+    int lastTimestamp = 0;
     std::vector<StrategyResult> results;
     int i = 0;
     int j = 0;
@@ -588,7 +588,7 @@ void Optimizer::optimize(double investment, double profitability) {
         }
 
         // Update the last timestamp (used for fast querying).
-        lastTimestamp = data[(nextChunkSize - 1) * dataPropertyCount + (*tempDataIndexMap)["timestamp"]];
+        lastTimestamp = (int)data[(nextChunkSize - 1) * dataPropertyCount + (*tempDataIndexMap)["timestamp"]];
 
         // Free GPU and host memory. Make SURE to set data to nullptr, or some shit will ensue.
         for (i=0; i<gpuCount; i++) {

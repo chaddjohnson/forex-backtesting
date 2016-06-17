@@ -20,10 +20,10 @@ class Strategy {
         double previousClose;
 
     protected:
-        __device__ __host__ void tick(double *dataPoint, double close, double timestamp);
+        __device__ __host__ void tick(double *dataPoint, double close, int timestamp);
         __device__ __host__ double getWinRate();
         __device__ __host__ double getProfitLoss();
-        __device__ __host__ void closeExpiredPositions(double price, double timestamp);
+        __device__ __host__ void closeExpiredPositions(double price, int timestamp);
         __device__ __host__ void addPosition(Position *position);
         __device__ __host__ __forceinline__ double getPreviousClose() {
             return this->previousClose;

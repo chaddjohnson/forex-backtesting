@@ -24,10 +24,10 @@ __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoi
 
     if (getPreviousClose()) {
         if (putNextTick) {
-            addPosition(new PutPosition(getSymbol(), (dataPoint[configuration.timestamp] - 1), getPreviousClose(), investment, profitability, expirationMinutes));
+            addPosition(new PutPosition(getSymbol(), ((int)dataPoint[configuration.timestamp] - 1), getPreviousClose(), investment, profitability, expirationMinutes));
         }
         if (callNextTick) {
-            addPosition(new CallPosition(getSymbol(), (dataPoint[configuration.timestamp] - 1), getPreviousClose(), investment, profitability, expirationMinutes));
+            addPosition(new CallPosition(getSymbol(), ((int)dataPoint[configuration.timestamp] - 1), getPreviousClose(), investment, profitability, expirationMinutes));
         }
     }
 

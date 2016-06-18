@@ -521,7 +521,7 @@ void Optimizer::optimize(double investment, double profitability) {
         int gpuDeviceId = i % gpuCount;
         int gpuConfigurationIndex = configurationCounts[gpuDeviceId];
 
-        strategies[gpuDeviceId][gpuConfigurationIndex] = ReversalsOptimizationStrategy(this->symbol.c_str(), this->group, *configurations[i]);
+        strategies[gpuDeviceId][gpuConfigurationIndex] = ReversalsOptimizationStrategy(this->symbol.c_str(), *configurations[i]);
         configurationCounts[gpuDeviceId]++;
     }
 

@@ -1,7 +1,7 @@
 #include "strategies/reversalsOptimizationStrategy.cuh"
 
-__device__ __host__ ReversalsOptimizationStrategy::ReversalsOptimizationStrategy(const char *symbol, int group, Configuration configuration)
-        : OptimizationStrategy(symbol, group, configuration) {
+__device__ __host__ ReversalsOptimizationStrategy::ReversalsOptimizationStrategy(const char *symbol, Configuration configuration)
+        : OptimizationStrategy(symbol, configuration) {
     this->configuration = configuration;
     this->putNextTick = false;
     this->callNextTick = false;

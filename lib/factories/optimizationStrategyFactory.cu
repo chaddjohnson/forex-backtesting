@@ -1,7 +1,7 @@
 #include "factories/optimizationStrategyFactory.cuh"
 
-OptimizationStrategy *OptimizationStrategyFactory::create(const char *name, const char *symbol, int group, Configuration configuration) {
+OptimizationStrategy *OptimizationStrategyFactory::create(const char *name, const char *symbol, Configuration configuration) {
     //if (name == "reversals") {
-        return new ReversalsOptimizationStrategy(symbol, group, configuration);
+        return new ReversalsOptimizationStrategy(symbol, configuration);
     //}
 }

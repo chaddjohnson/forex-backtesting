@@ -3,7 +3,6 @@
 std::vector<Tick*> OandaDataParser::parse() {
     std::vector<std::string> lines;
     std::vector<Tick*> translatedLines;
-    Tick *translatedLine = new Tick();
     std::ifstream dataFile(getFilePath());
 
     // Read lines from the file into the vector.
@@ -17,15 +16,13 @@ std::vector<Tick*> OandaDataParser::parse() {
         std::stringstream line(*iterator);
         std::string lineItem;
         std::vector<std::string> lineItems;
+        Tick *translatedLine = new Tick();
         int i = 0;
 
         // Break the line into data items.
-        while(std::getline(line, lineItem, ',')) {
+        while (std::getline(line, lineItem, ',')) {
             lineItems.push_back(lineItem);
         }
-
-        // Initialize a new tick.
-        translatedLine = new Tick();
 
         // Translate the data items.
         (*translatedLine)["type"] = (double)getType();

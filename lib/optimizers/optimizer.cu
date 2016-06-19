@@ -216,7 +216,7 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
     // Write ticks to database.
     saveTicks(cumulativeTicks);
     for (i=0; i<cumulativeTicks.size(); i++) {
-        delete cumulativeTicks[j];
+        delete cumulativeTicks[i];
         cumulativeTicks[i] = nullptr;
     }
     std::vector<Tick*>().swap(cumulativeTicks);

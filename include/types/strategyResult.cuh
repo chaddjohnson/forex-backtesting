@@ -12,7 +12,11 @@ typedef struct StrategyResult {
     int minimumProfitLoss;
 
     // Configuration used
-    Configuration *configuration;
+    Configuration configuration;
+
+    __device__ __host__ StrategyResult() {
+        configuration = {};
+    }
 } StrategyResult;
 
 #endif

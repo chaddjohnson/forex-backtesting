@@ -6,297 +6,297 @@ std::vector<Study*> ReversalsOptimizer::getStudies() {
         return this->studies;
     }
 
-    this->studies.push_back(new SmaStudy({{"length", 13.0}}, {{"sma", "sma13"}}));
-    this->studies.push_back(new EmaStudy({{"length", 50.0}}, {{"ema", "ema50"}}));
-    this->studies.push_back(new EmaStudy({{"length", 100.0}}, {{"ema", "ema100"}}));
-    this->studies.push_back(new EmaStudy({{"length", 200.0}}, {{"ema", "ema200"}}));
-    // this->studies.push_back(new EmaStudy({{"length", 250.0}}, {{"ema", "ema250"}}));
-    // this->studies.push_back(new EmaStudy({{"length", 300.0}}, {{"ema", "ema300"}}));
-    // this->studies.push_back(new EmaStudy({{"length", 350.0}}, {{"ema", "ema350"}}));
-    // this->studies.push_back(new EmaStudy({{"length", 400.0}}, {{"ema", "ema400"}}));
-    // this->studies.push_back(new EmaStudy({{"length", 450.0}}, {{"ema", "ema450"}}));
-    // this->studies.push_back(new EmaStudy({{"length", 500.0}}, {{"ema", "ema500"}}));
-    this->studies.push_back(new RsiStudy({{"length", 2.0}}, {{"rsi", "rsi2"}}));
-    this->studies.push_back(new RsiStudy({{"length", 5.0}}, {{"rsi", "rsi5"}}));
-    this->studies.push_back(new RsiStudy({{"length", 7.0}}, {{"rsi", "rsi7"}}));
-    this->studies.push_back(new RsiStudy({{"length", 9.0}}, {{"rsi", "rsi9"}}));
-    this->studies.push_back(new RsiStudy({{"length", 14.0}}, {{"rsi", "rsi14"}}));
-    this->studies.push_back(new StochasticOscillatorStudy({{"length", 5.0}, {"averageLength", 3.0}}, {{"K", "stochastic5K"}, {"D", "stochastic5D"}}));
-    this->studies.push_back(new StochasticOscillatorStudy({{"length", 10.0}, {"averageLength", 3.0}}, {{"K", "stochastic10K"}, {"D", "stochastic10D"}}));
-    this->studies.push_back(new StochasticOscillatorStudy({{"length", 14.0}, {"averageLength", 3.0}}, {{"K", "stochastic14K"}, {"D", "stochastic14D"}}));
-    this->studies.push_back(new StochasticOscillatorStudy({{"length", 21.0}, {"averageLength", 3.0}}, {{"K", "stochastic21K"}, {"D", "stochastic21D"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 2.0}, {"deviations", 1.90}}, {{"regression", "prChannel100_2_190"}, {"upper", "prChannelUpper100_2_190"}, {"lower", "prChannelLower100_2_190"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 2.0}, {"deviations", 1.95}}, {{"regression", "prChannel100_2_195"}, {"upper", "prChannelUpper100_2_195"}, {"lower", "prChannelLower100_2_195"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 2.0}, {"deviations", 2.00}}, {{"regression", "prChannel100_2_200"}, {"upper", "prChannelUpper100_2_200"}, {"lower", "prChannelLower100_2_200"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 2.0}, {"deviations", 2.05}}, {{"regression", "prChannel100_2_205"}, {"upper", "prChannelUpper100_2_205"}, {"lower", "prChannelLower100_2_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 2.0}, {"deviations", 2.10}}, {{"regression", "prChannel100_2_210"}, {"upper", "prChannelUpper100_2_210"}, {"lower", "prChannelLower100_2_210"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 2.0}, {"deviations", 2.15}}, {{"regression", "prChannel100_2_215"}, {"upper", "prChannelUpper100_2_215"}, {"lower", "prChannelLower100_2_215"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 2.0}, {"deviations", 2.20}}, {{"regression", "prChannel100_2_220"}, {"upper", "prChannelUpper100_2_220"}, {"lower", "prChannelLower100_2_220"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 2.0}, {"deviations", 2.25}}, {{"regression", "prChannel100_2_225"}, {"upper", "prChannelUpper100_2_225"}, {"lower", "prChannelLower100_2_225"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 2.0}, {"deviations", 2.30}}, {{"regression", "prChannel100_2_230"}, {"upper", "prChannelUpper100_2_230"}, {"lower", "prChannelLower100_2_230"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 2.0}, {"deviations", 2.35}}, {{"regression", "prChannel100_2_235"}, {"upper", "prChannelUpper100_2_235"}, {"lower", "prChannelLower100_2_235"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 2.0}, {"deviations", 2.40}}, {{"regression", "prChannel100_2_240"}, {"upper", "prChannelUpper100_2_240"}, {"lower", "prChannelLower100_2_240"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 3.0}, {"deviations", 1.90}}, {{"regression", "prChannel100_3_190"}, {"upper", "prChannelUpper100_3_190"}, {"lower", "prChannelLower100_3_190"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 3.0}, {"deviations", 1.95}}, {{"regression", "prChannel100_3_195"}, {"upper", "prChannelUpper100_3_195"}, {"lower", "prChannelLower100_3_195"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 3.0}, {"deviations", 2.00}}, {{"regression", "prChannel100_3_200"}, {"upper", "prChannelUpper100_3_200"}, {"lower", "prChannelLower100_3_200"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 3.0}, {"deviations", 2.05}}, {{"regression", "prChannel100_3_205"}, {"upper", "prChannelUpper100_3_205"}, {"lower", "prChannelLower100_3_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 3.0}, {"deviations", 2.10}}, {{"regression", "prChannel100_3_210"}, {"upper", "prChannelUpper100_3_210"}, {"lower", "prChannelLower100_3_210"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 3.0}, {"deviations", 2.15}}, {{"regression", "prChannel100_3_215"}, {"upper", "prChannelUpper100_3_215"}, {"lower", "prChannelLower100_3_215"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 3.0}, {"deviations", 2.20}}, {{"regression", "prChannel100_3_220"}, {"upper", "prChannelUpper100_3_220"}, {"lower", "prChannelLower100_3_220"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 3.0}, {"deviations", 2.25}}, {{"regression", "prChannel100_3_225"}, {"upper", "prChannelUpper100_3_225"}, {"lower", "prChannelLower100_3_225"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 3.0}, {"deviations", 2.30}}, {{"regression", "prChannel100_3_230"}, {"upper", "prChannelUpper100_3_230"}, {"lower", "prChannelLower100_3_230"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 3.0}, {"deviations", 2.35}}, {{"regression", "prChannel100_3_235"}, {"upper", "prChannelUpper100_3_235"}, {"lower", "prChannelLower100_3_235"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 3.0}, {"deviations", 2.40}}, {{"regression", "prChannel100_3_240"}, {"upper", "prChannelUpper100_3_240"}, {"lower", "prChannelLower100_3_240"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 4.0}, {"deviations", 1.90}}, {{"regression", "prChannel100_4_190"}, {"upper", "prChannelUpper100_4_190"}, {"lower", "prChannelLower100_4_190"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 4.0}, {"deviations", 1.95}}, {{"regression", "prChannel100_4_195"}, {"upper", "prChannelUpper100_4_195"}, {"lower", "prChannelLower100_4_195"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 4.0}, {"deviations", 2.00}}, {{"regression", "prChannel100_4_200"}, {"upper", "prChannelUpper100_4_200"}, {"lower", "prChannelLower100_4_200"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 4.0}, {"deviations", 2.05}}, {{"regression", "prChannel100_4_205"}, {"upper", "prChannelUpper100_4_205"}, {"lower", "prChannelLower100_4_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 4.0}, {"deviations", 2.10}}, {{"regression", "prChannel100_4_210"}, {"upper", "prChannelUpper100_4_210"}, {"lower", "prChannelLower100_4_210"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 4.0}, {"deviations", 2.15}}, {{"regression", "prChannel100_4_215"}, {"upper", "prChannelUpper100_4_215"}, {"lower", "prChannelLower100_4_215"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 4.0}, {"deviations", 2.20}}, {{"regression", "prChannel100_4_220"}, {"upper", "prChannelUpper100_4_220"}, {"lower", "prChannelLower100_4_220"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 4.0}, {"deviations", 2.25}}, {{"regression", "prChannel100_4_225"}, {"upper", "prChannelUpper100_4_225"}, {"lower", "prChannelLower100_4_225"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 4.0}, {"deviations", 2.30}}, {{"regression", "prChannel100_4_230"}, {"upper", "prChannelUpper100_4_230"}, {"lower", "prChannelLower100_4_230"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 4.0}, {"deviations", 2.35}}, {{"regression", "prChannel100_4_235"}, {"upper", "prChannelUpper100_4_235"}, {"lower", "prChannelLower100_4_235"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 4.0}, {"deviations", 2.40}}, {{"regression", "prChannel100_4_240"}, {"upper", "prChannelUpper100_4_240"}, {"lower", "prChannelLower100_4_240"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 100.0}, {"degree", 5.0}, {"deviations", 2.05}}, {{"regression", "prChannel100_5_205"}, {"upper", "prChannelUpper100_5_205"}, {"lower", "prChannelLower100_5_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 2.0}, {"deviations", 1.90}}, {{"regression", "prChannel200_2_190"}, {"upper", "prChannelUpper200_2_190"}, {"lower", "prChannelLower200_2_190"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 2.0}, {"deviations", 1.95}}, {{"regression", "prChannel200_2_195"}, {"upper", "prChannelUpper200_2_195"}, {"lower", "prChannelLower200_2_195"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 2.0}, {"deviations", 2.00}}, {{"regression", "prChannel200_2_200"}, {"upper", "prChannelUpper200_2_200"}, {"lower", "prChannelLower200_2_200"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 2.0}, {"deviations", 2.05}}, {{"regression", "prChannel200_2_205"}, {"upper", "prChannelUpper200_2_205"}, {"lower", "prChannelLower200_2_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 2.0}, {"deviations", 2.10}}, {{"regression", "prChannel200_2_210"}, {"upper", "prChannelUpper200_2_210"}, {"lower", "prChannelLower200_2_210"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 2.0}, {"deviations", 2.15}}, {{"regression", "prChannel200_2_215"}, {"upper", "prChannelUpper200_2_215"}, {"lower", "prChannelLower200_2_215"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 2.0}, {"deviations", 2.20}}, {{"regression", "prChannel200_2_220"}, {"upper", "prChannelUpper200_2_220"}, {"lower", "prChannelLower200_2_220"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 2.0}, {"deviations", 2.25}}, {{"regression", "prChannel200_2_225"}, {"upper", "prChannelUpper200_2_225"}, {"lower", "prChannelLower200_2_225"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 2.0}, {"deviations", 2.30}}, {{"regression", "prChannel200_2_230"}, {"upper", "prChannelUpper200_2_230"}, {"lower", "prChannelLower200_2_230"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 2.0}, {"deviations", 2.35}}, {{"regression", "prChannel200_2_235"}, {"upper", "prChannelUpper200_2_235"}, {"lower", "prChannelLower200_2_235"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 2.0}, {"deviations", 2.40}}, {{"regression", "prChannel200_2_240"}, {"upper", "prChannelUpper200_2_240"}, {"lower", "prChannelLower200_2_240"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 3.0}, {"deviations", 1.90}}, {{"regression", "prChannel200_3_190"}, {"upper", "prChannelUpper200_3_190"}, {"lower", "prChannelLower200_3_190"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 3.0}, {"deviations", 1.95}}, {{"regression", "prChannel200_3_195"}, {"upper", "prChannelUpper200_3_195"}, {"lower", "prChannelLower200_3_195"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 3.0}, {"deviations", 2.00}}, {{"regression", "prChannel200_3_200"}, {"upper", "prChannelUpper200_3_200"}, {"lower", "prChannelLower200_3_200"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 3.0}, {"deviations", 2.05}}, {{"regression", "prChannel200_3_205"}, {"upper", "prChannelUpper200_3_205"}, {"lower", "prChannelLower200_3_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 3.0}, {"deviations", 2.10}}, {{"regression", "prChannel200_3_210"}, {"upper", "prChannelUpper200_3_210"}, {"lower", "prChannelLower200_3_210"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 3.0}, {"deviations", 2.15}}, {{"regression", "prChannel200_3_215"}, {"upper", "prChannelUpper200_3_215"}, {"lower", "prChannelLower200_3_215"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 3.0}, {"deviations", 2.20}}, {{"regression", "prChannel200_3_220"}, {"upper", "prChannelUpper200_3_220"}, {"lower", "prChannelLower200_3_220"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 3.0}, {"deviations", 2.25}}, {{"regression", "prChannel200_3_225"}, {"upper", "prChannelUpper200_3_225"}, {"lower", "prChannelLower200_3_225"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 3.0}, {"deviations", 2.30}}, {{"regression", "prChannel200_3_230"}, {"upper", "prChannelUpper200_3_230"}, {"lower", "prChannelLower200_3_230"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 3.0}, {"deviations", 2.35}}, {{"regression", "prChannel200_3_235"}, {"upper", "prChannelUpper200_3_235"}, {"lower", "prChannelLower200_3_235"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 3.0}, {"deviations", 2.40}}, {{"regression", "prChannel200_3_240"}, {"upper", "prChannelUpper200_3_240"}, {"lower", "prChannelLower200_3_240"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 4.0}, {"deviations", 1.90}}, {{"regression", "prChannel200_4_190"}, {"upper", "prChannelUpper200_4_190"}, {"lower", "prChannelLower200_4_190"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 4.0}, {"deviations", 1.95}}, {{"regression", "prChannel200_4_195"}, {"upper", "prChannelUpper200_4_195"}, {"lower", "prChannelLower200_4_195"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 4.0}, {"deviations", 2.00}}, {{"regression", "prChannel200_4_200"}, {"upper", "prChannelUpper200_4_200"}, {"lower", "prChannelLower200_4_200"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 4.0}, {"deviations", 2.05}}, {{"regression", "prChannel200_4_205"}, {"upper", "prChannelUpper200_4_205"}, {"lower", "prChannelLower200_4_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 4.0}, {"deviations", 2.10}}, {{"regression", "prChannel200_4_210"}, {"upper", "prChannelUpper200_4_210"}, {"lower", "prChannelLower200_4_210"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 4.0}, {"deviations", 2.15}}, {{"regression", "prChannel200_4_215"}, {"upper", "prChannelUpper200_4_215"}, {"lower", "prChannelLower200_4_215"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 4.0}, {"deviations", 2.20}}, {{"regression", "prChannel200_4_220"}, {"upper", "prChannelUpper200_4_220"}, {"lower", "prChannelLower200_4_220"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 4.0}, {"deviations", 2.25}}, {{"regression", "prChannel200_4_225"}, {"upper", "prChannelUpper200_4_225"}, {"lower", "prChannelLower200_4_225"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 4.0}, {"deviations", 2.30}}, {{"regression", "prChannel200_4_230"}, {"upper", "prChannelUpper200_4_230"}, {"lower", "prChannelLower200_4_230"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 4.0}, {"deviations", 2.35}}, {{"regression", "prChannel200_4_235"}, {"upper", "prChannelUpper200_4_235"}, {"lower", "prChannelLower200_4_235"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 4.0}, {"deviations", 2.40}}, {{"regression", "prChannel200_4_240"}, {"upper", "prChannelUpper200_4_240"}, {"lower", "prChannelLower200_4_240"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 200.0}, {"degree", 5.0}, {"deviations", 2.05}}, {{"regression", "prChannel200_5_205"}, {"upper", "prChannelUpper200_5_205"}, {"lower", "prChannelLower200_5_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 2.0}, {"deviations", 1.90}}, {{"regression", "prChannel250_2_190"}, {"upper", "prChannelUpper250_2_190"}, {"lower", "prChannelLower250_2_190"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 2.0}, {"deviations", 1.95}}, {{"regression", "prChannel250_2_195"}, {"upper", "prChannelUpper250_2_195"}, {"lower", "prChannelLower250_2_195"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 2.0}, {"deviations", 2.00}}, {{"regression", "prChannel250_2_200"}, {"upper", "prChannelUpper250_2_200"}, {"lower", "prChannelLower250_2_200"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 2.0}, {"deviations", 2.05}}, {{"regression", "prChannel250_2_205"}, {"upper", "prChannelUpper250_2_205"}, {"lower", "prChannelLower250_2_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 2.0}, {"deviations", 2.10}}, {{"regression", "prChannel250_2_210"}, {"upper", "prChannelUpper250_2_210"}, {"lower", "prChannelLower250_2_210"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 2.0}, {"deviations", 2.15}}, {{"regression", "prChannel250_2_215"}, {"upper", "prChannelUpper250_2_215"}, {"lower", "prChannelLower250_2_215"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 2.0}, {"deviations", 2.20}}, {{"regression", "prChannel250_2_220"}, {"upper", "prChannelUpper250_2_220"}, {"lower", "prChannelLower250_2_220"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 2.0}, {"deviations", 2.25}}, {{"regression", "prChannel250_2_225"}, {"upper", "prChannelUpper250_2_225"}, {"lower", "prChannelLower250_2_225"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 2.0}, {"deviations", 2.30}}, {{"regression", "prChannel250_2_230"}, {"upper", "prChannelUpper250_2_230"}, {"lower", "prChannelLower250_2_230"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 2.0}, {"deviations", 2.35}}, {{"regression", "prChannel250_2_235"}, {"upper", "prChannelUpper250_2_235"}, {"lower", "prChannelLower250_2_235"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 2.0}, {"deviations", 2.40}}, {{"regression", "prChannel250_2_240"}, {"upper", "prChannelUpper250_2_240"}, {"lower", "prChannelLower250_2_240"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 3.0}, {"deviations", 1.90}}, {{"regression", "prChannel250_3_190"}, {"upper", "prChannelUpper250_3_190"}, {"lower", "prChannelLower250_3_190"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 3.0}, {"deviations", 1.95}}, {{"regression", "prChannel250_3_195"}, {"upper", "prChannelUpper250_3_195"}, {"lower", "prChannelLower250_3_195"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 3.0}, {"deviations", 2.00}}, {{"regression", "prChannel250_3_200"}, {"upper", "prChannelUpper250_3_200"}, {"lower", "prChannelLower250_3_200"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 3.0}, {"deviations", 2.05}}, {{"regression", "prChannel250_3_205"}, {"upper", "prChannelUpper250_3_205"}, {"lower", "prChannelLower250_3_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 3.0}, {"deviations", 2.10}}, {{"regression", "prChannel250_3_210"}, {"upper", "prChannelUpper250_3_210"}, {"lower", "prChannelLower250_3_210"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 3.0}, {"deviations", 2.15}}, {{"regression", "prChannel250_3_215"}, {"upper", "prChannelUpper250_3_215"}, {"lower", "prChannelLower250_3_215"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 3.0}, {"deviations", 2.20}}, {{"regression", "prChannel250_3_220"}, {"upper", "prChannelUpper250_3_220"}, {"lower", "prChannelLower250_3_220"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 3.0}, {"deviations", 2.25}}, {{"regression", "prChannel250_3_225"}, {"upper", "prChannelUpper250_3_225"}, {"lower", "prChannelLower250_3_225"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 3.0}, {"deviations", 2.30}}, {{"regression", "prChannel250_3_230"}, {"upper", "prChannelUpper250_3_230"}, {"lower", "prChannelLower250_3_230"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 3.0}, {"deviations", 2.35}}, {{"regression", "prChannel250_3_235"}, {"upper", "prChannelUpper250_3_235"}, {"lower", "prChannelLower250_3_235"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 3.0}, {"deviations", 2.40}}, {{"regression", "prChannel250_3_240"}, {"upper", "prChannelUpper250_3_240"}, {"lower", "prChannelLower250_3_240"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 4.0}, {"deviations", 1.90}}, {{"regression", "prChannel250_4_190"}, {"upper", "prChannelUpper250_4_190"}, {"lower", "prChannelLower250_4_190"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 4.0}, {"deviations", 1.95}}, {{"regression", "prChannel250_4_195"}, {"upper", "prChannelUpper250_4_195"}, {"lower", "prChannelLower250_4_195"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 4.0}, {"deviations", 2.00}}, {{"regression", "prChannel250_4_200"}, {"upper", "prChannelUpper250_4_200"}, {"lower", "prChannelLower250_4_200"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 4.0}, {"deviations", 2.05}}, {{"regression", "prChannel250_4_205"}, {"upper", "prChannelUpper250_4_205"}, {"lower", "prChannelLower250_4_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 4.0}, {"deviations", 2.10}}, {{"regression", "prChannel250_4_210"}, {"upper", "prChannelUpper250_4_210"}, {"lower", "prChannelLower250_4_210"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 4.0}, {"deviations", 2.15}}, {{"regression", "prChannel250_4_215"}, {"upper", "prChannelUpper250_4_215"}, {"lower", "prChannelLower250_4_215"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 4.0}, {"deviations", 2.20}}, {{"regression", "prChannel250_4_220"}, {"upper", "prChannelUpper250_4_220"}, {"lower", "prChannelLower250_4_220"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 4.0}, {"deviations", 2.25}}, {{"regression", "prChannel250_4_225"}, {"upper", "prChannelUpper250_4_225"}, {"lower", "prChannelLower250_4_225"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 4.0}, {"deviations", 2.30}}, {{"regression", "prChannel250_4_230"}, {"upper", "prChannelUpper250_4_230"}, {"lower", "prChannelLower250_4_230"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 4.0}, {"deviations", 2.35}}, {{"regression", "prChannel250_4_235"}, {"upper", "prChannelUpper250_4_235"}, {"lower", "prChannelLower250_4_235"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 4.0}, {"deviations", 2.40}}, {{"regression", "prChannel250_4_240"}, {"upper", "prChannelUpper250_4_240"}, {"lower", "prChannelLower250_4_240"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 250.0}, {"degree", 5.0}, {"deviations", 2.05}}, {{"regression", "prChannel250_5_205"}, {"upper", "prChannelUpper250_5_205"}, {"lower", "prChannelLower250_5_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 2.0}, {"deviations", 1.90}}, {{"regression", "prChannel300_2_190"}, {"upper", "prChannelUpper300_2_190"}, {"lower", "prChannelLower300_2_190"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 2.0}, {"deviations", 1.95}}, {{"regression", "prChannel300_2_195"}, {"upper", "prChannelUpper300_2_195"}, {"lower", "prChannelLower300_2_195"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 2.0}, {"deviations", 2.00}}, {{"regression", "prChannel300_2_200"}, {"upper", "prChannelUpper300_2_200"}, {"lower", "prChannelLower300_2_200"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 2.0}, {"deviations", 2.05}}, {{"regression", "prChannel300_2_205"}, {"upper", "prChannelUpper300_2_205"}, {"lower", "prChannelLower300_2_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 2.0}, {"deviations", 2.10}}, {{"regression", "prChannel300_2_210"}, {"upper", "prChannelUpper300_2_210"}, {"lower", "prChannelLower300_2_210"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 2.0}, {"deviations", 2.15}}, {{"regression", "prChannel300_2_215"}, {"upper", "prChannelUpper300_2_215"}, {"lower", "prChannelLower300_2_215"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 2.0}, {"deviations", 2.20}}, {{"regression", "prChannel300_2_220"}, {"upper", "prChannelUpper300_2_220"}, {"lower", "prChannelLower300_2_220"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 2.0}, {"deviations", 2.25}}, {{"regression", "prChannel300_2_225"}, {"upper", "prChannelUpper300_2_225"}, {"lower", "prChannelLower300_2_225"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 2.0}, {"deviations", 2.30}}, {{"regression", "prChannel300_2_230"}, {"upper", "prChannelUpper300_2_230"}, {"lower", "prChannelLower300_2_230"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 2.0}, {"deviations", 2.35}}, {{"regression", "prChannel300_2_235"}, {"upper", "prChannelUpper300_2_235"}, {"lower", "prChannelLower300_2_235"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 2.0}, {"deviations", 2.40}}, {{"regression", "prChannel300_2_240"}, {"upper", "prChannelUpper300_2_240"}, {"lower", "prChannelLower300_2_240"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 3.0}, {"deviations", 1.90}}, {{"regression", "prChannel300_3_190"}, {"upper", "prChannelUpper300_3_190"}, {"lower", "prChannelLower300_3_190"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 3.0}, {"deviations", 1.95}}, {{"regression", "prChannel300_3_195"}, {"upper", "prChannelUpper300_3_195"}, {"lower", "prChannelLower300_3_195"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 3.0}, {"deviations", 2.00}}, {{"regression", "prChannel300_3_200"}, {"upper", "prChannelUpper300_3_200"}, {"lower", "prChannelLower300_3_200"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 3.0}, {"deviations", 2.05}}, {{"regression", "prChannel300_3_205"}, {"upper", "prChannelUpper300_3_205"}, {"lower", "prChannelLower300_3_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 3.0}, {"deviations", 2.10}}, {{"regression", "prChannel300_3_210"}, {"upper", "prChannelUpper300_3_210"}, {"lower", "prChannelLower300_3_210"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 3.0}, {"deviations", 2.15}}, {{"regression", "prChannel300_3_215"}, {"upper", "prChannelUpper300_3_215"}, {"lower", "prChannelLower300_3_215"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 3.0}, {"deviations", 2.20}}, {{"regression", "prChannel300_3_220"}, {"upper", "prChannelUpper300_3_220"}, {"lower", "prChannelLower300_3_220"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 3.0}, {"deviations", 2.25}}, {{"regression", "prChannel300_3_225"}, {"upper", "prChannelUpper300_3_225"}, {"lower", "prChannelLower300_3_225"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 3.0}, {"deviations", 2.30}}, {{"regression", "prChannel300_3_230"}, {"upper", "prChannelUpper300_3_230"}, {"lower", "prChannelLower300_3_230"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 3.0}, {"deviations", 2.35}}, {{"regression", "prChannel300_3_235"}, {"upper", "prChannelUpper300_3_235"}, {"lower", "prChannelLower300_3_235"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 3.0}, {"deviations", 2.40}}, {{"regression", "prChannel300_3_240"}, {"upper", "prChannelUpper300_3_240"}, {"lower", "prChannelLower300_3_240"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 4.0}, {"deviations", 1.90}}, {{"regression", "prChannel300_4_190"}, {"upper", "prChannelUpper300_4_190"}, {"lower", "prChannelLower300_4_190"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 4.0}, {"deviations", 1.95}}, {{"regression", "prChannel300_4_195"}, {"upper", "prChannelUpper300_4_195"}, {"lower", "prChannelLower300_4_195"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 4.0}, {"deviations", 2.00}}, {{"regression", "prChannel300_4_200"}, {"upper", "prChannelUpper300_4_200"}, {"lower", "prChannelLower300_4_200"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 4.0}, {"deviations", 2.05}}, {{"regression", "prChannel300_4_205"}, {"upper", "prChannelUpper300_4_205"}, {"lower", "prChannelLower300_4_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 4.0}, {"deviations", 2.10}}, {{"regression", "prChannel300_4_210"}, {"upper", "prChannelUpper300_4_210"}, {"lower", "prChannelLower300_4_210"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 4.0}, {"deviations", 2.15}}, {{"regression", "prChannel300_4_215"}, {"upper", "prChannelUpper300_4_215"}, {"lower", "prChannelLower300_4_215"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 4.0}, {"deviations", 2.20}}, {{"regression", "prChannel300_4_220"}, {"upper", "prChannelUpper300_4_220"}, {"lower", "prChannelLower300_4_220"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 4.0}, {"deviations", 2.25}}, {{"regression", "prChannel300_4_225"}, {"upper", "prChannelUpper300_4_225"}, {"lower", "prChannelLower300_4_225"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 4.0}, {"deviations", 2.30}}, {{"regression", "prChannel300_4_230"}, {"upper", "prChannelUpper300_4_230"}, {"lower", "prChannelLower300_4_230"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 4.0}, {"deviations", 2.35}}, {{"regression", "prChannel300_4_235"}, {"upper", "prChannelUpper300_4_235"}, {"lower", "prChannelLower300_4_235"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 4.0}, {"deviations", 2.40}}, {{"regression", "prChannel300_4_240"}, {"upper", "prChannelUpper300_4_240"}, {"lower", "prChannelLower300_4_240"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 300.0}, {"degree", 5.0}, {"deviations", 2.05}}, {{"regression", "prChannel300_5_205"}, {"upper", "prChannelUpper300_5_205"}, {"lower", "prChannelLower300_5_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 2.0}, {"deviations", 1.90}}, {{"regression", "prChannel350_2_190"}, {"upper", "prChannelUpper350_2_190"}, {"lower", "prChannelLower350_2_190"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 2.0}, {"deviations", 1.95}}, {{"regression", "prChannel350_2_195"}, {"upper", "prChannelUpper350_2_195"}, {"lower", "prChannelLower350_2_195"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 2.0}, {"deviations", 2.00}}, {{"regression", "prChannel350_2_200"}, {"upper", "prChannelUpper350_2_200"}, {"lower", "prChannelLower350_2_200"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 2.0}, {"deviations", 2.05}}, {{"regression", "prChannel350_2_205"}, {"upper", "prChannelUpper350_2_205"}, {"lower", "prChannelLower350_2_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 2.0}, {"deviations", 2.10}}, {{"regression", "prChannel350_2_210"}, {"upper", "prChannelUpper350_2_210"}, {"lower", "prChannelLower350_2_210"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 2.0}, {"deviations", 2.15}}, {{"regression", "prChannel350_2_215"}, {"upper", "prChannelUpper350_2_215"}, {"lower", "prChannelLower350_2_215"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 2.0}, {"deviations", 2.20}}, {{"regression", "prChannel350_2_220"}, {"upper", "prChannelUpper350_2_220"}, {"lower", "prChannelLower350_2_220"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 2.0}, {"deviations", 2.25}}, {{"regression", "prChannel350_2_225"}, {"upper", "prChannelUpper350_2_225"}, {"lower", "prChannelLower350_2_225"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 2.0}, {"deviations", 2.30}}, {{"regression", "prChannel350_2_230"}, {"upper", "prChannelUpper350_2_230"}, {"lower", "prChannelLower350_2_230"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 2.0}, {"deviations", 2.35}}, {{"regression", "prChannel350_2_235"}, {"upper", "prChannelUpper350_2_235"}, {"lower", "prChannelLower350_2_235"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 2.0}, {"deviations", 2.40}}, {{"regression", "prChannel350_2_240"}, {"upper", "prChannelUpper350_2_240"}, {"lower", "prChannelLower350_2_240"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 3.0}, {"deviations", 1.90}}, {{"regression", "prChannel350_3_190"}, {"upper", "prChannelUpper350_3_190"}, {"lower", "prChannelLower350_3_190"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 3.0}, {"deviations", 1.95}}, {{"regression", "prChannel350_3_195"}, {"upper", "prChannelUpper350_3_195"}, {"lower", "prChannelLower350_3_195"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 3.0}, {"deviations", 2.00}}, {{"regression", "prChannel350_3_200"}, {"upper", "prChannelUpper350_3_200"}, {"lower", "prChannelLower350_3_200"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 3.0}, {"deviations", 2.05}}, {{"regression", "prChannel350_3_205"}, {"upper", "prChannelUpper350_3_205"}, {"lower", "prChannelLower350_3_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 3.0}, {"deviations", 2.10}}, {{"regression", "prChannel350_3_210"}, {"upper", "prChannelUpper350_3_210"}, {"lower", "prChannelLower350_3_210"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 3.0}, {"deviations", 2.15}}, {{"regression", "prChannel350_3_215"}, {"upper", "prChannelUpper350_3_215"}, {"lower", "prChannelLower350_3_215"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 3.0}, {"deviations", 2.20}}, {{"regression", "prChannel350_3_220"}, {"upper", "prChannelUpper350_3_220"}, {"lower", "prChannelLower350_3_220"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 3.0}, {"deviations", 2.25}}, {{"regression", "prChannel350_3_225"}, {"upper", "prChannelUpper350_3_225"}, {"lower", "prChannelLower350_3_225"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 3.0}, {"deviations", 2.30}}, {{"regression", "prChannel350_3_230"}, {"upper", "prChannelUpper350_3_230"}, {"lower", "prChannelLower350_3_230"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 3.0}, {"deviations", 2.35}}, {{"regression", "prChannel350_3_235"}, {"upper", "prChannelUpper350_3_235"}, {"lower", "prChannelLower350_3_235"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 3.0}, {"deviations", 2.40}}, {{"regression", "prChannel350_3_240"}, {"upper", "prChannelUpper350_3_240"}, {"lower", "prChannelLower350_3_240"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 4.0}, {"deviations", 1.90}}, {{"regression", "prChannel350_4_190"}, {"upper", "prChannelUpper350_4_190"}, {"lower", "prChannelLower350_4_190"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 4.0}, {"deviations", 1.95}}, {{"regression", "prChannel350_4_195"}, {"upper", "prChannelUpper350_4_195"}, {"lower", "prChannelLower350_4_195"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 4.0}, {"deviations", 2.00}}, {{"regression", "prChannel350_4_200"}, {"upper", "prChannelUpper350_4_200"}, {"lower", "prChannelLower350_4_200"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 4.0}, {"deviations", 2.05}}, {{"regression", "prChannel350_4_205"}, {"upper", "prChannelUpper350_4_205"}, {"lower", "prChannelLower350_4_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 4.0}, {"deviations", 2.10}}, {{"regression", "prChannel350_4_210"}, {"upper", "prChannelUpper350_4_210"}, {"lower", "prChannelLower350_4_210"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 4.0}, {"deviations", 2.15}}, {{"regression", "prChannel350_4_215"}, {"upper", "prChannelUpper350_4_215"}, {"lower", "prChannelLower350_4_215"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 4.0}, {"deviations", 2.20}}, {{"regression", "prChannel350_4_220"}, {"upper", "prChannelUpper350_4_220"}, {"lower", "prChannelLower350_4_220"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 4.0}, {"deviations", 2.25}}, {{"regression", "prChannel350_4_225"}, {"upper", "prChannelUpper350_4_225"}, {"lower", "prChannelLower350_4_225"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 4.0}, {"deviations", 2.30}}, {{"regression", "prChannel350_4_230"}, {"upper", "prChannelUpper350_4_230"}, {"lower", "prChannelLower350_4_230"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 4.0}, {"deviations", 2.35}}, {{"regression", "prChannel350_4_235"}, {"upper", "prChannelUpper350_4_235"}, {"lower", "prChannelLower350_4_235"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 4.0}, {"deviations", 2.40}}, {{"regression", "prChannel350_4_240"}, {"upper", "prChannelUpper350_4_240"}, {"lower", "prChannelLower350_4_240"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 350.0}, {"degree", 5.0}, {"deviations", 2.05}}, {{"regression", "prChannel350_5_205"}, {"upper", "prChannelUpper350_5_205"}, {"lower", "prChannelLower350_5_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 2.0}, {"deviations", 1.90}}, {{"regression", "prChannel400_2_190"}, {"upper", "prChannelUpper400_2_190"}, {"lower", "prChannelLower400_2_190"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 2.0}, {"deviations", 1.95}}, {{"regression", "prChannel400_2_195"}, {"upper", "prChannelUpper400_2_195"}, {"lower", "prChannelLower400_2_195"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 2.0}, {"deviations", 2.00}}, {{"regression", "prChannel400_2_200"}, {"upper", "prChannelUpper400_2_200"}, {"lower", "prChannelLower400_2_200"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 2.0}, {"deviations", 2.05}}, {{"regression", "prChannel400_2_205"}, {"upper", "prChannelUpper400_2_205"}, {"lower", "prChannelLower400_2_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 2.0}, {"deviations", 2.10}}, {{"regression", "prChannel400_2_210"}, {"upper", "prChannelUpper400_2_210"}, {"lower", "prChannelLower400_2_210"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 2.0}, {"deviations", 2.15}}, {{"regression", "prChannel400_2_215"}, {"upper", "prChannelUpper400_2_215"}, {"lower", "prChannelLower400_2_215"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 2.0}, {"deviations", 2.20}}, {{"regression", "prChannel400_2_220"}, {"upper", "prChannelUpper400_2_220"}, {"lower", "prChannelLower400_2_220"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 2.0}, {"deviations", 2.25}}, {{"regression", "prChannel400_2_225"}, {"upper", "prChannelUpper400_2_225"}, {"lower", "prChannelLower400_2_225"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 2.0}, {"deviations", 2.30}}, {{"regression", "prChannel400_2_230"}, {"upper", "prChannelUpper400_2_230"}, {"lower", "prChannelLower400_2_230"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 2.0}, {"deviations", 2.35}}, {{"regression", "prChannel400_2_235"}, {"upper", "prChannelUpper400_2_235"}, {"lower", "prChannelLower400_2_235"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 2.0}, {"deviations", 2.40}}, {{"regression", "prChannel400_2_240"}, {"upper", "prChannelUpper400_2_240"}, {"lower", "prChannelLower400_2_240"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 3.0}, {"deviations", 1.90}}, {{"regression", "prChannel400_3_190"}, {"upper", "prChannelUpper400_3_190"}, {"lower", "prChannelLower400_3_190"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 3.0}, {"deviations", 1.95}}, {{"regression", "prChannel400_3_195"}, {"upper", "prChannelUpper400_3_195"}, {"lower", "prChannelLower400_3_195"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 3.0}, {"deviations", 2.00}}, {{"regression", "prChannel400_3_200"}, {"upper", "prChannelUpper400_3_200"}, {"lower", "prChannelLower400_3_200"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 3.0}, {"deviations", 2.05}}, {{"regression", "prChannel400_3_205"}, {"upper", "prChannelUpper400_3_205"}, {"lower", "prChannelLower400_3_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 3.0}, {"deviations", 2.10}}, {{"regression", "prChannel400_3_210"}, {"upper", "prChannelUpper400_3_210"}, {"lower", "prChannelLower400_3_210"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 3.0}, {"deviations", 2.15}}, {{"regression", "prChannel400_3_215"}, {"upper", "prChannelUpper400_3_215"}, {"lower", "prChannelLower400_3_215"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 3.0}, {"deviations", 2.20}}, {{"regression", "prChannel400_3_220"}, {"upper", "prChannelUpper400_3_220"}, {"lower", "prChannelLower400_3_220"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 3.0}, {"deviations", 2.25}}, {{"regression", "prChannel400_3_225"}, {"upper", "prChannelUpper400_3_225"}, {"lower", "prChannelLower400_3_225"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 3.0}, {"deviations", 2.30}}, {{"regression", "prChannel400_3_230"}, {"upper", "prChannelUpper400_3_230"}, {"lower", "prChannelLower400_3_230"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 3.0}, {"deviations", 2.35}}, {{"regression", "prChannel400_3_235"}, {"upper", "prChannelUpper400_3_235"}, {"lower", "prChannelLower400_3_235"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 3.0}, {"deviations", 2.40}}, {{"regression", "prChannel400_3_240"}, {"upper", "prChannelUpper400_3_240"}, {"lower", "prChannelLower400_3_240"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 4.0}, {"deviations", 1.90}}, {{"regression", "prChannel400_4_190"}, {"upper", "prChannelUpper400_4_190"}, {"lower", "prChannelLower400_4_190"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 4.0}, {"deviations", 1.95}}, {{"regression", "prChannel400_4_195"}, {"upper", "prChannelUpper400_4_195"}, {"lower", "prChannelLower400_4_195"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 4.0}, {"deviations", 2.00}}, {{"regression", "prChannel400_4_200"}, {"upper", "prChannelUpper400_4_200"}, {"lower", "prChannelLower400_4_200"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 4.0}, {"deviations", 2.05}}, {{"regression", "prChannel400_4_205"}, {"upper", "prChannelUpper400_4_205"}, {"lower", "prChannelLower400_4_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 4.0}, {"deviations", 2.10}}, {{"regression", "prChannel400_4_210"}, {"upper", "prChannelUpper400_4_210"}, {"lower", "prChannelLower400_4_210"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 4.0}, {"deviations", 2.15}}, {{"regression", "prChannel400_4_215"}, {"upper", "prChannelUpper400_4_215"}, {"lower", "prChannelLower400_4_215"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 4.0}, {"deviations", 2.20}}, {{"regression", "prChannel400_4_220"}, {"upper", "prChannelUpper400_4_220"}, {"lower", "prChannelLower400_4_220"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 4.0}, {"deviations", 2.25}}, {{"regression", "prChannel400_4_225"}, {"upper", "prChannelUpper400_4_225"}, {"lower", "prChannelLower400_4_225"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 4.0}, {"deviations", 2.30}}, {{"regression", "prChannel400_4_230"}, {"upper", "prChannelUpper400_4_230"}, {"lower", "prChannelLower400_4_230"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 4.0}, {"deviations", 2.35}}, {{"regression", "prChannel400_4_235"}, {"upper", "prChannelUpper400_4_235"}, {"lower", "prChannelLower400_4_235"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 4.0}, {"deviations", 2.40}}, {{"regression", "prChannel400_4_240"}, {"upper", "prChannelUpper400_4_240"}, {"lower", "prChannelLower400_4_240"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 400.0}, {"degree", 5.0}, {"deviations", 2.05}}, {{"regression", "prChannel400_5_205"}, {"upper", "prChannelUpper400_5_205"}, {"lower", "prChannelLower400_5_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 2.0}, {"deviations", 1.90}}, {{"regression", "prChannel450_2_190"}, {"upper", "prChannelUpper450_2_190"}, {"lower", "prChannelLower450_2_190"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 2.0}, {"deviations", 1.95}}, {{"regression", "prChannel450_2_195"}, {"upper", "prChannelUpper450_2_195"}, {"lower", "prChannelLower450_2_195"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 2.0}, {"deviations", 2.00}}, {{"regression", "prChannel450_2_200"}, {"upper", "prChannelUpper450_2_200"}, {"lower", "prChannelLower450_2_200"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 2.0}, {"deviations", 2.05}}, {{"regression", "prChannel450_2_205"}, {"upper", "prChannelUpper450_2_205"}, {"lower", "prChannelLower450_2_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 2.0}, {"deviations", 2.10}}, {{"regression", "prChannel450_2_210"}, {"upper", "prChannelUpper450_2_210"}, {"lower", "prChannelLower450_2_210"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 2.0}, {"deviations", 2.15}}, {{"regression", "prChannel450_2_215"}, {"upper", "prChannelUpper450_2_215"}, {"lower", "prChannelLower450_2_215"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 2.0}, {"deviations", 2.20}}, {{"regression", "prChannel450_2_220"}, {"upper", "prChannelUpper450_2_220"}, {"lower", "prChannelLower450_2_220"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 2.0}, {"deviations", 2.25}}, {{"regression", "prChannel450_2_225"}, {"upper", "prChannelUpper450_2_225"}, {"lower", "prChannelLower450_2_225"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 2.0}, {"deviations", 2.30}}, {{"regression", "prChannel450_2_230"}, {"upper", "prChannelUpper450_2_230"}, {"lower", "prChannelLower450_2_230"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 2.0}, {"deviations", 2.35}}, {{"regression", "prChannel450_2_235"}, {"upper", "prChannelUpper450_2_235"}, {"lower", "prChannelLower450_2_235"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 2.0}, {"deviations", 2.40}}, {{"regression", "prChannel450_2_240"}, {"upper", "prChannelUpper450_2_240"}, {"lower", "prChannelLower450_2_240"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 3.0}, {"deviations", 1.90}}, {{"regression", "prChannel450_3_190"}, {"upper", "prChannelUpper450_3_190"}, {"lower", "prChannelLower450_3_190"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 3.0}, {"deviations", 1.95}}, {{"regression", "prChannel450_3_195"}, {"upper", "prChannelUpper450_3_195"}, {"lower", "prChannelLower450_3_195"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 3.0}, {"deviations", 2.00}}, {{"regression", "prChannel450_3_200"}, {"upper", "prChannelUpper450_3_200"}, {"lower", "prChannelLower450_3_200"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 3.0}, {"deviations", 2.05}}, {{"regression", "prChannel450_3_205"}, {"upper", "prChannelUpper450_3_205"}, {"lower", "prChannelLower450_3_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 3.0}, {"deviations", 2.10}}, {{"regression", "prChannel450_3_210"}, {"upper", "prChannelUpper450_3_210"}, {"lower", "prChannelLower450_3_210"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 3.0}, {"deviations", 2.15}}, {{"regression", "prChannel450_3_215"}, {"upper", "prChannelUpper450_3_215"}, {"lower", "prChannelLower450_3_215"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 3.0}, {"deviations", 2.20}}, {{"regression", "prChannel450_3_220"}, {"upper", "prChannelUpper450_3_220"}, {"lower", "prChannelLower450_3_220"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 3.0}, {"deviations", 2.25}}, {{"regression", "prChannel450_3_225"}, {"upper", "prChannelUpper450_3_225"}, {"lower", "prChannelLower450_3_225"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 3.0}, {"deviations", 2.30}}, {{"regression", "prChannel450_3_230"}, {"upper", "prChannelUpper450_3_230"}, {"lower", "prChannelLower450_3_230"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 3.0}, {"deviations", 2.35}}, {{"regression", "prChannel450_3_235"}, {"upper", "prChannelUpper450_3_235"}, {"lower", "prChannelLower450_3_235"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 3.0}, {"deviations", 2.40}}, {{"regression", "prChannel450_3_240"}, {"upper", "prChannelUpper450_3_240"}, {"lower", "prChannelLower450_3_240"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 4.0}, {"deviations", 1.90}}, {{"regression", "prChannel450_4_190"}, {"upper", "prChannelUpper450_4_190"}, {"lower", "prChannelLower450_4_190"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 4.0}, {"deviations", 1.95}}, {{"regression", "prChannel450_4_195"}, {"upper", "prChannelUpper450_4_195"}, {"lower", "prChannelLower450_4_195"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 4.0}, {"deviations", 2.00}}, {{"regression", "prChannel450_4_200"}, {"upper", "prChannelUpper450_4_200"}, {"lower", "prChannelLower450_4_200"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 4.0}, {"deviations", 2.05}}, {{"regression", "prChannel450_4_205"}, {"upper", "prChannelUpper450_4_205"}, {"lower", "prChannelLower450_4_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 4.0}, {"deviations", 2.10}}, {{"regression", "prChannel450_4_210"}, {"upper", "prChannelUpper450_4_210"}, {"lower", "prChannelLower450_4_210"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 4.0}, {"deviations", 2.15}}, {{"regression", "prChannel450_4_215"}, {"upper", "prChannelUpper450_4_215"}, {"lower", "prChannelLower450_4_215"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 4.0}, {"deviations", 2.20}}, {{"regression", "prChannel450_4_220"}, {"upper", "prChannelUpper450_4_220"}, {"lower", "prChannelLower450_4_220"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 4.0}, {"deviations", 2.25}}, {{"regression", "prChannel450_4_225"}, {"upper", "prChannelUpper450_4_225"}, {"lower", "prChannelLower450_4_225"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 4.0}, {"deviations", 2.30}}, {{"regression", "prChannel450_4_230"}, {"upper", "prChannelUpper450_4_230"}, {"lower", "prChannelLower450_4_230"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 4.0}, {"deviations", 2.35}}, {{"regression", "prChannel450_4_235"}, {"upper", "prChannelUpper450_4_235"}, {"lower", "prChannelLower450_4_235"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 4.0}, {"deviations", 2.40}}, {{"regression", "prChannel450_4_240"}, {"upper", "prChannelUpper450_4_240"}, {"lower", "prChannelLower450_4_240"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 450.0}, {"degree", 5.0}, {"deviations", 2.05}}, {{"regression", "prChannel450_5_205"}, {"upper", "prChannelUpper450_5_205"}, {"lower", "prChannelLower450_5_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 2.0}, {"deviations", 1.90}}, {{"regression", "prChannel500_2_190"}, {"upper", "prChannelUpper500_2_190"}, {"lower", "prChannelLower500_2_190"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 2.0}, {"deviations", 1.95}}, {{"regression", "prChannel500_2_195"}, {"upper", "prChannelUpper500_2_195"}, {"lower", "prChannelLower500_2_195"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 2.0}, {"deviations", 2.00}}, {{"regression", "prChannel500_2_200"}, {"upper", "prChannelUpper500_2_200"}, {"lower", "prChannelLower500_2_200"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 2.0}, {"deviations", 2.05}}, {{"regression", "prChannel500_2_205"}, {"upper", "prChannelUpper500_2_205"}, {"lower", "prChannelLower500_2_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 2.0}, {"deviations", 2.10}}, {{"regression", "prChannel500_2_210"}, {"upper", "prChannelUpper500_2_210"}, {"lower", "prChannelLower500_2_210"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 2.0}, {"deviations", 2.15}}, {{"regression", "prChannel500_2_215"}, {"upper", "prChannelUpper500_2_215"}, {"lower", "prChannelLower500_2_215"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 2.0}, {"deviations", 2.20}}, {{"regression", "prChannel500_2_220"}, {"upper", "prChannelUpper500_2_220"}, {"lower", "prChannelLower500_2_220"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 2.0}, {"deviations", 2.25}}, {{"regression", "prChannel500_2_225"}, {"upper", "prChannelUpper500_2_225"}, {"lower", "prChannelLower500_2_225"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 2.0}, {"deviations", 2.30}}, {{"regression", "prChannel500_2_230"}, {"upper", "prChannelUpper500_2_230"}, {"lower", "prChannelLower500_2_230"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 2.0}, {"deviations", 2.35}}, {{"regression", "prChannel500_2_235"}, {"upper", "prChannelUpper500_2_235"}, {"lower", "prChannelLower500_2_235"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 2.0}, {"deviations", 2.40}}, {{"regression", "prChannel500_2_240"}, {"upper", "prChannelUpper500_2_240"}, {"lower", "prChannelLower500_2_240"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 3.0}, {"deviations", 1.90}}, {{"regression", "prChannel500_3_190"}, {"upper", "prChannelUpper500_3_190"}, {"lower", "prChannelLower500_3_190"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 3.0}, {"deviations", 1.95}}, {{"regression", "prChannel500_3_195"}, {"upper", "prChannelUpper500_3_195"}, {"lower", "prChannelLower500_3_195"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 3.0}, {"deviations", 2.00}}, {{"regression", "prChannel500_3_200"}, {"upper", "prChannelUpper500_3_200"}, {"lower", "prChannelLower500_3_200"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 3.0}, {"deviations", 2.05}}, {{"regression", "prChannel500_3_205"}, {"upper", "prChannelUpper500_3_205"}, {"lower", "prChannelLower500_3_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 3.0}, {"deviations", 2.10}}, {{"regression", "prChannel500_3_210"}, {"upper", "prChannelUpper500_3_210"}, {"lower", "prChannelLower500_3_210"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 3.0}, {"deviations", 2.15}}, {{"regression", "prChannel500_3_215"}, {"upper", "prChannelUpper500_3_215"}, {"lower", "prChannelLower500_3_215"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 3.0}, {"deviations", 2.20}}, {{"regression", "prChannel500_3_220"}, {"upper", "prChannelUpper500_3_220"}, {"lower", "prChannelLower500_3_220"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 3.0}, {"deviations", 2.25}}, {{"regression", "prChannel500_3_225"}, {"upper", "prChannelUpper500_3_225"}, {"lower", "prChannelLower500_3_225"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 3.0}, {"deviations", 2.30}}, {{"regression", "prChannel500_3_230"}, {"upper", "prChannelUpper500_3_230"}, {"lower", "prChannelLower500_3_230"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 3.0}, {"deviations", 2.35}}, {{"regression", "prChannel500_3_235"}, {"upper", "prChannelUpper500_3_235"}, {"lower", "prChannelLower500_3_235"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 3.0}, {"deviations", 2.40}}, {{"regression", "prChannel500_3_240"}, {"upper", "prChannelUpper500_3_240"}, {"lower", "prChannelLower500_3_240"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 4.0}, {"deviations", 1.90}}, {{"regression", "prChannel500_4_190"}, {"upper", "prChannelUpper500_4_190"}, {"lower", "prChannelLower500_4_190"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 4.0}, {"deviations", 1.95}}, {{"regression", "prChannel500_4_195"}, {"upper", "prChannelUpper500_4_195"}, {"lower", "prChannelLower500_4_195"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 4.0}, {"deviations", 2.00}}, {{"regression", "prChannel500_4_200"}, {"upper", "prChannelUpper500_4_200"}, {"lower", "prChannelLower500_4_200"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 4.0}, {"deviations", 2.05}}, {{"regression", "prChannel500_4_205"}, {"upper", "prChannelUpper500_4_205"}, {"lower", "prChannelLower500_4_205"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 4.0}, {"deviations", 2.10}}, {{"regression", "prChannel500_4_210"}, {"upper", "prChannelUpper500_4_210"}, {"lower", "prChannelLower500_4_210"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 4.0}, {"deviations", 2.15}}, {{"regression", "prChannel500_4_215"}, {"upper", "prChannelUpper500_4_215"}, {"lower", "prChannelLower500_4_215"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 4.0}, {"deviations", 2.20}}, {{"regression", "prChannel500_4_220"}, {"upper", "prChannelUpper500_4_220"}, {"lower", "prChannelLower500_4_220"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 4.0}, {"deviations", 2.25}}, {{"regression", "prChannel500_4_225"}, {"upper", "prChannelUpper500_4_225"}, {"lower", "prChannelLower500_4_225"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 4.0}, {"deviations", 2.30}}, {{"regression", "prChannel500_4_230"}, {"upper", "prChannelUpper500_4_230"}, {"lower", "prChannelLower500_4_230"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 4.0}, {"deviations", 2.35}}, {{"regression", "prChannel500_4_235"}, {"upper", "prChannelUpper500_4_235"}, {"lower", "prChannelLower500_4_235"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 4.0}, {"deviations", 2.40}}, {{"regression", "prChannel500_4_240"}, {"upper", "prChannelUpper500_4_240"}, {"lower", "prChannelLower500_4_240"}}));
-    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", 500.0}, {"degree", 5.0}, {"deviations", 2.05}}, {{"regression", "prChannel500_5_205"}, {"upper", "prChannelUpper500_5_205"}, {"lower", "prChannelLower500_5_205"}}));
+    this->studies.push_back(new SmaStudy({{"length", (double)13.0}}, {{"sma", "sma13"}}));
+    this->studies.push_back(new EmaStudy({{"length", (double)50.0}}, {{"ema", "ema50"}}));
+    this->studies.push_back(new EmaStudy({{"length", (double)100.0}}, {{"ema", "ema100"}}));
+    this->studies.push_back(new EmaStudy({{"length", (double)200.0}}, {{"ema", "ema200"}}));
+    // this->studies.push_back(new EmaStudy({{"length", (double)250.0}}, {{"ema", "ema250"}}));
+    // this->studies.push_back(new EmaStudy({{"length", (double)300.0}}, {{"ema", "ema300"}}));
+    // this->studies.push_back(new EmaStudy({{"length", (double)350.0}}, {{"ema", "ema350"}}));
+    // this->studies.push_back(new EmaStudy({{"length", (double)400.0}}, {{"ema", "ema400"}}));
+    // this->studies.push_back(new EmaStudy({{"length", (double)450.0}}, {{"ema", "ema450"}}));
+    // this->studies.push_back(new EmaStudy({{"length", (double)500.0}}, {{"ema", "ema500"}}));
+    this->studies.push_back(new RsiStudy({{"length", (double)2.0}}, {{"rsi", "rsi2"}}));
+    this->studies.push_back(new RsiStudy({{"length", (double)5.0}}, {{"rsi", "rsi5"}}));
+    this->studies.push_back(new RsiStudy({{"length", (double)7.0}}, {{"rsi", "rsi7"}}));
+    this->studies.push_back(new RsiStudy({{"length", (double)9.0}}, {{"rsi", "rsi9"}}));
+    this->studies.push_back(new RsiStudy({{"length", (double)14.0}}, {{"rsi", "rsi14"}}));
+    this->studies.push_back(new StochasticOscillatorStudy({{"length", (double)5.0}, {"averageLength", (double)3.0}}, {{"K", "stochastic5K"}, {"D", "stochastic5D"}}));
+    this->studies.push_back(new StochasticOscillatorStudy({{"length", (double)10.0}, {"averageLength", (double)3.0}}, {{"K", "stochastic10K"}, {"D", "stochastic10D"}}));
+    this->studies.push_back(new StochasticOscillatorStudy({{"length", (double)14.0}, {"averageLength", (double)3.0}}, {{"K", "stochastic14K"}, {"D", "stochastic14D"}}));
+    this->studies.push_back(new StochasticOscillatorStudy({{"length", (double)21.0}, {"averageLength", (double)3.0}}, {{"K", "stochastic21K"}, {"D", "stochastic21D"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)2.0}, {"deviations", (double)1.90}}, {{"regression", "prChannel100_2_190"}, {"upper", "prChannelUpper100_2_190"}, {"lower", "prChannelLower100_2_190"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)2.0}, {"deviations", (double)1.95}}, {{"regression", "prChannel100_2_195"}, {"upper", "prChannelUpper100_2_195"}, {"lower", "prChannelLower100_2_195"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)2.0}, {"deviations", (double)2.00}}, {{"regression", "prChannel100_2_200"}, {"upper", "prChannelUpper100_2_200"}, {"lower", "prChannelLower100_2_200"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)2.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel100_2_205"}, {"upper", "prChannelUpper100_2_205"}, {"lower", "prChannelLower100_2_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)2.0}, {"deviations", (double)2.10}}, {{"regression", "prChannel100_2_210"}, {"upper", "prChannelUpper100_2_210"}, {"lower", "prChannelLower100_2_210"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)2.0}, {"deviations", (double)2.15}}, {{"regression", "prChannel100_2_215"}, {"upper", "prChannelUpper100_2_215"}, {"lower", "prChannelLower100_2_215"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)2.0}, {"deviations", (double)2.20}}, {{"regression", "prChannel100_2_220"}, {"upper", "prChannelUpper100_2_220"}, {"lower", "prChannelLower100_2_220"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)2.0}, {"deviations", (double)2.25}}, {{"regression", "prChannel100_2_225"}, {"upper", "prChannelUpper100_2_225"}, {"lower", "prChannelLower100_2_225"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)2.0}, {"deviations", (double)2.30}}, {{"regression", "prChannel100_2_230"}, {"upper", "prChannelUpper100_2_230"}, {"lower", "prChannelLower100_2_230"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)2.0}, {"deviations", (double)2.35}}, {{"regression", "prChannel100_2_235"}, {"upper", "prChannelUpper100_2_235"}, {"lower", "prChannelLower100_2_235"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)2.0}, {"deviations", (double)2.40}}, {{"regression", "prChannel100_2_240"}, {"upper", "prChannelUpper100_2_240"}, {"lower", "prChannelLower100_2_240"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)3.0}, {"deviations", (double)1.90}}, {{"regression", "prChannel100_3_190"}, {"upper", "prChannelUpper100_3_190"}, {"lower", "prChannelLower100_3_190"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)3.0}, {"deviations", (double)1.95}}, {{"regression", "prChannel100_3_195"}, {"upper", "prChannelUpper100_3_195"}, {"lower", "prChannelLower100_3_195"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)3.0}, {"deviations", (double)2.00}}, {{"regression", "prChannel100_3_200"}, {"upper", "prChannelUpper100_3_200"}, {"lower", "prChannelLower100_3_200"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)3.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel100_3_205"}, {"upper", "prChannelUpper100_3_205"}, {"lower", "prChannelLower100_3_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)3.0}, {"deviations", (double)2.10}}, {{"regression", "prChannel100_3_210"}, {"upper", "prChannelUpper100_3_210"}, {"lower", "prChannelLower100_3_210"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)3.0}, {"deviations", (double)2.15}}, {{"regression", "prChannel100_3_215"}, {"upper", "prChannelUpper100_3_215"}, {"lower", "prChannelLower100_3_215"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)3.0}, {"deviations", (double)2.20}}, {{"regression", "prChannel100_3_220"}, {"upper", "prChannelUpper100_3_220"}, {"lower", "prChannelLower100_3_220"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)3.0}, {"deviations", (double)2.25}}, {{"regression", "prChannel100_3_225"}, {"upper", "prChannelUpper100_3_225"}, {"lower", "prChannelLower100_3_225"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)3.0}, {"deviations", (double)2.30}}, {{"regression", "prChannel100_3_230"}, {"upper", "prChannelUpper100_3_230"}, {"lower", "prChannelLower100_3_230"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)3.0}, {"deviations", (double)2.35}}, {{"regression", "prChannel100_3_235"}, {"upper", "prChannelUpper100_3_235"}, {"lower", "prChannelLower100_3_235"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)3.0}, {"deviations", (double)2.40}}, {{"regression", "prChannel100_3_240"}, {"upper", "prChannelUpper100_3_240"}, {"lower", "prChannelLower100_3_240"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)4.0}, {"deviations", (double)1.90}}, {{"regression", "prChannel100_4_190"}, {"upper", "prChannelUpper100_4_190"}, {"lower", "prChannelLower100_4_190"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)4.0}, {"deviations", (double)1.95}}, {{"regression", "prChannel100_4_195"}, {"upper", "prChannelUpper100_4_195"}, {"lower", "prChannelLower100_4_195"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)4.0}, {"deviations", (double)2.00}}, {{"regression", "prChannel100_4_200"}, {"upper", "prChannelUpper100_4_200"}, {"lower", "prChannelLower100_4_200"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)4.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel100_4_205"}, {"upper", "prChannelUpper100_4_205"}, {"lower", "prChannelLower100_4_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)4.0}, {"deviations", (double)2.10}}, {{"regression", "prChannel100_4_210"}, {"upper", "prChannelUpper100_4_210"}, {"lower", "prChannelLower100_4_210"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)4.0}, {"deviations", (double)2.15}}, {{"regression", "prChannel100_4_215"}, {"upper", "prChannelUpper100_4_215"}, {"lower", "prChannelLower100_4_215"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)4.0}, {"deviations", (double)2.20}}, {{"regression", "prChannel100_4_220"}, {"upper", "prChannelUpper100_4_220"}, {"lower", "prChannelLower100_4_220"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)4.0}, {"deviations", (double)2.25}}, {{"regression", "prChannel100_4_225"}, {"upper", "prChannelUpper100_4_225"}, {"lower", "prChannelLower100_4_225"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)4.0}, {"deviations", (double)2.30}}, {{"regression", "prChannel100_4_230"}, {"upper", "prChannelUpper100_4_230"}, {"lower", "prChannelLower100_4_230"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)4.0}, {"deviations", (double)2.35}}, {{"regression", "prChannel100_4_235"}, {"upper", "prChannelUpper100_4_235"}, {"lower", "prChannelLower100_4_235"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)4.0}, {"deviations", (double)2.40}}, {{"regression", "prChannel100_4_240"}, {"upper", "prChannelUpper100_4_240"}, {"lower", "prChannelLower100_4_240"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)100.0}, {"degree", (double)5.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel100_5_205"}, {"upper", "prChannelUpper100_5_205"}, {"lower", "prChannelLower100_5_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)2.0}, {"deviations", (double)1.90}}, {{"regression", "prChannel200_2_190"}, {"upper", "prChannelUpper200_2_190"}, {"lower", "prChannelLower200_2_190"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)2.0}, {"deviations", (double)1.95}}, {{"regression", "prChannel200_2_195"}, {"upper", "prChannelUpper200_2_195"}, {"lower", "prChannelLower200_2_195"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)2.0}, {"deviations", (double)2.00}}, {{"regression", "prChannel200_2_200"}, {"upper", "prChannelUpper200_2_200"}, {"lower", "prChannelLower200_2_200"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)2.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel200_2_205"}, {"upper", "prChannelUpper200_2_205"}, {"lower", "prChannelLower200_2_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)2.0}, {"deviations", (double)2.10}}, {{"regression", "prChannel200_2_210"}, {"upper", "prChannelUpper200_2_210"}, {"lower", "prChannelLower200_2_210"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)2.0}, {"deviations", (double)2.15}}, {{"regression", "prChannel200_2_215"}, {"upper", "prChannelUpper200_2_215"}, {"lower", "prChannelLower200_2_215"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)2.0}, {"deviations", (double)2.20}}, {{"regression", "prChannel200_2_220"}, {"upper", "prChannelUpper200_2_220"}, {"lower", "prChannelLower200_2_220"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)2.0}, {"deviations", (double)2.25}}, {{"regression", "prChannel200_2_225"}, {"upper", "prChannelUpper200_2_225"}, {"lower", "prChannelLower200_2_225"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)2.0}, {"deviations", (double)2.30}}, {{"regression", "prChannel200_2_230"}, {"upper", "prChannelUpper200_2_230"}, {"lower", "prChannelLower200_2_230"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)2.0}, {"deviations", (double)2.35}}, {{"regression", "prChannel200_2_235"}, {"upper", "prChannelUpper200_2_235"}, {"lower", "prChannelLower200_2_235"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)2.0}, {"deviations", (double)2.40}}, {{"regression", "prChannel200_2_240"}, {"upper", "prChannelUpper200_2_240"}, {"lower", "prChannelLower200_2_240"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)3.0}, {"deviations", (double)1.90}}, {{"regression", "prChannel200_3_190"}, {"upper", "prChannelUpper200_3_190"}, {"lower", "prChannelLower200_3_190"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)3.0}, {"deviations", (double)1.95}}, {{"regression", "prChannel200_3_195"}, {"upper", "prChannelUpper200_3_195"}, {"lower", "prChannelLower200_3_195"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)3.0}, {"deviations", (double)2.00}}, {{"regression", "prChannel200_3_200"}, {"upper", "prChannelUpper200_3_200"}, {"lower", "prChannelLower200_3_200"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)3.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel200_3_205"}, {"upper", "prChannelUpper200_3_205"}, {"lower", "prChannelLower200_3_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)3.0}, {"deviations", (double)2.10}}, {{"regression", "prChannel200_3_210"}, {"upper", "prChannelUpper200_3_210"}, {"lower", "prChannelLower200_3_210"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)3.0}, {"deviations", (double)2.15}}, {{"regression", "prChannel200_3_215"}, {"upper", "prChannelUpper200_3_215"}, {"lower", "prChannelLower200_3_215"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)3.0}, {"deviations", (double)2.20}}, {{"regression", "prChannel200_3_220"}, {"upper", "prChannelUpper200_3_220"}, {"lower", "prChannelLower200_3_220"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)3.0}, {"deviations", (double)2.25}}, {{"regression", "prChannel200_3_225"}, {"upper", "prChannelUpper200_3_225"}, {"lower", "prChannelLower200_3_225"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)3.0}, {"deviations", (double)2.30}}, {{"regression", "prChannel200_3_230"}, {"upper", "prChannelUpper200_3_230"}, {"lower", "prChannelLower200_3_230"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)3.0}, {"deviations", (double)2.35}}, {{"regression", "prChannel200_3_235"}, {"upper", "prChannelUpper200_3_235"}, {"lower", "prChannelLower200_3_235"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)3.0}, {"deviations", (double)2.40}}, {{"regression", "prChannel200_3_240"}, {"upper", "prChannelUpper200_3_240"}, {"lower", "prChannelLower200_3_240"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)4.0}, {"deviations", (double)1.90}}, {{"regression", "prChannel200_4_190"}, {"upper", "prChannelUpper200_4_190"}, {"lower", "prChannelLower200_4_190"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)4.0}, {"deviations", (double)1.95}}, {{"regression", "prChannel200_4_195"}, {"upper", "prChannelUpper200_4_195"}, {"lower", "prChannelLower200_4_195"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)4.0}, {"deviations", (double)2.00}}, {{"regression", "prChannel200_4_200"}, {"upper", "prChannelUpper200_4_200"}, {"lower", "prChannelLower200_4_200"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)4.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel200_4_205"}, {"upper", "prChannelUpper200_4_205"}, {"lower", "prChannelLower200_4_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)4.0}, {"deviations", (double)2.10}}, {{"regression", "prChannel200_4_210"}, {"upper", "prChannelUpper200_4_210"}, {"lower", "prChannelLower200_4_210"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)4.0}, {"deviations", (double)2.15}}, {{"regression", "prChannel200_4_215"}, {"upper", "prChannelUpper200_4_215"}, {"lower", "prChannelLower200_4_215"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)4.0}, {"deviations", (double)2.20}}, {{"regression", "prChannel200_4_220"}, {"upper", "prChannelUpper200_4_220"}, {"lower", "prChannelLower200_4_220"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)4.0}, {"deviations", (double)2.25}}, {{"regression", "prChannel200_4_225"}, {"upper", "prChannelUpper200_4_225"}, {"lower", "prChannelLower200_4_225"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)4.0}, {"deviations", (double)2.30}}, {{"regression", "prChannel200_4_230"}, {"upper", "prChannelUpper200_4_230"}, {"lower", "prChannelLower200_4_230"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)4.0}, {"deviations", (double)2.35}}, {{"regression", "prChannel200_4_235"}, {"upper", "prChannelUpper200_4_235"}, {"lower", "prChannelLower200_4_235"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)4.0}, {"deviations", (double)2.40}}, {{"regression", "prChannel200_4_240"}, {"upper", "prChannelUpper200_4_240"}, {"lower", "prChannelLower200_4_240"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)200.0}, {"degree", (double)5.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel200_5_205"}, {"upper", "prChannelUpper200_5_205"}, {"lower", "prChannelLower200_5_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)2.0}, {"deviations", (double)1.90}}, {{"regression", "prChannel250_2_190"}, {"upper", "prChannelUpper250_2_190"}, {"lower", "prChannelLower250_2_190"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)2.0}, {"deviations", (double)1.95}}, {{"regression", "prChannel250_2_195"}, {"upper", "prChannelUpper250_2_195"}, {"lower", "prChannelLower250_2_195"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)2.0}, {"deviations", (double)2.00}}, {{"regression", "prChannel250_2_200"}, {"upper", "prChannelUpper250_2_200"}, {"lower", "prChannelLower250_2_200"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)2.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel250_2_205"}, {"upper", "prChannelUpper250_2_205"}, {"lower", "prChannelLower250_2_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)2.0}, {"deviations", (double)2.10}}, {{"regression", "prChannel250_2_210"}, {"upper", "prChannelUpper250_2_210"}, {"lower", "prChannelLower250_2_210"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)2.0}, {"deviations", (double)2.15}}, {{"regression", "prChannel250_2_215"}, {"upper", "prChannelUpper250_2_215"}, {"lower", "prChannelLower250_2_215"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)2.0}, {"deviations", (double)2.20}}, {{"regression", "prChannel250_2_220"}, {"upper", "prChannelUpper250_2_220"}, {"lower", "prChannelLower250_2_220"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)2.0}, {"deviations", (double)2.25}}, {{"regression", "prChannel250_2_225"}, {"upper", "prChannelUpper250_2_225"}, {"lower", "prChannelLower250_2_225"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)2.0}, {"deviations", (double)2.30}}, {{"regression", "prChannel250_2_230"}, {"upper", "prChannelUpper250_2_230"}, {"lower", "prChannelLower250_2_230"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)2.0}, {"deviations", (double)2.35}}, {{"regression", "prChannel250_2_235"}, {"upper", "prChannelUpper250_2_235"}, {"lower", "prChannelLower250_2_235"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)2.0}, {"deviations", (double)2.40}}, {{"regression", "prChannel250_2_240"}, {"upper", "prChannelUpper250_2_240"}, {"lower", "prChannelLower250_2_240"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)3.0}, {"deviations", (double)1.90}}, {{"regression", "prChannel250_3_190"}, {"upper", "prChannelUpper250_3_190"}, {"lower", "prChannelLower250_3_190"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)3.0}, {"deviations", (double)1.95}}, {{"regression", "prChannel250_3_195"}, {"upper", "prChannelUpper250_3_195"}, {"lower", "prChannelLower250_3_195"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)3.0}, {"deviations", (double)2.00}}, {{"regression", "prChannel250_3_200"}, {"upper", "prChannelUpper250_3_200"}, {"lower", "prChannelLower250_3_200"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)3.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel250_3_205"}, {"upper", "prChannelUpper250_3_205"}, {"lower", "prChannelLower250_3_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)3.0}, {"deviations", (double)2.10}}, {{"regression", "prChannel250_3_210"}, {"upper", "prChannelUpper250_3_210"}, {"lower", "prChannelLower250_3_210"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)3.0}, {"deviations", (double)2.15}}, {{"regression", "prChannel250_3_215"}, {"upper", "prChannelUpper250_3_215"}, {"lower", "prChannelLower250_3_215"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)3.0}, {"deviations", (double)2.20}}, {{"regression", "prChannel250_3_220"}, {"upper", "prChannelUpper250_3_220"}, {"lower", "prChannelLower250_3_220"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)3.0}, {"deviations", (double)2.25}}, {{"regression", "prChannel250_3_225"}, {"upper", "prChannelUpper250_3_225"}, {"lower", "prChannelLower250_3_225"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)3.0}, {"deviations", (double)2.30}}, {{"regression", "prChannel250_3_230"}, {"upper", "prChannelUpper250_3_230"}, {"lower", "prChannelLower250_3_230"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)3.0}, {"deviations", (double)2.35}}, {{"regression", "prChannel250_3_235"}, {"upper", "prChannelUpper250_3_235"}, {"lower", "prChannelLower250_3_235"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)3.0}, {"deviations", (double)2.40}}, {{"regression", "prChannel250_3_240"}, {"upper", "prChannelUpper250_3_240"}, {"lower", "prChannelLower250_3_240"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)4.0}, {"deviations", (double)1.90}}, {{"regression", "prChannel250_4_190"}, {"upper", "prChannelUpper250_4_190"}, {"lower", "prChannelLower250_4_190"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)4.0}, {"deviations", (double)1.95}}, {{"regression", "prChannel250_4_195"}, {"upper", "prChannelUpper250_4_195"}, {"lower", "prChannelLower250_4_195"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)4.0}, {"deviations", (double)2.00}}, {{"regression", "prChannel250_4_200"}, {"upper", "prChannelUpper250_4_200"}, {"lower", "prChannelLower250_4_200"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)4.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel250_4_205"}, {"upper", "prChannelUpper250_4_205"}, {"lower", "prChannelLower250_4_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)4.0}, {"deviations", (double)2.10}}, {{"regression", "prChannel250_4_210"}, {"upper", "prChannelUpper250_4_210"}, {"lower", "prChannelLower250_4_210"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)4.0}, {"deviations", (double)2.15}}, {{"regression", "prChannel250_4_215"}, {"upper", "prChannelUpper250_4_215"}, {"lower", "prChannelLower250_4_215"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)4.0}, {"deviations", (double)2.20}}, {{"regression", "prChannel250_4_220"}, {"upper", "prChannelUpper250_4_220"}, {"lower", "prChannelLower250_4_220"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)4.0}, {"deviations", (double)2.25}}, {{"regression", "prChannel250_4_225"}, {"upper", "prChannelUpper250_4_225"}, {"lower", "prChannelLower250_4_225"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)4.0}, {"deviations", (double)2.30}}, {{"regression", "prChannel250_4_230"}, {"upper", "prChannelUpper250_4_230"}, {"lower", "prChannelLower250_4_230"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)4.0}, {"deviations", (double)2.35}}, {{"regression", "prChannel250_4_235"}, {"upper", "prChannelUpper250_4_235"}, {"lower", "prChannelLower250_4_235"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)4.0}, {"deviations", (double)2.40}}, {{"regression", "prChannel250_4_240"}, {"upper", "prChannelUpper250_4_240"}, {"lower", "prChannelLower250_4_240"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)250.0}, {"degree", (double)5.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel250_5_205"}, {"upper", "prChannelUpper250_5_205"}, {"lower", "prChannelLower250_5_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)2.0}, {"deviations", (double)1.90}}, {{"regression", "prChannel300_2_190"}, {"upper", "prChannelUpper300_2_190"}, {"lower", "prChannelLower300_2_190"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)2.0}, {"deviations", (double)1.95}}, {{"regression", "prChannel300_2_195"}, {"upper", "prChannelUpper300_2_195"}, {"lower", "prChannelLower300_2_195"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)2.0}, {"deviations", (double)2.00}}, {{"regression", "prChannel300_2_200"}, {"upper", "prChannelUpper300_2_200"}, {"lower", "prChannelLower300_2_200"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)2.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel300_2_205"}, {"upper", "prChannelUpper300_2_205"}, {"lower", "prChannelLower300_2_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)2.0}, {"deviations", (double)2.10}}, {{"regression", "prChannel300_2_210"}, {"upper", "prChannelUpper300_2_210"}, {"lower", "prChannelLower300_2_210"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)2.0}, {"deviations", (double)2.15}}, {{"regression", "prChannel300_2_215"}, {"upper", "prChannelUpper300_2_215"}, {"lower", "prChannelLower300_2_215"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)2.0}, {"deviations", (double)2.20}}, {{"regression", "prChannel300_2_220"}, {"upper", "prChannelUpper300_2_220"}, {"lower", "prChannelLower300_2_220"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)2.0}, {"deviations", (double)2.25}}, {{"regression", "prChannel300_2_225"}, {"upper", "prChannelUpper300_2_225"}, {"lower", "prChannelLower300_2_225"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)2.0}, {"deviations", (double)2.30}}, {{"regression", "prChannel300_2_230"}, {"upper", "prChannelUpper300_2_230"}, {"lower", "prChannelLower300_2_230"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)2.0}, {"deviations", (double)2.35}}, {{"regression", "prChannel300_2_235"}, {"upper", "prChannelUpper300_2_235"}, {"lower", "prChannelLower300_2_235"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)2.0}, {"deviations", (double)2.40}}, {{"regression", "prChannel300_2_240"}, {"upper", "prChannelUpper300_2_240"}, {"lower", "prChannelLower300_2_240"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)3.0}, {"deviations", (double)1.90}}, {{"regression", "prChannel300_3_190"}, {"upper", "prChannelUpper300_3_190"}, {"lower", "prChannelLower300_3_190"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)3.0}, {"deviations", (double)1.95}}, {{"regression", "prChannel300_3_195"}, {"upper", "prChannelUpper300_3_195"}, {"lower", "prChannelLower300_3_195"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)3.0}, {"deviations", (double)2.00}}, {{"regression", "prChannel300_3_200"}, {"upper", "prChannelUpper300_3_200"}, {"lower", "prChannelLower300_3_200"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)3.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel300_3_205"}, {"upper", "prChannelUpper300_3_205"}, {"lower", "prChannelLower300_3_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)3.0}, {"deviations", (double)2.10}}, {{"regression", "prChannel300_3_210"}, {"upper", "prChannelUpper300_3_210"}, {"lower", "prChannelLower300_3_210"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)3.0}, {"deviations", (double)2.15}}, {{"regression", "prChannel300_3_215"}, {"upper", "prChannelUpper300_3_215"}, {"lower", "prChannelLower300_3_215"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)3.0}, {"deviations", (double)2.20}}, {{"regression", "prChannel300_3_220"}, {"upper", "prChannelUpper300_3_220"}, {"lower", "prChannelLower300_3_220"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)3.0}, {"deviations", (double)2.25}}, {{"regression", "prChannel300_3_225"}, {"upper", "prChannelUpper300_3_225"}, {"lower", "prChannelLower300_3_225"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)3.0}, {"deviations", (double)2.30}}, {{"regression", "prChannel300_3_230"}, {"upper", "prChannelUpper300_3_230"}, {"lower", "prChannelLower300_3_230"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)3.0}, {"deviations", (double)2.35}}, {{"regression", "prChannel300_3_235"}, {"upper", "prChannelUpper300_3_235"}, {"lower", "prChannelLower300_3_235"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)3.0}, {"deviations", (double)2.40}}, {{"regression", "prChannel300_3_240"}, {"upper", "prChannelUpper300_3_240"}, {"lower", "prChannelLower300_3_240"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)4.0}, {"deviations", (double)1.90}}, {{"regression", "prChannel300_4_190"}, {"upper", "prChannelUpper300_4_190"}, {"lower", "prChannelLower300_4_190"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)4.0}, {"deviations", (double)1.95}}, {{"regression", "prChannel300_4_195"}, {"upper", "prChannelUpper300_4_195"}, {"lower", "prChannelLower300_4_195"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)4.0}, {"deviations", (double)2.00}}, {{"regression", "prChannel300_4_200"}, {"upper", "prChannelUpper300_4_200"}, {"lower", "prChannelLower300_4_200"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)4.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel300_4_205"}, {"upper", "prChannelUpper300_4_205"}, {"lower", "prChannelLower300_4_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)4.0}, {"deviations", (double)2.10}}, {{"regression", "prChannel300_4_210"}, {"upper", "prChannelUpper300_4_210"}, {"lower", "prChannelLower300_4_210"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)4.0}, {"deviations", (double)2.15}}, {{"regression", "prChannel300_4_215"}, {"upper", "prChannelUpper300_4_215"}, {"lower", "prChannelLower300_4_215"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)4.0}, {"deviations", (double)2.20}}, {{"regression", "prChannel300_4_220"}, {"upper", "prChannelUpper300_4_220"}, {"lower", "prChannelLower300_4_220"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)4.0}, {"deviations", (double)2.25}}, {{"regression", "prChannel300_4_225"}, {"upper", "prChannelUpper300_4_225"}, {"lower", "prChannelLower300_4_225"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)4.0}, {"deviations", (double)2.30}}, {{"regression", "prChannel300_4_230"}, {"upper", "prChannelUpper300_4_230"}, {"lower", "prChannelLower300_4_230"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)4.0}, {"deviations", (double)2.35}}, {{"regression", "prChannel300_4_235"}, {"upper", "prChannelUpper300_4_235"}, {"lower", "prChannelLower300_4_235"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)4.0}, {"deviations", (double)2.40}}, {{"regression", "prChannel300_4_240"}, {"upper", "prChannelUpper300_4_240"}, {"lower", "prChannelLower300_4_240"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)300.0}, {"degree", (double)5.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel300_5_205"}, {"upper", "prChannelUpper300_5_205"}, {"lower", "prChannelLower300_5_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)2.0}, {"deviations", (double)1.90}}, {{"regression", "prChannel350_2_190"}, {"upper", "prChannelUpper350_2_190"}, {"lower", "prChannelLower350_2_190"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)2.0}, {"deviations", (double)1.95}}, {{"regression", "prChannel350_2_195"}, {"upper", "prChannelUpper350_2_195"}, {"lower", "prChannelLower350_2_195"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)2.0}, {"deviations", (double)2.00}}, {{"regression", "prChannel350_2_200"}, {"upper", "prChannelUpper350_2_200"}, {"lower", "prChannelLower350_2_200"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)2.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel350_2_205"}, {"upper", "prChannelUpper350_2_205"}, {"lower", "prChannelLower350_2_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)2.0}, {"deviations", (double)2.10}}, {{"regression", "prChannel350_2_210"}, {"upper", "prChannelUpper350_2_210"}, {"lower", "prChannelLower350_2_210"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)2.0}, {"deviations", (double)2.15}}, {{"regression", "prChannel350_2_215"}, {"upper", "prChannelUpper350_2_215"}, {"lower", "prChannelLower350_2_215"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)2.0}, {"deviations", (double)2.20}}, {{"regression", "prChannel350_2_220"}, {"upper", "prChannelUpper350_2_220"}, {"lower", "prChannelLower350_2_220"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)2.0}, {"deviations", (double)2.25}}, {{"regression", "prChannel350_2_225"}, {"upper", "prChannelUpper350_2_225"}, {"lower", "prChannelLower350_2_225"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)2.0}, {"deviations", (double)2.30}}, {{"regression", "prChannel350_2_230"}, {"upper", "prChannelUpper350_2_230"}, {"lower", "prChannelLower350_2_230"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)2.0}, {"deviations", (double)2.35}}, {{"regression", "prChannel350_2_235"}, {"upper", "prChannelUpper350_2_235"}, {"lower", "prChannelLower350_2_235"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)2.0}, {"deviations", (double)2.40}}, {{"regression", "prChannel350_2_240"}, {"upper", "prChannelUpper350_2_240"}, {"lower", "prChannelLower350_2_240"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)3.0}, {"deviations", (double)1.90}}, {{"regression", "prChannel350_3_190"}, {"upper", "prChannelUpper350_3_190"}, {"lower", "prChannelLower350_3_190"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)3.0}, {"deviations", (double)1.95}}, {{"regression", "prChannel350_3_195"}, {"upper", "prChannelUpper350_3_195"}, {"lower", "prChannelLower350_3_195"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)3.0}, {"deviations", (double)2.00}}, {{"regression", "prChannel350_3_200"}, {"upper", "prChannelUpper350_3_200"}, {"lower", "prChannelLower350_3_200"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)3.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel350_3_205"}, {"upper", "prChannelUpper350_3_205"}, {"lower", "prChannelLower350_3_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)3.0}, {"deviations", (double)2.10}}, {{"regression", "prChannel350_3_210"}, {"upper", "prChannelUpper350_3_210"}, {"lower", "prChannelLower350_3_210"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)3.0}, {"deviations", (double)2.15}}, {{"regression", "prChannel350_3_215"}, {"upper", "prChannelUpper350_3_215"}, {"lower", "prChannelLower350_3_215"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)3.0}, {"deviations", (double)2.20}}, {{"regression", "prChannel350_3_220"}, {"upper", "prChannelUpper350_3_220"}, {"lower", "prChannelLower350_3_220"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)3.0}, {"deviations", (double)2.25}}, {{"regression", "prChannel350_3_225"}, {"upper", "prChannelUpper350_3_225"}, {"lower", "prChannelLower350_3_225"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)3.0}, {"deviations", (double)2.30}}, {{"regression", "prChannel350_3_230"}, {"upper", "prChannelUpper350_3_230"}, {"lower", "prChannelLower350_3_230"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)3.0}, {"deviations", (double)2.35}}, {{"regression", "prChannel350_3_235"}, {"upper", "prChannelUpper350_3_235"}, {"lower", "prChannelLower350_3_235"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)3.0}, {"deviations", (double)2.40}}, {{"regression", "prChannel350_3_240"}, {"upper", "prChannelUpper350_3_240"}, {"lower", "prChannelLower350_3_240"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)4.0}, {"deviations", (double)1.90}}, {{"regression", "prChannel350_4_190"}, {"upper", "prChannelUpper350_4_190"}, {"lower", "prChannelLower350_4_190"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)4.0}, {"deviations", (double)1.95}}, {{"regression", "prChannel350_4_195"}, {"upper", "prChannelUpper350_4_195"}, {"lower", "prChannelLower350_4_195"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)4.0}, {"deviations", (double)2.00}}, {{"regression", "prChannel350_4_200"}, {"upper", "prChannelUpper350_4_200"}, {"lower", "prChannelLower350_4_200"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)4.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel350_4_205"}, {"upper", "prChannelUpper350_4_205"}, {"lower", "prChannelLower350_4_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)4.0}, {"deviations", (double)2.10}}, {{"regression", "prChannel350_4_210"}, {"upper", "prChannelUpper350_4_210"}, {"lower", "prChannelLower350_4_210"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)4.0}, {"deviations", (double)2.15}}, {{"regression", "prChannel350_4_215"}, {"upper", "prChannelUpper350_4_215"}, {"lower", "prChannelLower350_4_215"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)4.0}, {"deviations", (double)2.20}}, {{"regression", "prChannel350_4_220"}, {"upper", "prChannelUpper350_4_220"}, {"lower", "prChannelLower350_4_220"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)4.0}, {"deviations", (double)2.25}}, {{"regression", "prChannel350_4_225"}, {"upper", "prChannelUpper350_4_225"}, {"lower", "prChannelLower350_4_225"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)4.0}, {"deviations", (double)2.30}}, {{"regression", "prChannel350_4_230"}, {"upper", "prChannelUpper350_4_230"}, {"lower", "prChannelLower350_4_230"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)4.0}, {"deviations", (double)2.35}}, {{"regression", "prChannel350_4_235"}, {"upper", "prChannelUpper350_4_235"}, {"lower", "prChannelLower350_4_235"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)4.0}, {"deviations", (double)2.40}}, {{"regression", "prChannel350_4_240"}, {"upper", "prChannelUpper350_4_240"}, {"lower", "prChannelLower350_4_240"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)350.0}, {"degree", (double)5.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel350_5_205"}, {"upper", "prChannelUpper350_5_205"}, {"lower", "prChannelLower350_5_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)2.0}, {"deviations", (double)1.90}}, {{"regression", "prChannel400_2_190"}, {"upper", "prChannelUpper400_2_190"}, {"lower", "prChannelLower400_2_190"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)2.0}, {"deviations", (double)1.95}}, {{"regression", "prChannel400_2_195"}, {"upper", "prChannelUpper400_2_195"}, {"lower", "prChannelLower400_2_195"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)2.0}, {"deviations", (double)2.00}}, {{"regression", "prChannel400_2_200"}, {"upper", "prChannelUpper400_2_200"}, {"lower", "prChannelLower400_2_200"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)2.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel400_2_205"}, {"upper", "prChannelUpper400_2_205"}, {"lower", "prChannelLower400_2_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)2.0}, {"deviations", (double)2.10}}, {{"regression", "prChannel400_2_210"}, {"upper", "prChannelUpper400_2_210"}, {"lower", "prChannelLower400_2_210"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)2.0}, {"deviations", (double)2.15}}, {{"regression", "prChannel400_2_215"}, {"upper", "prChannelUpper400_2_215"}, {"lower", "prChannelLower400_2_215"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)2.0}, {"deviations", (double)2.20}}, {{"regression", "prChannel400_2_220"}, {"upper", "prChannelUpper400_2_220"}, {"lower", "prChannelLower400_2_220"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)2.0}, {"deviations", (double)2.25}}, {{"regression", "prChannel400_2_225"}, {"upper", "prChannelUpper400_2_225"}, {"lower", "prChannelLower400_2_225"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)2.0}, {"deviations", (double)2.30}}, {{"regression", "prChannel400_2_230"}, {"upper", "prChannelUpper400_2_230"}, {"lower", "prChannelLower400_2_230"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)2.0}, {"deviations", (double)2.35}}, {{"regression", "prChannel400_2_235"}, {"upper", "prChannelUpper400_2_235"}, {"lower", "prChannelLower400_2_235"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)2.0}, {"deviations", (double)2.40}}, {{"regression", "prChannel400_2_240"}, {"upper", "prChannelUpper400_2_240"}, {"lower", "prChannelLower400_2_240"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)3.0}, {"deviations", (double)1.90}}, {{"regression", "prChannel400_3_190"}, {"upper", "prChannelUpper400_3_190"}, {"lower", "prChannelLower400_3_190"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)3.0}, {"deviations", (double)1.95}}, {{"regression", "prChannel400_3_195"}, {"upper", "prChannelUpper400_3_195"}, {"lower", "prChannelLower400_3_195"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)3.0}, {"deviations", (double)2.00}}, {{"regression", "prChannel400_3_200"}, {"upper", "prChannelUpper400_3_200"}, {"lower", "prChannelLower400_3_200"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)3.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel400_3_205"}, {"upper", "prChannelUpper400_3_205"}, {"lower", "prChannelLower400_3_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)3.0}, {"deviations", (double)2.10}}, {{"regression", "prChannel400_3_210"}, {"upper", "prChannelUpper400_3_210"}, {"lower", "prChannelLower400_3_210"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)3.0}, {"deviations", (double)2.15}}, {{"regression", "prChannel400_3_215"}, {"upper", "prChannelUpper400_3_215"}, {"lower", "prChannelLower400_3_215"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)3.0}, {"deviations", (double)2.20}}, {{"regression", "prChannel400_3_220"}, {"upper", "prChannelUpper400_3_220"}, {"lower", "prChannelLower400_3_220"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)3.0}, {"deviations", (double)2.25}}, {{"regression", "prChannel400_3_225"}, {"upper", "prChannelUpper400_3_225"}, {"lower", "prChannelLower400_3_225"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)3.0}, {"deviations", (double)2.30}}, {{"regression", "prChannel400_3_230"}, {"upper", "prChannelUpper400_3_230"}, {"lower", "prChannelLower400_3_230"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)3.0}, {"deviations", (double)2.35}}, {{"regression", "prChannel400_3_235"}, {"upper", "prChannelUpper400_3_235"}, {"lower", "prChannelLower400_3_235"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)3.0}, {"deviations", (double)2.40}}, {{"regression", "prChannel400_3_240"}, {"upper", "prChannelUpper400_3_240"}, {"lower", "prChannelLower400_3_240"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)4.0}, {"deviations", (double)1.90}}, {{"regression", "prChannel400_4_190"}, {"upper", "prChannelUpper400_4_190"}, {"lower", "prChannelLower400_4_190"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)4.0}, {"deviations", (double)1.95}}, {{"regression", "prChannel400_4_195"}, {"upper", "prChannelUpper400_4_195"}, {"lower", "prChannelLower400_4_195"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)4.0}, {"deviations", (double)2.00}}, {{"regression", "prChannel400_4_200"}, {"upper", "prChannelUpper400_4_200"}, {"lower", "prChannelLower400_4_200"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)4.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel400_4_205"}, {"upper", "prChannelUpper400_4_205"}, {"lower", "prChannelLower400_4_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)4.0}, {"deviations", (double)2.10}}, {{"regression", "prChannel400_4_210"}, {"upper", "prChannelUpper400_4_210"}, {"lower", "prChannelLower400_4_210"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)4.0}, {"deviations", (double)2.15}}, {{"regression", "prChannel400_4_215"}, {"upper", "prChannelUpper400_4_215"}, {"lower", "prChannelLower400_4_215"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)4.0}, {"deviations", (double)2.20}}, {{"regression", "prChannel400_4_220"}, {"upper", "prChannelUpper400_4_220"}, {"lower", "prChannelLower400_4_220"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)4.0}, {"deviations", (double)2.25}}, {{"regression", "prChannel400_4_225"}, {"upper", "prChannelUpper400_4_225"}, {"lower", "prChannelLower400_4_225"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)4.0}, {"deviations", (double)2.30}}, {{"regression", "prChannel400_4_230"}, {"upper", "prChannelUpper400_4_230"}, {"lower", "prChannelLower400_4_230"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)4.0}, {"deviations", (double)2.35}}, {{"regression", "prChannel400_4_235"}, {"upper", "prChannelUpper400_4_235"}, {"lower", "prChannelLower400_4_235"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)4.0}, {"deviations", (double)2.40}}, {{"regression", "prChannel400_4_240"}, {"upper", "prChannelUpper400_4_240"}, {"lower", "prChannelLower400_4_240"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)400.0}, {"degree", (double)5.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel400_5_205"}, {"upper", "prChannelUpper400_5_205"}, {"lower", "prChannelLower400_5_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)2.0}, {"deviations", (double)1.90}}, {{"regression", "prChannel450_2_190"}, {"upper", "prChannelUpper450_2_190"}, {"lower", "prChannelLower450_2_190"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)2.0}, {"deviations", (double)1.95}}, {{"regression", "prChannel450_2_195"}, {"upper", "prChannelUpper450_2_195"}, {"lower", "prChannelLower450_2_195"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)2.0}, {"deviations", (double)2.00}}, {{"regression", "prChannel450_2_200"}, {"upper", "prChannelUpper450_2_200"}, {"lower", "prChannelLower450_2_200"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)2.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel450_2_205"}, {"upper", "prChannelUpper450_2_205"}, {"lower", "prChannelLower450_2_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)2.0}, {"deviations", (double)2.10}}, {{"regression", "prChannel450_2_210"}, {"upper", "prChannelUpper450_2_210"}, {"lower", "prChannelLower450_2_210"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)2.0}, {"deviations", (double)2.15}}, {{"regression", "prChannel450_2_215"}, {"upper", "prChannelUpper450_2_215"}, {"lower", "prChannelLower450_2_215"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)2.0}, {"deviations", (double)2.20}}, {{"regression", "prChannel450_2_220"}, {"upper", "prChannelUpper450_2_220"}, {"lower", "prChannelLower450_2_220"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)2.0}, {"deviations", (double)2.25}}, {{"regression", "prChannel450_2_225"}, {"upper", "prChannelUpper450_2_225"}, {"lower", "prChannelLower450_2_225"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)2.0}, {"deviations", (double)2.30}}, {{"regression", "prChannel450_2_230"}, {"upper", "prChannelUpper450_2_230"}, {"lower", "prChannelLower450_2_230"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)2.0}, {"deviations", (double)2.35}}, {{"regression", "prChannel450_2_235"}, {"upper", "prChannelUpper450_2_235"}, {"lower", "prChannelLower450_2_235"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)2.0}, {"deviations", (double)2.40}}, {{"regression", "prChannel450_2_240"}, {"upper", "prChannelUpper450_2_240"}, {"lower", "prChannelLower450_2_240"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)3.0}, {"deviations", (double)1.90}}, {{"regression", "prChannel450_3_190"}, {"upper", "prChannelUpper450_3_190"}, {"lower", "prChannelLower450_3_190"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)3.0}, {"deviations", (double)1.95}}, {{"regression", "prChannel450_3_195"}, {"upper", "prChannelUpper450_3_195"}, {"lower", "prChannelLower450_3_195"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)3.0}, {"deviations", (double)2.00}}, {{"regression", "prChannel450_3_200"}, {"upper", "prChannelUpper450_3_200"}, {"lower", "prChannelLower450_3_200"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)3.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel450_3_205"}, {"upper", "prChannelUpper450_3_205"}, {"lower", "prChannelLower450_3_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)3.0}, {"deviations", (double)2.10}}, {{"regression", "prChannel450_3_210"}, {"upper", "prChannelUpper450_3_210"}, {"lower", "prChannelLower450_3_210"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)3.0}, {"deviations", (double)2.15}}, {{"regression", "prChannel450_3_215"}, {"upper", "prChannelUpper450_3_215"}, {"lower", "prChannelLower450_3_215"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)3.0}, {"deviations", (double)2.20}}, {{"regression", "prChannel450_3_220"}, {"upper", "prChannelUpper450_3_220"}, {"lower", "prChannelLower450_3_220"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)3.0}, {"deviations", (double)2.25}}, {{"regression", "prChannel450_3_225"}, {"upper", "prChannelUpper450_3_225"}, {"lower", "prChannelLower450_3_225"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)3.0}, {"deviations", (double)2.30}}, {{"regression", "prChannel450_3_230"}, {"upper", "prChannelUpper450_3_230"}, {"lower", "prChannelLower450_3_230"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)3.0}, {"deviations", (double)2.35}}, {{"regression", "prChannel450_3_235"}, {"upper", "prChannelUpper450_3_235"}, {"lower", "prChannelLower450_3_235"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)3.0}, {"deviations", (double)2.40}}, {{"regression", "prChannel450_3_240"}, {"upper", "prChannelUpper450_3_240"}, {"lower", "prChannelLower450_3_240"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)4.0}, {"deviations", (double)1.90}}, {{"regression", "prChannel450_4_190"}, {"upper", "prChannelUpper450_4_190"}, {"lower", "prChannelLower450_4_190"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)4.0}, {"deviations", (double)1.95}}, {{"regression", "prChannel450_4_195"}, {"upper", "prChannelUpper450_4_195"}, {"lower", "prChannelLower450_4_195"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)4.0}, {"deviations", (double)2.00}}, {{"regression", "prChannel450_4_200"}, {"upper", "prChannelUpper450_4_200"}, {"lower", "prChannelLower450_4_200"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)4.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel450_4_205"}, {"upper", "prChannelUpper450_4_205"}, {"lower", "prChannelLower450_4_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)4.0}, {"deviations", (double)2.10}}, {{"regression", "prChannel450_4_210"}, {"upper", "prChannelUpper450_4_210"}, {"lower", "prChannelLower450_4_210"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)4.0}, {"deviations", (double)2.15}}, {{"regression", "prChannel450_4_215"}, {"upper", "prChannelUpper450_4_215"}, {"lower", "prChannelLower450_4_215"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)4.0}, {"deviations", (double)2.20}}, {{"regression", "prChannel450_4_220"}, {"upper", "prChannelUpper450_4_220"}, {"lower", "prChannelLower450_4_220"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)4.0}, {"deviations", (double)2.25}}, {{"regression", "prChannel450_4_225"}, {"upper", "prChannelUpper450_4_225"}, {"lower", "prChannelLower450_4_225"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)4.0}, {"deviations", (double)2.30}}, {{"regression", "prChannel450_4_230"}, {"upper", "prChannelUpper450_4_230"}, {"lower", "prChannelLower450_4_230"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)4.0}, {"deviations", (double)2.35}}, {{"regression", "prChannel450_4_235"}, {"upper", "prChannelUpper450_4_235"}, {"lower", "prChannelLower450_4_235"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)4.0}, {"deviations", (double)2.40}}, {{"regression", "prChannel450_4_240"}, {"upper", "prChannelUpper450_4_240"}, {"lower", "prChannelLower450_4_240"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)450.0}, {"degree", (double)5.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel450_5_205"}, {"upper", "prChannelUpper450_5_205"}, {"lower", "prChannelLower450_5_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)2.0}, {"deviations", (double)1.90}}, {{"regression", "prChannel500_2_190"}, {"upper", "prChannelUpper500_2_190"}, {"lower", "prChannelLower500_2_190"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)2.0}, {"deviations", (double)1.95}}, {{"regression", "prChannel500_2_195"}, {"upper", "prChannelUpper500_2_195"}, {"lower", "prChannelLower500_2_195"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)2.0}, {"deviations", (double)2.00}}, {{"regression", "prChannel500_2_200"}, {"upper", "prChannelUpper500_2_200"}, {"lower", "prChannelLower500_2_200"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)2.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel500_2_205"}, {"upper", "prChannelUpper500_2_205"}, {"lower", "prChannelLower500_2_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)2.0}, {"deviations", (double)2.10}}, {{"regression", "prChannel500_2_210"}, {"upper", "prChannelUpper500_2_210"}, {"lower", "prChannelLower500_2_210"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)2.0}, {"deviations", (double)2.15}}, {{"regression", "prChannel500_2_215"}, {"upper", "prChannelUpper500_2_215"}, {"lower", "prChannelLower500_2_215"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)2.0}, {"deviations", (double)2.20}}, {{"regression", "prChannel500_2_220"}, {"upper", "prChannelUpper500_2_220"}, {"lower", "prChannelLower500_2_220"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)2.0}, {"deviations", (double)2.25}}, {{"regression", "prChannel500_2_225"}, {"upper", "prChannelUpper500_2_225"}, {"lower", "prChannelLower500_2_225"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)2.0}, {"deviations", (double)2.30}}, {{"regression", "prChannel500_2_230"}, {"upper", "prChannelUpper500_2_230"}, {"lower", "prChannelLower500_2_230"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)2.0}, {"deviations", (double)2.35}}, {{"regression", "prChannel500_2_235"}, {"upper", "prChannelUpper500_2_235"}, {"lower", "prChannelLower500_2_235"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)2.0}, {"deviations", (double)2.40}}, {{"regression", "prChannel500_2_240"}, {"upper", "prChannelUpper500_2_240"}, {"lower", "prChannelLower500_2_240"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)3.0}, {"deviations", (double)1.90}}, {{"regression", "prChannel500_3_190"}, {"upper", "prChannelUpper500_3_190"}, {"lower", "prChannelLower500_3_190"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)3.0}, {"deviations", (double)1.95}}, {{"regression", "prChannel500_3_195"}, {"upper", "prChannelUpper500_3_195"}, {"lower", "prChannelLower500_3_195"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)3.0}, {"deviations", (double)2.00}}, {{"regression", "prChannel500_3_200"}, {"upper", "prChannelUpper500_3_200"}, {"lower", "prChannelLower500_3_200"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)3.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel500_3_205"}, {"upper", "prChannelUpper500_3_205"}, {"lower", "prChannelLower500_3_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)3.0}, {"deviations", (double)2.10}}, {{"regression", "prChannel500_3_210"}, {"upper", "prChannelUpper500_3_210"}, {"lower", "prChannelLower500_3_210"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)3.0}, {"deviations", (double)2.15}}, {{"regression", "prChannel500_3_215"}, {"upper", "prChannelUpper500_3_215"}, {"lower", "prChannelLower500_3_215"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)3.0}, {"deviations", (double)2.20}}, {{"regression", "prChannel500_3_220"}, {"upper", "prChannelUpper500_3_220"}, {"lower", "prChannelLower500_3_220"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)3.0}, {"deviations", (double)2.25}}, {{"regression", "prChannel500_3_225"}, {"upper", "prChannelUpper500_3_225"}, {"lower", "prChannelLower500_3_225"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)3.0}, {"deviations", (double)2.30}}, {{"regression", "prChannel500_3_230"}, {"upper", "prChannelUpper500_3_230"}, {"lower", "prChannelLower500_3_230"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)3.0}, {"deviations", (double)2.35}}, {{"regression", "prChannel500_3_235"}, {"upper", "prChannelUpper500_3_235"}, {"lower", "prChannelLower500_3_235"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)3.0}, {"deviations", (double)2.40}}, {{"regression", "prChannel500_3_240"}, {"upper", "prChannelUpper500_3_240"}, {"lower", "prChannelLower500_3_240"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)4.0}, {"deviations", (double)1.90}}, {{"regression", "prChannel500_4_190"}, {"upper", "prChannelUpper500_4_190"}, {"lower", "prChannelLower500_4_190"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)4.0}, {"deviations", (double)1.95}}, {{"regression", "prChannel500_4_195"}, {"upper", "prChannelUpper500_4_195"}, {"lower", "prChannelLower500_4_195"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)4.0}, {"deviations", (double)2.00}}, {{"regression", "prChannel500_4_200"}, {"upper", "prChannelUpper500_4_200"}, {"lower", "prChannelLower500_4_200"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)4.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel500_4_205"}, {"upper", "prChannelUpper500_4_205"}, {"lower", "prChannelLower500_4_205"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)4.0}, {"deviations", (double)2.10}}, {{"regression", "prChannel500_4_210"}, {"upper", "prChannelUpper500_4_210"}, {"lower", "prChannelLower500_4_210"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)4.0}, {"deviations", (double)2.15}}, {{"regression", "prChannel500_4_215"}, {"upper", "prChannelUpper500_4_215"}, {"lower", "prChannelLower500_4_215"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)4.0}, {"deviations", (double)2.20}}, {{"regression", "prChannel500_4_220"}, {"upper", "prChannelUpper500_4_220"}, {"lower", "prChannelLower500_4_220"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)4.0}, {"deviations", (double)2.25}}, {{"regression", "prChannel500_4_225"}, {"upper", "prChannelUpper500_4_225"}, {"lower", "prChannelLower500_4_225"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)4.0}, {"deviations", (double)2.30}}, {{"regression", "prChannel500_4_230"}, {"upper", "prChannelUpper500_4_230"}, {"lower", "prChannelLower500_4_230"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)4.0}, {"deviations", (double)2.35}}, {{"regression", "prChannel500_4_235"}, {"upper", "prChannelUpper500_4_235"}, {"lower", "prChannelLower500_4_235"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)4.0}, {"deviations", (double)2.40}}, {{"regression", "prChannel500_4_240"}, {"upper", "prChannelUpper500_4_240"}, {"lower", "prChannelLower500_4_240"}}));
+    this->studies.push_back(new PolynomialRegressionChannelStudy({{"length", (double)500.0}, {"degree", (double)5.0}, {"deviations", (double)2.05}}, {{"regression", "prChannel500_5_205"}, {"upper", "prChannelUpper500_5_205"}, {"lower", "prChannelLower500_5_205"}}));
 
     return this->studies;
 }
@@ -306,25 +306,25 @@ std::map<std::string, ConfigurationOption> ReversalsOptimizer::getConfigurationO
 
     // SMA 13
     ConfigurationOption sma13Options;
-    sma13Options.push_back({{"sma13", 0}});
+    sma13Options.push_back({{"sma13", (int)0}});
     sma13Options.push_back({{"sma13", "sma13"}});
     configurationOptions["sma13"] = sma13Options;
 
     // EMA 50
     ConfigurationOption ema50Options;
-    ema50Options.push_back({{"ema50", 0}});
+    ema50Options.push_back({{"ema50", (int)0}});
     ema50Options.push_back({{"ema50", "ema50"}});
     configurationOptions["ema50"] = ema50Options;
 
     // EMA 100
     ConfigurationOption ema100Options;
-    ema100Options.push_back({{"ema100", 0}});
+    ema100Options.push_back({{"ema100", (int)0}});
     ema100Options.push_back({{"ema100", "ema100"}});
     configurationOptions["ema100"] = ema100Options;
 
     // EMA 200
     ConfigurationOption ema200Options;
-    ema200Options.push_back({{"ema200", 0}});
+    ema200Options.push_back({{"ema200", (int)0}});
     ema200Options.push_back({{"ema200", "ema200"}});
     configurationOptions["ema200"] = ema200Options;
 
@@ -366,28 +366,28 @@ std::map<std::string, ConfigurationOption> ReversalsOptimizer::getConfigurationO
 
     // RSI
     ConfigurationOption rsiOptions;
-    rsiOptions.push_back({{"rsi", 0}, {"rsiOverbought", 0.0}, {"rsiOversold", 0.0}});
-    rsiOptions.push_back({{"rsi", "rsi2"}, {"rsiOverbought", 95.0}, {"rsiOversold", 5.0}});
-    rsiOptions.push_back({{"rsi", "rsi5"}, {"rsiOverbought", 80.0}, {"rsiOversold", 20.0}});
-    rsiOptions.push_back({{"rsi", "rsi7"}, {"rsiOverbought", 77.0}, {"rsiOversold", 23.0}});
-    rsiOptions.push_back({{"rsi", "rsi7"}, {"rsiOverbought", 80.0}, {"rsiOversold", 20.0}});
-    rsiOptions.push_back({{"rsi", "rsi9"}, {"rsiOverbought", 70.0}, {"rsiOversold", 30.0}});
-    rsiOptions.push_back({{"rsi", "rsi9"}, {"rsiOverbought", 77.0}, {"rsiOversold", 23.0}});
-    rsiOptions.push_back({{"rsi", "rsi14"}, {"rsiOverbought", 70.0}, {"rsiOversold", 30.0}});
+    rsiOptions.push_back({{"rsi", (int)0}, {"rsiOverbought", (double)0.0}, {"rsiOversold", (double)0.0}});
+    rsiOptions.push_back({{"rsi", "rsi2"}, {"rsiOverbought", (double)95.0}, {"rsiOversold", (double)5.0}});
+    rsiOptions.push_back({{"rsi", "rsi5"}, {"rsiOverbought", (double)80.0}, {"rsiOversold", (double)20.0}});
+    rsiOptions.push_back({{"rsi", "rsi7"}, {"rsiOverbought", (double)77.0}, {"rsiOversold", (double)23.0}});
+    rsiOptions.push_back({{"rsi", "rsi7"}, {"rsiOverbought", (double)80.0}, {"rsiOversold", (double)20.0}});
+    rsiOptions.push_back({{"rsi", "rsi9"}, {"rsiOverbought", (double)70.0}, {"rsiOversold", (double)30.0}});
+    rsiOptions.push_back({{"rsi", "rsi9"}, {"rsiOverbought", (double)77.0}, {"rsiOversold", (double)23.0}});
+    rsiOptions.push_back({{"rsi", "rsi14"}, {"rsiOverbought", (double)70.0}, {"rsiOversold", (double)30.0}});
     configurationOptions["rsi"] = rsiOptions;
 
     // Stochastic Oscillator
     ConfigurationOption stochasticOptions;
-    stochasticOptions.push_back({{"stochasticK", 0}, {"stochasticD", 0}, {"stochasticOverbought", 0.0}, {"stochasticOversold", 0.0}});
-    stochasticOptions.push_back({{"stochasticK", "stochastic5K"}, {"stochasticD", "stochastic5D"}, {"stochasticOverbought", 77.0}, {"stochasticOversold", 23.0}});
-    stochasticOptions.push_back({{"stochasticK", "stochastic5K"}, {"stochasticD", "stochastic5D"}, {"stochasticOverbought", 80.0}, {"stochasticOversold", 20.0}});
-    stochasticOptions.push_back({{"stochasticK", "stochastic5K"}, {"stochasticD", "stochastic5D"}, {"stochasticOverbought", 95.0}, {"stochasticOversold", 5.0}});
-    stochasticOptions.push_back({{"stochasticK", "stochastic10K"}, {"stochasticD", "stochastic10D"}, {"stochasticOverbought", 77.0}, {"stochasticOversold", 23.0}});
-    stochasticOptions.push_back({{"stochasticK", "stochastic10K"}, {"stochasticD", "stochastic10D"}, {"stochasticOverbought", 80.0}, {"stochasticOversold", 20.0}});
-    stochasticOptions.push_back({{"stochasticK", "stochastic14K"}, {"stochasticD", "stochastic14D"}, {"stochasticOverbought", 70.0}, {"stochasticOversold", 30.0}});
-    stochasticOptions.push_back({{"stochasticK", "stochastic14K"}, {"stochasticD", "stochastic14D"}, {"stochasticOverbought", 77.0}, {"stochasticOversold", 23.0}});
-    stochasticOptions.push_back({{"stochasticK", "stochastic21K"}, {"stochasticD", "stochastic21D"}, {"stochasticOverbought", 70.0}, {"stochasticOversold", 30.0}});
-    stochasticOptions.push_back({{"stochasticK", "stochastic21K"}, {"stochasticD", "stochastic21D"}, {"stochasticOverbought", 77.0}, {"stochasticOversold", 23.0}});
+    stochasticOptions.push_back({{"stochasticK", (int)0}, {"stochasticD", (int)0}, {"stochasticOverbought", (double)0.0}, {"stochasticOversold", (double)0.0}});
+    stochasticOptions.push_back({{"stochasticK", "stochastic5K"}, {"stochasticD", "stochastic5D"}, {"stochasticOverbought", (double)77.0}, {"stochasticOversold", (double)23.0}});
+    stochasticOptions.push_back({{"stochasticK", "stochastic5K"}, {"stochasticD", "stochastic5D"}, {"stochasticOverbought", (double)80.0}, {"stochasticOversold", (double)20.0}});
+    stochasticOptions.push_back({{"stochasticK", "stochastic5K"}, {"stochasticD", "stochastic5D"}, {"stochasticOverbought", (double)95.0}, {"stochasticOversold", (double)5.0}});
+    stochasticOptions.push_back({{"stochasticK", "stochastic10K"}, {"stochasticD", "stochastic10D"}, {"stochasticOverbought", (double)77.0}, {"stochasticOversold", (double)23.0}});
+    stochasticOptions.push_back({{"stochasticK", "stochastic10K"}, {"stochasticD", "stochastic10D"}, {"stochasticOverbought", (double)80.0}, {"stochasticOversold", (double)20.0}});
+    stochasticOptions.push_back({{"stochasticK", "stochastic14K"}, {"stochasticD", "stochastic14D"}, {"stochasticOverbought", (double)70.0}, {"stochasticOversold", (double)30.0}});
+    stochasticOptions.push_back({{"stochasticK", "stochastic14K"}, {"stochasticD", "stochastic14D"}, {"stochasticOverbought", (double)77.0}, {"stochasticOversold", (double)23.0}});
+    stochasticOptions.push_back({{"stochasticK", "stochastic21K"}, {"stochasticD", "stochastic21D"}, {"stochasticOverbought", (double)70.0}, {"stochasticOversold", (double)30.0}});
+    stochasticOptions.push_back({{"stochasticK", "stochastic21K"}, {"stochasticD", "stochastic21D"}, {"stochasticOverbought", (double)77.0}, {"stochasticOversold", (double)23.0}});
     configurationOptions["stochastic"] = stochasticOptions;
 
     // Polynomial Regression Channel
@@ -686,73 +686,73 @@ std::vector<Configuration*> ReversalsOptimizer::buildBaseConfigurations() {
         Configuration *configuration = new Configuration();
 
         // Set basic properties.
-        configuration->timestamp = (*tempDataIndexMap)["timestamp"];
-        configuration->timestampHour = (*tempDataIndexMap)["timestampHour"];
-        configuration->timestampMinute = (*tempDataIndexMap)["timestampMinute"];
-        configuration->open = (*tempDataIndexMap)["open"];
-        configuration->high = (*tempDataIndexMap)["high"];
-        configuration->low = (*tempDataIndexMap)["low"];
-        configuration->close = (*tempDataIndexMap)["close"];
+        configuration->timestamp = (*tempDataIndexMap).at("timestamp");
+        configuration->timestampHour = (*tempDataIndexMap).at("timestampHour");
+        configuration->timestampMinute = (*tempDataIndexMap).at("timestampMinute");
+        configuration->open = (*tempDataIndexMap).at("open");
+        configuration->high = (*tempDataIndexMap).at("high");
+        configuration->low = (*tempDataIndexMap).at("low");
+        configuration->close = (*tempDataIndexMap).at("close");
 
         // Set index mappings.
         if ((*mapValueIterator).find("sma13") != (*mapValueIterator).end()) {
-            configuration->sma13 = boost::get<int>((*mapValueIterator)["sma13"]);
+            configuration->sma13 = boost::get<int>((*mapValueIterator).at("sma13"));
         }
         if ((*mapValueIterator).find("ema50") != (*mapValueIterator).end()) {
-            configuration->ema50 = boost::get<int>((*mapValueIterator)["ema50"]);
+            configuration->ema50 = boost::get<int>((*mapValueIterator).at("ema50"));
         }
         if ((*mapValueIterator).find("ema100") != (*mapValueIterator).end()) {
-            configuration->ema100 = boost::get<int>((*mapValueIterator)["ema100"]);
+            configuration->ema100 = boost::get<int>((*mapValueIterator).at("ema100"));
         }
         if ((*mapValueIterator).find("ema200") != (*mapValueIterator).end()) {
-            configuration->ema200 = boost::get<int>((*mapValueIterator)["ema200"]);
+            configuration->ema200 = boost::get<int>((*mapValueIterator).at("ema200"));
         }
         // if ((*mapValueIterator).find("ema250") != (*mapValueIterator).end()) {
-        //     configuration->ema250 = boost::get<int>((*mapValueIterator)["ema250"]);
+        //     configuration->ema250 = boost::get<int>((*mapValueIterator).at("ema250"));
         // }
         // if ((*mapValueIterator).find("ema300") != (*mapValueIterator).end()) {
-        //     configuration->ema300 = boost::get<int>((*mapValueIterator)["ema300"]);
+        //     configuration->ema300 = boost::get<int>((*mapValueIterator).at("ema300"));
         // }
         // if ((*mapValueIterator).find("ema350") != (*mapValueIterator).end()) {
-        //     configuration->ema350 = boost::get<int>((*mapValueIterator)["ema350"]);
+        //     configuration->ema350 = boost::get<int>((*mapValueIterator).at("ema350"));
         // }
         // if ((*mapValueIterator).find("ema400") != (*mapValueIterator).end()) {
-        //     configuration->ema400 = boost::get<int>((*mapValueIterator)["ema400"]);
+        //     configuration->ema400 = boost::get<int>((*mapValueIterator).at("ema400"));
         // }
         // if ((*mapValueIterator).find("ema450") != (*mapValueIterator).end()) {
-        //     configuration->ema450 = boost::get<int>((*mapValueIterator)["ema450"]);
+        //     configuration->ema450 = boost::get<int>((*mapValueIterator).at("ema450"));
         // }
         // if ((*mapValueIterator).find("ema500") != (*mapValueIterator).end()) {
-        //     configuration->ema500 = boost::get<int>((*mapValueIterator)["ema500"]);
+        //     configuration->ema500 = boost::get<int>((*mapValueIterator).at("ema500"));
         // }
         if ((*mapValueIterator).find("rsi") != (*mapValueIterator).end()) {
-            configuration->rsi = boost::get<int>((*mapValueIterator)["rsi"]);
+            configuration->rsi = boost::get<int>((*mapValueIterator).at("rsi"));
         }
         if ((*mapValueIterator).find("stochasticD") != (*mapValueIterator).end()) {
-            configuration->stochasticD = boost::get<int>((*mapValueIterator)["stochasticD"]);
+            configuration->stochasticD = boost::get<int>((*mapValueIterator).at("stochasticD"));
         }
         if ((*mapValueIterator).find("stochasticK") != (*mapValueIterator).end()) {
-            configuration->stochasticK = boost::get<int>((*mapValueIterator)["stochasticK"]);
+            configuration->stochasticK = boost::get<int>((*mapValueIterator).at("stochasticK"));
         }
         if ((*mapValueIterator).find("prChannelUpper") != (*mapValueIterator).end()) {
-            configuration->prChannelUpper = boost::get<int>((*mapValueIterator)["prChannelUpper"]);
+            configuration->prChannelUpper = boost::get<int>((*mapValueIterator).at("prChannelUpper"));
         }
         if ((*mapValueIterator).find("prChannelLower") != (*mapValueIterator).end()) {
-            configuration->prChannelLower = boost::get<int>((*mapValueIterator)["prChannelLower"]);
+            configuration->prChannelLower = boost::get<int>((*mapValueIterator).at("prChannelLower"));
         }
 
         // Set values.
         if ((*mapValueIterator).find("rsiOverbought") != (*mapValueIterator).end()) {
-            configuration->rsiOverbought = boost::get<double>((*mapValueIterator)["rsiOverbought"]);
+            configuration->rsiOverbought = boost::get<double>((*mapValueIterator).at("rsiOverbought"));
         }
         if ((*mapValueIterator).find("rsiOversold") != (*mapValueIterator).end()) {
-            configuration->rsiOversold = boost::get<double>((*mapValueIterator)["rsiOversold"]);
+            configuration->rsiOversold = boost::get<double>((*mapValueIterator).at("rsiOversold"));
         }
         if ((*mapValueIterator).find("stochasticOverbought") != (*mapValueIterator).end()) {
-            configuration->stochasticOverbought = boost::get<double>((*mapValueIterator)["stochasticOverbought"]);
+            configuration->stochasticOverbought = boost::get<double>((*mapValueIterator).at("stochasticOverbought"));
         }
         if ((*mapValueIterator).find("stochasticOversold") != (*mapValueIterator).end()) {
-            configuration->stochasticOversold = boost::get<double>((*mapValueIterator)["stochasticOversold"]);
+            configuration->stochasticOversold = boost::get<double>((*mapValueIterator).at("stochasticOversold"));
         }
 
         configurations.push_back(configuration);
@@ -860,13 +860,13 @@ std::vector<Configuration*> ReversalsOptimizer::loadConfigurations(const char *c
                 Configuration *resultConfiguration = new Configuration();
 
                 // basic properties
-                resultConfiguration->timestamp = (*tempDataIndexMap)["timestamp"];
-                resultConfiguration->timestampHour = (*tempDataIndexMap)["timestampHour"];
-                resultConfiguration->timestampMinute = (*tempDataIndexMap)["timestampMinute"];
-                resultConfiguration->open = (*tempDataIndexMap)["open"];
-                resultConfiguration->high = (*tempDataIndexMap)["high"];
-                resultConfiguration->low = (*tempDataIndexMap)["low"];
-                resultConfiguration->close = (*tempDataIndexMap)["close"];
+                resultConfiguration->timestamp = (*tempDataIndexMap).at("timestamp");
+                resultConfiguration->timestampHour = (*tempDataIndexMap).at("timestampHour");
+                resultConfiguration->timestampMinute = (*tempDataIndexMap).at("timestampMinute");
+                resultConfiguration->open = (*tempDataIndexMap).at("open");
+                resultConfiguration->high = (*tempDataIndexMap).at("high");
+                resultConfiguration->low = (*tempDataIndexMap).at("low");
+                resultConfiguration->close = (*tempDataIndexMap).at("close");
 
                 // Iterate through the configuration properties.
                 while (bson_iter_next(&configurationIterator)) {
@@ -876,57 +876,57 @@ std::vector<Configuration*> ReversalsOptimizer::loadConfigurations(const char *c
 
                     if (propertyName == "sma13") {
                         if (propertyValue->value.v_bool) {
-                            resultConfiguration->sma13 = (*tempDataIndexMap)["sma13"];
+                            resultConfiguration->sma13 = (*tempDataIndexMap).at("sma13");
                         }
                     }
                     else if (propertyName == "ema50") {
                         if (propertyValue->value.v_bool) {
-                            resultConfiguration->ema50 = (*tempDataIndexMap)["ema50"];
+                            resultConfiguration->ema50 = (*tempDataIndexMap).at("ema50");
                         }
                     }
                     else if (propertyName == "ema100") {
                         if (propertyValue->value.v_bool) {
-                            resultConfiguration->ema100 = (*tempDataIndexMap)["ema100"];
+                            resultConfiguration->ema100 = (*tempDataIndexMap).at("ema100");
                         }
                     }
                     else if (propertyName == "ema200") {
                         if (propertyValue->value.v_bool) {
-                            resultConfiguration->ema200 = (*tempDataIndexMap)["ema200"];
+                            resultConfiguration->ema200 = (*tempDataIndexMap).at("ema200");
                         }
                     }
                     // else if (propertyName == "ema250") {
                     //     if (propertyValue->value.v_bool) {
-                    //         resultConfiguration->ema250 = (*tempDataIndexMap)["ema250"];
+                    //         resultConfiguration->ema250 = (*tempDataIndexMap).at("ema250");
                     //     }
                     // }
                     // else if (propertyName == "ema300") {
                     //     if (propertyValue->value.v_bool) {
-                    //         resultConfiguration->ema300 = (*tempDataIndexMap)["ema300"];
+                    //         resultConfiguration->ema300 = (*tempDataIndexMap).at("ema300");
                     //     }
                     // }
                     // else if (propertyName == "ema350") {
                     //     if (propertyValue->value.v_bool) {
-                    //         resultConfiguration->ema350 = (*tempDataIndexMap)["ema350"];
+                    //         resultConfiguration->ema350 = (*tempDataIndexMap).at("ema350");
                     //     }
                     // }
                     // else if (propertyName == "ema400") {
                     //     if (propertyValue->value.v_bool) {
-                    //         resultConfiguration->ema400 = (*tempDataIndexMap)["ema400"];
+                    //         resultConfiguration->ema400 = (*tempDataIndexMap).at("ema400");
                     //     }
                     // }
                     // else if (propertyName == "ema450") {
                     //     if (propertyValue->value.v_bool) {
-                    //         resultConfiguration->ema450 = (*tempDataIndexMap)["ema450"];
+                    //         resultConfiguration->ema450 = (*tempDataIndexMap).at("ema450");
                     //     }
                     // }
                     // else if (propertyName == "ema500") {
                     //     if (propertyValue->value.v_bool) {
-                    //         resultConfiguration->ema500 = (*tempDataIndexMap)["ema500"];
+                    //         resultConfiguration->ema500 = (*tempDataIndexMap).at("ema500");
                     //     }
                     // }
                     else if (propertyName == "rsi") {
                         if (propertyValue->value_type != BSON_TYPE_BOOL) {
-                            resultConfiguration->rsi = (*tempDataIndexMap)[propertyValue->value.v_utf8.str];
+                            resultConfiguration->rsi = (*tempDataIndexMap).at(propertyValue->value.v_utf8.str);
                         }
                     }
                     else if (propertyName == "rsiOverbought") {
@@ -937,12 +937,12 @@ std::vector<Configuration*> ReversalsOptimizer::loadConfigurations(const char *c
                     }
                     else if (propertyName == "stochasticD") {
                         if (propertyValue->value_type != BSON_TYPE_BOOL) {
-                            resultConfiguration->stochasticD = (*tempDataIndexMap)[propertyValue->value.v_utf8.str];
+                            resultConfiguration->stochasticD = (*tempDataIndexMap).at(propertyValue->value.v_utf8.str);
                         }
                     }
                     else if (propertyName == "stochasticK") {
                         if (propertyValue->value_type != BSON_TYPE_BOOL) {
-                            resultConfiguration->stochasticK = (*tempDataIndexMap)[propertyValue->value.v_utf8.str];
+                            resultConfiguration->stochasticK = (*tempDataIndexMap).at(propertyValue->value.v_utf8.str);
                         }
                     }
                     else if (propertyName == "stochasticOverbought") {
@@ -952,10 +952,10 @@ std::vector<Configuration*> ReversalsOptimizer::loadConfigurations(const char *c
                         resultConfiguration->stochasticOversold = propertyValue->value.v_double;
                     }
                     else if (propertyName == "prChannelUpper") {
-                        resultConfiguration->prChannelUpper = (*tempDataIndexMap)[propertyValue->value.v_utf8.str];
+                        resultConfiguration->prChannelUpper = (*tempDataIndexMap).at(propertyValue->value.v_utf8.str);
                     }
                     else if (propertyName == "prChannelLower") {
-                        resultConfiguration->prChannelLower = (*tempDataIndexMap)[propertyValue->value.v_utf8.str];
+                        resultConfiguration->prChannelLower = (*tempDataIndexMap).at(propertyValue->value.v_utf8.str);
                     }
                 }
 
@@ -997,38 +997,38 @@ bson_t *ReversalsOptimizer::convertResultToBson(StrategyResult &result) {
     BSON_APPEND_DOCUMENT_BEGIN(document, "configuration", &configurationDocument);
 
     // Include study settings.
-    BSON_APPEND_BOOL(&configurationDocument, "sma13", result.configuration->sma13 > 0);
-    BSON_APPEND_BOOL(&configurationDocument, "ema50", result.configuration->ema50 > 0);
-    BSON_APPEND_BOOL(&configurationDocument, "ema100", result.configuration->ema100 > 0);
-    BSON_APPEND_BOOL(&configurationDocument, "ema200", result.configuration->ema200 > 0);
-    BSON_APPEND_BOOL(&configurationDocument, "ema250", result.configuration->ema250 > 0);
-    BSON_APPEND_BOOL(&configurationDocument, "ema300", result.configuration->ema300 > 0);
-    BSON_APPEND_BOOL(&configurationDocument, "ema350", result.configuration->ema350 > 0);
-    BSON_APPEND_BOOL(&configurationDocument, "ema400", result.configuration->ema400 > 0);
-    BSON_APPEND_BOOL(&configurationDocument, "ema450", result.configuration->ema450 > 0);
-    BSON_APPEND_BOOL(&configurationDocument, "ema500", result.configuration->ema500 > 0);
+    BSON_APPEND_BOOL(&configurationDocument, "sma13", result.configuration.sma13 > 0);
+    BSON_APPEND_BOOL(&configurationDocument, "ema50", result.configuration.ema50 > 0);
+    BSON_APPEND_BOOL(&configurationDocument, "ema100", result.configuration.ema100 > 0);
+    BSON_APPEND_BOOL(&configurationDocument, "ema200", result.configuration.ema200 > 0);
+    BSON_APPEND_BOOL(&configurationDocument, "ema250", result.configuration.ema250 > 0);
+    BSON_APPEND_BOOL(&configurationDocument, "ema300", result.configuration.ema300 > 0);
+    BSON_APPEND_BOOL(&configurationDocument, "ema350", result.configuration.ema350 > 0);
+    BSON_APPEND_BOOL(&configurationDocument, "ema400", result.configuration.ema400 > 0);
+    BSON_APPEND_BOOL(&configurationDocument, "ema450", result.configuration.ema450 > 0);
+    BSON_APPEND_BOOL(&configurationDocument, "ema500", result.configuration.ema500 > 0);
 
-    if (result.configuration->rsi > 0) {
-        BSON_APPEND_UTF8(&configurationDocument, "rsi", findDataIndexMapKeyByValue(result.configuration->rsi).c_str());
-        BSON_APPEND_DOUBLE(&configurationDocument, "rsiOverbought", result.configuration->rsiOverbought);
-        BSON_APPEND_DOUBLE(&configurationDocument, "rsiOversold", result.configuration->rsiOversold);
+    if (result.configuration.rsi > 0) {
+        BSON_APPEND_UTF8(&configurationDocument, "rsi", findDataIndexMapKeyByValue(result.configuration.rsi).c_str());
+        BSON_APPEND_DOUBLE(&configurationDocument, "rsiOverbought", result.configuration.rsiOverbought);
+        BSON_APPEND_DOUBLE(&configurationDocument, "rsiOversold", result.configuration.rsiOversold);
     }
     else {
         BSON_APPEND_BOOL(&configurationDocument, "rsi", false);
     }
-    if (result.configuration->stochasticD > 0 && result.configuration->stochasticK > 0) {
-        BSON_APPEND_UTF8(&configurationDocument, "stochasticD", findDataIndexMapKeyByValue(result.configuration->stochasticD).c_str());
-        BSON_APPEND_UTF8(&configurationDocument, "stochasticK", findDataIndexMapKeyByValue(result.configuration->stochasticK).c_str());
-        BSON_APPEND_DOUBLE(&configurationDocument, "stochasticOverbought", result.configuration->stochasticOverbought);
-        BSON_APPEND_DOUBLE(&configurationDocument, "stochasticOversold", result.configuration->stochasticOversold);
+    if (result.configuration.stochasticD > 0 && result.configuration.stochasticK > 0) {
+        BSON_APPEND_UTF8(&configurationDocument, "stochasticD", findDataIndexMapKeyByValue(result.configuration.stochasticD).c_str());
+        BSON_APPEND_UTF8(&configurationDocument, "stochasticK", findDataIndexMapKeyByValue(result.configuration.stochasticK).c_str());
+        BSON_APPEND_DOUBLE(&configurationDocument, "stochasticOverbought", result.configuration.stochasticOverbought);
+        BSON_APPEND_DOUBLE(&configurationDocument, "stochasticOversold", result.configuration.stochasticOversold);
     }
     else {
         BSON_APPEND_BOOL(&configurationDocument, "stochasticD", false);
         BSON_APPEND_BOOL(&configurationDocument, "stochasticK", false);
     }
-    if (result.configuration->prChannelUpper > 0 && result.configuration->prChannelLower > 0) {
-        BSON_APPEND_UTF8(&configurationDocument, "prChannelUpper", findDataIndexMapKeyByValue(result.configuration->prChannelUpper).c_str());
-        BSON_APPEND_UTF8(&configurationDocument, "prChannelLower", findDataIndexMapKeyByValue(result.configuration->prChannelLower).c_str());
+    if (result.configuration.prChannelUpper > 0 && result.configuration.prChannelLower > 0) {
+        BSON_APPEND_UTF8(&configurationDocument, "prChannelUpper", findDataIndexMapKeyByValue(result.configuration.prChannelUpper).c_str());
+        BSON_APPEND_UTF8(&configurationDocument, "prChannelLower", findDataIndexMapKeyByValue(result.configuration.prChannelLower).c_str());
     }
     else {
         BSON_APPEND_BOOL(&configurationDocument, "prChannelUpper", false);

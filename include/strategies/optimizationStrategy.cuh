@@ -11,7 +11,8 @@ class OptimizationStrategy : public Strategy {
     public:
         __device__ __host__ OptimizationStrategy(const char *symbol, Configuration configuration);
         __device__ __host__ ~OptimizationStrategy() {}
-        __device__ __host__ Configuration &getConfiguration();
+        __device__ __host__ Configuration getConfiguration();
+        __device__ __host__ StrategyResult getResult();
 };
 
 #endif

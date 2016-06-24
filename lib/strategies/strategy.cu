@@ -9,10 +9,6 @@ __device__ __host__ Strategy::Strategy(const char *symbol) {
     this->maximumConsecutiveLosses = 0;
     this->minimumProfitLoss = 99999.0;
     this->previousClose = 0.0;
-
-    for (int i=0; i<10; i++) {
-        this->openPositions[i] = nullptr;
-    }
 }
 
 __device__ __host__ const char *Strategy::getSymbol() {
@@ -34,61 +30,88 @@ __device__ __host__ double Strategy::getWinRate() {
     return (double)this->winCount / ((double)this->winCount + (double)this->loseCount);
 }
 
-__device__ __host__ void Strategy::tick(double *dataPoint, double close, int timestamp) {
+__device__ __host__ void Strategy::tick(double close, int timestamp) {
     // Simulate expiry of and profit/loss related to positions held.
-    closeExpiredPositions(close, timestamp);
+    closeExpiredPutPositions(close, timestamp);
+    closeExpiredCallPositions(close, timestamp);
 }
 
-__device__ __host__ void Strategy::closeExpiredPositions(double price, int timestamp) {
-    if (!price || !timestamp) {
-        return;
+__device__ __host__ void Strategy::closeExpiredPutPositions(double price, int timestamp) {
+    for (int i=0; i<5; i++) {
+        if (this->openPutPositions[i].getIsOpen() && this->openPutPositions[i].getHasExpired(timestamp)) {
+            // Close the position since it is open and has expired.
+            this->openPutPositions[i].close(price, timestamp);
+
+            double positionProfitLoss = this->openPutPositions[i].getProfitLoss();
+            double positionInvestment = this->openPutPositions[i].getInvestment();
+
+            // Remove the position's investment amount from the total profit/loss for this strategy.
+            this->profitLoss -= positionInvestment;
+
+            // Add the profit/loss for this position to the profit/loss for this strategy.
+            this->profitLoss += positionProfitLoss;
+
+            if (positionProfitLoss > positionInvestment) {
+                this->winCount++;
+                this->consecutiveLosses = 0;
+            }
+            if (positionProfitLoss == 0) {
+                this->loseCount++;
+                this->consecutiveLosses++;
+            }
+
+            // Track minimum profit/loss.
+            if (this->profitLoss < this->minimumProfitLoss) {
+                this->minimumProfitLoss = this->profitLoss;
+            }
+
+            // Update the minimum profit/loss for this strategy if applicable.
+            if (this->consecutiveLosses > this->maximumConsecutiveLosses) {
+                this->maximumConsecutiveLosses = this->consecutiveLosses;
+            }
+        }
     }
+}
 
-    for (int i=0; i<10; i++) {
-        if (this->openPositions[i]) {
-            if (this->openPositions[i]->getHasExpired(timestamp)) {
-                // Close the position since it is open and has expired.
-                this->openPositions[i]->close(price, timestamp);
+__device__ __host__ void Strategy::closeExpiredCallPositions(double price, int timestamp) {
+    for (int i=0; i<5; i++) {
+        if (this->openCallPositions[i].getIsOpen() && this->openCallPositions[i].getHasExpired(timestamp)) {
+            // Close the position since it is open and has expired.
+            this->openCallPositions[i].close(price, timestamp);
 
-                double positionProfitLoss = this->openPositions[i]->getProfitLoss();
-                double positionInvestment = this->openPositions[i]->getInvestment();
+            double positionProfitLoss = this->openCallPositions[i].getProfitLoss();
+            double positionInvestment = this->openCallPositions[i].getInvestment();
 
-                // Remove the position from the list of open positions, and free memory
-                // by deleting the position.
-                delete this->openPositions[i];
-                this->openPositions[i] = nullptr;
+            // Remove the position's investment amount from the total profit/loss for this strategy.
+            this->profitLoss -= positionInvestment;
 
-                // Remove the position's investment amount from the total profit/loss for this strategy.
-                this->profitLoss -= positionInvestment;
+            // Add the profit/loss for this position to the profit/loss for this strategy.
+            this->profitLoss += positionProfitLoss;
 
-                // Add the profit/loss for this position to the profit/loss for this strategy.
-                this->profitLoss += positionProfitLoss;
+            if (positionProfitLoss > positionInvestment) {
+                this->winCount++;
+                this->consecutiveLosses = 0;
+            }
+            if (positionProfitLoss == 0) {
+                this->loseCount++;
+                this->consecutiveLosses++;
+            }
 
-                if (positionProfitLoss > positionInvestment) {
-                    this->winCount++;
-                    this->consecutiveLosses = 0;
-                }
-                if (positionProfitLoss == 0) {
-                    this->loseCount++;
-                    this->consecutiveLosses++;
-                }
+            // Track minimum profit/loss.
+            if (this->profitLoss < this->minimumProfitLoss) {
+                this->minimumProfitLoss = this->profitLoss;
+            }
 
-                // Track minimum profit/loss.
-                if (this->profitLoss < this->minimumProfitLoss) {
-                    this->minimumProfitLoss = this->profitLoss;
-                }
-
-                // Update the minimum profit/loss for this strategy if applicable.
-                if (this->consecutiveLosses > this->maximumConsecutiveLosses) {
-                    this->maximumConsecutiveLosses = this->consecutiveLosses;
-                }
+            // Update the minimum profit/loss for this strategy if applicable.
+            if (this->consecutiveLosses > this->maximumConsecutiveLosses) {
+                this->maximumConsecutiveLosses = this->consecutiveLosses;
             }
         }
     }
 }
 
 __device__ __host__ StrategyResult Strategy::getResult() {
-    StrategyResult result;
+    StrategyResult result = {};
 
     result.profitLoss = this->profitLoss;
     result.winCount = this->winCount;
@@ -101,11 +124,21 @@ __device__ __host__ StrategyResult Strategy::getResult() {
     return result;
 }
 
-__device__ __host__ void Strategy::addPosition(Position *position) {
-    for (int i=0; i<10; i++) {
+__device__ __host__ void Strategy::addPutPosition(const char *symbol, int timestamp, double close, double investment, double profitability, double expirationMinutes) {
+    for (int i=0; i<5; i++) {
         // If there is an unused position slot, then use it.
-        if (this->openPositions[i] == nullptr) {
-            this->openPositions[i] = position;
+        if (!this->openPutPositions[i].getIsOpen()) {
+            this->openPutPositions[i] = PutPosition(symbol, timestamp, close, investment, profitability, expirationMinutes);
+            break;
+        }
+    }
+}
+
+__device__ __host__ void Strategy::addCallPosition(const char *symbol, int timestamp, double close, double investment, double profitability, double expirationMinutes) {
+    for (int i=0; i<5; i++) {
+        // If there is an unused position slot, then use it.
+        if (!this->openCallPositions[i].getIsOpen()) {
+            this->openCallPositions[i] = CallPosition(symbol, timestamp, close, investment, profitability, expirationMinutes);
             break;
         }
     }

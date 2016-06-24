@@ -10,7 +10,7 @@ __device__ __host__ ReversalsOptimizationStrategy::ReversalsOptimizationStrategy
 
 __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoint, double investment, double profitability) {
     // Tick the strategy.
-    this->tick(dataPoint, getPreviousClose(), dataPoint[configuration.timestamp] - 1);
+    this->tick(getPreviousClose(), (int)dataPoint[configuration.timestamp]);
 
     // Do not create trades between 4pm - 11:30pm Central, as the payout is lower during these times.
     if (dataPoint[configuration.timestampHour] >= 16 && (dataPoint[configuration.timestampHour] < 23 || (dataPoint[configuration.timestampHour] == 23 && dataPoint[configuration.timestampMinute] < 30))) {
@@ -24,10 +24,10 @@ __device__ __host__ void ReversalsOptimizationStrategy::backtest(double *dataPoi
 
     if (getPreviousClose()) {
         if (putNextTick) {
-            addPosition(new PutPosition(getSymbol(), ((int)dataPoint[configuration.timestamp] - 1), getPreviousClose(), investment, profitability, expirationMinutes));
+            addPutPosition(getSymbol(), ((int)dataPoint[configuration.timestamp]), getPreviousClose(), investment, profitability, expirationMinutes);
         }
         if (callNextTick) {
-            addPosition(new CallPosition(getSymbol(), ((int)dataPoint[configuration.timestamp] - 1), getPreviousClose(), investment, profitability, expirationMinutes));
+            addCallPosition(getSymbol(), ((int)dataPoint[configuration.timestamp]), getPreviousClose(), investment, profitability, expirationMinutes);
         }
     }
 

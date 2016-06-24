@@ -5,6 +5,14 @@ __device__ __host__ OptimizationStrategy::OptimizationStrategy(const char *symbo
     this->configuration = configuration;
 }
 
-__device__ __host__ Configuration &OptimizationStrategy::getConfiguration() {
+__device__ __host__ Configuration OptimizationStrategy::getConfiguration() {
     return this->configuration;
+}
+
+__device__ __host__ StrategyResult OptimizationStrategy::getResult() {
+    StrategyResult result = Strategy::getResult();
+
+    result.configuration = this->getConfiguration();
+
+    return result;
 }

@@ -10,7 +10,8 @@
 class Strategy {
     private:
         const char *symbol;
-        Position *openPositions[10];
+        PutPosition openPutPositions[5];
+        CallPosition openCallPositions[5];
         double profitLoss;
         int winCount;
         int loseCount;
@@ -20,11 +21,13 @@ class Strategy {
         double previousClose;
 
     protected:
-        __device__ __host__ void tick(double *dataPoint, double close, int timestamp);
+        __device__ __host__ void tick(double close, int timestamp);
         __device__ __host__ double getWinRate();
         __device__ __host__ double getProfitLoss();
-        __device__ __host__ void closeExpiredPositions(double price, int timestamp);
-        __device__ __host__ void addPosition(Position *position);
+        __device__ __host__ void closeExpiredPutPositions(double price, int timestamp);
+        __device__ __host__ void closeExpiredCallPositions(double price, int timestamp);
+        __device__ __host__ void addCallPosition(const char *symbol, int timestamp, double close, double investment, double profitability, double expirationMinutes);
+        __device__ __host__ void addPutPosition(const char *symbol, int timestamp, double close, double investment, double profitability, double expirationMinutes);
         __device__ __host__ __forceinline__ double getPreviousClose() {
             return this->previousClose;
         }

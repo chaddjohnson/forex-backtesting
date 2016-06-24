@@ -1,11 +1,31 @@
 #include "optimizers/optimizer.cuh"
 
+#define gpuErrchk(ans) { gpuAssert((ans), __FILE__, __LINE__); }
+inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort = true)
+{
+    if (code != cudaSuccess) {
+        fprintf(stderr, "GPUassert: %s %s %d\n", cudaGetErrorString(code), file, line);
+        if (abort) exit(code);
+    }
+}
+
+__global__ void optimizer_initializeStrategies(const char *symbol, ReversalsOptimizationStrategy *strategies, int strategyCount, Configuration *configurations) {
+    // Use a grid-stride loop.
+    // Reference: https://devblogs.nvidia.com/parallelforall/cuda-pro-tip-write-flexible-kernels-grid-stride-loops/
+    for (int i = blockIdx.x * blockDim.x + threadIdx.x;
+         i < strategyCount;
+         i += blockDim.x * gridDim.x)
+    {
+        strategies[i] = ReversalsOptimizationStrategy(symbol, configurations[i]);
+    }
+}
+
 // CUDA kernel for backtesting strategies.
-__global__ void optimizer_backtest(double *data, int dataPropertyCount, ReversalsOptimizationStrategy *strategies, int strategyCount, double investment, double profitability) {
+__global__ void optimizer_backtest(double *data, unsigned int dataPointerOffset, int dataPropertyCount, ReversalsOptimizationStrategy *strategies, int strategyCount, double investment, double profitability) {
     extern __shared__ double sharedData[];
 
     if (threadIdx.x < dataPropertyCount) {
-        sharedData[threadIdx.x] = data[threadIdx.x];
+        sharedData[threadIdx.x] = (data + dataPointerOffset)[threadIdx.x];
     }
 
     __syncthreads();
@@ -147,7 +167,7 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
 
         // If the previous tick's minute was not the previous minute, then save the current
         // ticks, and start over with recording.
-        if (previousTick && ((*tick)["timestamp"] - (*previousTick)["timestamp"]) > 60) {
+        if (previousTick && ((*tick).at("timestamp") - (*previousTick).at("timestamp")) > 60) {
             previousTick = nullptr;
 
             // Save and then remove the current cumulative ticks.
@@ -215,7 +235,7 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
 
     // Write ticks to database.
     saveTicks(cumulativeTicks);
-    for (i=0; i<cumulativeTicks.size(); i++) {
+    for (i=0; i<(int)cumulativeTicks.size(); i++) {
         delete cumulativeTicks[i];
         cumulativeTicks[i] = nullptr;
     }
@@ -362,14 +382,14 @@ double *Optimizer::loadData(int lastTimestamp, int chunkSize) {
                     }
 
                     // Add the data property value to the flattened data store.
-                    data[dataPointIndex * dataPropertyCount + (*tempDataIndexMap)[propertyName]] = propertyValue->value.v_double;
+                    data[dataPointIndex * dataPropertyCount + (*tempDataIndexMap).at(propertyName)] = propertyValue->value.v_double;
                 }
 
                 // Add additional timestamp-related data.
-                time_t utcTime = data[dataPointIndex * dataPropertyCount + (*tempDataIndexMap)["timestamp"]];
+                time_t utcTime = data[dataPointIndex * dataPropertyCount + (*tempDataIndexMap).at("timestamp")];
                 struct tm *localTime = localtime(&utcTime);
-                data[dataPointIndex * dataPropertyCount + (*tempDataIndexMap)["timestampHour"]] = (double)localTime->tm_hour;
-                data[dataPointIndex * dataPropertyCount + (*tempDataIndexMap)["timestampMinute"]] = (double)localTime->tm_min;
+                data[dataPointIndex * dataPropertyCount + (*tempDataIndexMap).at("timestampHour")] = (double)localTime->tm_hour;
+                data[dataPointIndex * dataPropertyCount + (*tempDataIndexMap).at("timestampMinute")] = (double)localTime->tm_min;
             }
         }
 
@@ -409,7 +429,7 @@ std::vector<MapConfiguration> *Optimizer::buildMapConfigurations(
             if (valuesIterator->second.type() == typeid(std::string)) {
                 if (boost::get<std::string>(valuesIterator->second).length() > 0) {
                     // Value points to a key.
-                    (*current)[valuesIterator->first] = (*this->dataIndexMap)[boost::get<std::string>(valuesIterator->second)];
+                    (*current)[valuesIterator->first] = (*this->dataIndexMap).at(boost::get<std::string>(valuesIterator->second));
                 }
             }
             else if (valuesIterator->second.type() == typeid(double)) {
@@ -424,7 +444,7 @@ std::vector<MapConfiguration> *Optimizer::buildMapConfigurations(
             }
         }
 
-        if (optionIndex + 1 < allKeys.size()) {
+        if (optionIndex + 1 < (int)allKeys.size()) {
             buildMapConfigurations(options, optionIndex + 1, results, current);
         }
         else {
@@ -437,7 +457,7 @@ std::vector<MapConfiguration> *Optimizer::buildMapConfigurations(
 }
 
 void Optimizer::optimize(double investment, double profitability) {
-    std::vector<Configuration*> configurations;
+    std::vector<Configuration*> loadedConfigurations;
     double percentage;
     mongoc_collection_t *collection;
     bson_t *countQuery;
@@ -458,20 +478,20 @@ void Optimizer::optimize(double investment, double profitability) {
     // Build or load configurations.
     if (getType() == Optimizer::types::TEST || getType() == Optimizer::types::VALIDATION) {
         if (getGroup() == 1) {
-            configurations = buildBaseConfigurations();
+            loadedConfigurations = buildBaseConfigurations();
         }
         else {
-            configurations = buildGroupConfigurations();
+            loadedConfigurations = buildGroupConfigurations();
         }
     }
     else if (getType() == Optimizer::types::FORWARDTEST) {
-        configurations = buildSavedConfigurations();
+        loadedConfigurations = buildSavedConfigurations();
     }
     else {
         throw std::runtime_error("Invalid optimization type");
     }
 
-    configurationCount = configurations.size();
+    configurationCount = loadedConfigurations.size();
 
     // GPU settings.
     // Reference: https://devblogs.nvidia.com/parallelforall/cuda-pro-tip-write-flexible-kernels-grid-stride-loops/
@@ -481,15 +501,17 @@ void Optimizer::optimize(double investment, double profitability) {
     int gpuMultiprocessorCount;
 
     // Get GPU specs.
-    cudaGetDeviceCount(&gpuCount);
-    cudaDeviceGetAttribute(&gpuMultiprocessorCount, cudaDevAttrMultiProcessorCount, 0);
+    gpuErrchk(cudaGetDeviceCount(&gpuCount));
+    gpuErrchk(cudaDeviceGetAttribute(&gpuMultiprocessorCount, cudaDevAttrMultiProcessorCount, 0));
 
     // Host data.
     ReversalsOptimizationStrategy *strategies[gpuCount];
+    Configuration *configurations[gpuCount];
     int configurationCounts[gpuCount];
 
     // GPU data.
     ReversalsOptimizationStrategy *devStrategies[gpuCount];
+    Configuration *devConfigurations[gpuCount];
 
     printf("Optimizing...");
 
@@ -515,30 +537,50 @@ void Optimizer::optimize(double investment, double profitability) {
     dataPointCount = mongoc_collection_count(collection, MONGOC_QUERY_NONE, countQuery, 0, 0, NULL, &countQueryError);
 
     for (i=0; i<gpuCount; i++) {
-        // Allocate data for strategies.
-        strategies[i] = (ReversalsOptimizationStrategy*)malloc(configurationCount * sizeof(ReversalsOptimizationStrategy));
+        // Allocate host memory for strategies.
+        strategies[i] = (ReversalsOptimizationStrategy*)malloc(((configurationCount / gpuCount) + 1) * sizeof(ReversalsOptimizationStrategy));
+
+        // Allocate host memory for configurations.
+        configurations[i] = (Configuration*)malloc(((configurationCount / gpuCount) + 1) * sizeof(Configuration));
+
+        // Initialize per-GPU configuration counts.
         configurationCounts[i] = 0;
     }
 
-    // Set up one strategy instance per configuration, and keep track of strategy counts.
+    // Divide configurations across GPUs.
     for (i=0; i<configurationCount; i++) {
         int gpuDeviceId = i % gpuCount;
         int gpuConfigurationIndex = configurationCounts[gpuDeviceId];
 
-        strategies[gpuDeviceId][gpuConfigurationIndex] = ReversalsOptimizationStrategy(this->symbol.c_str(), *configurations[i]);
+        configurations[gpuDeviceId][gpuConfigurationIndex] = *loadedConfigurations[i];
         configurationCounts[gpuDeviceId]++;
     }
 
+    // Set up strategies and configurations on each GPU.
     for (i=0; i<gpuCount; i++) {
-        cudaSetDevice(i);
+        gpuErrchk(cudaSetDevice(i));
 
         // Allocate memory on the GPU for strategies.
-        cudaMalloc((void**)&devStrategies[i], configurationCounts[i] * sizeof(ReversalsOptimizationStrategy));
+        gpuErrchk(cudaMalloc((void**)&devStrategies[i], configurationCounts[i] * sizeof(ReversalsOptimizationStrategy)));
 
-        // Copy strategies to the GPU.
-        cudaMemcpy(devStrategies[i], strategies[i], configurationCounts[i] * sizeof(ReversalsOptimizationStrategy), cudaMemcpyHostToDevice);
+        // Allocate memory on the GPU for configurations.
+        gpuErrchk(cudaMalloc((void**)&devConfigurations[i], configurationCounts[i] * sizeof(Configuration)));
+
+        // Copy configurations to the GPU.
+        gpuErrchk(cudaMemcpy(devConfigurations[i], configurations[i], configurationCounts[i] * sizeof(Configuration), cudaMemcpyHostToDevice));
+
+        // Initialize strategies on the GPU (not on the host!).
+        optimizer_initializeStrategies<<<gpuBlockCount*gpuMultiprocessorCount, gpuThreadsPerBlock>>>(this->symbol.c_str(), devStrategies[i], configurationCounts[i], devConfigurations[i]);
     }
 
+    for (i=0; i<gpuCount; i++) {
+        // Make sure strategies are completely initialized on the device before proceeding.
+        gpuErrchk(cudaSetDevice(i));
+        gpuErrchk(cudaPeekAtLastError());
+        gpuErrchk(cudaDeviceSynchronize());
+    }
+
+    // Load data in chunks, and backtest each data point.
     while (dataOffset < dataPointCount) {
         int nextChunkSize;
 
@@ -558,13 +600,13 @@ void Optimizer::optimize(double investment, double profitability) {
         double *devData[gpuCount];
 
         for (i=0; i<gpuCount; i++) {
-            cudaSetDevice(i);
+            gpuErrchk(cudaSetDevice(i));
 
             // Allocate memory for the data on the GPU.
-            cudaMalloc((void**)&devData[i], dataChunkBytes);
+            gpuErrchk(cudaMalloc((void**)&devData[i], dataChunkBytes));
 
             // Copy a chunk of data points to the GPU.
-            cudaMemcpy(devData[i], data, dataChunkBytes, cudaMemcpyHostToDevice);
+            gpuErrchk(cudaMemcpy(devData[i], data, dataChunkBytes, cudaMemcpyHostToDevice));
         }
 
         // Backtest all strategies against all data points in the chunk.
@@ -577,9 +619,10 @@ void Optimizer::optimize(double investment, double profitability) {
             printf("\rOptimizing...%0.4f%%", percentage);
 
             for (j=0; j<gpuCount; j++) {
-                cudaSetDevice(j);
-                optimizer_backtest<<<gpuBlockCount * gpuMultiprocessorCount, gpuThreadsPerBlock, dataPropertyCount * sizeof(double)>>>(
-                    devData[j] + dataPointerOffset,
+                gpuErrchk(cudaSetDevice(j));
+                optimizer_backtest<<<gpuBlockCount*gpuMultiprocessorCount, gpuThreadsPerBlock, dataPropertyCount * sizeof(double)>>>(
+                    devData[j],
+                    dataPointerOffset,
                     dataPropertyCount,
                     devStrategies[j],
                     configurationCounts[j],
@@ -588,15 +631,23 @@ void Optimizer::optimize(double investment, double profitability) {
                 );
             }
 
+            for (j=0; j<gpuCount; j++) {
+                // Make sure strategies are completely initialized on the device before proceeding.
+                gpuErrchk(cudaSetDevice(j));
+                gpuErrchk(cudaPeekAtLastError());
+                gpuErrchk(cudaDeviceSynchronize());
+            }
+
             dataPointIndex++;
         }
 
         // Update the last timestamp (used for fast querying).
-        lastTimestamp = (int)data[(nextChunkSize - 1) * dataPropertyCount + (*tempDataIndexMap)["timestamp"]];
+        lastTimestamp = (int)data[(nextChunkSize - 1) * dataPropertyCount + (*tempDataIndexMap).at("timestamp")];
 
         // Free GPU and host memory. Make SURE to set data to nullptr, or some shit will ensue.
         for (i=0; i<gpuCount; i++) {
-            cudaFree(devData[i]);
+            gpuErrchk(cudaSetDevice(i));
+            gpuErrchk(cudaFree(devData[i]));
         }
         free(data);
         data = nullptr;
@@ -607,8 +658,8 @@ void Optimizer::optimize(double investment, double profitability) {
 
     // Copy strategies from the GPU to the host.
     for (i=0; i<gpuCount; i++) {
-        cudaSetDevice(i);
-        cudaMemcpy(strategies[i], devStrategies[i], configurationCounts[i] * sizeof(ReversalsOptimizationStrategy), cudaMemcpyDeviceToHost);
+        gpuErrchk(cudaSetDevice(i));
+        gpuErrchk(cudaMemcpy(strategies[i], devStrategies[i], configurationCounts[i] * sizeof(ReversalsOptimizationStrategy), cudaMemcpyDeviceToHost));
     }
 
     printf("\rOptimizing...100%%          \n");
@@ -616,18 +667,15 @@ void Optimizer::optimize(double investment, double profitability) {
     // Save the results to the database.
     for (i=0; i<gpuCount; i++) {
         for (j=0; j<configurationCounts[i]; j++) {
-            StrategyResult result = strategies[i][j].getResult();
-            result.configuration = &strategies[i][j].getConfiguration();
-
-            results.push_back(result);
+            results.push_back(strategies[i][j].getResult());
         }
     }
     saveResults(results);
 
     // Free memory on the GPUs.
     for (i=0; i<gpuCount; i++) {
-        cudaSetDevice(i);
-        cudaFree(devStrategies[i]);
+        gpuErrchk(cudaSetDevice(i));
+        gpuErrchk(cudaFree(devStrategies[i]));
     }
 
     // Free host memory and cleanup.

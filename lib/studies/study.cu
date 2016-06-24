@@ -1,6 +1,6 @@
 #include "studies/study.cuh"
 
-Study::Study(std::map<std::string, double> inputs, std::map<std::string, std::string> outputMap) {
+Study::Study(std::map<std::string, float> inputs, std::map<std::string, std::string> outputMap) {
     this->inputs = inputs;
     this->outputMap = outputMap;
 
@@ -12,7 +12,7 @@ void Study::setData(std::vector<Tick*> *data) {
     this->dataLength = data->size();
 }
 
-double Study::getInput(std::string key) {
+float Study::getInput(std::string key) {
     return this->inputs[key];
 }
 
@@ -39,14 +39,14 @@ Tick *Study::getLastTick() {
     return data->back();
 }
 
-std::map<std::string, double> Study::getTickOutputs() {
+std::map<std::string, float> Study::getTickOutputs() {
     return this->tickOutputs;
 }
 
-void Study::setTickOutput(std::string key, double value) {
+void Study::setTickOutput(std::string key, float value) {
     this->tickOutputs[key] = value;
 }
 
 void Study::resetTickOutputs() {
-    std::map<std::string, double>().swap(this->tickOutputs);
+    std::map<std::string, float>().swap(this->tickOutputs);
 }

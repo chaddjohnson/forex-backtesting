@@ -1,6 +1,6 @@
 #include "positions/putPosition.cuh"
 
-__device__ __host__ double PutPosition::getProfitLoss() {
+__device__ __host__ float PutPosition::getProfitLoss() {
     if (getIsOpen()) {
         return 0.0;
     }

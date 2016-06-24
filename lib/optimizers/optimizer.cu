@@ -21,8 +21,8 @@ __global__ void optimizer_initializeStrategies(const char *symbol, ReversalsOpti
 }
 
 // CUDA kernel for backtesting strategies.
-__global__ void optimizer_backtest(double *data, unsigned int dataPointerOffset, int dataPropertyCount, ReversalsOptimizationStrategy *strategies, int strategyCount, double investment, double profitability) {
-    extern __shared__ double sharedData[];
+__global__ void optimizer_backtest(float *data, unsigned int dataPointerOffset, int dataPropertyCount, ReversalsOptimizationStrategy *strategies, int strategyCount, float investment, float profitability) {
+    extern __shared__ float sharedData[];
 
     if (threadIdx.x < dataPropertyCount) {
         sharedData[threadIdx.x] = (data + dataPointerOffset)[threadIdx.x];
@@ -141,7 +141,7 @@ void Optimizer::saveTicks(std::vector<Tick*> ticks) {
 }
 
 void Optimizer::prepareData(std::vector<Tick*> ticks) {
-    double percentage;
+    float percentage;
     int tickCount = ticks.size();
     std::vector<Tick*> cumulativeTicks;
     int cumulativeTickCount;
@@ -159,7 +159,7 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
     // Go through the data and run studies for each data item.
     for (std::vector<Tick*>::iterator tickIterator = ticks.begin(); tickIterator != ticks.end(); ++tickIterator) {
         // Show progress.
-        percentage = (++i / (double)tickCount) * 100.0;
+        percentage = (++i / (float)tickCount) * 100.0;
         printf("\rPreparing data...%0.4f%%", percentage);
 
         Tick *tick = *tickIterator;
@@ -203,9 +203,9 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
 
         // Merge tick output values from the studies into the current tick.
         for (std::vector<Study*>::iterator studyIterator = studies.begin(); studyIterator != studies.end(); ++studyIterator) {
-            std::map<std::string, double> studyOutputs = (*studyIterator)->getTickOutputs();
+            std::map<std::string, float> studyOutputs = (*studyIterator)->getTickOutputs();
 
-            for (std::map<std::string, double>::iterator outputIterator = studyOutputs.begin(); outputIterator != studyOutputs.end(); ++outputIterator) {
+            for (std::map<std::string, float>::iterator outputIterator = studyOutputs.begin(); outputIterator != studyOutputs.end(); ++outputIterator) {
                 (*tick)[outputIterator->first] = outputIterator->second;
             }
         }
@@ -313,7 +313,7 @@ std::map<std::string, int> *Optimizer::getDataIndexMap() {
     return this->dataIndexMap;
 }
 
-double *Optimizer::loadData(int lastTimestamp, int chunkSize) {
+float *Optimizer::loadData(int lastTimestamp, int chunkSize) {
     mongoc_collection_t *collection;
     mongoc_cursor_t *cursor;
     bson_t *query;
@@ -330,14 +330,14 @@ double *Optimizer::loadData(int lastTimestamp, int chunkSize) {
     collection = mongoc_client_get_collection(this->dbClient, "forex-backtesting", "datapoints");
 
     // Allocate memory for the flattened data store.
-    uint64_t dataChunkBytes = chunkSize * dataPropertyCount * sizeof(double);
-    double *data = (double*)malloc(dataChunkBytes);
+    uint64_t dataChunkBytes = chunkSize * dataPropertyCount * sizeof(float);
+    float *data = (float*)malloc(dataChunkBytes);
 
     // Query the database.
     if (getType() == Optimizer::types::TEST || getType() == Optimizer::types::VALIDATION) {
         query = BCON_NEW(
             "$query", "{",
-                "data.timestamp", "{", "$gt", BCON_DOUBLE((double)lastTimestamp), "}",
+                "data.timestamp", "{", "$gt", BCON_DOUBLE((float)lastTimestamp), "}",
                 "symbol", BCON_UTF8(this->symbol.c_str()),
                 "type", BCON_INT32(DataParser::types::BACKTEST),
                 this->groupFilter.c_str(), "{", "$bitsAnySet", BCON_INT32((int)pow(2, this->group)), "}",
@@ -349,7 +349,7 @@ double *Optimizer::loadData(int lastTimestamp, int chunkSize) {
     else if (getType() == Optimizer::types::FORWARDTEST) {
         query = BCON_NEW(
             "$query", "{",
-                "data.timestamp", "{", "$gt", BCON_DOUBLE((double)lastTimestamp), "}",
+                "data.timestamp", "{", "$gt", BCON_DOUBLE((float)lastTimestamp), "}",
                 "symbol", BCON_UTF8(this->symbol.c_str()),
                 "type", BCON_INT32(DataParser::types::FORWARDTEST),
             "}",
@@ -388,8 +388,8 @@ double *Optimizer::loadData(int lastTimestamp, int chunkSize) {
                 // Add additional timestamp-related data.
                 time_t utcTime = data[dataPointIndex * dataPropertyCount + (*tempDataIndexMap).at("timestamp")];
                 struct tm *localTime = localtime(&utcTime);
-                data[dataPointIndex * dataPropertyCount + (*tempDataIndexMap).at("timestampHour")] = (double)localTime->tm_hour;
-                data[dataPointIndex * dataPropertyCount + (*tempDataIndexMap).at("timestampMinute")] = (double)localTime->tm_min;
+                data[dataPointIndex * dataPropertyCount + (*tempDataIndexMap).at("timestampHour")] = (float)localTime->tm_hour;
+                data[dataPointIndex * dataPropertyCount + (*tempDataIndexMap).at("timestampMinute")] = (float)localTime->tm_min;
             }
         }
 
@@ -425,16 +425,16 @@ std::vector<MapConfiguration> *Optimizer::buildMapConfigurations(
 
     for (ConfigurationOption::iterator configurationOptionsIterator = configurationOptions.begin(); configurationOptionsIterator != configurationOptions.end(); ++configurationOptionsIterator) {
         // Iterate through configuration option values.
-        for (std::map<std::string, boost::variant<std::string, double, int>>::iterator valuesIterator = configurationOptionsIterator->begin(); valuesIterator != configurationOptionsIterator->end(); ++valuesIterator) {
+        for (std::map<std::string, boost::variant<std::string, float, int>>::iterator valuesIterator = configurationOptionsIterator->begin(); valuesIterator != configurationOptionsIterator->end(); ++valuesIterator) {
             if (valuesIterator->second.type() == typeid(std::string)) {
                 if (boost::get<std::string>(valuesIterator->second).length() > 0) {
                     // Value points to a key.
                     (*current)[valuesIterator->first] = (*this->dataIndexMap).at(boost::get<std::string>(valuesIterator->second));
                 }
             }
-            else if (valuesIterator->second.type() == typeid(double)) {
+            else if (valuesIterator->second.type() == typeid(float)) {
                 // Value is an actual value.
-                (*current)[valuesIterator->first] = boost::get<double>(valuesIterator->second);
+                (*current)[valuesIterator->first] = boost::get<float>(valuesIterator->second);
             }
             else if (valuesIterator->second.type() == typeid(int)) {
                 // Value is an int. In this case, it will always be 0 (like false but not actually
@@ -456,9 +456,9 @@ std::vector<MapConfiguration> *Optimizer::buildMapConfigurations(
     return results;
 }
 
-void Optimizer::optimize(double investment, double profitability) {
+void Optimizer::optimize(float investment, float profitability) {
     std::vector<Configuration*> loadedConfigurations;
-    double percentage;
+    float percentage;
     mongoc_collection_t *collection;
     bson_t *countQuery;
     bson_error_t countQueryError;
@@ -593,11 +593,11 @@ void Optimizer::optimize(double investment, double profitability) {
         }
 
         // Calculate the number of bytes needed for the next chunk.
-        uint64_t dataChunkBytes = nextChunkSize * dataPropertyCount * sizeof(double);
+        uint64_t dataChunkBytes = nextChunkSize * dataPropertyCount * sizeof(float);
 
         // Load another chunk of data.
-        double *data = loadData(lastTimestamp, nextChunkSize);
-        double *devData[gpuCount];
+        float *data = loadData(lastTimestamp, nextChunkSize);
+        float *devData[gpuCount];
 
         for (i=0; i<gpuCount; i++) {
             gpuErrchk(cudaSetDevice(i));
@@ -615,12 +615,12 @@ void Optimizer::optimize(double investment, double profitability) {
             unsigned int dataPointerOffset = i * dataPropertyCount;
 
             // Show progress.
-            percentage = ((dataPointIndex + 1) / (double)dataPointCount) * 100.0;
+            percentage = ((dataPointIndex + 1) / (float)dataPointCount) * 100.0;
             printf("\rOptimizing...%0.4f%%", percentage);
 
             for (j=0; j<gpuCount; j++) {
                 gpuErrchk(cudaSetDevice(j));
-                optimizer_backtest<<<gpuBlockCount*gpuMultiprocessorCount, gpuThreadsPerBlock, dataPropertyCount * sizeof(double)>>>(
+                optimizer_backtest<<<gpuBlockCount*gpuMultiprocessorCount, gpuThreadsPerBlock, dataPropertyCount * sizeof(float)>>>(
                     devData[j],
                     dataPointerOffset,
                     dataPropertyCount,

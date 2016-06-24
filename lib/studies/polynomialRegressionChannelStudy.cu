@@ -1,14 +1,14 @@
 #include "studies/polynomialRegressionChannelStudy.cuh"
 
 // Sources: https://rosettacode.org/wiki/Polynomial_regression#C, http://stackoverflow.com/a/36524956/83897
-double PolynomialRegressionChannelStudy::calculateRegression(std::vector<double> &values, int degree) {
+float PolynomialRegressionChannelStudy::calculateRegression(std::vector<float> &values, int degree) {
     gsl_multifit_linear_workspace *ws;
     gsl_matrix *cov, *X;
     gsl_vector *y, *c;
     double chisq;
     int obs;
-    std::vector<double> coefficients;
-    double point;
+    std::vector<float> coefficients;
+    float point;
 
     int i = 0;
     int j = 0;
@@ -51,11 +51,11 @@ double PolynomialRegressionChannelStudy::calculateRegression(std::vector<double>
     return point;
 }
 
-double PolynomialRegressionChannelStudy::calculateStandardDeviation(std::vector<double> &values) {
-    double sum = 0;
-    double squaredSum = 0;
-    double mean;
-    double variance;
+float PolynomialRegressionChannelStudy::calculateStandardDeviation(std::vector<float> &values) {
+    float sum = 0;
+    float squaredSum = 0;
+    float mean;
+    float variance;
     int valueCount = values.size();
     int i = 0;
 
@@ -79,8 +79,8 @@ void PolynomialRegressionChannelStudy::tick() {
     std::vector<Tick*> *dataSegment = nullptr;
     int dataSegmentLength = 0;
     std::string regressionOutputName = getOutputMapping("regression");
-    double regression;
-    double regressionStandardDeviation;
+    float regression;
+    float regressionStandardDeviation;
 
     resetTickOutputs();
 
@@ -89,8 +89,8 @@ void PolynomialRegressionChannelStudy::tick() {
 
     if (dataSegmentLength <= 1) {
         // Reset.
-        std::vector<double>().swap(this->pastPrices);
-        std::vector<double>().swap(this->pastRegressions);
+        std::vector<float>().swap(this->pastPrices);
+        std::vector<float>().swap(this->pastRegressions);
     }
 
     // Record another past price.

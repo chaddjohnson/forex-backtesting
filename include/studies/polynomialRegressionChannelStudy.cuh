@@ -11,14 +11,14 @@
 
 class PolynomialRegressionChannelStudy : public Study {
     private:
-        std::vector<double> pastPrices;
-        std::vector<double> pastRegressions;
+        std::vector<float> pastPrices;
+        std::vector<float> pastRegressions;
 
     public:
-        PolynomialRegressionChannelStudy(std::map<std::string, double> inputs, std::map<std::string, std::string> outputMap)
+        PolynomialRegressionChannelStudy(std::map<std::string, float> inputs, std::map<std::string, std::string> outputMap)
             : Study(inputs, outputMap) {}
-        double calculateRegression(std::vector<double> &values, int degree);
-        double calculateStandardDeviation(std::vector<double> &values);
+        float calculateRegression(std::vector<float> &values, int degree);
+        float calculateStandardDeviation(std::vector<float> &values);
         void tick();
 };
 

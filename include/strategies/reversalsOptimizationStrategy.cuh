@@ -14,7 +14,7 @@ class ReversalsOptimizationStrategy : public OptimizationStrategy {
     public:
         __device__ __host__ ReversalsOptimizationStrategy(const char *symbol, Configuration configuration);
         __device__ __host__ ~ReversalsOptimizationStrategy() {}
-        __device__ __host__ void backtest(double *dataPoint, double investment, double profitability);
+        __device__ __host__ void backtest(float *dataPoint, float investment, float profitability);
 };
 
 #endif

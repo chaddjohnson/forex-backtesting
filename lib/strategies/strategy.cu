@@ -15,35 +15,35 @@ __device__ __host__ const char *Strategy::getSymbol() {
     return this->symbol;
 }
 
-__device__ __host__ double Strategy::getProfitLoss() {
+__device__ __host__ float Strategy::getProfitLoss() {
     return this->profitLoss;
 }
 
-__device__ __host__ void Strategy::setProfitLoss(double profitLoss) {
+__device__ __host__ void Strategy::setProfitLoss(float profitLoss) {
     this->profitLoss = profitLoss;
 }
 
-__device__ __host__ double Strategy::getWinRate() {
+__device__ __host__ float Strategy::getWinRate() {
     if (this->winCount + this->loseCount == 0) {
         return 0;
     }
-    return (double)this->winCount / ((double)this->winCount + (double)this->loseCount);
+    return (float)this->winCount / ((float)this->winCount + (float)this->loseCount);
 }
 
-__device__ __host__ void Strategy::tick(double close, int timestamp) {
+__device__ __host__ void Strategy::tick(float close, int timestamp) {
     // Simulate expiry of and profit/loss related to positions held.
     closeExpiredPutPositions(close, timestamp);
     closeExpiredCallPositions(close, timestamp);
 }
 
-__device__ __host__ void Strategy::closeExpiredPutPositions(double price, int timestamp) {
+__device__ __host__ void Strategy::closeExpiredPutPositions(float price, int timestamp) {
     for (int i=0; i<5; i++) {
         if (this->openPutPositions[i].getIsOpen() && this->openPutPositions[i].getHasExpired(timestamp)) {
             // Close the position since it is open and has expired.
             this->openPutPositions[i].close(price, timestamp);
 
-            double positionProfitLoss = this->openPutPositions[i].getProfitLoss();
-            double positionInvestment = this->openPutPositions[i].getInvestment();
+            float positionProfitLoss = this->openPutPositions[i].getProfitLoss();
+            float positionInvestment = this->openPutPositions[i].getInvestment();
 
             // Remove the position's investment amount from the total profit/loss for this strategy.
             this->profitLoss -= positionInvestment;
@@ -73,14 +73,14 @@ __device__ __host__ void Strategy::closeExpiredPutPositions(double price, int ti
     }
 }
 
-__device__ __host__ void Strategy::closeExpiredCallPositions(double price, int timestamp) {
+__device__ __host__ void Strategy::closeExpiredCallPositions(float price, int timestamp) {
     for (int i=0; i<5; i++) {
         if (this->openCallPositions[i].getIsOpen() && this->openCallPositions[i].getHasExpired(timestamp)) {
             // Close the position since it is open and has expired.
             this->openCallPositions[i].close(price, timestamp);
 
-            double positionProfitLoss = this->openCallPositions[i].getProfitLoss();
-            double positionInvestment = this->openCallPositions[i].getInvestment();
+            float positionProfitLoss = this->openCallPositions[i].getProfitLoss();
+            float positionInvestment = this->openCallPositions[i].getInvestment();
 
             // Remove the position's investment amount from the total profit/loss for this strategy.
             this->profitLoss -= positionInvestment;
@@ -124,7 +124,7 @@ __device__ __host__ StrategyResult Strategy::getResult() {
     return result;
 }
 
-__device__ __host__ void Strategy::addPutPosition(const char *symbol, int timestamp, double close, double investment, double profitability, double expirationMinutes) {
+__device__ __host__ void Strategy::addPutPosition(const char *symbol, int timestamp, float close, float investment, float profitability, float expirationMinutes) {
     for (int i=0; i<5; i++) {
         // If there is an unused position slot, then use it.
         if (!this->openPutPositions[i].getIsOpen()) {
@@ -134,7 +134,7 @@ __device__ __host__ void Strategy::addPutPosition(const char *symbol, int timest
     }
 }
 
-__device__ __host__ void Strategy::addCallPosition(const char *symbol, int timestamp, double close, double investment, double profitability, double expirationMinutes) {
+__device__ __host__ void Strategy::addCallPosition(const char *symbol, int timestamp, float close, float investment, float profitability, float expirationMinutes) {
     for (int i=0; i<5; i++) {
         // If there is an unused position slot, then use it.
         if (!this->openCallPositions[i].getIsOpen()) {

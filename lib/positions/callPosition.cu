@@ -1,6 +1,6 @@
 #include "positions/callPosition.cuh"
 
-__device__ __host__ double CallPosition::getProfitLoss() {
+__device__ __host__ float CallPosition::getProfitLoss() {
     if (getIsOpen()) {
         return 0.0;
     }

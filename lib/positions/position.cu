@@ -12,7 +12,7 @@ __device__ __host__ Position::Position() {
     this->expirationTimestamp = 0;
 }
 
-__device__ __host__ Position::Position(const char *symbol, int timestamp, double price, double investment, double profitability, int expirationMinutes) {
+__device__ __host__ Position::Position(const char *symbol, int timestamp, float price, float investment, float profitability, int expirationMinutes) {
     this->symbol = symbol;
     this->timestamp = timestamp;
     this->price = price;
@@ -33,19 +33,19 @@ __device__ __host__ int Position::getTimestamp() {
     return this->timestamp;
 }
 
-__device__ __host__ double Position::getPrice() {
+__device__ __host__ float Position::getPrice() {
     return this->price;
 }
 
-__device__ __host__ double Position::getClosePrice() {
+__device__ __host__ float Position::getClosePrice() {
     return this->closePrice;
 }
 
-__device__ __host__ double Position::getInvestment() {
+__device__ __host__ float Position::getInvestment() {
     return this->investment;
 }
 
-__device__ __host__ double Position::getProfitability() {
+__device__ __host__ float Position::getProfitability() {
     return this->profitability;
 }
 
@@ -69,12 +69,12 @@ __device__ __host__ bool Position::getHasExpired(int timestamp) {
     return timestamp >= this->expirationTimestamp;
 }
 
-__device__ __host__ void Position::close(double price, int timestamp) {
+__device__ __host__ void Position::close(float price, int timestamp) {
     this->isOpen = false;
     this->closePrice = price;
     this->closeTimestamp = timestamp;
 }
 
-__device__ __host__ double Position::getProfitLoss() {
+__device__ __host__ float Position::getProfitLoss() {
     return 0.0;
 }

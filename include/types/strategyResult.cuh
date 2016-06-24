@@ -3,11 +3,11 @@
 
 typedef struct StrategyResult {
     // Resulting stats
-    double profitLoss;
+    float profitLoss;
     int winCount;
     int loseCount;
     int tradeCount;
-    double winRate;
+    float winRate;
     int maximumConsecutiveLosses;
     int minimumProfitLoss;
 

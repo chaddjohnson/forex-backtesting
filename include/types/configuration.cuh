@@ -27,10 +27,10 @@ typedef struct Configuration {
     int prChannelLower;
 
     // Values
-    double rsiOverbought;
-    double rsiOversold;
-    double stochasticOverbought;
-    double stochasticOversold;
+    float rsiOverbought;
+    float rsiOversold;
+    float stochasticOverbought;
+    float stochasticOversold;
 
     __device__ __host__ Configuration() {
         timestamp = 0;

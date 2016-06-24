@@ -13,8 +13,8 @@ int DataParser::getType() {
     return this->type;
 }
 
-double DataParser::parseGroups(std::string groupString) {
-    double value = 0;
+float DataParser::parseGroups(std::string groupString) {
+    float value = 0;
 
     std::stringstream stream(groupString);
     std::string groupItem;

@@ -8,10 +8,10 @@
 
 class EmaStudy : public Study {
     private:
-        double previousEma;
+        float previousEma;
 
     public:
-        EmaStudy(std::map<std::string, double> inputs, std::map<std::string, std::string> outputMap);
+        EmaStudy(std::map<std::string, float> inputs, std::map<std::string, std::string> outputMap);
         void tick();
 };
 

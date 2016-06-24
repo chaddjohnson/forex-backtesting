@@ -25,7 +25,7 @@ std::vector<Tick*> OandaDataParser::parse() {
         }
 
         // Translate the data items.
-        (*translatedLine)["type"] = (double)getType();
+        (*translatedLine)["type"] = (float)getType();
         if (getType() == DataParser::types::BACKTEST) {
             (*translatedLine)["testingGroups"] = parseGroups(lineItems.at(i++));
             (*translatedLine)["validationGroups"] = parseGroups(lineItems.at(i++));

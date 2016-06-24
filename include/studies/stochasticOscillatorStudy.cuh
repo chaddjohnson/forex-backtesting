@@ -9,11 +9,11 @@
 
 class StochasticOscillatorStudy : public Study {
     private:
-        double getLowestLow(std::vector<Tick*> *dataSegment);
-        double getHighestHigh(std::vector<Tick*> *dataSegment);
+        float getLowestLow(std::vector<Tick*> *dataSegment);
+        float getHighestHigh(std::vector<Tick*> *dataSegment);
 
     public:
-        StochasticOscillatorStudy(std::map<std::string, double> inputs, std::map<std::string, std::string> outputMap)
+        StochasticOscillatorStudy(std::map<std::string, float> inputs, std::map<std::string, std::string> outputMap)
             : Study(inputs, outputMap) {}
         void tick();
 };

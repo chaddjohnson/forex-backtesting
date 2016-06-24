@@ -37,7 +37,7 @@ class Optimizer {
         int dataPropertyCount;
         int getDataPropertyCount();
         bson_t *convertTickToBson(Tick *tick);
-        double *loadData(int lastTimestamp, int chunkSize);
+        float *loadData(int lastTimestamp, int chunkSize);
         void saveTicks(std::vector<Tick*> ticks);
         void saveResults(std::vector<StrategyResult> &results);
 
@@ -67,7 +67,7 @@ class Optimizer {
         Optimizer(mongoc_client_t *dbClient, std::string strategyName, std::string symbol, int type = 0, int group = 0);
         virtual ~Optimizer() {}
         void prepareData(std::vector<Tick*> ticks);
-        void optimize(double investment, double profitability);
+        void optimize(float investment, float profitability);
         static int getTypeId(std::string name);
         enum types { TEST, VALIDATION, FORWARDTEST };
 };

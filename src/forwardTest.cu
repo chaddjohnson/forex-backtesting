@@ -18,8 +18,8 @@ int main(int argc, char *argv[]) {
     std::string filePath;
     std::string parserName;
     std::string optimizerName;
-    double investment;
-    double profitability;
+    float investment;
+    float profitability;
 
     // Parse command line arguments.
     for (i=0; i<argc; i++) {

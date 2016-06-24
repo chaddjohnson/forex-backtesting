@@ -167,7 +167,7 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
 
         // If the previous tick's minute was not the previous minute, then save the current
         // ticks, and start over with recording.
-        if (previousTick && ((*tick).at("timestamp") - (*previousTick).at("timestamp")) > 60) {
+        if (previousTick && abs((*tick).at("timestamp") - (*previousTick).at("timestamp")) > 60) {
             previousTick = nullptr;
 
             // Save and then remove the current cumulative ticks.

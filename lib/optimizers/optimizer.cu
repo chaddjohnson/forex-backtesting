@@ -165,9 +165,15 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
         Tick *tick = *tickIterator;
         Tick *previousTick = nullptr;
 
+        if (cumulativeTicks.size() > 0) {
+            previousTick = cumulativeTicks.back();
+        }
+
         // If the previous tick's minute was not the previous minute, then save the current
         // ticks, and start over with recording.
         if (previousTick && abs((*tick).at("timestamp") - (*previousTick).at("timestamp")) > 60) {
+            previousTick = nullptr;
+
             // Save and then remove the current cumulative ticks.
             saveTicks(cumulativeTicks);
 
@@ -179,8 +185,6 @@ void Optimizer::prepareData(std::vector<Tick*> ticks) {
             }
             std::vector<Tick*>().swap(cumulativeTicks);
         }
-
-        previousTick = tick;
 
         // Append to the cumulative data.
         cumulativeTicks.push_back(tick);

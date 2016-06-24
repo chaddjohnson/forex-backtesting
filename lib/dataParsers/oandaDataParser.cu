@@ -38,6 +38,8 @@ std::vector<Tick*> OandaDataParser::parse() {
 
         // Add the translated line to the list of translated lines.
         translatedLines.push_back(translatedLine);
+
+        translatedLine = nullptr;
     }
 
     return translatedLines;

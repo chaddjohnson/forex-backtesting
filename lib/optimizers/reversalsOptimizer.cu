@@ -930,10 +930,20 @@ std::vector<Configuration*> ReversalsOptimizer::loadConfigurations(const char *c
                         }
                     }
                     else if (propertyName == "rsiOverbought") {
-                        resultConfiguration->rsiOverbought = propertyValue->value.v_double;
+                        if (propertyValue->value_type == BSON_TYPE_DOUBLE) {
+                            resultConfiguration->rsiOverbought = propertyValue->value.v_double;
+                        }
+                        else if (propertyValue->value_type == BSON_TYPE_INT32) {
+                            resultConfiguration->rsiOverbought = (double)propertyValue->value.v_int32;
+                        }
                     }
                     else if (propertyName == "rsiOversold") {
-                        resultConfiguration->rsiOversold = propertyValue->value.v_double;
+                        if (propertyValue->value_type == BSON_TYPE_DOUBLE) {
+                            resultConfiguration->rsiOversold = propertyValue->value.v_double;
+                        }
+                        else if (propertyValue->value_type == BSON_TYPE_INT32) {
+                            resultConfiguration->rsiOversold = (double)propertyValue->value.v_int32;
+                        }
                     }
                     else if (propertyName == "stochasticD") {
                         if (propertyValue->value_type != BSON_TYPE_BOOL) {
@@ -946,10 +956,20 @@ std::vector<Configuration*> ReversalsOptimizer::loadConfigurations(const char *c
                         }
                     }
                     else if (propertyName == "stochasticOverbought") {
-                        resultConfiguration->stochasticOverbought = propertyValue->value.v_double;
+                        if (propertyValue->value_type == BSON_TYPE_DOUBLE) {
+                            resultConfiguration->stochasticOverbought = propertyValue->value.v_double;
+                        }
+                        else if (propertyValue->value_type == BSON_TYPE_INT32) {
+                            resultConfiguration->stochasticOverbought = (double)propertyValue->value.v_int32;
+                        }
                     }
                     else if (propertyName == "stochasticOversold") {
-                        resultConfiguration->stochasticOversold = propertyValue->value.v_double;
+                        if (propertyValue->value_type == BSON_TYPE_DOUBLE) {
+                            resultConfiguration->stochasticOversold = propertyValue->value.v_double;
+                        }
+                        else if (propertyValue->value_type == BSON_TYPE_INT32) {
+                            resultConfiguration->stochasticOversold = (double)propertyValue->value.v_int32;
+                        }
                     }
                     else if (propertyName == "prChannelUpper") {
                         resultConfiguration->prChannelUpper = (*tempDataIndexMap).at(propertyValue->value.v_utf8.str);
